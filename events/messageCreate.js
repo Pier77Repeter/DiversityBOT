@@ -44,7 +44,12 @@ module.exports = (client) => {
             }
           );
         });
-        await message.reply("Gave **+1** reputation to " + member.username);
+
+        try {
+          await message.reply("Gave **+1** reputation to " + member.username);
+        } catch (error) {
+          // do nothing, continue
+        }
       }
     }
 
@@ -93,7 +98,6 @@ module.exports = (client) => {
     if (!message.content.toLowerCase().startsWith(botPrefix)) return;
 
     // client.database setting up user data
-
     const row = await new Promise((resolve, reject) => {
       client.database.get(
         "SELECT * FROM User WHERE serverId = ? AND userId = ?",
@@ -109,7 +113,7 @@ module.exports = (client) => {
       );
     });
 
-    // Check if it's new and INSERT
+    // check if it's new and INSERT
     if (!row) {
       await new Promise((resolve, reject) => {
         const itemsJsonData =

@@ -4,7 +4,7 @@ module.exports = {
   cooldown: 30, // cooldown in seconds
   async execute(client, message, args) {
     const cooldownAmount = this.cooldown * 1000; // cooldown in milliseconds
-    const unixNow = Date.unixNow();
+    const unixNow = Date.now();
 
     // get the last cooldown time from the database
     const row = await new Promise((resolve, reject) => {
