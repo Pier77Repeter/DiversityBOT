@@ -1,20 +1,39 @@
 const { EmbedBuilder, ButtonStyle, MessageFlags, ComponentType, AttachmentBuilder } = require("discord.js");
 const { ButtonBuilder } = require("@discordjs/builders");
 const { ActionRowBuilder } = require("@discordjs/builders");
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const delay = require("../../utils/delay");
+const cooldownManager = require("../../utils/cooldownManager");
 
 module.exports = {
   name: "nuke",
   description: "Nuke the chat or a specific user",
   cooldown: 30,
   async execute(client, message, args) {
-    const userId = message.author.id;
-    const cooldownInMs = this.cooldown * 1000;
-    const now = Date.now();
-
     if (!args[0]) {
       try {
         return await message.reply("You need to specify a location to nuke");
+      } catch (error) {
+        return;
+      }
+    }
+
+    const cooldown = await cooldownManager(client, "nukeCooldown", this.cooldown, message.guild.id, message.author.id);
+
+    if (cooldown == null) {
+      try {
+        return await message.reply("Shit, i couldn't launch the nuke, try again");
+      } catch (error) {
+        return;
+      }
+    }
+
+    if (cooldown[0] == 1) {
+      const nukeMessageEmbed = new EmbedBuilder()
+        .setColor(0x000000)
+        .setDescription("⏰ Slowdown man, no need to nuke this fast, wait: **<t:" + cooldown[1] + ":R>**");
+
+      try {
+        return await message.reply({ embeds: [nukeMessageEmbed] });
       } catch (error) {
         return;
       }
@@ -26,53 +45,6 @@ module.exports = {
     } else {
       target = message.mentions.members.first().user.username;
     }
-
-    const row = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT nukeCooldown FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, userId],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
-    });
-
-    if (!row) {
-      try {
-        return await message.reply("Shit, i couldn't launch the nuke, try again");
-      } catch (error) {
-        return;
-      }
-    }
-
-    const lastCooldownInDb = row.nukeCooldown;
-    const expirationTime = lastCooldownInDb + cooldownInMs;
-
-    if (now < expirationTime) {
-      const timeLeft = Math.floor(expirationTime / 1000);
-
-      const nukeMessageEmbed = new EmbedBuilder()
-        .setColor(0x000000)
-        .setDescription("⏰ Slowdown man, no need to nuke this fast, wait: **<t:" + timeLeft + ":R>**");
-
-      try {
-        return await message.reply({ embeds: [nukeMessageEmbed] });
-      } catch (error) {
-        return;
-      }
-    }
-
-    await new Promise((resolve, reject) => {
-      client.database.run(
-        "UPDATE User SET nukeCooldown = ? WHERE serverId = ? AND userId = ?",
-        [now, message.guild.id, userId],
-        (err) => {
-          if (err) reject(err);
-          else resolve();
-        }
-      );
-    });
 
     const nukeMessageEmbed = new EmbedBuilder()
       .setColor(0x14141f)
@@ -103,7 +75,7 @@ module.exports = {
 
     const btnCollector = sentMessage.createMessageComponentCollector({
       componentType: ComponentType.Button,
-      time: 20_000,
+      time: 15_000,
     });
 
     var hasUserClickedBtn = false;

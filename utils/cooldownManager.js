@@ -1,10 +1,13 @@
+// This is very useful since it's gonna save tons of lines and time when implementing cooldowns for the commands
+
 const logPrefix = "[cooldownManager.js]:";
 
 module.exports = async function cooldownManager(client, cooldownName, cooldownInSeconds, serverId, userId) {
   const cooldownAmount = cooldownInSeconds * 1000; // cooldown to milliseconds
-  const unixNow = Date.now();
+  const unixNow = Date.now(); // this is needed since we work with unix time
 
   try {
+    // first we get the cooldown from the db (it should exist since userData gets INSERTED in messageCreate event, before this)
     const row = await new Promise((resolve, reject) => {
       client.database.get(
         `SELECT ${cooldownName} FROM User WHERE serverId = ? AND userId = ?`,
@@ -22,6 +25,7 @@ module.exports = async function cooldownManager(client, cooldownName, cooldownIn
     const lastCooldown = row[cooldownName];
     const expirationTime = lastCooldown + cooldownAmount;
 
+    // if the unix time in db is bigger than the current unix time this means user is still in cooldown
     if (unixNow < expirationTime) {
       const timeLeft = Math.floor(expirationTime / 1000); // convert back for Discord timestamp output
       const statusCode = 1; // 1 means it's active so we need to check if cooldown == 0 in the commands
@@ -42,9 +46,9 @@ module.exports = async function cooldownManager(client, cooldownName, cooldownIn
       );
     });
 
-    return [0]; // cooldown is off and everything went good :thumbsup:
+    return 0; // cooldown is off and everything went good :thumbsup:
   } catch (error) {
     console.log(logPrefix + " Error handling cooldown '" + cooldownName + "': " + error);
-    return null;
+    return null; // in case of an error (check is in the command)
   }
 };

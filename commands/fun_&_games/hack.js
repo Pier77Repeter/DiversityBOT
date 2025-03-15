@@ -1,12 +1,13 @@
 const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
 const listsGetRandomItem = require("../../utils/listsGetRandomItem");
 const mathRandomInt = require("../../utils/mathRandomInt");
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const cooldownManager = require("../../utils/cooldownManager");
+const delay = require("../../utils/delay");
 
 module.exports = {
   name: "hack",
   description: "Hack the mentioned user",
-  cooldown: 60,
+  cooldown: 70,
   async execute(client, message, args) {
     if (message.mentions.members.first() == null) {
       try {
@@ -19,18 +20,9 @@ module.exports = {
     const member = message.mentions.members.first().user;
     const messageAuthor = message.author.username;
 
-    const row = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT hackCooldown FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, message.author.id],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
-    });
+    const cooldown = await cooldownManager(client, "hackCooldown", this.cooldown, message.guild.id, message.author.id);
 
-    if (!row) {
+    if (cooldown == null) {
       try {
         return await message.reply("User hacking has failed, try again later");
       } catch (error) {
@@ -38,16 +30,10 @@ module.exports = {
       }
     }
 
-    const now = Date.now();
-    const cooldownAmount = this.cooldown * 1000;
-    const lastCooldown = row.hackCooldown;
-    const expirationTime = lastCooldown + cooldownAmount;
-
-    if (now < expirationTime) {
-      const timeLeft = Math.floor(expirationTime / 1000);
+    if (cooldown[0] == 1) {
       const hackMessageEmbed = new EmbedBuilder()
         .setColor(0x000000)
-        .setDescription("Better wait **<t:" + timeLeft + ":R>** before hacking again, you might be found by the FBI");
+        .setDescription("⏰ Better wait **<t:" + cooldown[1] + ":R>** before hacking again, you might be found by the FBI");
 
       try {
         return await message.reply({ embeds: [hackMessageEmbed] });
@@ -83,17 +69,6 @@ module.exports = {
     } catch (error) {
       return;
     }
-
-    await new Promise((resolve, reject) => {
-      client.database.run(
-        "UPDATE User SET hackCooldown = ? WHERE serverId = ? AND userId = ?",
-        [now, message.guild.id, message.author.id],
-        (err) => {
-          if (err) reject(err);
-          else resolve();
-        }
-      );
-    });
 
     await delay(2000);
     hackMessageEmbed.setDescription(

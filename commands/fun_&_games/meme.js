@@ -7,27 +7,16 @@ const {
   ComponentType,
   MessageFlags,
 } = require("discord.js");
+const cooldownManager = require("../../utils/cooldownManager");
 
 module.exports = {
   name: "meme",
   description: "Take a random meme from r/memes",
-  cooldown: 15,
+  cooldown: 30,
   async execute(client, message, args) {
-    const cooldownInMs = this.cooldown * 1000;
-    const unixNow = Date.now();
+    const cooldown = await cooldownManager(client, "memeCooldown", this.cooldown, message.guild.id, message.author.id);
 
-    const row = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT memeCooldown FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, message.author.id],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
-    });
-
-    if (!row) {
+    if (cooldown == null) {
       try {
         return await message.reply("Couldn't get the meme gotta try again");
       } catch (error) {
@@ -35,15 +24,10 @@ module.exports = {
       }
     }
 
-    const lastCooldownInDb = row.memeCooldown;
-    const expirationTime = lastCooldownInDb + cooldownInMs;
-
-    if (unixNow < expirationTime) {
-      const timeLeft = Math.floor(expirationTime / 1000);
-
+    if (cooldown[0] == 1) {
       const memeMessageEmbed = new EmbedBuilder()
         .setColor(0x000000)
-        .setDescription("⏰ Memes out of stock, wait: **<t:" + timeLeft + ":R>**");
+        .setDescription("⏰ Memes out of stock, wait: **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [memeMessageEmbed] });
@@ -58,6 +42,7 @@ module.exports = {
     }
 
     var memeData = await getMeme();
+
     if (memeData.code == 404) {
       try {
         return await message.reply("Subreddit not found, try again, maybe with an actual subreddit");
@@ -65,17 +50,6 @@ module.exports = {
         return;
       }
     }
-
-    await new Promise((resolve, reject) => {
-      client.database.run(
-        "UPDATE User SET memeCooldown = ? WHERE serverId = ? AND userId = ?",
-        [unixNow, message.guild.id, message.author.id],
-        (err) => {
-          if (err) reject(err);
-          else resolve();
-        }
-      );
-    });
 
     if (memeData.nsfw) {
       const imageFile = new AttachmentBuilder("./media/arnoldSchwarzeneggerStopMeme.jpg");
@@ -114,16 +88,16 @@ module.exports = {
       .setStyle(ButtonStyle.Danger);
     const btnRow = new ActionRowBuilder().addComponents(btnNextMeme, btnStop);
 
-    var reply;
+    var sentMessage;
     try {
-      reply = await message.reply({ embeds: [memeMessageEmbed], components: [btnRow] });
+      sentMessage = await message.reply({ embeds: [memeMessageEmbed], components: [btnRow] });
     } catch (error) {
       return;
     }
 
-    const btnCollector = reply.createMessageComponentCollector({
+    const btnCollector = sentMessage.createMessageComponentCollector({
       componentType: ComponentType.Button,
-      time: 60_000,
+      time: 30_000,
     });
 
     btnCollector.on("collect", async (btnInteraction) => {
@@ -138,6 +112,7 @@ module.exports = {
       switch (btnInteraction.customId) {
         case "btn-meme-btnNextMeme":
           memeData = await getMeme();
+
           if (memeData.code == 404) {
             try {
               return await btnInteraction.update("Opsy, i couldn't get the meme, try typing the command again");
@@ -145,6 +120,7 @@ module.exports = {
               return;
             }
           }
+
           if (memeData.nsfw) {
             const imageFile = new AttachmentBuilder("./media/arnoldSchwarzeneggerStopMeme.jpg");
 

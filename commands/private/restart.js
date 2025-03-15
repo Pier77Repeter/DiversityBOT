@@ -1,5 +1,5 @@
 const { PermissionsBitField, EmbedBuilder } = require("discord.js");
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const delay = require("../../utils/delay.js");
 const loader = require("../../loader.js");
 
 module.exports = {
