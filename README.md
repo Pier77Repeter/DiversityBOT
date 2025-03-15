@@ -1,6 +1,6 @@
-# DiversityBOT v1.12.2
+# DiversityBOT v2.0
 
-This is the original version of the Bot (no longer in development), made with mainly Scratch For Discord (S4D). It all started as a dream i had to make a Discord Bot for my community (DiversityCraft), in the end, it turns out that it's now the biggest project i've ever made.
+Yay, this is the complete rewrite of the Bot, still a work in progress (it's gonna take so much time :pain:)
 
 ## Installation
 
@@ -12,7 +12,7 @@ This is the original version of the Bot (no longer in development), made with ma
 
     - Clone this repository to your local machine using Git:
       ```bash
-      git clone --single-branch --branch main DiversityBOT
+      git clone --single-branch --branch dev DiversityBOT
       cd DiversityBOT
       ```
 
@@ -25,28 +25,25 @@ This is the original version of the Bot (no longer in development), made with ma
 
 4.  **Configuration:**
 
-    - Create a `.env` file in the root directory of the project.
-    - After that, copy and paste this, and change "YOUR_BOT_TOKEN_HERE" to your bot token.
+    - Create a `config.json` file in the root directory of the project.
+    - After that, copy and paste this, and change "YOUR_BOT_TOKEN_HERE" to your bot token and "YOUR_BOT_ID_HERE" to your bot id
 
-      ```env
-      TOKEN = YOUR_BOT_TOKEN_HERE
+      ```json
+      {
+        "token": "YOUR_BOT_TOKEN_HERE",
+        "botId": "YOUR_BOT_ID_HERE"
+      }
       ```
 
 5.  **Run the Bot:**
-
     - Start the bot by running:
       ```bash
       node index.js
       ```
 
-6.  **Open S4D files:**
-
-    - Go to: [https://s4d.discodes.xyz/](https://s4d.discodes.xyz/)
-    - Click in the top left "File" then "Open file" and upload the S4D you want to work with.
-
 ## Contributing
 
-- You can contribute to the project by, helping the development OR the best thing to do, is to invite the bot to your Discord server and see for youself what can be improve, fixed, added. Bot invite link: [here](https://discord.com/api/oauth2/authorize?client_id=878594739744673863&permissions=2080948874566&scope=bot)
+- You can contribute to the project by, submiting pull requests OR the best thing to do, is to invite the bot to your Discord server and find any bugs, bot invite link: [here](https://discord.com/api/oauth2/authorize?client_id=878594739744673863&permissions=2080948874566&scope=bot)
 - After inviting the bot, make sure it has all the needed permissions
 
 ## License
