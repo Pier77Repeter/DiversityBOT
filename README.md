@@ -1,0 +1,1 @@
+DiversityBOT v1.12.2 - no more supported as v2.0 is being written
