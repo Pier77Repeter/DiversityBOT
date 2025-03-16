@@ -1,8 +1,7 @@
-const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const delay = require("../../utils/delay");
 const listsGetRandomItem = require("../../utils/listsGetRandomItem");
 
-// for this command TURN OFF 'Format on save' option in VSC
 module.exports = {
   name: "pp",
   description: "Check mentioned user pp's size",

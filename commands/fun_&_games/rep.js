@@ -1,5 +1,4 @@
 const { EmbedBuilder } = require("discord.js");
-const loader = require("../../loader");
 
 module.exports = {
   name: "rep",

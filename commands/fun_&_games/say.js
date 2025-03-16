@@ -1,5 +1,6 @@
 const { EmbedBuilder, PermissionsBitField } = require("discord.js");
 const randomColor = require("../../utils/randomColor.js");
+
 module.exports = {
   name: "say",
   description: "Replies with the message from the author",
