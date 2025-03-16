@@ -157,6 +157,8 @@ module.exports = {
                   "\n",
                   "**d!battle <user>** - Start an epik battle",
                   "\n",
+                  "**d!pp <user>** - Check mentioned user's pp",
+                  "\n",
                   // needs to be rewritten
                   "**d!akinator** - And i'll try to guess your character",
                   "\n",
@@ -177,8 +179,6 @@ module.exports = {
                   "**d!canny** - Play canny the game",
                   "\n",
                   "**d!uncanny** - Same game but uncanny version",
-                  "\n",
-                  "**d!pp <user>** - To check mentioned user's pp",
                   "\n",
                   "**d!mcip <server ip>** - Display a minecraft server stats",
                   "\n",
