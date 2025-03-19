@@ -1,4 +1,4 @@
-const { Events } = require("discord.js");
+const { Events, MessageFlags } = require("discord.js");
 const listsGetRandomItem = require("../utils/listsGetRandomItem");
 
 module.exports = (client) => {
@@ -36,7 +36,7 @@ module.exports = (client) => {
             ],
             false
           ),
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
       } catch (error) {
         return;

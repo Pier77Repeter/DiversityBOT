@@ -14,6 +14,10 @@ module.exports = {
           // done commands
           "**/help** Display all the available commands",
           "\n",
+          "**/setup** Turns on/off bot's commands",
+          "\n",
+          "**/config** See Bot's settings on the server",
+          "\n",
           "**/event** Display the ongoing event",
           "\n",
           "**/news** Check Bot's news",
@@ -25,6 +29,8 @@ module.exports = {
           "**/member** Check a member stats",
           "\n",
           "**/status** Check my stats",
+          "\n",
+          "**/link** See Bot's links, website, discord, invite link",
           "\n",
           // commands to do
           "**/code <available language>** Makes code messages better ",
