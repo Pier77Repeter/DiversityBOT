@@ -3,23 +3,21 @@ const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, MessageFlags } =
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("setup")
-    .setDescription("Configure command categories for this server.")
+    .setDescription("Configure command categories for this server")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
     .addStringOption((option) =>
       option
         .setName("category")
-        .setDescription("The command category to configure.")
+        .setDescription("The command category to configure")
         .setRequired(true)
         .addChoices(
-          { name: "Moderation", value: "moderation" },
-          { name: "Music", value: "music" },
-          { name: "Events", value: "events" },
-          { name: "Community", value: "community" }
+          { name: "🔨 Moderation commands", value: "moderation" },
+          { name: "🎵 Music commands", value: "music" },
+          { name: "🎉 Events commands", value: "events" },
+          { name: "🌍 Community commands", value: "community" }
         )
     )
-    .addBooleanOption((option) =>
-      option.setName("enabled").setDescription("Enable or disable the category.").setRequired(true)
-    ),
+    .addBooleanOption((option) => option.setName("enabled").setDescription("Enable or disable the category").setRequired(true)),
   async execute(client, interaction) {
     const category = interaction.options.getString("category");
     const enabled = interaction.options.getBoolean("enabled");
@@ -39,7 +37,7 @@ module.exports = {
         columnName = "communityCmd";
         break;
       default:
-        return interaction.reply({ content: "Invalid category.", ephemeral: MessageFlags.Ephemeral }); // should not happen, but good to have.
+        return interaction.reply({ content: "Invalid category.", ephemeral: MessageFlags.Ephemeral }); // should not happen, but good to have
     }
 
     await new Promise((resolve, reject) => {
@@ -51,6 +49,7 @@ module.exports = {
 
     const setupMessageEmbed = new EmbedBuilder()
       .setColor(0x000099)
+      .setTitle("✅ Configuration updated")
       .setDescription(
         `**${category.charAt(0).toUpperCase() + category.slice(1)}** commands are now **${enabled ? "ACTIVE" : "NOT ACTIVE"}**`
       );
