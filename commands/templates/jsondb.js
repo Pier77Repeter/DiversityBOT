@@ -25,6 +25,7 @@ module.exports = {
           reject();
         } else if (row) {
           try {
+            // converting the reply into JSON
             const parsedJson = JSON.parse(row.testString);
             console.log("JSON data from db:", parsedJson);
             resolve(parsedJson);

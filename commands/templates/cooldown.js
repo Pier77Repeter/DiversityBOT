@@ -6,7 +6,7 @@ module.exports = {
   description: "Cooldown example, db table is fake",
   cooldown: 30, // cooldown in seconds
   async execute(client, message, args) {
-    // for every cooldown, we'll use the cooldownManager
+    // for every cooldown, we'll use the cooldownManager, take a look into it
     const cooldown = await cooldownManager(client, "dailyCooldown", this.cooldown, message.guild.id, message.author.id);
 
     // something went wrong while getting the cooldown in the db, the return value is null

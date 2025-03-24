@@ -91,6 +91,16 @@ module.exports = {
 
     menuCollector.on("end", async () => {
       menu.setDisabled(true);
+
+      // update the menu when disabled
+      try {
+        await menuInteraction.update({
+          content: "Bob selected",
+          components: [menuRow],
+        });
+      } catch (error) {
+        return;
+      }
       return;
     });
   },

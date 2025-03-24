@@ -1,45 +1,31 @@
-const { AttachmentBuilder } = require("discord.js");
+const { AttachmentBuilder, EmbedBuilder } = require("discord.js");
+const mathRandomInt = require("../../utils/mathRandomInt");
 
 module.exports = {
   name: "embed",
   description: "Test embed command",
   async execute(client, message, args) {
-    const imageFile = new AttachmentBuilder("./media/DVC_highquality.png"); // use this to upload images from media folder
+    const randomEmbed = mathRandomInt(1, 2);
 
-    // creating the embed object
-    const messageEmbed = {
-      title: "Title",
-      description: "Description",
-      color: 0x00ff00,
-      fields: [
-        {
-          name: "Field 1",
-          value: "Value 1",
-        },
-        {
-          name: "Field 2",
-          value: "Value 2",
-        },
-        {
-          name: "Field 3",
-          value: "Value 3",
-          inline: true,
-        },
-      ],
-      timestamp: new Date(),
-      footer: {
-        text: "Footer",
-      },
-      thumbnail: {
-        url: message.author.displayAvatarURL(),
-      },
-      image: {
-        url: "attachment://DVC_highquality.png", // always put 'attachment://' before the file name
-      },
-    };
+    // use this to upload images from media folder, it always starts from the root folder where 'index.js' is located
+    const imageFile = new AttachmentBuilder("./media/DVC_highquality.png");
 
-    // Sending the embed with the file
+    // creating the embed using the 'EmbedBuilder()'
+    const messageEmbed = new EmbedBuilder()
+      .setColor(0x00ff00) // setting up the embed color in HEX, always put '0x' before the value
+      .setTitle("Title V1")
+      .setDescription("Using classic embed creation")
+      .addField("Field 1", "Value 1")
+      .addField("Field 2", "Value 2")
+      .addField("Field 3", "Value 3", true) // the 'true' means the field will be inline, by default is 'false'
+      .setTimestamp() // date and time when the embed was created
+      .setFooter("Footer")
+      .setThumbnail(message.author.displayAvatarURL()) // thumbnail of the embed is the message author's avatar, aka pfp
+      .setImage("attachment://DVC_highquality.png"); // to upload local images, always put 'attachment://' before the file name
+
+    // sending the embed with the image and return because it's the last thing to do
     try {
+      // to put embeds and images inside message.reply() you do this '{ embeds: [embed1, embed2], files: [file1, file2] }'
       return await message.reply({ embeds: [messageEmbed], files: [imageFile] });
     } catch (error) {
       return;
