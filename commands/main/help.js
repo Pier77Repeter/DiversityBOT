@@ -197,9 +197,9 @@ module.exports = {
                   "\n",
                   "**d!wyr** - Would you rather do this or that",
                   "\n",
-                  // needs to be rewritten
                   "**d!akinator** - And i'll try to guess your character",
                   "\n",
+                  // needs to be rewritten
                   "**d!sctest** - Start the Social Credits test",
                   "\n",
                   "**d!scredits** or **d!scredits <user>** - To check credits score",
