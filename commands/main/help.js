@@ -199,11 +199,11 @@ module.exports = {
                   "\n",
                   "**d!akinator** - And i'll try to guess your character",
                   "\n",
-                  // needs to be rewritten
                   "**d!sctest** - Start the Social Credits test",
                   "\n",
                   "**d!scredits** or **d!scredits <user>** - To check credits score",
                   "\n",
+                  // needs to be rewritten
                   "**d!canny** - Play canny the game",
                   "\n",
                   "**d!uncanny** - Same game but uncanny version",
