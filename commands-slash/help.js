@@ -33,8 +33,6 @@ module.exports = {
           "**/link** See Bot's links, website, discord, invite link",
           "\n",
           // commands to do
-          "**/code <available language>** Makes code messages better ",
-          "\n",
           "**/clean** clean messages **(Only admin, max 99)**",
           "\n",
           "**/kick** kick user from server **(Only admin)**",

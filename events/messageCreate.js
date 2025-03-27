@@ -185,6 +185,10 @@ module.exports = (client) => {
               "Well, that command didn't work",
               "Whoops, something went wrong",
               "rip i failed to execute your command",
+              "Keeps happening? Report it here: https://discord.gg/KxadTdz",
+              "Seems like there was an error in that command",
+              "F, your command died.",
+              "Execution stopped, report error here: https://discord.gg/KxadTdz",
             ],
             false
           )

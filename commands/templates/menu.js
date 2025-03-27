@@ -57,6 +57,7 @@ module.exports = {
         switch (menuInteraction.values[0]) {
           case "bidenBlast":
             try {
+              // update the interaction, we can only do that 1 time, after this we need to do: sentMessage.edit()
               await menuInteraction.update({
                 content: "Biden blast selected",
                 components: [menuRow],
@@ -94,7 +95,7 @@ module.exports = {
 
       // update the menu when disabled
       try {
-        await menuInteraction.update({
+        await sentMessage.edit({
           content: "Bob selected",
           components: [menuRow],
         });

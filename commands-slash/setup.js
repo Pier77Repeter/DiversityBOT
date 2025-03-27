@@ -48,7 +48,7 @@ module.exports = {
     });
 
     const setupMessageEmbed = new EmbedBuilder()
-      .setColor(0x000099)
+      .setColor(0x33ff33)
       .setTitle("✅ Configuration updated")
       .setDescription(
         `**${category.charAt(0).toUpperCase() + category.slice(1)}** commands are now **${enabled ? "ACTIVE" : "NOT ACTIVE"}**`

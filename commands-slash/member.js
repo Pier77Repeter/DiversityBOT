@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 
 module.exports = {
-  // slash command data (name, description), required
   data: new SlashCommandBuilder()
     .setName("member")
     .setDescription("Display the information of a member")
@@ -9,7 +8,6 @@ module.exports = {
       option.setName("user").setDescription("The member to display information about").setRequired(false)
     ),
 
-  // slash command's logic
   async execute(client, interaction) {
     const user = interaction.options.getUser("user") || interaction.user;
     const member = await interaction.guild.members.fetch(user.id);

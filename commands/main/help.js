@@ -204,10 +204,6 @@ module.exports = {
                   "**d!scredits** or **d!scredits <user>** - To check credits score",
                   "\n",
                   // needs to be rewritten
-                  "**d!canny** - Play canny the game",
-                  "\n",
-                  "**d!uncanny** - Same game but uncanny version",
-                  "\n",
                   "**d!adopt <user>** - To adopt a new pet",
                   "\n",
                   "**d!unadopt <user>** - To leave your pet",
@@ -519,6 +515,11 @@ module.exports = {
                   "**d!jm** - For Java moment",
                   "\n",
                   "**d!hm** - Hausemaster moment",
+                  "\n",
+                  "**d!canny** - Play canny the game",
+                  "\n",
+                  "**d!uncanny** - Same game but uncanny version",
+                  "\n",
                 ].join("")
               );
 

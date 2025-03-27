@@ -77,7 +77,7 @@ module.exports = {
           const messageEmbedRed = new EmbedBuilder(0xff0000).setColor().setTitle("Red embed");
 
           try {
-            // updating the message where we attached the original btnRow
+            // updating the message where we attached the original btnRow, we can only do that 1 time, after this we need to do: sentMessage.edit()
             return await btnInteraction.update({
               content: "Updated the embed color to **RED**",
               embeds: [messageEmbedRed],

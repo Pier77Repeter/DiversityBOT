@@ -11,7 +11,7 @@ module.exports = {
     // before sending the message it needs to be surrounded with a try-catch block in case the original message is deleted
     try {
       // sending the reply, since it's the last thing it's gonna do, we returns with an 'await' because message.reply() is async
-      return await message.reply("Pong!");
+      return await message.reply("🏓 Pong!");
     } catch (error) {
       return; // in case of error, simply return, i don't want the consolo filled with shit because the bot couldn't reply
     }
