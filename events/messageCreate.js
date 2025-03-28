@@ -1,4 +1,4 @@
-const { PermissionsBitField, Events } = require("discord.js");
+const { PermissionsBitField, Events, EmbedBuilder, AttachmentBuilder } = require("discord.js");
 const listsGetRandomItem = require("../utils/listsGetRandomItem");
 
 module.exports = (client) => {
@@ -13,31 +13,109 @@ module.exports = (client) => {
     // check if the bot can send messages to the message.channel (it's useless to use the bot if you cant interact with it)
     if (!message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.SendMessages)) return;
 
-    // check for reputation
-    if (message.mentions.members.first() != null && message.content.toLowerCase().includes("thank")) {
-      const member = message.mentions.members.first().user;
+    // xp updating
+    const xpRow = await new Promise((resolve, reject) => {
+      client.database.get(
+        "SELECT xp, nextXp, level FROM User WHERE serverId = ? AND userId = ?",
+        [message.guild.id, message.author.id],
+        (err, row) => {
+          if (err) reject(err);
+          else resolve(row);
+        }
+      );
+    });
 
-      const row = await new Promise((resolve, reject) => {
-        client.database.get(
-          "SELECT * FROM User WHERE serverId = ? AND userId = ?",
-          [message.guild.id, member.id],
-          (err, row) => {
-            if (err) {
-              console.log(logPrefix + "Error: " + err);
-              reject(err);
-            } else {
-              resolve(row);
-            }
+    // if user exists
+    if (xpRow) {
+      await new Promise((resolve, reject) => {
+        client.database.run(
+          "UPDATE User SET xp = xp + 1 WHERE serverId = ? AND userId = ?",
+          [message.guild.id, message.author.id],
+          (err) => {
+            if (err) reject(err);
+            else resolve();
           }
         );
       });
 
-      // check if user exists
+      if (xpRow.xp >= xpRow.nextXp) {
+        await new Promise((resolve, reject) => {
+          client.database.serialize(function () {
+            client.database.run(
+              "UPDATE User SET xp = 0 WHERE serverId = ? AND userId = ?",
+              [message.guild.id, message.author.id],
+              (err) => {
+                if (err) reject(err);
+                else resolve();
+              }
+            );
+
+            client.database.run(
+              "UPDATE User SET nextXp = nextXp + 100 WHERE serverId = ? AND userId = ?",
+              [message.guild.id, message.author.id],
+              (err) => {
+                if (err) reject(err);
+                else resolve();
+              }
+            );
+
+            client.database.run(
+              "UPDATE User SET level = level + 1 WHERE serverId = ? AND userId = ?",
+              [message.guild.id, message.author.id],
+              (err) => {
+                if (err) reject(err);
+                else resolve();
+              }
+            );
+          });
+        });
+
+        const imageFile = new AttachmentBuilder("./media/levelUp.png");
+        const newLevelMessageEmbed = new EmbedBuilder()
+          .setColor(0xffcc00)
+          .setTitle("⬆️ Level up")
+          .setDescription(
+            [
+              "Your new level: **" + (xpRow.level + 1) + "**",
+              "\n",
+              "XP for the next level: **" + (xpRow.nextXp + 100) + "**",
+            ].join("")
+          )
+          .setThumbnail("attachment://levelUp.png")
+          .setFooter({
+            text: message.author.username,
+            iconURL: message.author.displayAvatarURL(),
+          });
+
+        try {
+          await message.reply({ embeds: [newLevelMessageEmbed], files: [imageFile] });
+        } catch (error) {
+          // contiue
+        }
+      }
+    }
+
+    // check for reputation
+    if (message.mentions.members.first() != null && message.content.toLowerCase().includes("thank")) {
+      const mentionedMember = message.mentions.members.first().user;
+
+      const row = await new Promise((resolve, reject) => {
+        client.database.get(
+          "SELECT reputation FROM User WHERE serverId = ? AND userId = ?",
+          [message.guild.id, mentionedMember.id],
+          (err, row) => {
+            if (err) reject(err);
+            else resolve(row);
+          }
+        );
+      });
+
+      // if user exists
       if (row) {
         await new Promise((resolve, reject) => {
           client.database.run(
             "UPDATE User SET reputation = reputation + 1 WHERE serverId = ? AND userId = ?",
-            [message.guild.id, member.id],
+            [message.guild.id, mentionedMember.id],
             (err) => {
               if (err) reject(err);
               else resolve();
@@ -46,7 +124,7 @@ module.exports = (client) => {
         });
 
         try {
-          await message.reply("Gave **+1** reputation to " + member.username);
+          await message.reply("Gave **+1** reputation to " + mentionedMember.username);
         } catch (error) {
           // do nothing, continue
         }
@@ -100,38 +178,31 @@ module.exports = (client) => {
     // client.database setting up user data
     const row = await new Promise((resolve, reject) => {
       client.database.get(
-        "SELECT * FROM User WHERE serverId = ? AND userId = ?",
+        "SELECT serverId, userId FROM User WHERE serverId = ? AND userId = ?",
         [message.guild.id, message.author.id],
         (err, row) => {
-          if (err) {
-            console.log(logPrefix + "Error: " + err);
-            reject(err);
-          } else {
-            resolve(row);
-          }
+          if (err) reject(err);
+          resolve(row);
         }
       );
     });
 
-    // check if it's new and INSERT
+    // if it's new create the new row
     if (!row) {
+      const itemsJsonData =
+        '{"itemId1": false, "itemId2": false, "itemId2Count": 0, "itemId3": false, "itemId3Count": 0, "itemId4": false, "itemId5": false, "itemId6": false, "itemId7": false, "itemId8": false, "itemId9": false, "itemId10": false, "itemId10Count": 0, "itemId11": false, "itemId11Count": 0}';
+      const fishesJsonData =
+        '{"fishId1": false, "fishId1Count": 0, "fishId2": false, "fishId2Count": 0, "fishId3": false, "fishId3Count": 0, "fishId4": false, "fishId4Count": 0, "fishId5": false, "fishId5Count": 0, "fishId6": false, "fishId6Count": 0, "fishId7": false, "fishId7Count": 0, "fishId8": false, "fishId8Count": 0, "fishId9": false, "fishId9Count": 0, "fishId10": false, "fishId10Count": 0}';
+
       await new Promise((resolve, reject) => {
-        const itemsJsonData =
-          '{"itemId1": false, "itemId2": false, "itemId2Count": 0, "itemId3": false, "itemId3Count": 0, "itemId4": false, "itemId5": false, "itemId6": false, "itemId7": false, "itemId8": false, "itemId9": false, "itemId10": false, "itemId10Count": 0, "itemId11": false, "itemId11Count": 0}';
-        const fishesJsonData =
-          '{"fishId1": false, "fishId1Count": 0, "fishId2": false, "fishId2Count": 0, "fishId3": false, "fishId3Count": 0, "fishId4": false, "fishId4Count": 0, "fishId5": false, "fishId5Count": 0, "fishId6": false, "fishId6Count": 0, "fishId7": false, "fishId7Count": 0, "fishId8": false, "fishId8Count": 0, "fishId9": false, "fishId9Count": 0, "fishId10": false, "fishId10Count": 0}';
         client.database.run(
-          "INSERT INTO User VALUES (?, ?, 0, 0, 0, 0, 0, 0, 0, 0, ?, ?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
+          "INSERT INTO User VALUES (?, ?, 0, 0, 0, 0, 10, 0, 0, 0, 0, ?, ?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
           [message.guild.id, message.author.id, itemsJsonData, fishesJsonData],
           (err) => {
-            if (err) {
-              console.log(logPrefix + "Error: " + err);
-              return reject(err);
-            }
+            if (err) reject(err);
+            else resolve();
           }
         );
-
-        resolve();
       });
     }
 

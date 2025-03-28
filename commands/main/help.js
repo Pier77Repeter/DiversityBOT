@@ -203,6 +203,8 @@ module.exports = {
                   "\n",
                   "**d!scredits** or **d!scredits <user>** - To check credits score",
                   "\n",
+                  "**d!xp** - To see your current xp",
+                  "\n",
                   // needs to be rewritten
                   "**d!adopt <user>** - To adopt a new pet",
                   "\n",
@@ -219,8 +221,6 @@ module.exports = {
                   "**d!petdrink** - To give water to your pet",
                   "\n",
                   "**d!petsee <user>** - See other users pet",
-                  "\n",
-                  "**d!xp** - To see your current xp",
                   "\n",
                   "**d!level** - To see your current level",
                   "\n",
