@@ -51,7 +51,7 @@ module.exports = {
       .setTitle("🚀 ICBM control panel")
       .setDescription("Target location: " + target)
       .setTimestamp()
-      .setThumbnail("https://media1.tenor.com/m/8Juj0k-1L4AAAAAC/radar-love-search.gif")
+      .setThumbnail("https://c.tenor.com/8Juj0k-1L4AAAAAC/tenor.gif")
       .setFooter({
         text: "Waiting launch approval",
       });
@@ -163,7 +163,7 @@ module.exports = {
           await delay(1000);
 
           nukeMessageEmbed.setDescription("🚀🚀🚀 Nuke is flying towards: " + target);
-          nukeMessageEmbed.setImage("https://media1.tenor.com/m/I2ZKnQpI2GcAAAAd/minuteman-icbm.gif");
+          nukeMessageEmbed.setImage("https://c.tenor.com/I2ZKnQpI2GcAAAAd/tenor.gif");
 
           try {
             await sentMessage.edit({ embeds: [nukeMessageEmbed], components: [btnRow] });
@@ -178,7 +178,7 @@ module.exports = {
             .setTitle(message.author.username + " WHAT HAVE YOU DONE?!")
             .setDescription(target + " has been nuked with extreme success!")
             .setThumbnail()
-            .setImage("https://media1.tenor.com/m/E8m5PNgADeYAAAAC/rage-broccoli.gif")
+            .setImage("https://c.tenor.com/E8m5PNgADeYAAAAC/tenor.gif")
             .setTimestamp()
             .setFooter({ text: "Launch completed" });
 

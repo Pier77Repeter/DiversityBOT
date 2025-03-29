@@ -203,7 +203,11 @@ module.exports = {
                   "\n",
                   "**d!scredits** or **d!scredits <user>** - To check credits score",
                   "\n",
-                  "**d!xp** - To see your current xp",
+                  "**d!xp** - See your current xp",
+                  "\n",
+                  "**d!level** - See your current level",
+                  "\n",
+                  "**d!lxpb** - See the server XP leaderboard (levels)",
                   "\n",
                   // needs to be rewritten
                   "**d!adopt <user>** - To adopt a new pet",
@@ -221,10 +225,6 @@ module.exports = {
                   "**d!petdrink** - To give water to your pet",
                   "\n",
                   "**d!petsee <user>** - See other users pet",
-                  "\n",
-                  "**d!level** - To see your current level",
-                  "\n",
-                  "**d!lxpb** - To see the server leaderboard (levels)",
                 ].join("")
               );
 
