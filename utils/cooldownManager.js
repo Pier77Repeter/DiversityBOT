@@ -1,5 +1,4 @@
 // This is very useful since it's gonna save tons of lines and time when implementing cooldowns for the commands
-
 const logPrefix = "[cooldownManager.js]:";
 
 module.exports = async function cooldownManager(client, cooldownName, cooldownInSeconds, serverId, userId) {

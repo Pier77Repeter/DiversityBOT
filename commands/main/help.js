@@ -209,22 +209,19 @@ module.exports = {
                   "\n",
                   "**d!lxpb** - See the server XP leaderboard (levels)",
                   "\n",
-                  // needs to be rewritten
                   "**d!adopt <user>** - To adopt a new pet",
                   "\n",
                   "**d!unadopt <user>** - To leave your pet",
                   "\n",
-                  "**d!pet** - To check your pet's stats",
+                  "**d!pet** - Check your pet's stats",
                   "\n",
-                  "**d!petvisit** - To bring your pet to the vet",
+                  "**d!petvisit** - Bring your pet to the vet",
                   "\n",
-                  "**d!petplay** - To play with your pet",
+                  "**d!petplay** - Play with your pet",
                   "\n",
-                  "**d!petfeed** - To feed your pet",
+                  "**d!petfeed** - Feed your pet",
                   "\n",
-                  "**d!petdrink** - To give water to your pet",
-                  "\n",
-                  "**d!petsee <user>** - See other users pet",
+                  "**d!petdrink** - Give water to your pet",
                 ].join("")
               );
 
@@ -248,6 +245,7 @@ module.exports = {
                   "**You must be in a voice channel!**",
                   "\n",
                   "\n",
+                  // need to be rewritten
                   "**d!play <song name/url>** - To play a song",
                   "\n",
                   "**d!np** - To see the current playing song",

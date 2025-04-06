@@ -1,5 +1,7 @@
 const { PermissionsBitField, Events, EmbedBuilder, AttachmentBuilder } = require("discord.js");
 const listsGetRandomItem = require("../utils/listsGetRandomItem");
+const cooldownManager = require("../utils/cooldownManager");
+const mathRandomInt = require("../utils/mathRandomInt");
 
 module.exports = (client) => {
   // prefix and init log format stuff
@@ -95,7 +97,7 @@ module.exports = (client) => {
       }
     }
 
-    // check for reputation
+    // reputation updater
     if (message.mentions.members.first() != null && message.content.toLowerCase().includes("thank")) {
       const mentionedMember = message.mentions.members.first().user;
 
@@ -127,6 +129,70 @@ module.exports = (client) => {
           await message.reply("Gave **+1** reputation to " + mentionedMember.username);
         } catch (error) {
           // do nothing, continue
+        }
+      }
+    }
+
+    // pet stats updater
+    const petRow = await new Promise((resolve, reject) => {
+      client.database.get(
+        "SELECT hasPet, petStatsHealth, petStatsFun, petStatsHunger, petStatsThirst, petCooldown FROM User WHERE serverId = ? AND userId = ?",
+        [message.guild.id, message.author.id],
+        (err, row) => {
+          if (err) reject(err);
+          resolve(row);
+        }
+      );
+    });
+
+    if (petRow) {
+      if (petRow.hasPet) {
+        const petCooldown = await cooldownManager(client, "petCooldown", 10800, message.guild.id, message.author.id);
+
+        // updating the stats
+        if (petCooldown == 0) {
+          await new Promise((resolve, reject) => {
+            client.database.run(
+              "UPDATE User SET petStatsHealth = petStatsHealth - ?, petStatsFun = petStatsFun - ?, petStatsHunger = petStatsHunger - ?, petStatsThirst = petStatsThirst - ? WHERE serverId = ? AND userId = ?",
+              [
+                mathRandomInt(5, 20),
+                mathRandomInt(5, 20),
+                mathRandomInt(5, 20),
+                mathRandomInt(5, 20),
+                message.guild.id,
+                message.author.id,
+              ],
+              (err) => {
+                if (err) reject(err);
+                resolve();
+              }
+            );
+          });
+        }
+
+        // check if pet is still alive
+        if (petRow.petStatsHealth <= 0 || petRow.petStatsHunger <= 0 || petRow.petStatsThirst <= 0) {
+          await new Promise((resolve, reject) => {
+            client.database.run(
+              "UPDATE User SET hasPet = 0, petId = 'null', petStatsHealth = 0, petStatsFun = 0, petStatsHunger = 0, petStatsThirst = 0 WHERE serverId = ? AND userId = ?",
+              [message.guild.id, message.author.id],
+              (err) => {
+                if (err) reject(err);
+                resolve();
+              }
+            );
+          });
+
+          const petMessageEmbed = new EmbedBuilder()
+            .setColor(0xff0000)
+            .setTitle("Oh no")
+            .setDescription("Your pet sadly died, you didn't care for it enough >:(");
+
+          try {
+            await message.reply({ embeds: [petMessageEmbed] });
+          } catch (error) {
+            // do nothing, continue
+          }
         }
       }
     }
@@ -196,7 +262,7 @@ module.exports = (client) => {
 
       await new Promise((resolve, reject) => {
         client.database.run(
-          "INSERT INTO User VALUES (?, ?, 0, 0, 0, 0, 10, 0, 0, 0, 0, ?, ?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
+          "INSERT INTO User VALUES (?, ?, 0, 0, 0, 0, 100, 0, 0, 0, 0, ?, ?, 0, 'null', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
           [message.guild.id, message.author.id, itemsJsonData, fishesJsonData],
           (err) => {
             if (err) reject(err);
