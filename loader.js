@@ -80,9 +80,13 @@ module.exports = {
     console.log(logPrefix, "SQLite database is ready");
 
     // creating discord player
-    client.player = new Player(client);
-    await client.player.extractors.register(SoundCloudExtractor);
-    console.log(logPrefix, "Music player operational");
+    try {
+      client.player = new Player(client);
+      await client.player.extractors.register(SoundCloudExtractor); // we only use this because can't use YouTube, against ToS
+      console.log(logPrefix, "Music player operational");
+    } catch (error) {
+      console.error(logPrefix, "Error registring 'SoundCloudExtractor' as player extractor:", error);
+    }
 
     // loading events
     console.log(logPrefix, "Loading events...");

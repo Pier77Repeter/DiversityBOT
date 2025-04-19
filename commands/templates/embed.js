@@ -1,12 +1,9 @@
 const { AttachmentBuilder, EmbedBuilder } = require("discord.js");
-const mathRandomInt = require("../../utils/mathRandomInt");
 
 module.exports = {
   name: "embed",
   description: "Test embed command",
   async execute(client, message, args) {
-    const randomEmbed = mathRandomInt(1, 2);
-
     // use this to upload images from media folder, it always starts from the root folder where 'index.js' is located
     const imageFile = new AttachmentBuilder("./media/DVC_highquality.png");
 
