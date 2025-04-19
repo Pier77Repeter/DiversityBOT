@@ -1,21 +1,17 @@
-// This is very useful since it's gonna save tons of lines and time when implementing cooldowns for the commands
-const logPrefix = "[CooldownManager.js]:";
+// only for server cooldowns, unlike "cooldownManager.js" which is for user cooldowns
+const logPrefix = "[ServerCooldownManager.js]:";
 
-module.exports = async function cooldownManager(client, cooldownName, cooldownInSeconds, serverId, userId) {
+module.exports = async function serverCooldownManager(client, cooldownName, cooldownInSeconds, serverId) {
   const cooldownAmount = cooldownInSeconds * 1000; // cooldown to milliseconds
   const unixNow = Date.now(); // this is needed since we work with unix time
 
   try {
-    // first we get the cooldown from the db (it should exist since user data gets INSERTED in messageCreate event, before this)
+    // first we get the cooldown from the db (it should exist since server data gets INSERTED in "guildCreate" event, before this)
     const row = await new Promise((resolve, reject) => {
-      client.database.get(
-        `SELECT ${cooldownName} FROM User WHERE serverId = ? AND userId = ?`,
-        [serverId, userId],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
+      client.database.get(`SELECT ${cooldownName} FROM Server WHERE serverId = ?`, [serverId], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
     });
 
     // return null if db operation failed, so we need to check in the commands if return is null too
@@ -35,14 +31,10 @@ module.exports = async function cooldownManager(client, cooldownName, cooldownIn
 
     // update the cooldown immediatly
     await new Promise((resolve, reject) => {
-      client.database.run(
-        `UPDATE User SET ${cooldownName} = ? WHERE serverId = ? AND userId = ?`,
-        [unixNow, serverId, userId],
-        (err) => {
-          if (err) reject(err);
-          else resolve();
-        }
-      );
+      client.database.run(`UPDATE Server SET ${cooldownName} = ? WHERE serverId = ?`, [unixNow, serverId], (err) => {
+        if (err) reject(err);
+        else resolve();
+      });
     });
 
     return 0; // cooldown is off and everything went good :thumbsup:

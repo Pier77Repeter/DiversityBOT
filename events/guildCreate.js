@@ -7,9 +7,9 @@ module.exports = (client) => {
     // immediatly inserting the configs to base value when bot is added
     await new Promise((resolve, reject) => {
       // by default all configs should be enabled
-      client.database.run("INSERT INTO Server VALUES (?, 1, 1, 1, 1)", guild.id, (err) => {
+      client.database.run("INSERT INTO Server VALUES (?, 1, 1, 1, 1, 0)", guild.id, (err) => {
         if (err) {
-          console.log(logPrefix + "Error: " + err);
+          console.error(logPrefix + "Error: " + err);
           reject(err);
         } else {
           resolve();

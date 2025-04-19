@@ -3,9 +3,10 @@ const path = require("path");
 const { Collection } = require("discord.js");
 const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v10");
-const { token, botId } = require("./config.json");
-const { get } = require("http");
+const { Player } = require("discord-player");
+const { SoundCloudExtractor } = require("@discord-player/extractor");
 const sqlite3 = require("sqlite3").verbose();
+const { token, botId } = require("./config.json");
 
 // needed in index.js for bot status
 var isBotRestarting = false;
@@ -31,7 +32,7 @@ module.exports = {
     await new Promise((resolve, reject) => {
       client.database.serialize(function () {
         client.database.run(
-          "CREATE TABLE IF NOT EXISTS Server (serverId VARCHAR(20) NOT NULL PRIMARY KEY, modCmd BOOLEAN, musiCmd BOOLEAN, eventCmd BOOLEAN, communityCmd BOOLEAN);",
+          "CREATE TABLE IF NOT EXISTS Server (serverId VARCHAR(20) NOT NULL PRIMARY KEY, modCmd BOOLEAN, musiCmd BOOLEAN, eventCmd BOOLEAN, communityCmd BOOLEAN, playCooldown INT);",
           (err) => {
             if (err) {
               console.error(logPrefix, "Error building database in 'Server' table:", err);
@@ -77,6 +78,11 @@ module.exports = {
       });
     });
     console.log(logPrefix, "SQLite database is ready");
+
+    // creating discord player
+    client.player = new Player(client);
+    await client.player.extractors.register(SoundCloudExtractor);
+    console.log(logPrefix, "Music player operational");
 
     // loading events
     console.log(logPrefix, "Loading events...");
