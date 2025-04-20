@@ -13,16 +13,20 @@ var isBotRestarting = false;
 
 // output shit
 const logPrefix = "[Loader]:";
+const logWarning = "[Loader/WARN]:";
+const logError = "[Loader/ERROR]:";
 
 module.exports = {
   initLoader: async (client) => {
     // loading the database
     console.log(logPrefix, "Loading the database...");
     const dbPath = path.join(__dirname, "database.db");
+
+    // using SQLite3, take a look here: https://github.com/TryGhost/node-sqlite3/wiki
     client.database = await new Promise((resolve, reject) => {
       const db = new sqlite3.Database(dbPath, (err) => {
         if (err) {
-          console.error(logPrefix, "Error opening database:", err.message);
+          console.error(logError, "Error opening database: " + err.message);
           process.exit(1); // brute force exiting, bc if no db no bot
         } else {
           resolve(db);
@@ -35,7 +39,7 @@ module.exports = {
           "CREATE TABLE IF NOT EXISTS Server (serverId VARCHAR(20) NOT NULL PRIMARY KEY, modCmd BOOLEAN, musiCmd BOOLEAN, eventCmd BOOLEAN, communityCmd BOOLEAN, playCooldown INT);",
           (err) => {
             if (err) {
-              console.error(logPrefix, "Error building database in 'Server' table:", err);
+              console.error(logError, "Error building database in 'Server' table: " + err);
               return reject(err);
             }
           }
@@ -45,7 +49,7 @@ module.exports = {
           "CREATE TABLE IF NOT EXISTS Channel (channelId VARCHAR(20) NOT NULL PRIMARY KEY, snipedMessage TEXT, snipedMessageAuthorId VARCHAR(20) NOT NULL, serverId VARCHAR(20) NOT NULL, FOREIGN KEY(serverId) REFERENCES Server(serverId));",
           (err) => {
             if (err) {
-              console.error(logPrefix, "Error building database in 'Channel' table:", err);
+              console.error(logError, "Error building database in 'Channel' table: " + err);
               return reject(err);
             }
           }
@@ -55,7 +59,7 @@ module.exports = {
           "CREATE TABLE IF NOT EXISTS User (serverId VARCHAR(20) NOT NULL, userId VARCHAR(20) NOT NULL, reputation INT, warns INT, socialCredits BIGINT, xp INT, nextXp INT, level INT, money BIGINT, bankMoney BIGINT, totalMoney BIGINT, items TEXT, fishes TEXT, hasPet BOOLEAN, petId VARCHAR(20), petStatsHealth INT, petStatsFun INT, petStatsHunger INT, petStatsThirst INT, petCooldown INT, petVetCooldown INT, petPlayCooldown INT, petFeedCooldown INT, petDrinkCooldown INT, memeCooldown INT, nukeCooldown INT, battleCooldown INT, hackCooldown INT, hmCooldown INT, jmCooldown INT, scTestCooldown INT, cannyCooldown INT, uncannyCooldown INT, xpLeaderboardCooldown INT, leaderboardCooldown INT, robCooldown INT, dailyCooldown INT, dupeCooldown INT, mineCooldown INT, huntCooldown INT, crimeCooldown INT, searchCooldown INT, begCooldown INT, highLowCooldown INT, postVideoCooldown INT, postMemeCooldown INT, rouletteCooldown INT, workCooldown INT, fishCooldown INT, imageCooldown INT, PRIMARY KEY (serverId, userId));",
           (err) => {
             if (err) {
-              console.error(logPrefix, "Error building database in 'User' table:", err);
+              console.error(logError, "Error building database in 'User' table: " + err);
               return reject(err);
             }
           }
@@ -85,7 +89,7 @@ module.exports = {
       await client.player.extractors.register(SoundCloudExtractor); // we only use this because can't use YouTube, against ToS
       console.log(logPrefix, "Music player operational");
     } catch (error) {
-      console.error(logPrefix, "Error registring 'SoundCloudExtractor' as player extractor:", error);
+      console.error(logError, "Error registring 'SoundCloudExtractor' as player extractor: " + error);
     }
 
     // loading events
@@ -106,10 +110,10 @@ module.exports = {
             client.on(event.name, (...args) => event.execute(...args, client));
           }
         } else {
-          console.error(logPrefix, "Invalid event file: " + file + " missing: 'client.on' or 'client.once'");
+          console.error(logWarning, "Invalid event file: " + file + " missing: 'client.on' or 'client.once'");
         }
       } catch (error) {
-        console.error(logPrefix, "Error loading event " + file + ":", error);
+        console.error(logError, "Error loading event " + file + ": " + error);
       }
     }
 
@@ -128,10 +132,10 @@ module.exports = {
             // adding the commands to the collection
             client.commands.set(command.name, command);
           } else {
-            console.error(logPrefix, "Invalid command file: " + file + " missing required 'name' and 'execute' property");
+            console.error(logWarning, "Invalid command file: " + file + " missing required 'name' and 'execute' property");
           }
         } catch (error) {
-          console.error(logPrefix, "Error loading command " + file + ":", error);
+          console.error(logError, "Error loading command " + file + ": " + error);
         }
       }
     }
@@ -152,10 +156,10 @@ module.exports = {
           // push the JSON representation of the slash command to the array
           slashCommands.push(command.data.toJSON());
         } else {
-          console.error(logPrefix, "Invalid slash command file: " + filePath + " missing 'data' and 'execute' property");
+          console.error(logWarning, "Invalid slash command file: " + filePath + " missing 'data' and 'execute' property");
         }
       } catch (error) {
-        console.error(logPrefix, "Error loading slash command " + file + ":", error);
+        console.error(logError, "Error loading slash command " + file + ": " + error);
       }
     }
 
@@ -168,7 +172,7 @@ module.exports = {
       // this is for global commands
       await rest.put(Routes.applicationCommands(botId), { body: slashCommands });
     } catch (error) {
-      console.error(logPrefix, error);
+      console.error(logError, "Failed to register slash commands: " + error);
     }
   },
   shutdownLoader: async (client) => {
@@ -179,9 +183,9 @@ module.exports = {
     console.log(logPrefix, "1/2 - Client now offline");
 
     await new Promise((resolve, reject) => {
-      database.close((err) => {
+      client.database.close((err) => {
         if (err) {
-          console.error(logPrefix, "Error closing the database:", err.message);
+          console.error(logError, "Error closing the database: " + err.message);
           reject(err);
         } else {
           console.log(logPrefix, "2/2 - Ended database connection");

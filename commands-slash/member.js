@@ -20,22 +20,17 @@ module.exports = {
       .setDescription(
         [
           "**Global name:** " + globalName,
-          "\n",
-          "\n",
+          "",
           "**ID:** " + member.id,
-          "\n",
-          "\n",
+          "",
           "**Join date:** " + member.joinedAt,
-          "\n",
-          "\n",
+          "",
           "**Account creation date:** " + user.createdAt,
-          "\n",
-          "\n",
+          "",
           "**Roles:** " + member.roles.cache.map((role) => role.toString()).join(", "),
-          "\n",
-          "\n",
+          "",
           "**Profile picture:**",
-        ].join("")
+        ].join("\n")
       )
       .setImage(memberPfp);
 

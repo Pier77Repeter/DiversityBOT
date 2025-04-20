@@ -2,6 +2,7 @@ const { Events } = require("discord.js");
 
 module.exports = (client) => {
   const logPrefix = "[GuildCreate]: ";
+  const logError = "[GuildCreate/ERROR]:";
 
   client.on(Events.GuildCreate, async (guild) => {
     // immediatly inserting the configs to base value when bot is added
@@ -9,7 +10,7 @@ module.exports = (client) => {
       // by default all configs should be enabled
       client.database.run("INSERT INTO Server VALUES (?, 1, 1, 1, 1, 0)", guild.id, (err) => {
         if (err) {
-          console.error(logPrefix + "Error: " + err);
+          console.error(logError, "Something went wrong while INSERTING data into db: " + err);
           reject(err);
         } else {
           resolve();

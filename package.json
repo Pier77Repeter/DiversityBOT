@@ -1,7 +1,7 @@
 {
   "name": "diversitydev",
   "version": "2.0",
-  "description": "New Bot backend",
+  "description": "Not a normal Discord Bot",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

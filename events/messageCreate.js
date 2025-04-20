@@ -77,11 +77,7 @@ module.exports = (client) => {
           .setColor(0xffcc00)
           .setTitle("⬆️ Level up")
           .setDescription(
-            [
-              "Your new level: **" + (xpRow.level + 1) + "**",
-              "\n",
-              "XP for the next level: **" + (xpRow.nextXp + 100) + "**",
-            ].join("")
+            ["Your new level: **" + (xpRow.level + 1) + "**", "XP for next level: **" + (xpRow.nextXp + 100) + "**"].join("\n")
           )
           .setThumbnail("attachment://levelUp.png")
           .setFooter({

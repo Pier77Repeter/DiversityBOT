@@ -11,42 +11,25 @@ module.exports = {
       .setTitle("Here all the available slash commands:")
       .setDescription(
         [
-          // done commands
           "**/help** Display all the available commands",
-          "\n",
           "**/setup** Turns on/off bot's commands",
-          "\n",
           "**/config** See Bot's settings on the server",
-          "\n",
           "**/event** Display the ongoing event",
-          "\n",
           "**/news** Check Bot's news",
-          "\n",
           "**/ping** Display the bot's ping",
-          "\n",
           "**/server** Check server stats",
-          "\n",
           "**/member** Check a member stats",
-          "\n",
           "**/status** Check my stats",
-          "\n",
           "**/link** See Bot's links, website, discord, invite link",
-          "\n",
           // commands to do
           "**/clean** clean messages **(Only admin, max 99)**",
-          "\n",
           "**/kick** kick user from server **(Only admin)**",
-          "\n",
           "**/ban** ban user from server **(Only admin)**",
-          "\n",
           "**/warn** Warn an user **(Only admin)**",
-          "\n",
           "**/warns** Check user warns **(Only admin)**",
-          "\n",
           "**/clearwarns** Clear all the warns **(Only admin)**",
-          "\n",
           "**/mute** Mutes an user **(Only admin)**",
-        ].join("")
+        ].join("\n")
       );
 
     try {

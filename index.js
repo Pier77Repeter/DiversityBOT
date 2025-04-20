@@ -42,7 +42,7 @@ const client = new Client({
 loader.initLoader(client);
 
 // bot status setup
-let botStatus = [
+var botStatus = [
   { name: "DiversityCraft", type: ActivityType.Playing },
   { name: client.guilds.cache.size + " servers!", type: ActivityType.Watching },
   { name: "Version 2.0??? WOW!!!", type: ActivityType.Playing },
@@ -83,6 +83,9 @@ let botStatus = [
   },
 ];
 
+// bot logging in
+client.login(token);
+
 // when the client is ready
 client.once(Events.ClientReady, (readyClient) => {
   console.log(logPrefix, "DiversityBOT is ready, logged in as " + readyClient.user.tag);
@@ -95,6 +98,3 @@ client.once(Events.ClientReady, (readyClient) => {
     botStatusIndex++;
   }, 300000);
 });
-
-// bot logging in
-client.login(token);

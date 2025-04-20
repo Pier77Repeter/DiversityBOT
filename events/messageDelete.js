@@ -2,13 +2,14 @@ const { Events } = require("discord.js");
 
 module.exports = (client) => {
   const logPrefix = "[MessageDelete]:";
+  const logError = "[MessageDelete/ERROR]:";
 
   client.on(Events.MessageDelete, async (message) => {
     // db setting up channel
     const row = await new Promise((resolve, reject) => {
       client.database.get("SELECT * FROM Channel WHERE channelId = ?", message.channel.id, (err, row) => {
         if (err) {
-          console.error(logPrefix + " Error: " + err);
+          console.error(logError, "Failed to select 'Channel' from db: " + err);
           reject(err);
         } else {
           resolve(row);
@@ -24,7 +25,7 @@ module.exports = (client) => {
           [message.channel.id, message.content, message.author.id, message.guild.id],
           (err) => {
             if (err) {
-              console.error(logPrefix + " Error: " + err);
+              console.error(logError, "Failed to insert 'Channel' values: " + err);
               reject(err);
             } else {
               resolve();
@@ -40,7 +41,7 @@ module.exports = (client) => {
           [message.content, message.author.id, message.channel.id],
           (err) => {
             if (err) {
-              console.error(logPrefix + " Error: " + err);
+              console.error(logError, "Failed to update deleted message in db: " + err);
               reject(err);
             } else {
               resolve();

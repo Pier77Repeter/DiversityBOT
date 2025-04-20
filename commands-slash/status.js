@@ -63,28 +63,21 @@ module.exports = {
           name: "**Discord stats:**",
           value: [
             "Total servers: `" + client.guilds.cache.size + "`",
-            "\n",
             "Total users: `" + client.users.cache.size + "`",
-            "\n",
             "Latency to Discord: `" + client.ws.ping + "ms`",
-          ].join(""),
+          ].join("\n"),
           inline: false,
         })
         .addFields({
           name: "**Hardware stats:**",
           value: [
             "System: `" + os.type() + "`",
-            "\n",
             "System Architecture: `" + os.arch() + "`",
-            "\n",
             "System version: `" + os.release() + "`",
-            "\n",
             "System uptime: `" + formatUptime(os.uptime()) + "`",
-            "\n",
             "CPU: `" + cpuPercent + "%`",
-            "\n",
             "RAM: `" + formatMemory(os.totalmem(), os.freemem()) + "`",
-          ].join(""),
+          ].join("\n"),
           inline: false,
         });
 

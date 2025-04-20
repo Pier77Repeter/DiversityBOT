@@ -13,17 +13,12 @@ module.exports = (client) => {
         .setDescription(
           [
             "Author: **" + track.author + "**",
-            "\n",
             "Description: **" + track.description + "**",
-            "\n",
             "Duration: **" + track.duration + "**",
-            "\n",
             "Views: **" + track.views + "**",
-            "\n",
             "Url: **" + track.url + "**",
-            "\n",
             "Requested by: **" + track.requestedBy.username + "**",
-          ].join("")
+          ].join("\n")
         )
         .setImage(track.thumbnail)
         .setFooter({ text: "Offered by SoundCloud" });
@@ -34,15 +29,11 @@ module.exports = (client) => {
         .setDescription(
           [
             "Author: **" + track.author + "**",
-            "\n",
             "Description: **" + track.description + "**",
-            "\n",
             "Duration: **" + track.duration + "**",
-            "\n",
             "Views: **" + track.views + "**",
-            "\n",
             "Requested by: **" + track.requestedBy.username + "**",
-          ].join("")
+          ].join("\n")
         )
         .setFooter({ text: "Offered by SoundCloud" });
     }

@@ -7,7 +7,7 @@ module.exports = {
     const newsMessageEmbed = new EmbedBuilder()
       .setColor(0x339999)
       .setTitle("📜 Changelogs/news")
-      .setDescription(["Release 2.0!"].join(""))
+      .setDescription(["Release 2.0!"].join("\n"))
       .addFields({
         name: "More info, suggestions and bug report here:",
         value: "https://discord.gg/KxadTdz",

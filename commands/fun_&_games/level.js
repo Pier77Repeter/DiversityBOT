@@ -40,7 +40,7 @@ module.exports = {
     const nextXp = row.nextXp;
 
     levelMessageEmbed.setDescription(
-      ["💈 Level: **" + level + "**", "\n", "\n", "⏭️ XP requiered for next level: **" + nextXp + "**"].join("")
+      ["💈 Level: **" + level + "**", "", "⏭️ XP requiered for next level: **" + nextXp + "**"].join("\n")
     );
 
     try {
