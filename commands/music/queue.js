@@ -30,7 +30,7 @@ module.exports = {
       }
     }
 
-    // get the current queue
+    // get the current queue, see /music/np.js for different way to get the queue
     const queue = useQueue(message.guild.id);
 
     if (!queue) {

@@ -192,17 +192,18 @@ module.exports = {
                 [
                   "**You must be in a voice channel!**",
                   "",
-                  "**d!play <song name/url>** - Play a song from SoundCloud",
+                  "**d!play <song author - song name>** - Play a song from SoundCloud",
                   "**d!stop** - Stops everything and leave",
                   "**d!queue** - See the songs in queue",
-                  // need to be rewritten
-                  "**d!np** - To see the current playing song",
+                  "**d!np** - See the current playing song",
                   "**d!pause** - Pause the current song",
                   "**d!resume** - Resume the current song",
-                  "**d!volume** - Chose the music volume, 1 to 100",
-                  "**d!skip** - Skip the song",
+                  "**d!volume** - Chose the music volume, 0 to 100",
+                  "**d!skip** - Skip the current song",
                   "**d!back** - Play the previous song",
-                  "**d!loop <on/off>** - Loop all the songs",
+                  "**d!loop** - Loops the current song",
+                  "**d!lq** - Loops the whole queue",
+                  // need to be rewritten
                   "**d!lyric** - Search a song lyric",
                 ].join("\n")
               );

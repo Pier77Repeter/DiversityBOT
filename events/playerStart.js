@@ -1,10 +1,14 @@
-const { GuildQueueEvent } = require("discord-player");
+const { GuildQueueEvent, QueueRepeatMode } = require("discord-player");
 const { EmbedBuilder } = require("discord.js");
 
 module.exports = (client) => {
   const logPrefix = "[PlayerStart]: ";
 
   client.player.events.on(GuildQueueEvent.PlayerStart, async (queue, track) => {
+    const loopEnabled = queue.repeatMode === QueueRepeatMode.TRACK;
+    const queueLoopEnabled = queue.repeatMode === QueueRepeatMode.QUEUE;
+    if (loopEnabled || queueLoopEnabled) return;
+
     const playerStartEventMessageEmbed = new EmbedBuilder();
     try {
       playerStartEventMessageEmbed
