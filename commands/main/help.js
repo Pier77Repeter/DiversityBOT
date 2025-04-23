@@ -203,8 +203,6 @@ module.exports = {
                   "**d!back** - Play the previous song",
                   "**d!loop** - Loops the current song",
                   "**d!lq** - Loops the whole queue",
-                  // need to be rewritten
-                  "**d!lyric** - Search a song lyric",
                 ].join("\n")
               );
 
@@ -225,6 +223,7 @@ module.exports = {
               .setTitle("⚖️ Economy section:")
               .setDescription(
                 [
+                  // need to be rewritten
                   "**d!lb** - To see the server leaderboard",
                   "**d!use** - Shows the list of usable items",
                   "**d!daily** - To get your daily money",

@@ -54,7 +54,7 @@ Yay, this is the complete rewrite of the Bot, still a work in progress (it's gon
   - This is the **main entry point** of the Discord bot application.
   - Its primary responsibilities include:
     - Logging the bot into Discord using its token.
-    - Initiating the bot's core functionality, often by starting the `loader.js`.
+    - Initiating the bot's core functionality by starting the `loader.js`.
 
 - **`loader.js`**:
 
@@ -62,7 +62,7 @@ Yay, this is the complete rewrite of the Bot, still a work in progress (it's gon
   - It typically handles:
     - Reading and registering commands (both message-based and slash commands).
     - Loading and attaching event listeners.
-    - **Exclusion:** Files located within the `utils` folder are generally _not_ loaded by this file.
+    - **Exclusion:** Files located within the `utils` folder are _not_ loaded by this file.
   - In order, the _loader loads_:
     - database with **SQLite3**
     - discord player using **discord player**
@@ -83,7 +83,7 @@ Yay, this is the complete rewrite of the Bot, still a work in progress (it's gon
 - **`commands/`**:
 
   - This directory contains all the **message-based commands** for the bot.
-  - These commands are typically triggered by the specific prefix `D!` followed by the command name.
+  - These commands are triggered by the specific prefix `D!` followed by the command name.
   - Each file within this directory represents a single command.
 
 - **`commands-slash/`**:

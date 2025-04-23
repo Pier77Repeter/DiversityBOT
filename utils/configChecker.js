@@ -1,5 +1,5 @@
 // This is very useful since it's gonna save tons of lines and time when checking configs
-const logPrefix = "[configChecker.js]:";
+const logPrefix = "[ConfigChecker.js]:";
 
 module.exports = async function configChecker(client, configName, serverId) {
   try {
