@@ -56,7 +56,7 @@ module.exports = {
         );
 
         client.database.run(
-          "CREATE TABLE IF NOT EXISTS User (serverId VARCHAR(20) NOT NULL, userId VARCHAR(20) NOT NULL, reputation INT, warns INT, socialCredits BIGINT, xp INT, nextXp INT, level INT, money BIGINT, bankMoney BIGINT, totalMoney BIGINT, items TEXT, fishes TEXT, hasPet BOOLEAN, petId VARCHAR(20), petStatsHealth INT, petStatsFun INT, petStatsHunger INT, petStatsThirst INT, petCooldown INT, petVetCooldown INT, petPlayCooldown INT, petFeedCooldown INT, petDrinkCooldown INT, memeCooldown INT, nukeCooldown INT, battleCooldown INT, hackCooldown INT, hmCooldown INT, jmCooldown INT, scTestCooldown INT, cannyCooldown INT, uncannyCooldown INT, xpLeaderboardCooldown INT, leaderboardCooldown INT, robCooldown INT, dailyCooldown INT, dupeCooldown INT, mineCooldown INT, huntCooldown INT, crimeCooldown INT, searchCooldown INT, begCooldown INT, highLowCooldown INT, postVideoCooldown INT, postMemeCooldown INT, rouletteCooldown INT, workCooldown INT, fishCooldown INT, imageCooldown INT, PRIMARY KEY (serverId, userId));",
+          "CREATE TABLE IF NOT EXISTS User (serverId VARCHAR(20) NOT NULL, userId VARCHAR(20) NOT NULL, reputation INT, warns INT, socialCredits BIGINT, xp INT, nextXp INT, level INT, money BIGINT, bankMoney BIGINT, debts BIGINT, items TEXT, fishes TEXT, hasPet BOOLEAN, petId VARCHAR(20), petStatsHealth INT, petStatsFun INT, petStatsHunger INT, petStatsThirst INT, petCooldown INT, petVetCooldown INT, petPlayCooldown INT, petFeedCooldown INT, petDrinkCooldown INT, memeCooldown INT, nukeCooldown INT, battleCooldown INT, hackCooldown INT, hmCooldown INT, jmCooldown INT, scTestCooldown INT, cannyCooldown INT, uncannyCooldown INT, xpLeaderboardCooldown INT, leaderboardCooldown INT, robCooldown INT, dailyCooldown INT, dupeCooldown INT, mineCooldown INT, huntCooldown INT, crimeCooldown INT, searchCooldown INT, begCooldown INT, highLowCooldown INT, postVideoCooldown INT, postMemeCooldown INT, rouletteCooldown INT, workCooldown INT, fishCooldown INT, imageCooldown INT, PRIMARY KEY (serverId, userId));",
           (err) => {
             if (err) {
               console.error(logError, "Error building database in 'User' table: " + err);
@@ -103,14 +103,8 @@ module.exports = {
         if (typeof event === "function") {
           // passing the Discord client to the event function
           event(client);
-        } else if (typeof event.once === "function" && typeof event.execute === "function") {
-          if (event.once) {
-            client.once(event.name, (...args) => event.execute(...args, client));
-          } else {
-            client.on(event.name, (...args) => event.execute(...args, client));
-          }
         } else {
-          console.error(logWarning, "Invalid event file: " + file + " missing: 'client.on' or 'client.once'");
+          console.error(logWarning, "Invalid event file: " + file + ", expected 'module.exports' to be a function.");
         }
       } catch (error) {
         console.error(logError, "Error loading event " + file + ": " + error);
@@ -129,8 +123,19 @@ module.exports = {
         try {
           const command = require(path.join(commandsPath, folder, file));
           if (typeof command.name === "string" && typeof command.execute === "function") {
-            // adding the commands to the collection
+            // adding the main command to the collection
             client.commands.set(command.name, command);
+
+            // adding aliases if they exist (in commands file they are represented as 'aliases: ["pang", "pong"]')
+            if (command.aliases && Array.isArray(command.aliases)) {
+              command.aliases.forEach((alias) => {
+                if (typeof alias === "string") {
+                  client.commands.set(alias, command);
+                } else {
+                  console.error(logWarning, "Invalid alias '" + alias + "' in command file: " + file);
+                }
+              });
+            }
           } else {
             console.error(logWarning, "Invalid command file: " + file + " missing required 'name' and 'execute' property");
           }

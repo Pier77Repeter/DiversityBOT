@@ -15,183 +15,10 @@ module.exports = (client) => {
     // check if the bot can send messages to the message.channel (it's useless to use the bot if you cant interact with it)
     if (!message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.SendMessages)) return;
 
-    // xp updating
-    const xpRow = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT xp, nextXp, level FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, message.author.id],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
-    });
-
-    // if user exists
-    if (xpRow) {
-      await new Promise((resolve, reject) => {
-        client.database.run(
-          "UPDATE User SET xp = xp + 1 WHERE serverId = ? AND userId = ?",
-          [message.guild.id, message.author.id],
-          (err) => {
-            if (err) reject(err);
-            else resolve();
-          }
-        );
-      });
-
-      if (xpRow.xp >= xpRow.nextXp) {
-        await new Promise((resolve, reject) => {
-          client.database.serialize(function () {
-            client.database.run(
-              "UPDATE User SET xp = 0 WHERE serverId = ? AND userId = ?",
-              [message.guild.id, message.author.id],
-              (err) => {
-                if (err) reject(err);
-                else resolve();
-              }
-            );
-
-            client.database.run(
-              "UPDATE User SET nextXp = nextXp + 100 WHERE serverId = ? AND userId = ?",
-              [message.guild.id, message.author.id],
-              (err) => {
-                if (err) reject(err);
-                else resolve();
-              }
-            );
-
-            client.database.run(
-              "UPDATE User SET level = level + 1 WHERE serverId = ? AND userId = ?",
-              [message.guild.id, message.author.id],
-              (err) => {
-                if (err) reject(err);
-                else resolve();
-              }
-            );
-          });
-        });
-
-        const imageFile = new AttachmentBuilder("./media/levelUp.png");
-        const newLevelMessageEmbed = new EmbedBuilder()
-          .setColor(0xffcc00)
-          .setTitle("⬆️ Level up")
-          .setDescription(
-            ["Your new level: **" + (xpRow.level + 1) + "**", "XP for next level: **" + (xpRow.nextXp + 100) + "**"].join("\n")
-          )
-          .setThumbnail("attachment://levelUp.png")
-          .setFooter({
-            text: message.author.username,
-            iconURL: message.author.displayAvatarURL(),
-          });
-
-        try {
-          await message.reply({ embeds: [newLevelMessageEmbed], files: [imageFile] });
-        } catch (error) {
-          // contiue
-        }
-      }
-    }
-
-    // reputation updater
-    if (message.mentions.members.first() != null && message.content.toLowerCase().includes("thank")) {
-      const mentionedMember = message.mentions.members.first().user;
-
-      const row = await new Promise((resolve, reject) => {
-        client.database.get(
-          "SELECT reputation FROM User WHERE serverId = ? AND userId = ?",
-          [message.guild.id, mentionedMember.id],
-          (err, row) => {
-            if (err) reject(err);
-            else resolve(row);
-          }
-        );
-      });
-
-      // if user exists
-      if (row) {
-        await new Promise((resolve, reject) => {
-          client.database.run(
-            "UPDATE User SET reputation = reputation + 1 WHERE serverId = ? AND userId = ?",
-            [message.guild.id, mentionedMember.id],
-            (err) => {
-              if (err) reject(err);
-              else resolve();
-            }
-          );
-        });
-
-        try {
-          await message.reply("Gave **+1** reputation to " + mentionedMember.username);
-        } catch (error) {
-          // do nothing, continue
-        }
-      }
-    }
-
-    // pet stats updater
-    const petRow = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT hasPet, petStatsHealth, petStatsFun, petStatsHunger, petStatsThirst, petCooldown FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, message.author.id],
-        (err, row) => {
-          if (err) reject(err);
-          resolve(row);
-        }
-      );
-    });
-
-    if (petRow) {
-      if (petRow.hasPet) {
-        const petCooldown = await cooldownManager(client, "petCooldown", 10800, message.guild.id, message.author.id);
-
-        // updating the stats
-        if (petCooldown == 0) {
-          await new Promise((resolve, reject) => {
-            client.database.run(
-              "UPDATE User SET petStatsHealth = petStatsHealth - ?, petStatsFun = petStatsFun - ?, petStatsHunger = petStatsHunger - ?, petStatsThirst = petStatsThirst - ? WHERE serverId = ? AND userId = ?",
-              [
-                mathRandomInt(5, 20),
-                mathRandomInt(5, 20),
-                mathRandomInt(5, 20),
-                mathRandomInt(5, 20),
-                message.guild.id,
-                message.author.id,
-              ],
-              (err) => {
-                if (err) reject(err);
-                resolve();
-              }
-            );
-          });
-        }
-
-        // check if pet is still alive
-        if (petRow.petStatsHealth <= 0 || petRow.petStatsHunger <= 0 || petRow.petStatsThirst <= 0) {
-          await new Promise((resolve, reject) => {
-            client.database.run(
-              "UPDATE User SET hasPet = 0, petId = 'null', petStatsHealth = 0, petStatsFun = 0, petStatsHunger = 0, petStatsThirst = 0 WHERE serverId = ? AND userId = ?",
-              [message.guild.id, message.author.id],
-              (err) => {
-                if (err) reject(err);
-                resolve();
-              }
-            );
-          });
-
-          const petMessageEmbed = new EmbedBuilder()
-            .setColor(0xff0000)
-            .setTitle("Oh no")
-            .setDescription("Your pet sadly died, you didn't care for it enough >:(");
-
-          try {
-            await message.reply({ embeds: [petMessageEmbed] });
-          } catch (error) {
-            // do nothing, continue
-          }
-        }
-      }
-    }
+    // calling updaters
+    await xpUpdater(message);
+    await repUpdater(message);
+    await petStatsUpdater(message);
 
     // check if bot gets pinged
     if (message.mentions.has(client.user) && !message.content.toLowerCase().startsWith(botPrefix)) {
@@ -272,8 +99,11 @@ module.exports = (client) => {
     const args = message.content.slice(botPrefix.length).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
 
+    // check if the command exists (by name or alias)
+    const command = client.commands.get(commandName);
+
     // check if the command exists
-    if (!client.commands.has(commandName)) {
+    if (!command) {
       try {
         return await message.reply(
           listsGetRandomItem(
@@ -299,10 +129,7 @@ module.exports = (client) => {
     }
 
     // ready to log for the specific command
-    logPrefix = "[MessageCreate/" + commandName + ".js]:";
-
-    // get the command
-    const command = client.commands.get(commandName);
+    logPrefix = "[MessageCreate/" + command.name + ".js]:";
 
     // if command gets an error, log it (buggy)
     try {
@@ -331,4 +158,185 @@ module.exports = (client) => {
       }
     }
   });
+
+  async function xpUpdater(message) {
+    const xpRow = await new Promise((resolve, reject) => {
+      client.database.get(
+        "SELECT xp, nextXp, level FROM User WHERE serverId = ? AND userId = ?",
+        [message.guild.id, message.author.id],
+        (err, row) => {
+          if (err) reject(err);
+          else resolve(row);
+        }
+      );
+    });
+
+    // if user exists
+    if (xpRow) {
+      await new Promise((resolve, reject) => {
+        client.database.run(
+          "UPDATE User SET xp = xp + 1 WHERE serverId = ? AND userId = ?",
+          [message.guild.id, message.author.id],
+          (err) => {
+            if (err) reject(err);
+            else resolve();
+          }
+        );
+      });
+
+      if (xpRow.xp >= xpRow.nextXp) {
+        await new Promise((resolve, reject) => {
+          client.database.serialize(function () {
+            client.database.run(
+              "UPDATE User SET xp = 0 WHERE serverId = ? AND userId = ?",
+              [message.guild.id, message.author.id],
+              (err) => {
+                if (err) reject(err);
+                else resolve();
+              }
+            );
+
+            client.database.run(
+              "UPDATE User SET nextXp = nextXp + 100 WHERE serverId = ? AND userId = ?",
+              [message.guild.id, message.author.id],
+              (err) => {
+                if (err) reject(err);
+                else resolve();
+              }
+            );
+
+            client.database.run(
+              "UPDATE User SET level = level + 1 WHERE serverId = ? AND userId = ?",
+              [message.guild.id, message.author.id],
+              (err) => {
+                if (err) reject(err);
+                else resolve();
+              }
+            );
+          });
+        });
+
+        const imageFile = new AttachmentBuilder("./media/levelUp.png");
+        const newLevelMessageEmbed = new EmbedBuilder()
+          .setColor(0xffcc00)
+          .setTitle("⬆️ Level up")
+          .setDescription(
+            ["Your new level: **" + (xpRow.level + 1) + "**", "XP for next level: **" + (xpRow.nextXp + 100) + "**"].join("\n")
+          )
+          .setThumbnail("attachment://levelUp.png")
+          .setFooter({
+            text: message.author.username,
+            iconURL: message.author.displayAvatarURL(),
+          });
+
+        try {
+          await message.reply({ embeds: [newLevelMessageEmbed], files: [imageFile] });
+        } catch (error) {
+          // contiue
+        }
+      }
+    }
+  }
+
+  async function repUpdater(message) {
+    if (message.mentions.members.first() != null && message.content.toLowerCase().includes("thank")) {
+      const mentionedMember = message.mentions.members.first().user;
+
+      const row = await new Promise((resolve, reject) => {
+        client.database.get(
+          "SELECT reputation FROM User WHERE serverId = ? AND userId = ?",
+          [message.guild.id, mentionedMember.id],
+          (err, row) => {
+            if (err) reject(err);
+            else resolve(row);
+          }
+        );
+      });
+
+      // if user exists
+      if (row) {
+        await new Promise((resolve, reject) => {
+          client.database.run(
+            "UPDATE User SET reputation = reputation + 1 WHERE serverId = ? AND userId = ?",
+            [message.guild.id, mentionedMember.id],
+            (err) => {
+              if (err) reject(err);
+              else resolve();
+            }
+          );
+        });
+
+        try {
+          await message.reply("Gave **+1** reputation to " + mentionedMember.username);
+        } catch (error) {
+          // do nothing, continue
+        }
+      }
+    }
+  }
+
+  async function petStatsUpdater(message) {
+    const petRow = await new Promise((resolve, reject) => {
+      client.database.get(
+        "SELECT hasPet, petStatsHealth, petStatsFun, petStatsHunger, petStatsThirst, petCooldown FROM User WHERE serverId = ? AND userId = ?",
+        [message.guild.id, message.author.id],
+        (err, row) => {
+          if (err) reject(err);
+          resolve(row);
+        }
+      );
+    });
+
+    if (petRow) {
+      if (petRow.hasPet) {
+        const petCooldown = await cooldownManager(client, "petCooldown", 10800, message.guild.id, message.author.id);
+
+        // updating the stats
+        if (petCooldown == 0) {
+          await new Promise((resolve, reject) => {
+            client.database.run(
+              "UPDATE User SET petStatsHealth = petStatsHealth - ?, petStatsFun = petStatsFun - ?, petStatsHunger = petStatsHunger - ?, petStatsThirst = petStatsThirst - ? WHERE serverId = ? AND userId = ?",
+              [
+                mathRandomInt(5, 20),
+                mathRandomInt(5, 20),
+                mathRandomInt(5, 20),
+                mathRandomInt(5, 20),
+                message.guild.id,
+                message.author.id,
+              ],
+              (err) => {
+                if (err) reject(err);
+                resolve();
+              }
+            );
+          });
+        }
+
+        // check if pet is still alive
+        if (petRow.petStatsHealth <= 0 || petRow.petStatsHunger <= 0 || petRow.petStatsThirst <= 0) {
+          await new Promise((resolve, reject) => {
+            client.database.run(
+              "UPDATE User SET hasPet = 0, petId = 'null', petStatsHealth = 0, petStatsFun = 0, petStatsHunger = 0, petStatsThirst = 0 WHERE serverId = ? AND userId = ?",
+              [message.guild.id, message.author.id],
+              (err) => {
+                if (err) reject(err);
+                resolve();
+              }
+            );
+          });
+
+          const petMessageEmbed = new EmbedBuilder()
+            .setColor(0xff0000)
+            .setTitle("Oh no")
+            .setDescription("Your pet sadly died, you didn't care for it enough >:(");
+
+          try {
+            await message.reply({ embeds: [petMessageEmbed] });
+          } catch (error) {
+            // do nothing, continue
+          }
+        }
+      }
+    }
+  }
 };

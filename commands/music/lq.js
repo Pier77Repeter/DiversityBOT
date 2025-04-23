@@ -3,7 +3,8 @@ const { EmbedBuilder } = require("discord.js");
 const configChecker = require("../../utils/configChecker");
 
 module.exports = {
-  name: "lq",
+  name: "loopqueue",
+  aliases: ["lq"],
   description: "Loops the entire music queue",
   async execute(client, message, args) {
     const lqMessageEmbed = new EmbedBuilder()

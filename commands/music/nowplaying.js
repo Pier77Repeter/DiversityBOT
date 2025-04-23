@@ -3,7 +3,8 @@ const { EmbedBuilder } = require("discord.js");
 const configChecker = require("../../utils/configChecker");
 
 module.exports = {
-  name: "np",
+  name: "nowplaying",
+  aliases: ["np"],
   description: "Shows the currently playing song.",
   async execute(client, message, args) {
     const npMessageEmbed = new EmbedBuilder()

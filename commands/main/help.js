@@ -195,14 +195,14 @@ module.exports = {
                   "**d!play <song author - song name>** - Play a song from SoundCloud",
                   "**d!stop** - Stops everything and leave",
                   "**d!queue** - See the songs in queue",
-                  "**d!np** - See the current playing song",
+                  "**d!nowplaying** - See the current playing song",
                   "**d!pause** - Pause the current song",
                   "**d!resume** - Resume the current song",
                   "**d!volume** - Chose the music volume, 0 to 100",
                   "**d!skip** - Skip the current song",
                   "**d!back** - Play the previous song",
                   "**d!loop** - Loops the current song",
-                  "**d!lq** - Loops the whole queue",
+                  "**d!loopqueue** - Loops the whole queue",
                 ].join("\n")
               );
 
@@ -223,9 +223,10 @@ module.exports = {
               .setTitle("⚖️ Economy section:")
               .setDescription(
                 [
-                  // need to be rewritten
-                  "**d!lb** - To see the server leaderboard",
+                  "**d!balance** - See how much money the user has",
+                  "**d!lb** - See the richest users in the server",
                   "**d!use** - Shows the list of usable items",
+                  // need to be rewritten
                   "**d!daily** - To get your daily money",
                   "**d!dupe** - To dupe money",
                   "**d!work** - Work to get some money",
@@ -234,7 +235,6 @@ module.exports = {
                   "**d!deposit <amount>** - To deposit your money in the bank",
                   "**d!withdraw <amount>** - To take your money from the bank",
                   "**d!give <user> <amount>** - To give mentioned member some money",
-                  "**d!bal** or **d!bal <user>** - To see how much money is in your bank",
                   "**d!rob <user>** - To rob someone",
                   "**d!crime** - To commit a crime",
                   "**d!shop** - To see the shop",
