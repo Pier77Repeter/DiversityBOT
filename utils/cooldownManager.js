@@ -1,7 +1,7 @@
 // This is very useful since it's gonna save tons of lines and time when implementing cooldowns for the commands
-const logPrefix = "[CooldownManager.js]:";
-
 module.exports = async function cooldownManager(client, cooldownName, cooldownInSeconds, serverId, userId) {
+  const logPrefix = "[CooldownManager.js/ERROR]:";
+
   const cooldownAmount = cooldownInSeconds * 1000; // cooldown to milliseconds
   const unixNow = Date.now(); // this is needed since we work with unix time
 

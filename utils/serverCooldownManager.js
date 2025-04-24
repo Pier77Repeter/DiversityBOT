@@ -1,7 +1,7 @@
 // only for server cooldowns, unlike "cooldownManager.js" which is for user cooldowns
-const logPrefix = "[ServerCooldownManager.js]:";
-
 module.exports = async function serverCooldownManager(client, cooldownName, cooldownInSeconds, serverId) {
+  const logPrefix = "[ServerCooldownManager.js/ERROR]:";
+
   const cooldownAmount = cooldownInSeconds * 1000; // cooldown to milliseconds
   const unixNow = Date.now(); // this is needed since we work with unix time
 

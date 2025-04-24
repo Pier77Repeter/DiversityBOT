@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
-const dbJsonDataUpdater = require("../../utils/dbJsonDataUpdater");
+const dbJsonDataSet = require("../../utils/dbJsonDataSet");
+const dbJsonDataGet = require("../../utils/dbJsonDataGet");
 const delay = require("./../../utils/delay");
 
 module.exports = {
@@ -7,7 +8,7 @@ module.exports = {
   description: "Use command, can display list of items or use",
   async execute(client, message, args) {
     const embed = new EmbedBuilder();
-    const itemToUse = args[0].toLowerCase();
+    const itemToUse = args[0];
 
     if (!itemToUse) {
       embed
@@ -22,26 +23,10 @@ module.exports = {
       }
     }
 
-    const row = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT items FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, message.author.id],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
-    });
+    const items = await dbJsonDataGet(client, message, "items");
+    if (items == null) return;
 
-    if (!row) {
-      try {
-        return await message.reply("No items were found in your inventory");
-      } catch (error) {
-        return;
-      }
-    }
-
-    const items = JSON.parse(row.items);
+    itemToUse.toLowerCase();
 
     switch (itemToUse) {
       case "banana":
@@ -57,7 +42,7 @@ module.exports = {
 
         items.itemId7 = false;
 
-        await dbJsonDataUpdater(client, message, "items", items);
+        await dbJsonDataSet(client, message, "items", items);
 
         embed.setColor(0xffcc00).setTitle("Delicious").setDescription("You ate the banana! 🍌🍌🍌");
 
@@ -80,7 +65,7 @@ module.exports = {
 
         items.itemId8 = false;
 
-        await dbJsonDataUpdater(client, message, "items", items);
+        await dbJsonDataSet(client, message, "items", items);
 
         embed.setColor(0xffcc00).setTitle("Delicious").setDescription("You ate the beans! 🥫🥫🥫");
 
@@ -91,7 +76,7 @@ module.exports = {
           return;
         }
 
-        delay(3000);
+        await delay(3000);
 
         embed.setColor(0x000000).setTitle("And...").setDescription(null);
         try {
@@ -100,7 +85,7 @@ module.exports = {
           return;
         }
 
-        delay(2000);
+        await delay(2000);
 
         embed.setColor(0x33ff33).setTitle("💨💨💨 You farted!");
         try {
@@ -130,7 +115,7 @@ module.exports = {
 
         items.itemId9 = false;
 
-        await dbJsonDataUpdater(client, message, "items", items);
+        await dbJsonDataSet(client, message, "items", items);
 
         embed
           .setColor(0x0ffcc00)
