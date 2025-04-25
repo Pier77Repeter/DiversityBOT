@@ -7,9 +7,54 @@ Notes: This is the rewrite of the DiversityBOT, completly from 0. The biggest pr
 
 // init log
 const logPrefix = "[Main]:";
+const logErrPrefix = "[Main/ERROR]:";
 console.log(logPrefix, "Initializing DiversityBOT...");
 
-// error handler to prevent crashes
+// checking config.json
+console.log(logPrefix, "Checking Bot configuration...");
+const fs = require("node:fs");
+const path = require("node:path");
+
+const configFilePath = path.join(__dirname, "config.json");
+
+// you can make your own custom configurations, didn't want to put itemPrices in db
+const defaultConfigs = {
+  botToken: "YOUR_BOT_TOKEN_HERE",
+  botId: "YOUR_BOT_ID_HERE",
+  itemPrices: {
+    bitcoinPrice: 80000,
+    dogecoinPrice: 100,
+    moacoinPrice: 500,
+    divcoinPrice: 10000,
+  },
+};
+
+// checks if config.json exists
+if (fs.existsSync(configFilePath)) {
+  try {
+    // parse it in case you messed something up
+    const configFileContent = fs.readFileSync(configFilePath, "utf8");
+    JSON.parse(configFileContent);
+  } catch (error) {
+    console.error(logErrPrefix, "Error parsing 'config.json': " + error);
+    process.exit(1);
+  }
+} else {
+  // first time running the bot, creating the file
+  console.log(logPrefix, "Creating 'config.json' with default configurations...");
+  try {
+    const configString = JSON.stringify(defaultConfigs, null, 2);
+    fs.writeFileSync(configFilePath, configString, "utf8");
+
+    const configFileContent = fs.readFileSync(configFilePath, "utf8");
+    JSON.parse(configFileContent);
+  } catch (error) {
+    console.error(logErrPrefix, "Error creating or parsing 'config.json': " + error);
+    process.exit(1);
+  }
+}
+
+// error handler to prevent crashes, we put this here because config.json is like very important, more than the database
 process.on("uncaughtException", function (err) {
   console.warn("\n[Error handler]: CRASH PREVENTED, PLEASE LOOK AT THE ERROR!!!");
   console.warn("=============================================================");
@@ -20,7 +65,7 @@ process.on("uncaughtException", function (err) {
 
 // imports for necessary discord.js classes
 const { Client, Events, GatewayIntentBits, ActivityType } = require("discord.js");
-const { token } = require("./config.json");
+const { botToken } = require("./config.json");
 const loader = require("./loader");
 const listsGetRandomItem = require("./utils/listsGetRandomItem");
 
@@ -37,9 +82,6 @@ const client = new Client({
     GatewayIntentBits.GuildVoiceStates,
   ],
 });
-
-// starting up the loader
-loader.initLoader(client);
 
 // bot status setup
 var botStatus = [
@@ -84,7 +126,16 @@ var botStatus = [
 ];
 
 // bot logging in
-client.login(token);
+client
+  .login(botToken)
+  .then(() => {
+    // AFTER the bot logged in THEN we can start load the whole thing
+    loader.initLoader(client);
+  })
+  .catch((error) => {
+    console.error(logErrPrefix, "Failed to log into Discord: " + error);
+    process.exit(1);
+  });
 
 // when the client is ready
 client.once(Events.ClientReady, (readyClient) => {

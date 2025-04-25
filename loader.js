@@ -6,7 +6,7 @@ const { Routes } = require("discord-api-types/v10");
 const { Player } = require("discord-player");
 const { SoundCloudExtractor } = require("@discord-player/extractor");
 const sqlite3 = require("sqlite3").verbose();
-const { token, botId } = require("./config.json");
+const { botToken, botId } = require("./config.json");
 
 // needed in index.js for bot status
 var isBotRestarting = false;
@@ -104,7 +104,7 @@ module.exports = {
           // passing the Discord client to the event function
           event(client);
         } else {
-          console.error(logWarning, "Invalid event file: " + file + ", expected 'module.exports' to be a function.");
+          console.error(logWarning, "Invalid event file: " + file + ", expected 'module.exports' to be a function");
         }
       } catch (error) {
         console.error(logError, "Error loading event " + file + ": " + error);
@@ -169,7 +169,7 @@ module.exports = {
     }
 
     // registering slash commands using the REST API V10
-    const rest = new REST({ version: "10" }).setToken(token);
+    const rest = new REST({ version: "10" }).setToken(botToken);
 
     try {
       console.log(logPrefix, "Registering slash commands...");

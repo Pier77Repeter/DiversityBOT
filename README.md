@@ -25,14 +25,12 @@ Yay, this is the complete rewrite of the Bot, still a work in progress (it's gon
 
 4.  **Configuration:**
 
-    - Create a `config.json` file in the root directory of the project.
-    - After that, copy and paste this, and change "YOUR_BOT_TOKEN_HERE" to your bot token and "YOUR_BOT_ID_HERE" to your bot id
+    - Navigate to `config.json` AFTER starting the bot (step 5) at least once.
+    - After that change "YOUR_BOT_TOKEN_HERE" to your bot token and "YOUR_BOT_ID_HERE" to your bot id in `config.json`
 
       ```json
-      {
         "token": "YOUR_BOT_TOKEN_HERE",
         "botId": "YOUR_BOT_ID_HERE"
-      }
       ```
 
 5.  **Run the Bot:**
