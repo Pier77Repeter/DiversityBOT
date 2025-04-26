@@ -6,7 +6,8 @@ Yay, this is the complete rewrite of the Bot, still a work in progress (it's gon
 
 1.  **Install Node.js:**
 
-    - Ensure you have the latest (LTS) version of Node.js installed. You can download it from [nodejs.org](https://nodejs.org/).
+    - Ensure you have the latest LTS version of Node.js installed. You can download it from [nodejs.org](https://nodejs.org/).
+    - Download Git to clone this repository [https://git-scm.com/](https://git-scm.com/).
 
 2.  **Clone the repository:**
 
@@ -29,7 +30,7 @@ Yay, this is the complete rewrite of the Bot, still a work in progress (it's gon
     - After that change "YOUR_BOT_TOKEN_HERE" to your bot token and "YOUR_BOT_ID_HERE" to your bot id in `config.json`
 
       ```json
-        "token": "YOUR_BOT_TOKEN_HERE",
+        "botToken": "YOUR_BOT_TOKEN_HERE",
         "botId": "YOUR_BOT_ID_HERE"
       ```
 
@@ -52,12 +53,14 @@ Yay, this is the complete rewrite of the Bot, still a work in progress (it's gon
   - This is the **main entry point** of the Discord bot application.
   - Its primary responsibilities include:
     - Logging the bot into Discord using its token.
+    - Initiate configurations on first start
     - Initiating the bot's core functionality by starting the `loader.js`.
 
 - **`loader.js`**:
 
   - This file is responsible for **loading and initializing various components** of the bot.
-  - It typically handles:
+  - It handles:
+    - Loads core functionalities, database, events.
     - Reading and registering commands (both message-based and slash commands).
     - Loading and attaching event listeners.
     - **Exclusion:** Files located within the `utils` folder are _not_ loaded by this file.
@@ -71,10 +74,11 @@ Yay, this is the complete rewrite of the Bot, still a work in progress (it's gon
 
 - **`config.json`**:
 
-  - This file **must be created manually**, read the configuration above the documentation.
+  - This file will be created after the first start.
   - At the moment it's needed to store:
     - The bot token for logging into Discord
     - The bot id to register the slash commands
+    - Coin prices since don't want a table in db
 
 ### Directories
 
@@ -113,6 +117,7 @@ Yay, this is the complete rewrite of the Bot, still a work in progress (it's gon
   - These functions are designed to be reusable and perform common tasks, such as:
     - Mathematical operations.
     - Cooldown management.
+    - Database interactions and checks.
   - **Note:** Files within this folder are loaded and used by other parts of the bot (commands, events, etc.) but are _not_ directly loaded as commands or events by the `loader.js`.
 
 ## Contributing
