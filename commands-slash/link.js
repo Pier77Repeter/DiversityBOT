@@ -9,7 +9,7 @@ module.exports = {
       .setTitle("🤖 Bot links")
       .addFields({
         name: "Invite link",
-        value: "https://discord.com/api/oauth2/authorize?client_id=878594739744673863&permissions=2080948874566&scope=bot",
+        value: "https://discord.com/oauth2/authorize?client_id=878594739744673863",
         inline: false,
       })
       .addFields({ name: "Discord link", value: "https://discord.gg/KxadTdz", inline: false })
