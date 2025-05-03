@@ -207,7 +207,7 @@ module.exports = {
             .setFooter({ text: "Launch cancelled" });
 
           try {
-            await sentMessage.edit({ embeds: [nukeMessageEmbed], files: [imageFile], components: [btnRow] });
+            await btnInteraction.update({ embeds: [nukeMessageEmbed], files: [imageFile], components: [btnRow] });
           } catch (error) {
             return;
           }

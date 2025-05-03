@@ -114,8 +114,13 @@ module.exports = {
           memeData = await getMeme();
 
           if (memeData.code == 404) {
+            btnCollector.stop();
+
             try {
-              return await btnInteraction.update("Opsy, i couldn't get the meme, try typing the command again");
+              return await btnInteraction.update({
+                content: "Opsy, i couldn't get the meme, try typing the command again",
+                components: [],
+              });
             } catch (error) {
               return;
             }
@@ -135,7 +140,7 @@ module.exports = {
             btnCollector.stop();
 
             try {
-              return await btnInteraction.update({ embeds: [memeMessageEmbed], files: [imageFile] });
+              return await btnInteraction.update({ embeds: [memeMessageEmbed], components: [], files: [imageFile] });
             } catch (error) {
               return;
             }

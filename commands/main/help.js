@@ -232,6 +232,7 @@ module.exports = {
                   "**d!deposit <amount>** - Deposit your money in the bank",
                   "**d!withdraw <amount>** - Withdraw your money from the bank",
                   "**d!give <@user> <amount>** - Give money to mentioned user",
+                  "**d!debts** - Check user debts",
                   // need to be rewritten
                   "**d!daily** - To get your daily money",
                   "**d!dupe** - To dupe money",
