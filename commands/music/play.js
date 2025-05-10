@@ -13,17 +13,8 @@ module.exports = {
       .setTitle("❌ Error")
       .setDescription("Music commands are off, type: **d!musicmd on**");
 
-    // config checker, returns 0 if disabled, 1 if enabled, null if error while querying DB
-    const isMusicEnabled = await configChecker(client, "musiCmd", message.guild.id);
-
-    if (isMusicEnabled == null) {
-      try {
-        playMessageEmbed.setDescription("Something went wrong while checking the server's config");
-        return await message.reply({ embeds: [playMessageEmbed] });
-      } catch (error) {
-        return;
-      }
-    }
+    const isMusicEnabled = await configChecker(client, "musiCmd", message);
+    if (isMusicEnabled == null) return;
 
     if (isMusicEnabled == 0) {
       try {
@@ -46,19 +37,8 @@ module.exports = {
       }
     }
 
-    const cooldown = await serverCooldownManager(client, "playCooldown", this.cooldown, message.guild.id);
-
-    if (cooldown == null) {
-      playMessageEmbed
-        .setColor(0xff0000)
-        .setTitle("❌ Error")
-        .setDescription("Something went wrong while checking the cooldown");
-      try {
-        return await message.reply({ embeds: [playMessageEmbed] });
-      } catch (error) {
-        return;
-      }
-    }
+    const cooldown = await serverCooldownManager(client, "playCooldown", this.cooldown, message);
+    if (cooldown == null) return;
 
     if (cooldown[0] == 1) {
       playMessageEmbed

@@ -15,20 +15,29 @@ module.exports = {
       );
     });
 
+    const configMessageEmbed = new EmbedBuilder();
+
     if (!row) {
+      configMessageEmbed
+        .setColor(0xff0000)
+        .setTitle("❌ Error")
+        .setDescription("Failed to get server config, please **report this error with your server ID**")
+        .addFields({ name: "Submit here", value: "https://discord.gg/KxadTdz" });
+
       try {
-        return await interaction.reply("Failed to get server's configs, try later");
+        return await interaction.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
     }
 
-    const configMessageEmbed = new EmbedBuilder()
+    configMessageEmbed
       .setColor(0x000099)
       .setTitle("⚙️ " + interaction.guild.name + "'s Bot settings")
       .setDescription(
         "Since you are seeing this from /config instead of d!config, you can use /setup for easier managment instead of typing d!setup <thingCmd> <on/off> (thank me later for this tip ;))"
-      );
+      )
+      .spliceFields(0, 1);
 
     if (row.modCmd) {
       configMessageEmbed.addFields({

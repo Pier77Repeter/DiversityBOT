@@ -11,16 +11,9 @@ module.exports = {
       .setTitle("❌ Error")
       .setDescription("Music commands are off, type: **d!musicmd on**");
 
-    const isMusicEnabled = await configChecker(client, "musiCmd", message.guild.id);
-
-    if (isMusicEnabled == null) {
-      backMessageEmbed.setDescription("There was an error checking the configs, try again later");
-      try {
-        return await message.reply({ embeds: [backMessageEmbed] });
-      } catch (error) {
-        return;
-      }
-    }
+    // take a look into configChecker to know what's going on
+    const isMusicEnabled = await configChecker(client, "musiCmd", message);
+    if (isMusicEnabled == null) return; // put return so that commands execution stops when there's an error
 
     if (isMusicEnabled == 0) {
       try {

@@ -7,7 +7,7 @@ module.exports = async function dbJsonDataGet(client, user, message, dataName) {
   const jsonDataName = dataName.toLowerCase();
 
   if (jsonDataName != "items" && jsonDataName != "fishes") {
-    return console.error(logPrefix, "Invalid data name, must be 'items' or 'fishes'");
+    throw "invalid data name, must be 'items' or 'fishes'";
   }
 
   try {
@@ -57,7 +57,8 @@ module.exports = async function dbJsonDataGet(client, user, message, dataName) {
     const embed = new EmbedBuilder()
       .setColor(0xff0000)
       .setTitle("❌ Error")
-      .setDescription("Failed to get your stuff from my database");
+      .setDescription("Failed to get your stuff from my database, **report this issue with your ID**")
+      .addFields({ name: "Submit here", value: "https://discord.gg/KxadTdz" });
 
     try {
       await message.reply({ embeds: [embed] });

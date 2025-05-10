@@ -1,5 +1,5 @@
 // only for server cooldowns, unlike "cooldownManager.js" which is for user cooldowns
-module.exports = async function serverCooldownManager(client, cooldownName, cooldownInSeconds, serverId) {
+module.exports = async function serverCooldownManager(client, cooldownName, cooldownInSeconds, message) {
   const logPrefix = "[ServerCooldownManager.js/ERROR]:";
 
   const cooldownAmount = cooldownInSeconds * 1000; // cooldown to milliseconds
@@ -8,14 +8,14 @@ module.exports = async function serverCooldownManager(client, cooldownName, cool
   try {
     // first we get the cooldown from the db (it should exist since server data gets INSERTED in "guildCreate" event, before this)
     const row = await new Promise((resolve, reject) => {
-      client.database.get(`SELECT ${cooldownName} FROM Server WHERE serverId = ?`, [serverId], (err, row) => {
+      client.database.get(`SELECT ${cooldownName} FROM Server WHERE serverId = ?`, [message.guild.id], (err, row) => {
         if (err) reject(err);
         else resolve(row);
       });
     });
 
     // return null if db operation failed, so we need to check in the commands if return is null too
-    if (!row) return null;
+    if (!row) throw "server '" + message.guild.id + "' was not found in database";
 
     const lastCooldown = row[cooldownName];
     const expirationTime = lastCooldown + cooldownAmount;
@@ -31,7 +31,7 @@ module.exports = async function serverCooldownManager(client, cooldownName, cool
 
     // update the cooldown immediatly
     await new Promise((resolve, reject) => {
-      client.database.run(`UPDATE Server SET ${cooldownName} = ? WHERE serverId = ?`, [unixNow, serverId], (err) => {
+      client.database.run(`UPDATE Server SET ${cooldownName} = ? WHERE serverId = ?`, [unixNow, message.guild.id], (err) => {
         if (err) reject(err);
         else resolve();
       });
@@ -40,6 +40,19 @@ module.exports = async function serverCooldownManager(client, cooldownName, cool
     return 0; // cooldown is off and everything went good :thumbsup:
   } catch (error) {
     console.error(logPrefix + " Error handling cooldown '" + cooldownName + "': " + error);
+
+    const embed = new EmbedBuilder()
+      .setColor(0xff0000)
+      .setTitle("❌ Error")
+      .setDescription("Failed to get server cooldown, please **report this error with your server ID**")
+      .addFields({ name: "Submit here", value: "https://discord.gg/KxadTdz" });
+
+    try {
+      await message.reply({ embeds: [embed] });
+    } catch (error) {
+      // continue
+    }
+
     return null; // in case of an error (check is in the command)
   }
 };

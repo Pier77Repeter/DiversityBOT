@@ -8,11 +8,11 @@ module.exports = {
   async execute(client, message, args) {
     const embed = new EmbedBuilder()
       .setColor(0x33ffff)
-      .setTitle("🏪 Welcome to the DiversityShop!")
-      .setDescription("You can buy Crypto, perks, and other things!")
+      .setTitle("🏪 Welcome to the DiversityShop")
+      .setDescription("You can buy Crypto, perks, and other useful things!")
       .addFields([
         {
-          name: "💎 DiversityGem: 1000000$",
+          name: "💎 DiversityGem: " + itemPrices.diversityGemPrice + "$",
           value: "Very useful and overpower\nItem ID: **1**",
           inline: false,
         },
@@ -27,32 +27,32 @@ module.exports = {
           inline: false,
         },
         {
-          name: "🔫 Gun: 3000$",
+          name: "🔫 Gun: " + itemPrices.gunPrice + "$",
           value: "Get 100% probs when rob someone\nItem ID: **4**",
           inline: false,
         },
         {
-          name: "🔫 AK-47: 7000$",
+          name: "🔫 AK-47: " + itemPrices.ak47Price + "$",
           value: "Commit a crime with this\nItem ID: **5**",
           inline: false,
         },
         {
-          name: "🎣 Fishing rod: 500$",
+          name: "🎣 Fishing rod: " + itemPrices.fishingRodPrice + "$",
           value: "Use this to catch some fish\nItem ID: **6**",
           inline: false,
         },
         {
-          name: "🍌 Banana: 200$",
+          name: "🍌 Banana: " + itemPrices.bananaPrice + "$",
           value: "Delicious food for Monkes\nItem ID: **7**",
           inline: false,
         },
         {
-          name: "🥫 Beans: 400$",
+          name: "🥫 Beans: " + itemPrices.beansPrice + "$",
           value: "This food is a weapon\nItem ID: **8**",
           inline: false,
         },
         {
-          name: "💩 Holy poo: 1000$",
+          name: "💩 Holy poo: " + itemPrices.holyPooPrice + "$",
           value: "Trow the poo to people!\nItem ID: **9**",
           inline: false,
         },
@@ -67,12 +67,12 @@ module.exports = {
           inline: false,
         },
         {
-          name: "🔫 Kar98k scoped: 5000$",
+          name: "🔫 Kar98k scoped: " + itemPrices.kar98kPrice + "$",
           value: "Use this to hunt in the wild\nItem ID: **12**",
           inline: false,
         },
         {
-          name: "⛏️ Pickaxe: 700$",
+          name: "⛏️ Pickaxe: " + itemPrices.pickaxePrice + "$",
           value: "Use this to mine\nItem ID: **13**",
           inline: false,
         },

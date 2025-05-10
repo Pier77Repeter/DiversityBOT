@@ -5,7 +5,7 @@ module.exports = async function dbJsonDataSet(client, message, dataName, jsonDat
   const jsonDataName = dataName.toLowerCase();
 
   if (jsonDataName != "items" && jsonDataName != "fishes") {
-    return console.error(logPrefix, "Invalid data name, must be 'items' or 'fishes'");
+    throw "invalid data name, must be 'items' or 'fishes'";
   }
 
   try {
@@ -20,7 +20,23 @@ module.exports = async function dbJsonDataSet(client, message, dataName, jsonDat
         }
       );
     });
+
+    return 0;
   } catch (error) {
-    return console.error(logPrefix, "Something wrong happened while setting JSON data: " + error);
+    console.error(logPrefix, "Something wrong happened while setting JSON data: " + error);
+
+    const embed = new EmbedBuilder()
+      .setColor(0xff0000)
+      .setTitle("❌ Error")
+      .setDescription("Failed to update your stuff in database, **report this issue with your ID**")
+      .addFields({ name: "Submit here", value: "https://discord.gg/KxadTdz" });
+
+    try {
+      await message.reply({ embeds: [embed] });
+    } catch (error) {
+      // CONTINUE
+    }
+
+    return null;
   }
 };

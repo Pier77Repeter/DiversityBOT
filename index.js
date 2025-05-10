@@ -12,8 +12,8 @@ console.log(logPrefix, "Initializing DiversityBOT...");
 
 // checking config.json
 console.log(logPrefix, "Checking Bot configuration...");
-const fs = require("node:fs");
-const path = require("node:path");
+const fs = require("fs");
+const path = require("path");
 
 const configFilePath = path.join(__dirname, "config.json");
 
@@ -22,10 +22,19 @@ const defaultConfigs = {
   botToken: "YOUR_BOT_TOKEN_HERE",
   botId: "YOUR_BOT_ID_HERE",
   itemPrices: {
+    diversityGemPrice: 1000000,
     bitcoinPrice: 80000,
     dogecoinPrice: 100,
+    gunPrice: 3000,
+    ak47Price: 7000,
+    fishingRodPrice: 500,
+    bananaPrice: 200,
+    beansPrice: 400,
+    holyPooPrice: 1000,
     moacoinPrice: 500,
     divcoinPrice: 10000,
+    kar98kPrice: 5000,
+    pickaxePrice: 700,
   },
 };
 

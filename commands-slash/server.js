@@ -42,7 +42,8 @@ module.exports = {
           "**Server icon:**",
         ].join("\n")
       )
-      .setImage(interaction.guild.iconURL({ dynamic: true }));
+      .setImage(interaction.guild.iconURL({ dynamic: true }))
+      .setFooter({ text: "View the server's configs with /config" });
 
     try {
       return await interaction.reply({ embeds: [serverStatsMessageEmbed] });

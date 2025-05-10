@@ -76,7 +76,7 @@ module.exports = {
       }
 
       if (btnInteraction.customId === "btn-debts-btnPayDebts") {
-        if (row.debts >= row.money) {
+        if (row.debts > row.money) {
           embed
             .setColor(0xff0000)
             .setTitle("❌ Error")
