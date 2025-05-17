@@ -1,5 +1,7 @@
+const { EmbedBuilder } = require("discord.js");
+
 // only for server cooldowns, unlike "cooldownManager.js" which is for user cooldowns
-module.exports = async function serverCooldownManager(client, cooldownName, cooldownInSeconds, message) {
+module.exports = async function serverCooldownManager(client, message, cooldownName, cooldownInSeconds) {
   const logPrefix = "[ServerCooldownManager.js/ERROR]:";
 
   const cooldownAmount = cooldownInSeconds * 1000; // cooldown to milliseconds
@@ -44,8 +46,8 @@ module.exports = async function serverCooldownManager(client, cooldownName, cool
     const embed = new EmbedBuilder()
       .setColor(0xff0000)
       .setTitle("❌ Error")
-      .setDescription("Failed to get server cooldown, please **report this error with your server ID**")
-      .addFields({ name: "Submit here", value: "https://discord.gg/KxadTdz" });
+      .setDescription("Failed to update server cooldown, please **report this error with your server ID**")
+      .addFields({ name: "Submit report here", value: "https://discord.gg/KxadTdz" });
 
     try {
       await message.reply({ embeds: [embed] });

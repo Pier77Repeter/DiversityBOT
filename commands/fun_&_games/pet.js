@@ -27,15 +27,7 @@ module.exports = {
       .setTitle("❌ Error")
       .setDescription("No pet here, type **d!adopt <@user>** to adopt one");
 
-    if (!row) {
-      try {
-        return await message.reply({ embeds: [petMessageEmbed] });
-      } catch (error) {
-        return;
-      }
-    }
-
-    if (row.hasPet == 0) {
+    if (!row || !row.hasPet) {
       try {
         return await message.reply({ embeds: [petMessageEmbed] });
       } catch (error) {

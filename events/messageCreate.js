@@ -289,7 +289,8 @@ module.exports = (client) => {
 
     if (petRow) {
       if (petRow.hasPet) {
-        const petCooldown = await cooldownManager(client, "petCooldown", 10800, message.guild.id, message.author.id);
+        const petCooldown = await cooldownManager(client, message, "petCooldown", 10800);
+        if (petCooldown == null) return;
 
         // updating the stats
         if (petCooldown == 0) {

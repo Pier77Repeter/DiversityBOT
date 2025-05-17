@@ -14,17 +14,10 @@ module.exports = {
   description: "Take a random meme from r/memes",
   cooldown: 30,
   async execute(client, message, args) {
-    const cooldown = await cooldownManager(client, "memeCooldown", this.cooldown, message.guild.id, message.author.id);
+    const cooldown = await cooldownManager(client, message, "memeCooldown", this.cooldown);
+    if (cooldown == null) return;
 
-    if (cooldown == null) {
-      try {
-        return await message.reply("Couldn't get the meme gotta try again");
-      } catch (error) {
-        return;
-      }
-    }
-
-    if (cooldown[0] == 1) {
+    if (cooldown != 0) {
       const memeMessageEmbed = new EmbedBuilder()
         .setColor(0x000000)
         .setDescription("⏰ Memes out of stock, wait: **<t:" + cooldown[1] + ":R>**");
@@ -182,7 +175,7 @@ module.exports = {
       btnStop.setDisabled(true);
 
       try {
-        return await reply.edit({ embeds: [memeMessageEmbed], components: [btnRow] });
+        return await sentMessage.edit({ embeds: [memeMessageEmbed], components: [btnRow] });
       } catch (error) {
         return;
       }

@@ -13,7 +13,7 @@ module.exports = {
       .setTitle("❌ Error")
       .setDescription("Music commands are off, type: **d!musicmd on**");
 
-    const isMusicEnabled = await configChecker(client, "musiCmd", message);
+    const isMusicEnabled = await configChecker(client, message, "musiCmd");
     if (isMusicEnabled == null) return;
 
     if (isMusicEnabled == 0) {
@@ -37,7 +37,7 @@ module.exports = {
       }
     }
 
-    const cooldown = await serverCooldownManager(client, "playCooldown", this.cooldown, message);
+    const cooldown = await serverCooldownManager(client, message, "playCooldown", this.cooldown);
     if (cooldown == null) return;
 
     if (cooldown[0] == 1) {

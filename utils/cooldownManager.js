@@ -1,5 +1,7 @@
+const { EmbedBuilder } = require("discord.js");
+
 // This is very useful since it's gonna save tons of lines and time when implementing cooldowns for the commands
-module.exports = async function cooldownManager(client, cooldownName, cooldownInSeconds, serverId, userId) {
+module.exports = async function cooldownManager(client, message, cooldownName, cooldownInSeconds) {
   const logPrefix = "[CooldownManager.js/ERROR]:";
 
   const cooldownAmount = cooldownInSeconds * 1000; // cooldown to milliseconds
@@ -10,7 +12,7 @@ module.exports = async function cooldownManager(client, cooldownName, cooldownIn
     const row = await new Promise((resolve, reject) => {
       client.database.get(
         `SELECT ${cooldownName} FROM User WHERE serverId = ? AND userId = ?`,
-        [serverId, userId],
+        [message.guild.id, message.author.id],
         (err, row) => {
           if (err) reject(err);
           else resolve(row);
@@ -19,7 +21,7 @@ module.exports = async function cooldownManager(client, cooldownName, cooldownIn
     });
 
     // return null if db operation failed, so we need to check in the commands if return is null too
-    if (!row) return null;
+    if (!row) throw "user '" + message.author.id + "' was not found in database";
 
     const lastCooldown = row[cooldownName];
     const expirationTime = lastCooldown + cooldownAmount;
@@ -37,7 +39,7 @@ module.exports = async function cooldownManager(client, cooldownName, cooldownIn
     await new Promise((resolve, reject) => {
       client.database.run(
         `UPDATE User SET ${cooldownName} = ? WHERE serverId = ? AND userId = ?`,
-        [unixNow, serverId, userId],
+        [unixNow, message.guild.id, message.author.id],
         (err) => {
           if (err) reject(err);
           else resolve();
@@ -48,6 +50,19 @@ module.exports = async function cooldownManager(client, cooldownName, cooldownIn
     return 0; // cooldown is off and everything went good :thumbsup:
   } catch (error) {
     console.error(logPrefix + " Error handling cooldown '" + cooldownName + "': " + error);
+
+    const embed = new EmbedBuilder()
+      .setColor(0xff0000)
+      .setTitle("❌ Error")
+      .setDescription("Failed to update your cooldown, please **report this error with your user ID**")
+      .addFields({ name: "Submit report here", value: "https://discord.gg/KxadTdz" });
+
+    try {
+      await message.reply({ embeds: [embed] });
+    } catch (error) {
+      // continue
+    }
+
     return null; // in case of an error (check is in the command)
   }
 };

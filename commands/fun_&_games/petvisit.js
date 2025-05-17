@@ -23,7 +23,7 @@ module.exports = {
       .setTitle("❌ Error")
       .setDescription("You don't have a pet, adopt it with **d!adopt <@user>**");
 
-    if (!row.hasPet) {
+    if (!row || !row.hasPet) {
       try {
         return await message.reply({ embeds: [petVisitMessageEmbed] });
       } catch (error) {
@@ -31,17 +31,10 @@ module.exports = {
       }
     }
 
-    const cooldown = await cooldownManager(client, "petVetCooldown", this.cooldown, message.guild.id, message.author.id);
+    const cooldown = await cooldownManager(client, message, "petVetCooldown", this.cooldown);
+    if (cooldown == null) return;
 
-    if (cooldown == null) {
-      try {
-        return await message.reply("The vet isn't available right now, try again later");
-      } catch (error) {
-        return;
-      }
-    }
-
-    if (cooldown[0] == 1) {
+    if (cooldown != 0) {
       petVisitMessageEmbed
         .setColor(0x000000)
         .setTitle(null)

@@ -12,7 +12,7 @@ module.exports = {
       .setTitle("❌ Error")
       .setDescription("Music commands are off, type: **d!musicmd on**");
 
-    const isMusicEnabled = await configChecker(client, "musiCmd", message);
+    const isMusicEnabled = await configChecker(client, message, "musiCmd");
     if (isMusicEnabled == null) return;
 
     if (isMusicEnabled == 0) {

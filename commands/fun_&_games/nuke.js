@@ -17,17 +17,10 @@ module.exports = {
       }
     }
 
-    const cooldown = await cooldownManager(client, "nukeCooldown", this.cooldown, message.guild.id, message.author.id);
+    const cooldown = await cooldownManager(client, message, "nukeCooldown", this.cooldown);
+    if (cooldown == null) return;
 
-    if (cooldown == null) {
-      try {
-        return await message.reply("Shit, i couldn't launch the nuke, try again");
-      } catch (error) {
-        return;
-      }
-    }
-
-    if (cooldown[0] == 1) {
+    if (cooldown != 0) {
       const nukeMessageEmbed = new EmbedBuilder()
         .setColor(0x000000)
         .setDescription("⏰ Slowdown man, no need to nuke this fast, wait: **<t:" + cooldown[1] + ":R>**");

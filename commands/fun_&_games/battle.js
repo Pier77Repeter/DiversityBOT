@@ -19,17 +19,10 @@ module.exports = {
     const mentionedUser = message.mentions.members.first().user;
     const messageAuthor = message.author;
 
-    const cooldown = await cooldownManager(client, "battleCooldown", this.cooldown, message.guild.id, message.author.id);
+    const cooldown = await cooldownManager(client, message, "battleCooldown", this.cooldown);
+    if (cooldown == null) return;
 
-    if (cooldown == null) {
-      try {
-        return await message.reply("Battle won't start, because something went wrong :/");
-      } catch (error) {
-        return;
-      }
-    }
-
-    if (cooldown[0] == 1) {
+    if (cooldown != 0) {
       const battleMessageEmbed = new EmbedBuilder()
         .setColor(0x000000)
         .setDescription("⏰ Herr user, wait: **<t:" + cooldown[1] + ":R>** to battle again");
@@ -107,7 +100,7 @@ module.exports = {
           .setColor(0xffcc00)
           .setTitle(messageAuthor.username + " won 🏆")
           .setDescription("That was an epik fight, GG!")
-          .setImage("https://media1.tenor.com/m/joRMjYBLsFsAAAAd/gmod-gmod-dance.gif")
+          .setImage("https://c.tenor.com/joRMjYBLsFsAAAAd/tenor.gif")
           .setFooter({ text: "ezzz" });
 
         try {
@@ -198,7 +191,7 @@ module.exports = {
           .setColor(0xffcc00)
           .setTitle(mentionedUser.username + " won 🏆")
           .setDescription("That was an epik fight, GG!")
-          .setImage("https://media1.tenor.com/m/joRMjYBLsFsAAAAd/gmod-gmod-dance.gif")
+          .setImage("https://c.tenor.com/joRMjYBLsFsAAAAd/tenor.gif")
           .setFooter({ text: "ezzz" });
 
         try {

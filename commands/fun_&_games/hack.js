@@ -20,17 +20,10 @@ module.exports = {
     const member = message.mentions.members.first().user;
     const messageAuthor = message.author.username;
 
-    const cooldown = await cooldownManager(client, "hackCooldown", this.cooldown, message.guild.id, message.author.id);
+    const cooldown = await cooldownManager(client, message, "hackCooldown", this.cooldown);
+    if (cooldown == null) return;
 
-    if (cooldown == null) {
-      try {
-        return await message.reply("User hacking has failed, try again later");
-      } catch (error) {
-        return;
-      }
-    }
-
-    if (cooldown[0] == 1) {
+    if (cooldown != 0) {
       const hackMessageEmbed = new EmbedBuilder()
         .setColor(0x000000)
         .setDescription("⏰ Better wait **<t:" + cooldown[1] + ":R>** before hacking again, you might be found by the FBI");

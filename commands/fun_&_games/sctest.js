@@ -15,17 +15,10 @@ module.exports = {
   description: "Starts the social credits test",
   cooldown: 90,
   async execute(client, message, args) {
-    const cooldown = cooldownManager(client, "scTestCooldown", this.cooldown, message.guild.id, message.author.id);
+    const cooldown = cooldownManager(client, message, "scTestCooldown", this.cooldown);
+    if (cooldown == null) return;
 
-    if (cooldown == null) {
-      try {
-        return await message.reply("Failed to start the test...");
-      } catch (error) {
-        return;
-      }
-    }
-
-    if (cooldown[0] == 1) {
+    if (cooldown != 0) {
       const scTestMessageEmbed = new EmbedBuilder()
         .setColor(0x000000)
         .setDescription("⏰ You you can do this test again: **<t:" + cooldown[1] + ":R>**");

@@ -1,3 +1,5 @@
+const { EmbedBuilder } = require("discord.js");
+
 // thing to update json data in DB, at the moment it's only 'items' and 'fishes'
 module.exports = async function dbJsonDataSet(client, message, dataName, jsonData) {
   const logPrefix = "[DbJsonDataSet.js/ERROR]:";
@@ -29,7 +31,7 @@ module.exports = async function dbJsonDataSet(client, message, dataName, jsonDat
       .setColor(0xff0000)
       .setTitle("❌ Error")
       .setDescription("Failed to update your stuff in database, **report this issue with your ID**")
-      .addFields({ name: "Submit here", value: "https://discord.gg/KxadTdz" });
+      .addFields({ name: "Submit report here", value: "https://discord.gg/KxadTdz" });
 
     try {
       await message.reply({ embeds: [embed] });

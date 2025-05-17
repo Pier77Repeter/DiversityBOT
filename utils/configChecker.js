@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require("discord.js");
 
 // checks for server config in database
-module.exports = async function configChecker(client, configName, message) {
+module.exports = async function configChecker(client, message, configName) {
   // This is very useful since it's gonna save tons of lines and time when checking configs
   const logPrefix = "[ConfigChecker.js/ERROR]:";
 

@@ -12,7 +12,7 @@ module.exports = {
       .setDescription("Music commands are off, type: **d!musicmd on**");
 
     // take a look into configChecker to know what's going on
-    const isMusicEnabled = await configChecker(client, "musiCmd", message);
+    const isMusicEnabled = await configChecker(client, message, "musiCmd");
     if (isMusicEnabled == null) return; // put return so that commands execution stops when there's an error
 
     if (isMusicEnabled == 0) {

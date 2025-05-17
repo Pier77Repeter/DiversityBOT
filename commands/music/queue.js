@@ -4,6 +4,7 @@ const configChecker = require("../../utils/configChecker.js");
 
 module.exports = {
   name: "queue",
+  aliases: ["q"],
   description: "Shows the music queue of the server",
   async execute(client, message, args) {
     const queueMessageEmbed = new EmbedBuilder()
@@ -11,7 +12,7 @@ module.exports = {
       .setTitle("❌ Error")
       .setDescription("Music commands are off, type: **d!musicmd on**");
 
-    const isMusicEnabled = await configChecker(client, "musiCmd", message);
+    const isMusicEnabled = await configChecker(client, message, "musiCmd");
     if (isMusicEnabled == null) return;
 
     if (isMusicEnabled == 0) {

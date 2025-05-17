@@ -99,7 +99,7 @@ module.exports = {
     btnCollector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
         try {
-          return await message.reply({
+          return await btnInteraction.reply({
             content: "Don't bother this user's command, type d!urban to search for yourself",
             flags: MessageFlags.Ephemeral,
           });

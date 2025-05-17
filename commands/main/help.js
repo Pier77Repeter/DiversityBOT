@@ -60,7 +60,7 @@ module.exports = {
     const imageFile = new AttachmentBuilder("./media/DVC_highquality.jpg");
 
     const helpMessageEmbed = new EmbedBuilder()
-      .setColor("#33cc00")
+      .setColor(0x33cc00)
       .setTitle("📖 Help menu:")
       .setDescription(
         [
@@ -120,7 +120,7 @@ module.exports = {
             menuCollector.resetTimer();
 
             const helpCategoryFunMessageEmbed = new EmbedBuilder()
-              .setColor("00cccc")
+              .setColor(0x00cccc)
               .setTitle("🎮 Fun & Games section:")
               .setDescription(
                 [
@@ -186,7 +186,7 @@ module.exports = {
             menuCollector.resetTimer();
 
             const helpCategoryMusicMessageEmbed = new EmbedBuilder()
-              .setColor("00cccc")
+              .setColor(0x00cccc)
               .setTitle("🎵 Music section:")
               .setDescription(
                 [
@@ -219,7 +219,7 @@ module.exports = {
             menuCollector.resetTimer();
 
             const helpCategoryEconomyMessageEmbed = new EmbedBuilder()
-              .setColor("00cccc")
+              .setColor(0x00cccc)
               .setTitle("⚖️ Economy section:")
               .setDescription(
                 [
@@ -268,7 +268,7 @@ module.exports = {
             menuCollector.resetTimer();
 
             const helpCategoryImgMessageEmbed = new EmbedBuilder()
-              .setColor("00cccc")
+              .setColor(0x00cccc)
               .setTitle("📸 Image section:")
               .setDescription(
                 [
@@ -321,7 +321,7 @@ module.exports = {
             menuCollector.resetTimer();
 
             const helpCategoryUtilityMessageEmbed = new EmbedBuilder()
-              .setColor("00cccc")
+              .setColor(0x00cccc)
               .setTitle("🧰 Utility section:")
               .setDescription(
                 [
@@ -362,7 +362,7 @@ module.exports = {
             menuCollector.resetTimer();
 
             const helpCategoryCommunityMessageEmbed = new EmbedBuilder()
-              .setColor("00cccc")
+              .setColor(0x00cccc)
               .setTitle("🌍 Community section:")
               .setDescription(
                 [
