@@ -235,6 +235,8 @@ module.exports = {
                   "**d!debts** - Check user debts",
                   "**d!buy <item name>** - Buy an item from the shop",
                   "**d!sell <item name>** - Sell an item from your inventory",
+                  "**d!add <@user> <amount>** - Add money to an user (Only admin)",
+                  "**d!remove <@user> <amount>** - Remove money to an user (Only admin)",
                   // need to be rewritten
                   "**d!daily** - To get your daily money",
                   "**d!dupe** - To dupe money",
@@ -244,8 +246,6 @@ module.exports = {
                   "**d!rob <user>** - To rob someone",
                   "**d!crime** - To commit a crime",
                   "**d!fish** - To start fishing",
-                  "**d!add <user> <amount>** - To add money (Only admin)",
-                  "**d!remove <user> <amount>** - To remove money (Only admin)",
                   "**d!hl** - Highlow game",
                   "**d!pv** - Post a video on YouTube",
                   "**d!pm** - Post a meme on Reddit",

@@ -41,7 +41,14 @@ module.exports = {
       .setCustomId("btn-debts-btnPayDebts")
       .setLabel("Pay debts")
       .setStyle(ButtonStyle.Primary);
+
     const btnRow = new ActionRowBuilder().addComponents(payDebtsBtn);
+
+    if (row.debts == 0) {
+      embed.setColor(0x33ff33).setTitle("Looking good 👍").setDescription("You don't have debts to pay, clean").setFooter(null);
+
+      payDebtsBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
+    }
 
     var sentMessage;
     try {
@@ -84,18 +91,6 @@ module.exports = {
             .setFooter(null);
 
           payDebtsBtn.setStyle(ButtonStyle.Danger).setDisabled(true);
-
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        if (row.debts == 0) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have debts to pay, clean").setFooter(null);
-
-          payDebtsBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [btnRow] });
