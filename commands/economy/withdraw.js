@@ -4,7 +4,6 @@ module.exports = {
   name: "withdraw",
   aliases: ["with"],
   description: "Withdraw money into the bank",
-
   async execute(client, message, args) {
     const embed = new EmbedBuilder();
 

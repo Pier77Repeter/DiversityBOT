@@ -4,7 +4,6 @@ module.exports = {
   name: "deposit",
   aliases: ["dep"],
   description: "Deposit money into the bank",
-
   async execute(client, message, args) {
     const embed = new EmbedBuilder();
 

@@ -76,7 +76,7 @@ module.exports = {
     btnCollector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
         try {
-          return await message.reply({
+          return await btnInteraction.reply({
             content: "You can't launch this nuke, it's for someone else",
             flags: MessageFlags.Ephemeral,
           });

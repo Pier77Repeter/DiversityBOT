@@ -237,21 +237,21 @@ module.exports = {
                   "**d!sell <item name>** - Sell an item from your inventory",
                   "**d!add <@user> <amount>** - Add money to an user (Only admin)",
                   "**d!remove <@user> <amount>** - Remove money to an user (Only admin)",
+                  "**d!daily** - Claim your daily reward",
+                  "**d!dupe** - Earn money by duping money",
+                  "**d!search** - Search for money around the Minecraft world",
                   // need to be rewritten
-                  "**d!daily** - To get your daily money",
-                  "**d!dupe** - To dupe money",
                   "**d!work** - Work to get some money",
                   "**d!beg** - To beg some money",
-                  "**d!search** - You search for some money, you must be lucky ;)",
-                  "**d!rob <user>** - To rob someone",
                   "**d!crime** - To commit a crime",
                   "**d!fish** - To start fishing",
                   "**d!hl** - Highlow game",
                   "**d!pv** - Post a video on YouTube",
                   "**d!pm** - Post a meme on Reddit",
-                  "**d!roulette <amount>** - Play the roulette",
                   "**d!mine** - To go mine",
                   "**d!hunt** - Kill some preys",
+                  "**d!rob <user>** - To rob someone",
+                  "**d!roulette <amount>** - Play the roulette",
                 ].join("\n")
               );
 

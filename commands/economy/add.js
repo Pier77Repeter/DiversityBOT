@@ -4,7 +4,6 @@ const manageUserMoney = require("../../utils/manageUserMoney");
 module.exports = {
   name: "add",
   description: "Add money to user, only for admins",
-
   async execute(client, message, args) {
     const user = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
 
@@ -67,7 +66,7 @@ module.exports = {
       }
     }
 
-    if (manageUserMoney(client, message, "+", args[1]) == null) return;
+    if ((await manageUserMoney(client, message, "+", args[1])) == null) return;
 
     embed
       .setColor(0x33ff33)

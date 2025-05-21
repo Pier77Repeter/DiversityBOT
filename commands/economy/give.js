@@ -3,7 +3,6 @@ const { EmbedBuilder } = require("@discordjs/builders");
 module.exports = {
   name: "give",
   description: "Give money to another user",
-
   async execute(client, message, args) {
     const user = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
 
