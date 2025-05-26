@@ -5,63 +5,65 @@ const {
   AttachmentBuilder,
   EmbedBuilder,
   ComponentType,
+  MessageFlags,
 } = require("discord.js");
 
 module.exports = {
   name: "help",
   description: "Displays the help message including all commands",
   async execute(client, message, args) {
-    const helpMenu = new StringSelectMenuBuilder()
-      .setCustomId("menu-help-helpMenu")
+    const menuHelp = new StringSelectMenuBuilder()
+      .setCustomId("menu-help-menuHelp")
       .setPlaceholder("Click to navigate through the menu!")
       .setMaxValues(1)
       .setMinValues(1)
       .setDisabled(false)
       .addOptions(
         new StringSelectMenuOptionBuilder()
-          .setValue("menuOption-help-helpMenu-fun_&_games")
+          // format is menuOption-<commandName>-<menuName>-<optionName>
+          .setValue("menuOption-help-menuHelp-fun_&_games")
           .setLabel("Fun & Games")
           .setEmoji("🎮")
           .setDescription("Fun commands")
           .setDefault(false),
         new StringSelectMenuOptionBuilder()
-          .setValue("menuOption-help-helpMenu-music")
+          .setValue("menuOption-help-menuHelp-music")
           .setLabel("Music")
           .setEmoji("🎵")
           .setDescription("Music commands")
           .setDefault(false),
         new StringSelectMenuOptionBuilder()
-          .setValue("menuOption-help-helpMenu-economy")
+          .setValue("menuOption-help-menuHelp-economy")
           .setLabel("Economy")
           .setEmoji("⚖️")
           .setDescription("Economy commands")
           .setDefault(false),
         new StringSelectMenuOptionBuilder()
-          .setValue("menuOption-help-helpMenu-img")
+          .setValue("menuOption-help-menuHelp-img")
           .setLabel("Image")
           .setEmoji("📸")
           .setDescription("Image commands")
           .setDefault(false),
         new StringSelectMenuOptionBuilder()
-          .setValue("menuOption-help-helpMenu-utility")
+          .setValue("menuOption-help-menuHelp-utility")
           .setLabel("Utility")
           .setEmoji("🧰")
           .setDescription("Utility commands")
           .setDefault(false),
         new StringSelectMenuOptionBuilder()
-          .setValue("menuOption-help-helpMenu-community")
+          .setValue("menuOption-help-menuHelp-community")
           .setLabel("Community")
           .setEmoji("🌍")
           .setDescription("Community commands")
           .setDefault(false)
       );
-    const helpMenuRow = new ActionRowBuilder().addComponents(helpMenu);
+    const actionRow = new ActionRowBuilder().addComponents(menuHelp);
 
     const imageFile = new AttachmentBuilder("./media/DVC_highquality.jpg");
 
-    const helpMessageEmbed = new EmbedBuilder()
+    const embed = new EmbedBuilder()
       .setColor(0x33cc00)
-      .setTitle("📖 Help menu:")
+      .setTitle("📖 Help menu")
       .setDescription(
         [
           'Hello there! I\'m DiversityBOT, a totally "normal" Discord Bot',
@@ -92,17 +94,17 @@ module.exports = {
     var sentMessage;
 
     try {
-      sentMessage = await message.reply({ embeds: [helpMessageEmbed], files: [imageFile], components: [helpMenuRow] });
+      sentMessage = await message.reply({ embeds: [embed], files: [imageFile], components: [actionRow] });
     } catch (error) {
       return;
     }
 
-    const menuCollector = sentMessage.createMessageComponentCollector({
+    const collector = sentMessage.createMessageComponentCollector({
       componentType: ComponentType.StringSelect,
       time: 180_000,
     });
 
-    menuCollector.on("collect", async (menuInteraction) => {
+    collector.on("collect", async (menuInteraction) => {
       if (menuInteraction.user.id !== message.author.id) {
         try {
           return await menuInteraction.reply({
@@ -114,12 +116,13 @@ module.exports = {
         }
       }
 
-      if (menuInteraction.customId === "menu-help-helpMenu") {
-        switch (menuInteraction.values[0]) {
-          case "menuOption-help-helpMenu-fun_&_games":
-            menuCollector.resetTimer();
+      collector.resetTimer();
+      const menuOptionEmbed = new EmbedBuilder();
 
-            const helpCategoryFunMessageEmbed = new EmbedBuilder()
+      if (menuInteraction.customId === "menu-help-menuHelp") {
+        switch (menuInteraction.values[0]) {
+          case "menuOption-help-menuHelp-fun_&_games":
+            menuOptionEmbed
               .setColor(0x00cccc)
               .setTitle("🎮 Fun & Games section:")
               .setDescription(
@@ -175,17 +178,15 @@ module.exports = {
 
             try {
               await menuInteraction.update({
-                embeds: [helpMessageEmbed, helpCategoryFunMessageEmbed],
-                components: [helpMenuRow],
+                embeds: [embed, menuOptionEmbed],
+                components: [actionRow],
               });
             } catch (error) {
               return;
             }
             break;
-          case "menuOption-help-helpMenu-music":
-            menuCollector.resetTimer();
-
-            const helpCategoryMusicMessageEmbed = new EmbedBuilder()
+          case "menuOption-help-menuHelp-music":
+            menuOptionEmbed
               .setColor(0x00cccc)
               .setTitle("🎵 Music section:")
               .setDescription(
@@ -208,66 +209,60 @@ module.exports = {
 
             try {
               await menuInteraction.update({
-                embeds: [helpMessageEmbed, helpCategoryMusicMessageEmbed],
-                components: [helpMenuRow],
+                embeds: [embed, menuOptionEmbed],
+                components: [actionRow],
               });
             } catch (error) {
               return;
             }
             break;
-          case "menuOption-help-helpMenu-economy":
-            menuCollector.resetTimer();
-
-            const helpCategoryEconomyMessageEmbed = new EmbedBuilder()
-              .setColor(0x00cccc)
-              .setTitle("⚖️ Economy section:")
-              .setDescription(
-                [
-                  "**d!balance** - See how much money the user has",
-                  "**d!lb** - See the richest users in the server",
-                  "**d!use** - Shows the list of usable items",
-                  "**d!inventory** - See user's inventory",
-                  "**d!bucket** - See user's bucket with the fishes",
-                  "**d!shop** - See the shop",
-                  "**d!deposit <amount>** - Deposit your money in the bank",
-                  "**d!withdraw <amount>** - Withdraw your money from the bank",
-                  "**d!give <@user> <amount>** - Give money to mentioned user",
-                  "**d!debts** - Check user debts",
-                  "**d!buy <item name>** - Buy an item from the shop",
-                  "**d!sell <item name>** - Sell an item from your inventory",
-                  "**d!add <@user> <amount>** - Add money to an user (Only admin)",
-                  "**d!remove <@user> <amount>** - Remove money to an user (Only admin)",
-                  "**d!daily** - Claim your daily reward",
-                  "**d!dupe** - Earn money by duping money",
-                  "**d!search** - Search for money around the Minecraft world",
-                  // need to be rewritten
-                  "**d!work** - Work to get some money",
-                  "**d!beg** - To beg some money",
-                  "**d!crime** - To commit a crime",
-                  "**d!fish** - To start fishing",
-                  "**d!hl** - Highlow game",
-                  "**d!pv** - Post a video on YouTube",
-                  "**d!pm** - Post a meme on Reddit",
-                  "**d!mine** - To go mine",
-                  "**d!hunt** - Kill some preys",
-                  "**d!rob <user>** - To rob someone",
-                  "**d!roulette <amount>** - Play the roulette",
-                ].join("\n")
-              );
+          case "menuOption-help-menuHelp-economy":
+            menuOptionEmbed.setColor(0x00cccc).setTitle("⚖️ Economy section:").setDescription(
+              [
+                "**d!balance** - See how much money the user has",
+                "**d!lb** - See the richest users in the server",
+                "**d!use** - Shows the list of usable items",
+                "**d!inventory** - See user's inventory",
+                "**d!bucket** - See user's bucket with the fishes",
+                "**d!shop** - See the shop",
+                "**d!deposit <amount>** - Deposit your money in the bank",
+                "**d!withdraw <amount>** - Withdraw your money from the bank",
+                "**d!give <@user> <amount>** - Give money to mentioned user",
+                "**d!debts** - Check user debts",
+                "**d!buy <item name>** - Buy an item from the shop",
+                "**d!sell <item name>** - Sell an item from your inventory",
+                "**d!add <@user> <amount>** - Add money to an user (Only admin)",
+                "**d!remove <@user> <amount>** - Remove money to an user (Only admin)",
+                "**d!daily** - Claim your daily reward",
+                "**d!dupe** - Earn money by duping money",
+                "**d!search** - Search for money around the Minecraft world",
+                "**d!jobs** - See the list of jobs you can do",
+                "**d!work** - Work to get some money",
+                "**d!beg** - Beg for money",
+                // needs to be rewritten
+                "**d!crime** - To commit a crime",
+                "**d!fish** - To start fishing",
+                "**d!hl** - Highlow game",
+                "**d!pv** - Post a video on YouTube",
+                "**d!pm** - Post a meme on Reddit",
+                "**d!mine** - To go mine",
+                "**d!hunt** - Kill some preys",
+                "**d!rob <user>** - To rob someone",
+                "**d!roulette <amount>** - Play the roulette",
+              ].join("\n")
+            );
 
             try {
               await menuInteraction.update({
-                embeds: [helpMessageEmbed, helpCategoryEconomyMessageEmbed],
-                components: [helpMenuRow],
+                embeds: [embed, menuOptionEmbed],
+                components: [actionRow],
               });
             } catch (error) {
               return;
             }
             break;
-          case "menuOption-help-helpMenu-img":
-            menuCollector.resetTimer();
-
-            const helpCategoryImgMessageEmbed = new EmbedBuilder()
+          case "menuOption-help-menuHelp-img":
+            menuOptionEmbed
               .setColor(0x00cccc)
               .setTitle("📸 Image section:")
               .setDescription(
@@ -310,17 +305,15 @@ module.exports = {
 
             try {
               await menuInteraction.update({
-                embeds: [helpMessageEmbed, helpCategoryImgMessageEmbed],
-                components: [helpMenuRow],
+                embeds: [embed, menuOptionEmbed],
+                components: [actionRow],
               });
             } catch (error) {
               return;
             }
             break;
-          case "menuOption-help-helpMenu-utility":
-            menuCollector.resetTimer();
-
-            const helpCategoryUtilityMessageEmbed = new EmbedBuilder()
+          case "menuOption-help-menuHelp-utility":
+            menuOptionEmbed
               .setColor(0x00cccc)
               .setTitle("🧰 Utility section:")
               .setDescription(
@@ -350,25 +343,23 @@ module.exports = {
 
             try {
               await menuInteraction.update({
-                embeds: [helpMessageEmbed, helpCategoryUtilityMessageEmbed],
-                components: [helpMenuRow],
+                embeds: [embed, menuOptionEmbed],
+                components: [actionRow],
               });
             } catch (error) {
               return;
             }
             break;
 
-          case "menuOption-help-helpMenu-community":
-            menuCollector.resetTimer();
-
-            const helpCategoryCommunityMessageEmbed = new EmbedBuilder()
+          case "menuOption-help-menuHelp-community":
+            menuOptionEmbed
               .setColor(0x00cccc)
               .setTitle("🌍 Community section:")
               .setDescription(
                 [
                   "**This section will change often**",
                   "You can suggest your own command at: https://discord.gg/KxadTdz",
-                  "\n",
+                  "",
                   "**d!jm** - For Java moment",
                   "**d!hm** - Hausemaster moment",
                   "**d!canny** - Play canny the game",
@@ -378,8 +369,8 @@ module.exports = {
 
             try {
               await menuInteraction.update({
-                embeds: [helpMessageEmbed, helpCategoryCommunityMessageEmbed],
-                components: [helpMenuRow],
+                embeds: [embed, menuOptionEmbed],
+                components: [actionRow],
               });
             } catch (error) {
               return;
@@ -389,14 +380,14 @@ module.exports = {
       }
     });
 
-    menuCollector.on("end", async () => {
-      helpMenu.setPlaceholder("Menu disabled, type again d!help");
-      helpMenu.setDisabled(true);
+    collector.on("end", async () => {
+      menuHelp.setPlaceholder("Menu disabled, type again d!help");
+      menuHelp.setDisabled(true);
 
       try {
         return await sentMessage.edit({
-          embeds: [helpMessageEmbed],
-          components: [helpMenuRow],
+          embeds: [embed],
+          components: [actionRow],
         });
       } catch (error) {
         return;
