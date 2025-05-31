@@ -8,18 +8,10 @@ module.exports = {
   async execute(client, message, args) {
     // for every cooldown, we'll use the cooldownManager, take a look into it at: utils/cooldownManager.js
     const cooldown = await cooldownManager(client, "dailyCooldown", this.cooldown, message.guild.id, message.author.id);
-
-    // something went wrong while getting the cooldown in the db, the return value is null
-    if (cooldown == null) {
-      try {
-        return await message.reply("It's joever, this cooldown command failed");
-      } catch (error) {
-        return;
-      }
-    }
+    if (cooldown == null) return; // check cooldownManager.js PLEASE, if cooldown is null than shit happened, so command execution must be stopped
 
     // if everything went gut, the return value is this: cooldownData = [statusCode, timeLeft]
-    if (cooldown[0] == 1) {
+    if (cooldown != 0) {
       const cooldownMessageEmbed = new EmbedBuilder()
         .setColor(0x000000)
         .setDescription("⏰ WAIT: **<t:" + cooldown[1] + ":R>** to use this again");

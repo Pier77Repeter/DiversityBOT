@@ -1,4 +1,10 @@
-const { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ComponentType, time } = require("discord.js");
+const {
+  ActionRowBuilder,
+  StringSelectMenuBuilder,
+  StringSelectMenuOptionBuilder,
+  ComponentType,
+  MessageFlags,
+} = require("discord.js");
 
 module.exports = {
   name: "menu",
@@ -21,24 +27,24 @@ module.exports = {
       );
 
     // creating the menu row
-    const menuRow = new ActionRowBuilder().addComponents(menu);
+    const actionRow = new ActionRowBuilder().addComponents(menu);
 
     // reply message with the menu
     var sentMessage;
 
     try {
-      sentMessage = await message.reply({ content: "Choose your weapon", components: [menuRow] });
+      sentMessage = await message.reply({ content: "Choose your weapon", components: [actionRow] });
     } catch (error) {
       return;
     }
 
-    const menuCollector = sentMessage.createMessageComponentCollector({
+    const collector = sentMessage.createMessageComponentCollector({
       componentType: ComponentType.StringSelect, // menu option type
       time: 15_000, // 15 secs
     });
 
     // when the menu is clicked event
-    menuCollector.on("collect", async (menuInteraction) => {
+    collector.on("collect", async (menuInteraction) => {
       // always check if the user is the author
       if (menuInteraction.user.id !== message.author.id)
         try {
@@ -50,9 +56,10 @@ module.exports = {
           return;
         }
 
+      collector.resetTimer();
+
       // checking which interaction was selected
       if (menuInteraction.customId === "menu-menu-menu") {
-        menuCollector.resetTimer();
         // checking which option was selected menuInteraction.values[0] to get the options (this is the first option)
         switch (menuInteraction.values[0]) {
           case "bidenBlast":
@@ -60,7 +67,7 @@ module.exports = {
               // update the interaction, we can only do that 1 time, after this we need to do: sentMessage.edit()
               await menuInteraction.update({
                 content: "Biden blast selected",
-                components: [menuRow],
+                components: [actionRow],
               });
             } catch (error) {
               return;
@@ -70,7 +77,7 @@ module.exports = {
             try {
               await menuInteraction.update({
                 content: "Curse of RA selected",
-                components: [menuRow],
+                components: [actionRow],
               });
             } catch (error) {
               return;
@@ -80,7 +87,7 @@ module.exports = {
             try {
               await menuInteraction.update({
                 content: "Bob selected",
-                components: [menuRow],
+                components: [actionRow],
               });
             } catch (error) {
               return;
@@ -90,14 +97,14 @@ module.exports = {
       }
     });
 
-    menuCollector.on("end", async () => {
-      menu.setDisabled(true);
+    collector.on("end", async () => {
+      menu.setDisabled(true); // disabling the menu
 
       // update the menu when disabled
       try {
         await sentMessage.edit({
           content: "Bob selected",
-          components: [menuRow],
+          components: [actionRow],
         });
       } catch (error) {
         return;

@@ -8,7 +8,7 @@ module.exports = {
     const imageFile = new AttachmentBuilder("./media/DVC_highquality.png");
 
     // creating the embed using the 'EmbedBuilder()'
-    const messageEmbed = new EmbedBuilder()
+    const embed = new EmbedBuilder()
       .setColor(0x00ff00) // setting up the embed color in HEX, always put '0x' before the value
       .setTitle("Title V1")
       .setDescription("Using classic embed creation")
@@ -23,7 +23,7 @@ module.exports = {
     // sending the embed with the image and return because it's the last thing to do
     try {
       // to put embeds and images inside message.reply() you do this '{ embeds: [embed1, embed2], files: [file1, file2] }'
-      return await message.reply({ embeds: [messageEmbed], files: [imageFile] });
+      return await message.reply({ embeds: [embed], files: [imageFile] });
     } catch (error) {
       return;
     }
