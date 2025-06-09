@@ -36,6 +36,18 @@ const defaultConfigs = {
     kar98kPrice: 5000,
     pickaxePrice: 700,
   },
+  fishPrices: {
+    fishPrice: 10,
+    tropicalFishPrice: 20,
+    pufferFishPrice: 25,
+    shrimpPrice: 20,
+    lobsterPrice: 70,
+    crabPrice: 100,
+    squidPrice: 30,
+    octopusPrice: 25,
+    sharkPrice: 15,
+    whalePrice: 300,
+  },
 };
 
 // checks if config.json exists

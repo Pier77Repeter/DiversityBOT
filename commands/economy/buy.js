@@ -45,7 +45,7 @@ module.exports = {
       }
     }
 
-    switch (args[0].toLowerCase()) {
+    switch (args.join(" ").toLowerCase()) {
       case "diversitygem":
         if (items.itemId1) {
           embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You already own this item");
@@ -245,12 +245,12 @@ module.exports = {
         items.itemId6 = true;
 
         if ((await dbJsonDataSet(client, message, "items", items)) == null) return;
-        if ((await manageUserMoney(client, message, "-", itemPrices.ak47Price)) == null) return;
+        if ((await manageUserMoney(client, message, "-", itemPrices.fishingRodPrice)) == null) return;
 
         embed
           .setColor(0x00ff00)
           .setTitle("✅ Purchase successful")
-          .setDescription("You bought a **fishing rod** for **" + itemPrices.ak47Price + "$**");
+          .setDescription("You bought a **fishing rod** for **" + itemPrices.fishingRodPrice + "$**");
 
         try {
           return await message.reply({ embeds: [embed] });

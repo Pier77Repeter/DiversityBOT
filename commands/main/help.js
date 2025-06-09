@@ -243,10 +243,10 @@ module.exports = {
                 "**d!hl** - Play the highlow game",
                 "**d!pm** - Post a meme on Reddit",
                 "**d!pv** - Post a video on YouTube",
+                "**d!fish** - Go fishing",
+                "**d!mine** - Mine for ores",
+                "**d!hunt** - Hunt in the forest for preys",
                 // needs to be rewritten
-                "**d!fish** - To start fishing",
-                "**d!mine** - To go mine",
-                "**d!hunt** - Kill some preys",
                 "**d!rob <user>** - To rob someone",
                 "**d!roulette <amount>** - Play the roulette",
               ].join("\n")
