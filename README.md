@@ -80,6 +80,10 @@ Yay, this is the complete rewrite of the Bot, still a work in progress (it's gon
     - The bot id to register the slash commands
     - Coin prices since don't want a table in db
 
+- **`server.js`**:
+
+  - Simple web server that redirects to DiversityCraft's website, just needed to keep the bot online
+
 ### Directories
 
 - **`commands/`**:

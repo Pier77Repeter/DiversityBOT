@@ -146,6 +146,10 @@ var botStatus = [
   },
 ];
 
+// keep alive the bot while it loads, start the web server
+const keepAlive = require("./server");
+keepAlive();
+
 // bot logging in
 client
   .login(botToken)
