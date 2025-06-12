@@ -217,40 +217,42 @@ module.exports = {
             }
             break;
           case "menuOption-help-menuHelp-economy":
-            menuOptionEmbed.setColor(0x00cccc).setTitle("⚖️ Economy section:").setDescription(
-              [
-                "**d!balance** - See how much money the user has",
-                "**d!lb** - See the richest users in the server",
-                "**d!use** - Shows the list of usable items",
-                "**d!inventory** - See user's inventory",
-                "**d!bucket** - See user's bucket with the fishes",
-                "**d!shop** - See the DiversityShop",
-                "**d!deposit <amount>** - Deposit your money in the bank",
-                "**d!withdraw <amount>** - Withdraw your money from the bank",
-                "**d!give <@user> <amount>** - Give money to mentioned user",
-                "**d!debts** - Check user debts",
-                "**d!buy <item name>** - Buy an item from the shop",
-                "**d!sell <item name>** - Sell an item from your inventory",
-                "**d!add <@user> <amount>** - Add money to an user (Only admin)",
-                "**d!remove <@user> <amount>** - Remove money to an user (Only admin)",
-                "**d!daily** - Claim your daily reward",
-                "**d!dupe** - Earn money by duping money",
-                "**d!search** - Search for money around the Minecraft world",
-                "**d!jobs** - See the list of jobs you can do",
-                "**d!work** - Work to get some money",
-                "**d!beg** - Beg for money",
-                "**d!crime** - Commit a crime",
-                "**d!hl** - Play the highlow game",
-                "**d!pm** - Post a meme on Reddit",
-                "**d!pv** - Post a video on YouTube",
-                "**d!fish** - Go fishing",
-                "**d!mine** - Mine for ores",
-                "**d!hunt** - Hunt in the forest for preys",
-                // needs to be rewritten
-                "**d!rob <user>** - To rob someone",
-                "**d!roulette <amount>** - Play the roulette",
-              ].join("\n")
-            );
+            menuOptionEmbed
+              .setColor(0x00cccc)
+              .setTitle("⚖️ Economy section:")
+              .setDescription(
+                [
+                  "**d!balance** - See how much money the user has",
+                  "**d!lb** - See the richest users in the server",
+                  "**d!use** - Shows the list of usable items",
+                  "**d!inventory** - See user's inventory",
+                  "**d!bucket** - See user's bucket with the fishes",
+                  "**d!shop** - See the DiversityShop",
+                  "**d!deposit <amount>** - Deposit your money in the bank",
+                  "**d!withdraw <amount>** - Withdraw your money from the bank",
+                  "**d!give <@user> <amount>** - Give money to mentioned user",
+                  "**d!debts** - Check user debts",
+                  "**d!buy <item name>** - Buy an item from the shop",
+                  "**d!sell <item name>** - Sell an item from your inventory",
+                  "**d!add <@user> <amount>** - Add money to an user (Only admin)",
+                  "**d!remove <@user> <amount>** - Remove money to an user (Only admin)",
+                  "**d!daily** - Claim your daily reward",
+                  "**d!dupe** - Earn money by duping money",
+                  "**d!search** - Search for money around the Minecraft world",
+                  "**d!jobs** - See the list of jobs you can do",
+                  "**d!work** - Work to get some money",
+                  "**d!beg** - Beg for money",
+                  "**d!crime** - Commit a crime",
+                  "**d!hl** - Play the highlow game",
+                  "**d!pm** - Post a meme on Reddit",
+                  "**d!pv** - Post a video on YouTube",
+                  "**d!fish** - Go fishing",
+                  "**d!mine** - Mine for ores",
+                  "**d!hunt** - Hunt in the forest for preys",
+                  "**d!rob <@user>** - Rob the mentioned user",
+                  "**d!roulette <amount>** - Play the roulette",
+                ].join("\n")
+              );
 
             try {
               await menuInteraction.update({
@@ -262,46 +264,44 @@ module.exports = {
             }
             break;
           case "menuOption-help-menuHelp-img":
-            menuOptionEmbed
-              .setColor(0x00cccc)
-              .setTitle("📸 Image section:")
-              .setDescription(
-                [
-                  "**d!delete** or **d!delete <user>**",
-                  "**d!slap <user>**",
-                  "**d!triggered** or **d!triggered <user>**",
-                  "**d!kiss <user>**",
-                  "**d!spank <user>**",
-                  "**d!monster <user>**",
-                  "**d!jail** or **d!jail <user>**",
-                  "**d!gay** or **d!gay <user>**",
-                  "**d!grey** or **d!grey <user>**",
-                  "**d!invert** or **d!invert <user>**",
-                  "**d!sepia** or **d!sepia <user>**",
-                  "**d!ads** or **d!ads <user>**",
-                  "**d!affect** or ** d!affect <user>**",
-                  "**d!beautiful** or **d!beautiful <user>**",
-                  "**d!paint** or **d!paint <user>**",
-                  "**d!wtfs** or **d!wtfs <user>**",
-                  "**d!blackdiscord** or **d!blackdiscord <user>**",
-                  "**d!discord** or **d!discord <user>**",
-                  "**d!facepalm** or **d!facepalm <user>**",
-                  "**d!hitla** or **d!hitla <user>**",
-                  "**d!karaba** or **d!karaba <user>**",
-                  "**d!mms** or **d!mms <user>**",
-                  "**d!notstonks** or **d!notstonks <user>**",
-                  "**d!poutine** or **d!poutine <user>**",
-                  "**d!rip** or **d!rip <user>**",
-                  "**d!stonk** or **d!stonk <user>**",
-                  "**d!tatoo** or **d!tatoo <user>**",
-                  "**d!thomas** or **d!thomas <user>**",
-                  "**d!trash** or **d!trash <user>**",
-                  "**d!circle** or **d!circle <user>**",
-                  "**d!stonk** or **d!stonk <user>**",
-                  "**d!2stonk <user>**",
-                  "**d!notstonk** or **d!notstonk <user>**",
-                ].join("\n")
-              );
+            menuOptionEmbed.setColor(0x00cccc).setTitle("📸 Image section:").setDescription(
+              [
+                // needs to be rewritten
+                "**d!delete** or **d!delete <user>**",
+                "**d!slap <user>**",
+                "**d!triggered** or **d!triggered <user>**",
+                "**d!kiss <user>**",
+                "**d!spank <user>**",
+                "**d!monster <user>**",
+                "**d!jail** or **d!jail <user>**",
+                "**d!gay** or **d!gay <user>**",
+                "**d!grey** or **d!grey <user>**",
+                "**d!invert** or **d!invert <user>**",
+                "**d!sepia** or **d!sepia <user>**",
+                "**d!ads** or **d!ads <user>**",
+                "**d!affect** or ** d!affect <user>**",
+                "**d!beautiful** or **d!beautiful <user>**",
+                "**d!paint** or **d!paint <user>**",
+                "**d!wtfs** or **d!wtfs <user>**",
+                "**d!blackdiscord** or **d!blackdiscord <user>**",
+                "**d!discord** or **d!discord <user>**",
+                "**d!facepalm** or **d!facepalm <user>**",
+                "**d!hitla** or **d!hitla <user>**",
+                "**d!karaba** or **d!karaba <user>**",
+                "**d!mms** or **d!mms <user>**",
+                "**d!notstonks** or **d!notstonks <user>**",
+                "**d!poutine** or **d!poutine <user>**",
+                "**d!rip** or **d!rip <user>**",
+                "**d!stonk** or **d!stonk <user>**",
+                "**d!tatoo** or **d!tatoo <user>**",
+                "**d!thomas** or **d!thomas <user>**",
+                "**d!trash** or **d!trash <user>**",
+                "**d!circle** or **d!circle <user>**",
+                "**d!stonk** or **d!stonk <user>**",
+                "**d!2stonk <user>**",
+                "**d!notstonk** or **d!notstonk <user>**",
+              ].join("\n")
+            );
 
             try {
               await menuInteraction.update({
