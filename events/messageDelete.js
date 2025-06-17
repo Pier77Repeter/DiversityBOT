@@ -1,7 +1,6 @@
 const { Events } = require("discord.js");
 
 module.exports = (client) => {
-  const logPrefix = "[MessageDelete]:";
   const logError = "[MessageDelete/ERROR]:";
 
   client.on(Events.MessageDelete, async (message) => {

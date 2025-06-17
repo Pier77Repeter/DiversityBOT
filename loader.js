@@ -36,7 +36,7 @@ module.exports = {
     await new Promise((resolve, reject) => {
       client.database.serialize(function () {
         client.database.run(
-          "CREATE TABLE IF NOT EXISTS Server (serverId VARCHAR(20) NOT NULL PRIMARY KEY, modCmd BOOLEAN, musiCmd BOOLEAN, eventCmd BOOLEAN, communityCmd BOOLEAN, playCooldown INT);",
+          "CREATE TABLE IF NOT EXISTS Server (serverId VARCHAR(20) NOT NULL PRIMARY KEY, modCmd BOOLEAN, musiCmd BOOLEAN, eventCmd BOOLEAN, communityCmd BOOLEAN, playCooldown INT, imageCooldown INT);",
           (err) => {
             if (err) {
               console.error(logError, "Error building database in 'Server' table: " + err);
@@ -56,7 +56,7 @@ module.exports = {
         );
 
         client.database.run(
-          "CREATE TABLE IF NOT EXISTS User (serverId VARCHAR(20) NOT NULL, userId VARCHAR(20) NOT NULL, reputation INT, warns INT, socialCredits BIGINT, xp INT, nextXp INT, level INT, money BIGINT, bankMoney BIGINT, debts BIGINT, items TEXT, fishes TEXT, jobType VARCHAR(20), hasPet BOOLEAN, petId VARCHAR(20), petStatsHealth INT, petStatsFun INT, petStatsHunger INT, petStatsThirst INT, petCooldown INT, petVetCooldown INT, petPlayCooldown INT, petFeedCooldown INT, petDrinkCooldown INT, memeCooldown INT, nukeCooldown INT, battleCooldown INT, hackCooldown INT, hmCooldown INT, jmCooldown INT, scTestCooldown INT, cannyCooldown INT, uncannyCooldown INT, robCooldown INT, dailyCooldown INT, dupeCooldown INT, mineCooldown INT, huntCooldown INT, crimeCooldown INT, searchCooldown INT, begCooldown INT, highLowCooldown INT, postVideoCooldown INT, postMemeCooldown INT, rouletteCooldown INT, workCooldown INT, fishCooldown INT, imageCooldown INT, PRIMARY KEY (serverId, userId));",
+          "CREATE TABLE IF NOT EXISTS User (serverId VARCHAR(20) NOT NULL, userId VARCHAR(20) NOT NULL, reputation INT, warns INT, socialCredits BIGINT, xp INT, nextXp INT, level INT, money BIGINT, bankMoney BIGINT, debts BIGINT, items TEXT, fishes TEXT, jobType VARCHAR(20), hasPet BOOLEAN, petId VARCHAR(20), petStatsHealth INT, petStatsFun INT, petStatsHunger INT, petStatsThirst INT, petCooldown INT, petVetCooldown INT, petPlayCooldown INT, petFeedCooldown INT, petDrinkCooldown INT, memeCooldown INT, nukeCooldown INT, battleCooldown INT, hackCooldown INT, hmCooldown INT, jmCooldown INT, scTestCooldown INT, cannyCooldown INT, uncannyCooldown INT, robCooldown INT, dailyCooldown INT, dupeCooldown INT, mineCooldown INT, huntCooldown INT, crimeCooldown INT, searchCooldown INT, begCooldown INT, highLowCooldown INT, postVideoCooldown INT, postMemeCooldown INT, rouletteCooldown INT, workCooldown INT, fishCooldown INT, PRIMARY KEY (serverId, userId));",
           (err) => {
             if (err) {
               console.error(logError, "Error building database in 'User' table: " + err);

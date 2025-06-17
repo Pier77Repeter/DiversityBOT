@@ -85,7 +85,7 @@ module.exports = (client) => {
 
       await new Promise((resolve, reject) => {
         client.database.run(
-          "INSERT INTO User VALUES (?, ?, 0, 0, 0, 0, 100, 0, 0, 0, 0, ?, ?, 'null', 0, 'null', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
+          "INSERT INTO User VALUES (?, ?, 0, 0, 0, 0, 100, 0, 0, 0, 0, ?, ?, 'null', 0, 'null', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
           [message.guild.id, message.author.id, itemsJsonData, fishesJsonData],
           (err) => {
             if (err) reject(err);

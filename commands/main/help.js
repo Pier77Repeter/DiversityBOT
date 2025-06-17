@@ -266,40 +266,13 @@ module.exports = {
           case "menuOption-help-menuHelp-img":
             menuOptionEmbed.setColor(0x00cccc).setTitle("📸 Image section:").setDescription(
               [
-                // needs to be rewritten
-                "**d!delete** or **d!delete <user>**",
-                "**d!slap <user>**",
-                "**d!triggered** or **d!triggered <user>**",
-                "**d!kiss <user>**",
-                "**d!spank <user>**",
-                "**d!monster <user>**",
-                "**d!jail** or **d!jail <user>**",
-                "**d!gay** or **d!gay <user>**",
-                "**d!grey** or **d!grey <user>**",
-                "**d!invert** or **d!invert <user>**",
-                "**d!sepia** or **d!sepia <user>**",
-                "**d!ads** or **d!ads <user>**",
-                "**d!affect** or ** d!affect <user>**",
-                "**d!beautiful** or **d!beautiful <user>**",
-                "**d!paint** or **d!paint <user>**",
-                "**d!wtfs** or **d!wtfs <user>**",
-                "**d!blackdiscord** or **d!blackdiscord <user>**",
-                "**d!discord** or **d!discord <user>**",
-                "**d!facepalm** or **d!facepalm <user>**",
-                "**d!hitla** or **d!hitla <user>**",
-                "**d!karaba** or **d!karaba <user>**",
-                "**d!mms** or **d!mms <user>**",
-                "**d!notstonks** or **d!notstonks <user>**",
-                "**d!poutine** or **d!poutine <user>**",
-                "**d!rip** or **d!rip <user>**",
-                "**d!stonk** or **d!stonk <user>**",
-                "**d!tatoo** or **d!tatoo <user>**",
-                "**d!thomas** or **d!thomas <user>**",
-                "**d!trash** or **d!trash <user>**",
-                "**d!circle** or **d!circle <user>**",
-                "**d!stonk** or **d!stonk <user>**",
-                "**d!2stonk <user>**",
-                "**d!notstonk** or **d!notstonk <user>**",
+                // being rewritten
+                "**d!ad** or **d!affect <@user>**",
+                "**d!affect** or **d!affect <@user>**",
+                "**d!batslap <@user>**",
+                "**d!beautiful** or **d!beautiful <@user>**",
+                "**d!bed <@user>**",
+                "**d!blink <@user>**",
               ].join("\n")
             );
 
@@ -313,33 +286,31 @@ module.exports = {
             }
             break;
           case "menuOption-help-menuHelp-utility":
-            menuOptionEmbed
-              .setColor(0x00cccc)
-              .setTitle("🧰 Utility section:")
-              .setDescription(
-                [
-                  "**/help** - Check all the slash commands",
-                  "**d!setup** - To configurate the Bot (Only admin)",
-                  "**d!news** - To see news and changelogs",
-                  "**d!ping** - To see the Bot ping (All 3 servers)",
-                  "**d!warn <user>** - To warn a member (Only admin)",
-                  "**d!warns <user>** - Check member warns (Only admin)",
-                  "**d!clearwarns <user>** - Clear the warns (Only admin)",
-                  "**d!mute <user>** - Mute a member (Only admin)",
-                  "**d!clean <amount>** - To clean channels (Only admin, max 99 messages)",
-                  "**d!kick <user>** - Kick mentioned user (Only admin)",
-                  "**d!ban <user>** - Ban mentioned user (Only admin)",
-                  "**d!stats** or **d!stats <user>** - To see your stats",
-                  "**d!server** - Get information about the server",
-                  "**d!poll <message>** - Create a simple poll",
-                  "**d!3poll** - Create a triple poll",
-                  "**d!calc** - Start the calculator",
-                  "**d!code** - To make better code messages",
-                  "**d!link** - Get the link to invite me",
-                  "**d!credits** - Get all the credits",
-                  "**d!status** - Check main server stats",
-                ].join("\n")
-              );
+            menuOptionEmbed.setColor(0x00cccc).setTitle("🧰 Utility section:").setDescription(
+              [
+                "**/help** - Check all the slash commands",
+                // needs to be rewritten
+                "**d!setup** - To configurate the Bot (Only admin)",
+                "**d!news** - To see news and changelogs",
+                "**d!ping** - To see the Bot ping (All 3 servers)",
+                "**d!warn <user>** - To warn a member (Only admin)",
+                "**d!warns <user>** - Check member warns (Only admin)",
+                "**d!clearwarns <user>** - Clear the warns (Only admin)",
+                "**d!mute <user>** - Mute a member (Only admin)",
+                "**d!clean <amount>** - To clean channels (Only admin, max 99 messages)",
+                "**d!kick <user>** - Kick mentioned user (Only admin)",
+                "**d!ban <user>** - Ban mentioned user (Only admin)",
+                "**d!stats** or **d!stats <user>** - To see your stats",
+                "**d!server** - Get information about the server",
+                "**d!poll <message>** - Create a simple poll",
+                "**d!3poll** - Create a triple poll",
+                "**d!calc** - Start the calculator",
+                "**d!code** - To make better code messages",
+                "**d!link** - Get the link to invite me",
+                "**d!credits** - Get all the credits",
+                "**d!status** - Check main server stats",
+              ].join("\n")
+            );
 
             try {
               await menuInteraction.update({

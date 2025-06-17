@@ -1,7 +1,6 @@
 const { Events } = require("discord.js");
 
 module.exports = (client) => {
-  const logPrefix = "[GuildDelete]:";
   const logError = "[GuildDelete/ERROR]:";
 
   client.on(Events.GuildDelete, async (guild) => {

@@ -2,8 +2,6 @@ const { GuildQueueEvent } = require("discord-player");
 const { EmbedBuilder } = require("discord.js");
 
 module.exports = (client) => {
-  const logPrefix = "[PlayerStart]: ";
-
   client.player.events.on(GuildQueueEvent.EmptyQueue, async (queue, track) => {
     const playerFinishEventMessageEmbed = new EmbedBuilder()
       .setColor(0x000000)
