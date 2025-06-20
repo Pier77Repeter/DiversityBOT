@@ -29,7 +29,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
   // some commands require 2 avatars
   const msgAuthAvatar = message.author.displayAvatarURL({ extension: "png" });
   const avatar2 = mentionedUser ? mentionedUser.displayAvatarURL({ extension: "png" }) : null;
-
+  const avatars = [msgAuthAvatar, avatar2];
   var editedImage;
 
   switch (imageName.toLowerCase()) {
@@ -76,11 +76,79 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
     case "blink":
       if ((await checkMentionedUser()) != 0) return;
 
-      const avatars = [msgAuthAvatar, avatar2];
-
       editedImage = await new DIG.Blink().getImage(10, ...avatars);
 
       attachment.setFile(editedImage).setName("blink.gif");
+
+      return await sendMessage();
+
+    case "blur":
+      editedImage = await new DIG.Blur().getImage(avatar, 3);
+
+      attachment.setFile(editedImage).setName("blur.png");
+
+      return await sendMessage();
+
+    case "bobross":
+      editedImage = await new DIG.Bobross().getImage(avatar);
+
+      attachment.setFile(editedImage).setName("bobross.png");
+
+      return await sendMessage();
+
+    case "circle":
+      editedImage = await new DIG.Circle().getImage(avatar);
+
+      attachment.setFile(editedImage).setName("circle.png");
+
+      return await sendMessage();
+
+    case "clown":
+      editedImage = await new DIG.Clown().getImage(avatar);
+
+      attachment.setFile(editedImage).setName("clown.png");
+
+      return await sendMessage();
+
+    case "confusedstonk":
+      editedImage = await new DIG.ConfusedStonk().getImage(avatar);
+
+      attachment.setFile(editedImage).setName("confusedstonk.png");
+
+      return await sendMessage();
+
+    case "deepfry":
+      editedImage = await new DIG.Deepfry().getImage(avatar);
+
+      attachment.setFile(editedImage).setName("deepfry.png");
+
+      return await sendMessage();
+
+    case "delete":
+      editedImage = await new DIG.Delete().getImage(avatar);
+
+      attachment.setFile(editedImage).setName("delete.png");
+
+      return await sendMessage();
+
+    case "denoise":
+      editedImage = await new DIG.Denoise().getImage(avatar, 3);
+
+      attachment.setFile(editedImage).setName("denoise.png");
+
+      return await sendMessage();
+
+    case "discordblack":
+      editedImage = await new DIG.DiscordBlack().getImage(avatar);
+
+      attachment.setFile(editedImage).setName("discordblack.png");
+
+      return await sendMessage();
+
+    case "discordblue":
+      editedImage = await new DIG.DiscordBlue().getImage(avatar);
+
+      attachment.setFile(editedImage).setName("discordblue.png");
 
       return await sendMessage();
 

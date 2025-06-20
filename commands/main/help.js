@@ -273,6 +273,16 @@ module.exports = {
                 "**d!beautiful** or **d!beautiful <@user>**",
                 "**d!bed <@user>**",
                 "**d!blink <@user>**",
+                "**d!blur** or **d!blur <@user>**",
+                "**d!bobross** or **d!bobross <@user>**",
+                "**d!circle** or **d!circle <@user>**",
+                "**d!clown** or **d!clown <@user>**",
+                "**d!confusedstonk** or **d!confusedstonk <@user>**",
+                "**d!deepfry** or **d!deepfry <@user>**",
+                "**d!delete** or **d!delete <@user>**",
+                "**d!denoise** or **d!denoise <@user>**",
+                "**d!discordblack** or **d!discordblack <@user>**",
+                "**d!discordblue** or **d!discordblue <@user>**",
               ].join("\n")
             );
 
