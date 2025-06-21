@@ -4,6 +4,6 @@ module.exports = {
   name: "delete",
   description: "Image command with effect delete",
   async execute(client, message, args) {
-    return await discImgGen(client, message, "delete", message.mentions.members.first());
+    return await discImgGen(client, message, "delete");
   },
 };

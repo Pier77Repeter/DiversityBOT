@@ -4,6 +4,6 @@ module.exports = {
   name: "bobross",
   description: "Image command with effect bobross",
   async execute(client, message, args) {
-    return await discImgGen(client, message, "bobross", message.mentions.members.first());
+    return await discImgGen(client, message, "bobross");
   },
 };

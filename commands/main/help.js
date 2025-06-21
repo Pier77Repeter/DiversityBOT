@@ -283,6 +283,16 @@ module.exports = {
                 "**d!denoise** or **d!denoise <@user>**",
                 "**d!discordblack** or **d!discordblack <@user>**",
                 "**d!discordblue** or **d!discordblue <@user>**",
+                "**d!doublestonk** or **d!doublestonk <@user>**",
+                "**d!facepalm** or **d!facepalm <@user>**",
+                "**d!gay** or **d!gay <@user>**",
+                "**d!greyscale** or **d!greyscale <@user>**",
+                "**d!heartbreaking** or **d!heartbreaking <@user>**",
+                "**d!hitler** or **d!hitler <@user>**",
+                "**d!invert** or **d!invert <@user>**",
+                "**d!jail** or **d!jail <@user>**",
+                "**d!karaba** or **d!karaba <@user>**",
+                "**d!kiss <@user>**",
               ].join("\n")
             );
 

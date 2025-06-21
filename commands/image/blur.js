@@ -4,6 +4,6 @@ module.exports = {
   name: "blur",
   description: "Image command with effect blur",
   async execute(client, message, args) {
-    return await discImgGen(client, message, "blur", message.mentions.members.first());
+    return await discImgGen(client, message, "blur");
   },
 };

@@ -4,6 +4,6 @@ module.exports = {
   name: "discordblack",
   description: "Image command with effect discordblack",
   async execute(client, message, args) {
-    return await discImgGen(client, message, "discordblack", message.mentions.members.first());
+    return await discImgGen(client, message, "discordblack");
   },
 };

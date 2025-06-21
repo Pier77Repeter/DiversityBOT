@@ -152,6 +152,80 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
 
       return await sendMessage();
 
+    case "doublestonk":
+      if ((await checkMentionedUser()) != 0) return;
+
+      editedImage = await new DIG.DoubleStonk().getImage(msgAuthAvatar, avatar2);
+
+      attachment.setFile(editedImage).setName("doublestonk.png");
+
+      return await sendMessage();
+
+    case "facepalm":
+      editedImage = await new DIG.Facepalm().getImage(avatar);
+
+      attachment.setFile(editedImage).setName("facepalm.png");
+
+      return await sendMessage();
+
+    case "gay":
+      editedImage = await new DIG.Gay().getImage(avatar);
+
+      attachment.setFile(editedImage).setName("gay.png");
+
+      return await sendMessage();
+
+    case "greyscale":
+      editedImage = await new DIG.Greyscale().getImage(avatar);
+
+      attachment.setFile(editedImage).setName("greyscale.png");
+
+      return await sendMessage();
+
+    case "heartbreaking":
+      editedImage = await new DIG.Heartbreaking().getImage(avatar);
+
+      attachment.setFile(editedImage).setName("heartbreaking.png");
+
+      return await sendMessage();
+
+    case "hitler":
+      editedImage = await new DIG.Hitler().getImage(avatar);
+
+      attachment.setFile(editedImage).setName("hitler.png");
+
+      return await sendMessage();
+
+    case "invert":
+      editedImage = await new DIG.Invert().getImage(avatar);
+
+      attachment.setFile(editedImage).setName("invert.png");
+
+      return await sendMessage();
+
+    case "jail":
+      editedImage = await new DIG.Jail().getImage(avatar);
+
+      attachment.setFile(editedImage).setName("jail.png");
+
+      return await sendMessage();
+
+    case "karaba":
+      editedImage = await new DIG.Karaba().getImage(avatar);
+
+      attachment.setFile(editedImage).setName("karaba.png");
+
+      return await sendMessage();
+
+    case "kiss":
+      if ((await checkMentionedUser()) != 0) return;
+
+      editedImage = await new DIG.Kiss().getImage(msgAuthAvatar, avatar2);
+
+      attachment.setFile(editedImage).setName("kiss.png");
+
+      return await sendMessage();
+
     default:
       break;
   }

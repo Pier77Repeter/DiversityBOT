@@ -4,6 +4,6 @@ module.exports = {
   name: "confusedstonk",
   description: "Image command with effect confusedstonk",
   async execute(client, message, args) {
-    return await discImgGen(client, message, "confusedstonk", message.mentions.members.first());
+    return await discImgGen(client, message, "confusedstonk");
   },
 };

@@ -1,9 +1,9 @@
 const discImgGen = require("../../utils/discImgGen");
 
 module.exports = {
-  name: "clown",
-  description: "Image command with effect clown",
+  name: "jail",
+  description: "Image command with effect jail",
   async execute(client, message, args) {
-    return await discImgGen(client, message, "clown");
+    return await discImgGen(client, message, "jail");
   },
 };
