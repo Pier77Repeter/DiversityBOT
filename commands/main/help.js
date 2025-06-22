@@ -264,37 +264,55 @@ module.exports = {
             }
             break;
           case "menuOption-help-menuHelp-img":
-            menuOptionEmbed.setColor(0x00cccc).setTitle("📸 Image section:").setDescription(
-              [
-                // being rewritten
-                "**d!ad** or **d!affect <@user>**",
-                "**d!affect** or **d!affect <@user>**",
-                "**d!batslap <@user>**",
-                "**d!beautiful** or **d!beautiful <@user>**",
-                "**d!bed <@user>**",
-                "**d!blink <@user>**",
-                "**d!blur** or **d!blur <@user>**",
-                "**d!bobross** or **d!bobross <@user>**",
-                "**d!circle** or **d!circle <@user>**",
-                "**d!clown** or **d!clown <@user>**",
-                "**d!confusedstonk** or **d!confusedstonk <@user>**",
-                "**d!deepfry** or **d!deepfry <@user>**",
-                "**d!delete** or **d!delete <@user>**",
-                "**d!denoise** or **d!denoise <@user>**",
-                "**d!discordblack** or **d!discordblack <@user>**",
-                "**d!discordblue** or **d!discordblue <@user>**",
-                "**d!doublestonk** or **d!doublestonk <@user>**",
-                "**d!facepalm** or **d!facepalm <@user>**",
-                "**d!gay** or **d!gay <@user>**",
-                "**d!greyscale** or **d!greyscale <@user>**",
-                "**d!heartbreaking** or **d!heartbreaking <@user>**",
-                "**d!hitler** or **d!hitler <@user>**",
-                "**d!invert** or **d!invert <@user>**",
-                "**d!jail** or **d!jail <@user>**",
-                "**d!karaba** or **d!karaba <@user>**",
-                "**d!kiss <@user>**",
-              ].join("\n")
-            );
+            menuOptionEmbed
+              .setColor(0x00cccc)
+              .setTitle("📸 Image section:")
+              .setDescription(
+                [
+                  "**d!ad** or **d!affect <@user>**",
+                  "**d!affect** or **d!affect <@user>**",
+                  "**d!batslap <@user>**",
+                  "**d!beautiful** or **d!beautiful <@user>**",
+                  "**d!bed <@user>**",
+                  "**d!blink <@user>**",
+                  "**d!blur** or **d!blur <@user>**",
+                  "**d!bobross** or **d!bobross <@user>**",
+                  "**d!circle** or **d!circle <@user>**",
+                  "**d!clown** or **d!clown <@user>**",
+                  "**d!confusedstonk** or **d!confusedstonk <@user>**",
+                  "**d!deepfry** or **d!deepfry <@user>**",
+                  "**d!delete** or **d!delete <@user>**",
+                  "**d!denoise** or **d!denoise <@user>**",
+                  "**d!discordblack** or **d!discordblack <@user>**",
+                  "**d!discordblue** or **d!discordblue <@user>**",
+                  "**d!doublestonk** or **d!doublestonk <@user>**",
+                  "**d!facepalm** or **d!facepalm <@user>**",
+                  "**d!gay** or **d!gay <@user>**",
+                  "**d!greyscale** or **d!greyscale <@user>**",
+                  "**d!heartbreaking** or **d!heartbreaking <@user>**",
+                  "**d!hitler** or **d!hitler <@user>**",
+                  "**d!invert** or **d!invert <@user>**",
+                  "**d!jail** or **d!jail <@user>**",
+                  "**d!karaba** or **d!karaba <@user>**",
+                  "**d!kiss <@user>**",
+                  "**d!mikkelsen** or **d!mikkelsen <@user>**",
+                  "**d!mirrorhor** or **d!mirrorhor <@user>**",
+                  "**d!mirrorver** or **d!mirrorver <@user>**",
+                  "**d!mms** or **d!mms <@user>**",
+                  "**d!notstonk** or **d!notstonk <@user>**",
+                  "**d!poutine** or **d!poutine <@user>**",
+                  "**d!rip** or **d!rip <@user>**",
+                  "**d!sepia** or **d!sepia <@user>**",
+                  "**d!syder** or **d!syder <@user>**",
+                  "**d!spank <@user>**",
+                  "**d!stonk** or **d!stonk <@user>**",
+                  "**d!tatoo** or **d!tatoo <@user>**",
+                  "**d!thomas** or **d!thomas <@user>**",
+                  "**d!trash** or **d!trash <@user>**",
+                  "**d!triggered** or **d!triggered <@user>**",
+                  "**d!wanted** or **d!wanted <@user>**",
+                ].join("\n")
+              );
 
             try {
               await menuInteraction.update({
