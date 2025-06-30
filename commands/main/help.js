@@ -327,10 +327,14 @@ module.exports = {
             menuOptionEmbed.setColor(0x00cccc).setTitle("🧰 Utility section:").setDescription(
               [
                 "**/help** - Check all the slash commands",
+                "**d!config** - See Bot's configurations",
+                "**d!setup <configName>** - Configure the Bot (Only admin)",
+                "**d!status** - Check Bot's stats",
+                "**d!news** - See Bot news and changelogs",
+                "**d!link** - Get the link to invite me", // NEEDS INVITE LINK UPDATE
+                "**d!credits** - Get all the credits",
+                "**d!ping** - Example command (see on GitHub)",
                 // needs to be rewritten
-                "**d!setup** - To configurate the Bot (Only admin)",
-                "**d!news** - To see news and changelogs",
-                "**d!ping** - To see the Bot ping (All 3 servers)",
                 "**d!warn <user>** - To warn a member (Only admin)",
                 "**d!warns <user>** - Check member warns (Only admin)",
                 "**d!clearwarns <user>** - Clear the warns (Only admin)",
@@ -340,13 +344,6 @@ module.exports = {
                 "**d!ban <user>** - Ban mentioned user (Only admin)",
                 "**d!stats** or **d!stats <user>** - To see your stats",
                 "**d!server** - Get information about the server",
-                "**d!poll <message>** - Create a simple poll",
-                "**d!3poll** - Create a triple poll",
-                "**d!calc** - Start the calculator",
-                "**d!code** - To make better code messages",
-                "**d!link** - Get the link to invite me",
-                "**d!credits** - Get all the credits",
-                "**d!status** - Check main server stats",
               ].join("\n")
             );
 

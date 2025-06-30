@@ -139,4 +139,4 @@ This project is licensed under my own license. See the `LICENSE.md` file for mor
 
 ## Credits
 
-- Myself and definitely.not.adi for testing
+- Myself and achernar67 for testing
