@@ -5,7 +5,6 @@ module.exports = {
   aliases: ["bal", "money"],
   description: "Check user balance",
   async execute(client, message, args) {
-    // THIS IS PERFECT, USE THIS WHEN CHECKING IF MENTIONED USER OR MESSAGE AUTHOR
     const user = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
 
     const row = await new Promise((resolve, reject) => {

@@ -7,7 +7,10 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have the permission to change the configs");
+      embed
+        .setColor(0xff0000)
+        .setTitle("❌ Error")
+        .setDescription("You need the permission `Administrator` to use this command");
 
       try {
         return await message.reply({ embeds: [embed] });

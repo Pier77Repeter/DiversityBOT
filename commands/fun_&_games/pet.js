@@ -4,12 +4,7 @@ module.exports = {
   name: "pet",
   description: "Check user pet",
   async execute(client, message, args) {
-    var member;
-    try {
-      member = message.mentions.members.first().user;
-    } catch (error) {
-      member = message.author;
-    }
+    const member = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
 
     const row = await new Promise((resolve, reject) => {
       client.database.get(
@@ -37,10 +32,10 @@ module.exports = {
 
     petMessageEmbed
       .setColor(0x00cccc)
-      .setTitle("🐱 Your fluffy: " + client.users.cache.get(row.petId).username)
+      .setTitle("🐱 Your fluffy " + client.users.cache.get(row.petId).username)
       .setDescription(
         [
-          "These are all your pet stats, don't make them reach 0%",
+          "These are all the pet stats, don't make them reach 0%",
           "\n",
           "Otherwise you will lose your pet",
           "\n",

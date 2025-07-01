@@ -334,16 +334,17 @@ module.exports = {
                 "**d!link** - Get the link to invite me", // NEEDS INVITE LINK UPDATE
                 "**d!credits** - Get all the credits",
                 "**d!ping** - Example command (see on GitHub)",
+                "**d!stats** or **d!stats <@user>** - See your stats",
+                "**d!server** - Get information about the server",
+                "**d!modlog <channelId>** - Set the channel for logging mod actions (Only admin)",
+                "**d!clean <amount>** - Remove an amount of messages from a channel (Only admin)",
                 // needs to be rewritten
                 "**d!warn <user>** - To warn a member (Only admin)",
                 "**d!warns <user>** - Check member warns (Only admin)",
                 "**d!clearwarns <user>** - Clear the warns (Only admin)",
                 "**d!mute <user>** - Mute a member (Only admin)",
-                "**d!clean <amount>** - To clean channels (Only admin, max 99 messages)",
                 "**d!kick <user>** - Kick mentioned user (Only admin)",
                 "**d!ban <user>** - Ban mentioned user (Only admin)",
-                "**d!stats** or **d!stats <user>** - To see your stats",
-                "**d!server** - Get information about the server",
               ].join("\n")
             );
 

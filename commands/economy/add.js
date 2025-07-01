@@ -5,6 +5,7 @@ module.exports = {
   name: "add",
   description: "Add money to user, only for admins",
   async execute(client, message, args) {
+    // THIS IS PERFECT, USE THIS WHEN CHECKING IF MENTIONED USER OR MESSAGE AUTHOR
     const user = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
 
     const embed = new EmbedBuilder();
@@ -24,6 +25,16 @@ module.exports = {
         .setColor(0xff0000)
         .setTitle("❌ Error")
         .setDescription("How much money are you adding to " + user.username + "?");
+
+      try {
+        return await message.reply({ embeds: [embed] });
+      } catch (error) {
+        return;
+      }
+    }
+
+    if (isNaN(parseInt(args[1]))) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You must provide a valid number");
 
       try {
         return await message.reply({ embeds: [embed] });
