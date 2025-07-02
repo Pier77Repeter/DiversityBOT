@@ -127,7 +127,7 @@ module.exports = {
           .setColor(0x33ff33)
           .setTitle("🧹 Cleaned Messages")
           .setDescription("Cleaned **" + deletedCount + "** messages from channel <#" + message.channel.id + ">")
-          .setFooter({ text: "Clean by " + message.author.tag, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+          .setFooter({ text: "Action by " + message.author.tag, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
           .setTimestamp();
 
         try {

@@ -338,13 +338,13 @@ module.exports = {
                 "**d!server** - Get information about the server",
                 "**d!modlog <#channel>** - Set the channel for logging mod actions (Only admin)",
                 "**d!clean <amount>** - Remove an amount of messages from a channel (Only admin)",
+                "**d!kick <@user>** - Kick mentioned user (Only admin)",
+                "**d!ban <@user>** - Ban mentioned user (Only admin)",
                 // needs to be rewritten
                 "**d!warn <user>** - To warn a member (Only admin)",
                 "**d!warns <user>** - Check member warns (Only admin)",
                 "**d!clearwarns <user>** - Clear the warns (Only admin)",
                 "**d!mute <user>** - Mute a member (Only admin)",
-                "**d!kick <user>** - Kick mentioned user (Only admin)",
-                "**d!ban <user>** - Ban mentioned user (Only admin)",
               ].join("\n")
             );
 

@@ -6,7 +6,7 @@ module.exports = {
   async execute(client, message, args) {
     const row = await new Promise((resolve, reject) => {
       client.database.get(
-        "SELECT modCmd, musiCmd, eventCmd, communityCmd FROM Server WHERE serverId = ?",
+        "SELECT modCmd, musiCmd, eventCmd, communityCmd, modLogChannel FROM Server WHERE serverId = ?",
         message.guild.id,
         (err, row) => {
           if (err) reject(err);
@@ -82,6 +82,18 @@ module.exports = {
       embed.addFields({
         name: "🌍 Community commands",
         value: "❌ Community commands are: **NOT ACTIVE**",
+      });
+    }
+
+    if (row.modLogChannel !== "null") {
+      embed.addFields({
+        name: "📝 Mod logging",
+        value: "✅ Moderator actions are being logged in <#" + row.modLogChannel + ">",
+      });
+    } else {
+      embed.addFields({
+        name: "📝 Mod logging",
+        value: "❌ Moderator actions are **NOT** being logged",
       });
     }
 

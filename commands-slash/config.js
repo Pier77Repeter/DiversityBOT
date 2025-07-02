@@ -6,7 +6,7 @@ module.exports = {
   async execute(client, interaction) {
     const row = await new Promise((resolve, reject) => {
       client.database.get(
-        "SELECT modCmd, musiCmd, eventCmd, communityCmd FROM Server WHERE serverId = ?",
+        "SELECT modCmd, musiCmd, eventCmd, communityCmd, modLogChannel FROM Server WHERE serverId = ?",
         interaction.guild.id,
         (err, row) => {
           if (err) reject(err);
@@ -15,10 +15,10 @@ module.exports = {
       );
     });
 
-    const configMessageEmbed = new EmbedBuilder();
+    const embed = new EmbedBuilder();
 
     if (!row) {
-      configMessageEmbed
+      embed
         .setColor(0xff0000)
         .setTitle("❌ Error")
         .setDescription("Failed to get server config, please **report this error with your server ID**")
@@ -31,62 +31,74 @@ module.exports = {
       }
     }
 
-    configMessageEmbed
+    embed
       .setColor(0x000099)
       .setTitle("⚙️ " + interaction.guild.name + "'s Bot settings")
       .setDescription("You can use **/setup** to turn on and off these configs, only admins can use that command")
       .spliceFields(0, 1);
 
     if (row.modCmd) {
-      configMessageEmbed.addFields({
+      embed.addFields({
         name: "🔨 Moderation commands",
         value: "✅ Moderation commands are: **ACTIVE**",
       });
     } else {
-      configMessageEmbed.addFields({
+      embed.addFields({
         name: "🔨 Moderation commands",
         value: "❌ Moderation commands are: **NOT ACTIVE**",
       });
     }
 
     if (row.musiCmd) {
-      configMessageEmbed.addFields({
+      embed.addFields({
         name: "🎵 Music commands",
         value: "✅ Music commands are: **ACTIVE**",
       });
     } else {
-      configMessageEmbed.addFields({
+      embed.addFields({
         name: "🎵 Music commands",
         value: "❌ Music commands are: **NOT ACTIVE**",
       });
     }
 
     if (row.eventCmd) {
-      configMessageEmbed.addFields({
+      embed.addFields({
         name: "🎉 Events commands",
         value: "✅ Events commands are: **ACTIVE**",
       });
     } else {
-      configMessageEmbed.addFields({
+      embed.addFields({
         name: "🎉 Events commands",
         value: "❌ Events commands are: **NOT ACTIVE**",
       });
     }
 
     if (row.communityCmd) {
-      configMessageEmbed.addFields({
+      embed.addFields({
         name: "🌍 Community commands",
         value: "✅ Community commands are: **ACTIVE**",
       });
     } else {
-      configMessageEmbed.addFields({
+      embed.addFields({
         name: "🌍 Community commands",
         value: "❌ Community commands are: **NOT ACTIVE**",
       });
     }
 
+    if (row.modLogChannel !== "null") {
+      embed.addFields({
+        name: "📝 Mod logging",
+        value: "✅ Moderator actions are being logged in <#" + row.modLogChannel + ">",
+      });
+    } else {
+      embed.addFields({
+        name: "📝 Mod logging",
+        value: "❌ Moderator actions are **NOT** being logged",
+      });
+    }
+
     try {
-      return await interaction.reply({ embeds: [configMessageEmbed] });
+      return await interaction.reply({ embeds: [embed] });
     } catch (error) {
       return;
     }
