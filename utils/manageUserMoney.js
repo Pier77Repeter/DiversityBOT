@@ -2,7 +2,7 @@ const { EmbedBuilder } = require("discord.js");
 
 // easy thing to manage money, add, subtract
 module.exports = async function manageUserMoney(client, message, operation, amount) {
-  const logPrefix = "[manageUserMoney/ERROR]:";
+  const logPrefix = "[ManageUserMoney/ERROR]:";
 
   // we gotta get money and debts in case '-' gets negative
   const row = await new Promise((resolve, reject) => {

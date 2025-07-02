@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require("discord.js");
 
 // This is very useful since it's gonna save tons of lines and time when implementing cooldowns for the commands
-module.exports = async function cooldownManager(client, message, cooldownName, cooldownInSeconds) {
+module.exports = async function cooldownManager(client, message, cooldownName, cooldownInSeconds, logError = true) {
   const logPrefix = "[CooldownManager.js/ERROR]:";
 
   const cooldownAmount = cooldownInSeconds * 1000; // cooldown to milliseconds
@@ -51,16 +51,19 @@ module.exports = async function cooldownManager(client, message, cooldownName, c
   } catch (error) {
     console.error(logPrefix + " Error handling cooldown '" + cooldownName + "': " + error);
 
-    const embed = new EmbedBuilder()
-      .setColor(0xff0000)
-      .setTitle("❌ Error")
-      .setDescription("Failed to update your cooldown, please **report this error with your user ID**")
-      .addFields({ name: "Submit report here", value: "https://discord.gg/KxadTdz" });
+    // sometimes we dont want this
+    if (logError) {
+      const embed = new EmbedBuilder()
+        .setColor(0xff0000)
+        .setTitle("❌ Error")
+        .setDescription("Failed to update your cooldown, please **report this error with your user ID**")
+        .addFields({ name: "Submit report here", value: "https://discord.gg/KxadTdz" });
 
-    try {
-      await message.reply({ embeds: [embed] });
-    } catch (error) {
-      // continue
+      try {
+        await message.reply({ embeds: [embed] });
+      } catch (error) {
+        // continue
+      }
     }
 
     return null; // in case of an error (check is in the command)

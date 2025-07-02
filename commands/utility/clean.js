@@ -38,6 +38,19 @@ module.exports = {
       }
     }
 
+    if (!message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.ManageMessages)) {
+      embed
+        .setColor(0xff0000)
+        .setTitle("❌ Error")
+        .setDescription("I don't have the permission to `Manage messages` in this channel");
+
+      try {
+        return await message.reply({ embeds: [embed] });
+      } catch (error) {
+        return;
+      }
+    }
+
     var amount = parseInt(args[0]);
 
     if (isNaN(amount)) {
@@ -65,7 +78,7 @@ module.exports = {
 
     const messagesToProcess = fetchedMessages.toJSON().slice(0, amount);
 
-    let deletedCount = 0;
+    var deletedCount = 0;
 
     try {
       const deleted = await message.channel.bulkDelete(messagesToProcess, true);
@@ -91,9 +104,9 @@ module.exports = {
       .setDescription(`Successfully cleaned **${deletedCount}** messages from the channel`);
 
     try {
-      await message.channel.send({ embeds: [embed] }).then(async (msg) => {
+      await message.channel.send({ embeds: [embed] }).then(async (sentMessage) => {
         await delay(5000);
-        await msg.delete();
+        await sentMessage.delete();
       });
     } catch (error) {
       // continue, no need to stop
@@ -113,13 +126,14 @@ module.exports = {
         embed
           .setColor(0x33ff33)
           .setTitle("🧹 Cleaned Messages")
-          .setDescription(`Cleaned **${deletedCount}** messages in <#${message.channel.id}> by **${message.author.tag}**`)
+          .setDescription("Cleaned **" + deletedCount + "** messages from channel <#" + message.channel.id + ">")
+          .setFooter({ text: "Clean by " + message.author.tag, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
           .setTimestamp();
 
         try {
           return await channel.send({ embeds: [embed] });
         } catch (error) {
-          console.error("Failed to send moderation log message:", error);
+          return;
         }
       }
     }

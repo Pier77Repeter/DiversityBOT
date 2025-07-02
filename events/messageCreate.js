@@ -6,7 +6,8 @@ const mathRandomInt = require("../utils/mathRandomInt");
 module.exports = (client) => {
   // prefix and init log format stuff
   const botPrefix = "d!";
-  var logPrefix = "[MessageCreate]:";
+  var logPrefix = "[MessageCreate]:",
+    logError = "[MessageCreate/ERROR]:";
 
   client.on(Events.MessageCreate, async (message) => {
     // only members can use the bot, not other bots
@@ -16,9 +17,18 @@ module.exports = (client) => {
     if (!message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.SendMessages)) return;
 
     // calling updaters
-    await xpUpdater(message);
-    await repUpdater(message);
-    await petStatsUpdater(message);
+    await xpUpdater(message).catch((err) => {
+      return console.error(logError, "XpUpdater threw this " + err);
+    });
+    await repUpdater(message).catch((err) => {
+      return console.error(logError, "RepUpdater threw this " + err);
+    });
+    await debtsUpdater(message).catch((err) => {
+      return console.error(logError, "DebtsUpdater threw this " + err);
+    });
+    await petStatsUpdater(message).catch((err) => {
+      return console.error(logError, "PetStatsUpdater threw this " + err);
+    });
 
     // check if bot gets pinged
     if (message.mentions.has(client.user) && !message.content.toLowerCase().startsWith(botPrefix)) {
@@ -84,8 +94,9 @@ module.exports = (client) => {
         '{"fishId1": false, "fishId1Count": 0, "fishId2": false, "fishId2Count": 0, "fishId3": false, "fishId3Count": 0, "fishId4": false, "fishId4Count": 0, "fishId5": false, "fishId5Count": 0, "fishId6": false, "fishId6Count": 0, "fishId7": false, "fishId7Count": 0, "fishId8": false, "fishId8Count": 0, "fishId9": false, "fishId9Count": 0, "fishId10": false, "fishId10Count": 0}';
 
       await new Promise((resolve, reject) => {
+        // what the heeeeeeeeeeeeeeeeeeeeeeeeeeeeeeel, so many values!!
         client.database.run(
-          "INSERT INTO User VALUES (?, ?, 0, 0, 0, 0, 100, 0, 0, 0, 0, ?, ?, 'null', 0, 'null', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
+          "INSERT INTO User VALUES (?, ?, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, ?, ?, 'null', 0, 'null', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)",
           [message.guild.id, message.author.id, itemsJsonData, fishesJsonData],
           (err) => {
             if (err) reject(err);
@@ -275,6 +286,41 @@ module.exports = (client) => {
     }
   }
 
+  async function debtsUpdater(message) {
+    const debtRow = await new Promise((resolve, reject) => {
+      client.database.get(
+        "SELECT debts, money, bankMoney FROM User WHERE serverId = ? AND userId = ?",
+        [message.guild.id, message.author.id],
+        (err, row) => {
+          if (err) reject(err);
+          else resolve(row);
+        }
+      );
+    });
+
+    // what if it dosen't exist????
+    if (debtRow && debtRow.debts > 0) {
+      const debtsCooldown = await cooldownManager(client, message, "debtsCooldown", 86400, false);
+      if (debtsCooldown == null) return;
+
+      // updating the debts
+      if (debtsCooldown == 0) {
+        const debts = debtRow.debts + (debtRow.money + debtRow.bankMoney) * 0.01;
+
+        await new Promise((resolve, reject) => {
+          client.database.run(
+            "UPDATE User SET debts = ? WHERE serverId = ? AND userId = ?",
+            [debts, message.guild.id, message.author.id],
+            (err) => {
+              if (err) reject(err);
+              resolve();
+            }
+          );
+        });
+      }
+    }
+  }
+
   async function petStatsUpdater(message) {
     const petRow = await new Promise((resolve, reject) => {
       client.database.get(
@@ -289,7 +335,7 @@ module.exports = (client) => {
 
     if (petRow) {
       if (petRow.hasPet) {
-        const petCooldown = await cooldownManager(client, message, "petCooldown", 10800);
+        const petCooldown = await cooldownManager(client, message, "petCooldown", 10800, false);
         if (petCooldown == null) return;
 
         // updating the stats
@@ -328,7 +374,7 @@ module.exports = (client) => {
 
           const petMessageEmbed = new EmbedBuilder()
             .setColor(0xff0000)
-            .setTitle("Oh no")
+            .setTitle("🪦 Oh no")
             .setDescription("Your pet sadly died, you didn't care for it enough >:(");
 
           try {
