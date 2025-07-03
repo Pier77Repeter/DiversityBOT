@@ -36,7 +36,7 @@ module.exports = {
     await new Promise((resolve, reject) => {
       client.database.serialize(function () {
         client.database.run(
-          "CREATE TABLE IF NOT EXISTS Server (serverId VARCHAR(20) NOT NULL PRIMARY KEY, modCmd BOOLEAN, musiCmd BOOLEAN, eventCmd BOOLEAN, communityCmd BOOLEAN, modLogChannel VARCHAR(20), playCooldown INT, imageCooldown INT);",
+          "CREATE TABLE IF NOT EXISTS Server (serverId VARCHAR(20) NOT NULL PRIMARY KEY, modCmd BOOLEAN, musiCmd BOOLEAN, eventCmd BOOLEAN, communityCmd BOOLEAN, modLogChannel VARCHAR(20), playCooldown INT, imageCooldown INT, hmCooldown INT, jmCooldown INT, cannyCooldown INT, uncannyCooldown INT);",
           (err) => {
             if (err) {
               console.error(logError, "Error building database in 'Server' table: " + err);
@@ -56,7 +56,7 @@ module.exports = {
         );
 
         client.database.run(
-          "CREATE TABLE IF NOT EXISTS User (serverId VARCHAR(20) NOT NULL, userId VARCHAR(20) NOT NULL, reputation INT, warns INT, socialCredits INT, xp INT, nextXp INT, level INT, money BIGINT, bankMoney BIGINT, debts INT, debtsCooldown INT, items TEXT, fishes TEXT, jobType VARCHAR(20), hasPet BOOLEAN, petId VARCHAR(20), petStatsHealth INT, petStatsFun INT, petStatsHunger INT, petStatsThirst INT, petCooldown INT, petVetCooldown INT, petPlayCooldown INT, petFeedCooldown INT, petDrinkCooldown INT, memeCooldown INT, nukeCooldown INT, battleCooldown INT, hackCooldown INT, hmCooldown INT, jmCooldown INT, scTestCooldown INT, cannyCooldown INT, uncannyCooldown INT, robCooldown INT, dailyCooldown INT, dupeCooldown INT, mineCooldown INT, huntCooldown INT, crimeCooldown INT, searchCooldown INT, begCooldown INT, highLowCooldown INT, postVideoCooldown INT, postMemeCooldown INT, rouletteCooldown INT, workCooldown INT, fishCooldown INT, PRIMARY KEY (serverId, userId), FOREIGN KEY(serverId) REFERENCES Server(serverId) ON DELETE CASCADE);",
+          "CREATE TABLE IF NOT EXISTS User (serverId VARCHAR(20) NOT NULL, userId VARCHAR(20) NOT NULL, level INT, xp INT, nextXp INT, reputation INT, socialCredits INT, warns INT, money BIGINT, bankMoney BIGINT, debts INT, debtsCooldown INT, items TEXT, fishes TEXT, jobType VARCHAR(20), hasPet BOOLEAN, petId VARCHAR(20), petStatsHealth INT, petStatsFun INT, petStatsHunger INT, petStatsThirst INT, petCooldown INT, petVetCooldown INT, petPlayCooldown INT, petFeedCooldown INT, petDrinkCooldown INT, battleCooldown INT, begCooldown INT, crimeCooldown INT, dailyCooldown INT, dupeCooldown INT, fishCooldown INT, hackCooldown INT, highLowCooldown INT, huntCooldown INT, memeCooldown INT, mineCooldown INT, nukeCooldown INT, postMemeCooldown INT, postVideoCooldown INT, robCooldown INT, rouletteCooldown INT, scTestCooldown INT, searchCooldown INT, workCooldown INT, PRIMARY KEY (serverId, userId), FOREIGN KEY(serverId) REFERENCES Server(serverId) ON DELETE CASCADE);",
           (err) => {
             if (err) {
               console.error(logError, "Error building database in 'User' table: " + err);

@@ -363,9 +363,9 @@ module.exports = {
                 "**This section will often change due to new commands being, added, changed or removed**",
                 "You can suggest your own command at: https://discord.gg/KxadTdz",
                 "",
-                // needs to be rewritten
-                "**d!jm** - For Java moment",
                 "**d!hm** - Hausemaster moment",
+                "**d!jm** - Java moment",
+                // needs to be rewritten
                 "**d!canny** - Play canny the game",
                 "**d!uncanny** - Same game but uncanny version",
               ].join("\n")
