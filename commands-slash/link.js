@@ -5,7 +5,7 @@ module.exports = {
 
   async execute(client, interaction) {
     const linkMessageEmbed = new EmbedBuilder()
-      .setColor("cc0000")
+      .setColor(0xcc0000)
       .setTitle("🤖 Bot links")
       .addFields({
         name: "Invite link",

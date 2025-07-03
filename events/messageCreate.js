@@ -76,14 +76,10 @@ module.exports = (client) => {
 
     // client.database setting up user data
     const row = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT serverId, userId FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, message.author.id],
-        (err, row) => {
-          if (err) reject(err);
-          resolve(row);
-        }
-      );
+      client.database.get("SELECT serverId, userId FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
+        if (err) reject(err);
+        resolve(row);
+      });
     });
 
     // if it's new create the new row
@@ -172,58 +168,38 @@ module.exports = (client) => {
 
   async function xpUpdater(message) {
     const xpRow = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT xp, nextXp, level FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, message.author.id],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
+      client.database.get("SELECT xp, nextXp, level FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
     });
 
     // if user exists
     if (xpRow) {
       await new Promise((resolve, reject) => {
-        client.database.run(
-          "UPDATE User SET xp = xp + 1 WHERE serverId = ? AND userId = ?",
-          [message.guild.id, message.author.id],
-          (err) => {
-            if (err) reject(err);
-            else resolve();
-          }
-        );
+        client.database.run("UPDATE User SET xp = xp + 1 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
+          if (err) reject(err);
+          else resolve();
+        });
       });
 
       if (xpRow.xp >= xpRow.nextXp) {
         await new Promise((resolve, reject) => {
           client.database.serialize(function () {
-            client.database.run(
-              "UPDATE User SET xp = 0 WHERE serverId = ? AND userId = ?",
-              [message.guild.id, message.author.id],
-              (err) => {
-                if (err) reject(err);
-                else resolve();
-              }
-            );
+            client.database.run("UPDATE User SET xp = 0 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
+              if (err) reject(err);
+              else resolve();
+            });
 
-            client.database.run(
-              "UPDATE User SET nextXp = nextXp + 100 WHERE serverId = ? AND userId = ?",
-              [message.guild.id, message.author.id],
-              (err) => {
-                if (err) reject(err);
-                else resolve();
-              }
-            );
+            client.database.run("UPDATE User SET nextXp = nextXp + 100 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
+              if (err) reject(err);
+              else resolve();
+            });
 
-            client.database.run(
-              "UPDATE User SET level = level + 1 WHERE serverId = ? AND userId = ?",
-              [message.guild.id, message.author.id],
-              (err) => {
-                if (err) reject(err);
-                else resolve();
-              }
-            );
+            client.database.run("UPDATE User SET level = level + 1 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
+              if (err) reject(err);
+              else resolve();
+            });
           });
         });
 
@@ -231,9 +207,7 @@ module.exports = (client) => {
         const newLevelMessageEmbed = new EmbedBuilder()
           .setColor(0xffcc00)
           .setTitle("⬆️ Level up")
-          .setDescription(
-            ["Your new level: **" + (xpRow.level + 1) + "**", "XP for next level: **" + (xpRow.nextXp + 100) + "**"].join("\n")
-          )
+          .setDescription(["Your new level: **" + (xpRow.level + 1) + "**", "XP for next level: **" + (xpRow.nextXp + 100) + "**"].join("\n"))
           .setThumbnail("attachment://levelUp.png")
           .setFooter({
             text: message.author.username,
@@ -254,14 +228,10 @@ module.exports = (client) => {
       const mentionedMember = message.mentions.members.first().user;
 
       const row = await new Promise((resolve, reject) => {
-        client.database.get(
-          "SELECT reputation FROM User WHERE serverId = ? AND userId = ?",
-          [message.guild.id, mentionedMember.id],
-          (err, row) => {
-            if (err) reject(err);
-            else resolve(row);
-          }
-        );
+        client.database.get("SELECT reputation FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, mentionedMember.id], (err, row) => {
+          if (err) reject(err);
+          else resolve(row);
+        });
       });
 
       // if user exists
@@ -288,14 +258,10 @@ module.exports = (client) => {
 
   async function debtsUpdater(message) {
     const debtRow = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT debts, money, bankMoney FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, message.author.id],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
+      client.database.get("SELECT debts, money, bankMoney FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
     });
 
     // what if it dosen't exist????
@@ -308,14 +274,10 @@ module.exports = (client) => {
         const debts = debtRow.debts + (debtRow.money + debtRow.bankMoney) * 0.01;
 
         await new Promise((resolve, reject) => {
-          client.database.run(
-            "UPDATE User SET debts = ? WHERE serverId = ? AND userId = ?",
-            [debts, message.guild.id, message.author.id],
-            (err) => {
-              if (err) reject(err);
-              resolve();
-            }
-          );
+          client.database.run("UPDATE User SET debts = ? WHERE serverId = ? AND userId = ?", [debts, message.guild.id, message.author.id], (err) => {
+            if (err) reject(err);
+            resolve();
+          });
         });
       }
     }
@@ -343,14 +305,7 @@ module.exports = (client) => {
           await new Promise((resolve, reject) => {
             client.database.run(
               "UPDATE User SET petStatsHealth = petStatsHealth - ?, petStatsFun = petStatsFun - ?, petStatsHunger = petStatsHunger - ?, petStatsThirst = petStatsThirst - ? WHERE serverId = ? AND userId = ?",
-              [
-                mathRandomInt(5, 20),
-                mathRandomInt(5, 20),
-                mathRandomInt(5, 20),
-                mathRandomInt(5, 20),
-                message.guild.id,
-                message.author.id,
-              ],
+              [mathRandomInt(5, 20), mathRandomInt(5, 20), mathRandomInt(5, 20), mathRandomInt(5, 20), message.guild.id, message.author.id],
               (err) => {
                 if (err) reject(err);
                 resolve();

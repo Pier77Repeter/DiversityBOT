@@ -342,10 +342,8 @@ module.exports = {
                 "**d!ban <@user> <reason>** - Ban mentioned user (Only admin)",
                 "**d!mute <@user> <minutes> <reason>** - Mute a member (Only admin)",
                 "**d!unmute <@user> <reason>** - Unmute a member (Only admin)",
-                // needs to be rewritten
-                "**d!warn <user>** - To warn a member (Only admin)",
-                "**d!warns <user>** - Check member warns (Only admin)",
-                "**d!clearwarns <user>** - Clear the warns (Only admin)",
+                "**d!warn <@user> <reason>** - Warn a member (Only admin)",
+                "**d!warns <@user>** - Check or clear member's warns (Only admin)",
               ].join("\n")
             );
 
@@ -360,20 +358,18 @@ module.exports = {
             break;
 
           case "menuOption-help-menuHelp-community":
-            menuOptionEmbed
-              .setColor(0x00cccc)
-              .setTitle("🌍 Community section:")
-              .setDescription(
-                [
-                  "**This section will change often**",
-                  "You can suggest your own command at: https://discord.gg/KxadTdz",
-                  "",
-                  "**d!jm** - For Java moment",
-                  "**d!hm** - Hausemaster moment",
-                  "**d!canny** - Play canny the game",
-                  "**d!uncanny** - Same game but uncanny version",
-                ].join("\n")
-              );
+            menuOptionEmbed.setColor(0x00cccc).setTitle("🌍 Community section:").setDescription(
+              [
+                "**This section will often change due to new commands being, added, changed or removed**",
+                "You can suggest your own command at: https://discord.gg/KxadTdz",
+                "",
+                // needs to be rewritten
+                "**d!jm** - For Java moment",
+                "**d!hm** - Hausemaster moment",
+                "**d!canny** - Play canny the game",
+                "**d!uncanny** - Same game but uncanny version",
+              ].join("\n")
+            );
 
             try {
               await menuInteraction.update({

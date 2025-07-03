@@ -6,7 +6,7 @@ module.exports = {
 
   // slash command's logic
   async execute(client, interaction) {
-    const helpMessageEmbed = new EmbedBuilder().setColor("ff9900").setTitle("Here is the list of all the available slash commands:").setDescription(
+    const helpMessageEmbed = new EmbedBuilder().setColor(0xff9900).setTitle("Here is the list of all the available slash commands:").setDescription(
       [
         "**/help** Display all the available commands",
         "**/setup** Turns on/off bot's commands",

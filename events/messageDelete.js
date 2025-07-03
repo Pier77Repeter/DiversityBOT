@@ -19,18 +19,14 @@ module.exports = (client) => {
     // if it dosen't exist then let's insert it
     if (!row) {
       await new Promise((resolve, reject) => {
-        client.database.run(
-          "INSERT INTO Channel VALUES (?, ?, ?, ?)",
-          [message.channel.id, message.content, message.author.id, message.guild.id],
-          (err) => {
-            if (err) {
-              console.error(logError, "Failed to insert 'Channel' values: " + err);
-              reject(err);
-            } else {
-              resolve();
-            }
+        client.database.run("INSERT INTO Channel VALUES (?, ?, ?, ?)", [message.channel.id, message.content, message.author.id, message.guild.id], (err) => {
+          if (err) {
+            console.error(logError, "Failed to insert 'Channel' values: " + err);
+            reject(err);
+          } else {
+            resolve();
           }
-        );
+        });
       });
     } else {
       // already exist, just update
