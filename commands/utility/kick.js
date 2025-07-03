@@ -11,10 +11,7 @@ module.exports = {
     if (isModEnabled == null) return;
 
     if (isModEnabled == 0) {
-      embed
-        .setColor(0xff0000)
-        .setTitle("❌ Error")
-        .setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -24,10 +21,7 @@ module.exports = {
     }
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.KickMembers)) {
-      embed
-        .setColor(0xff0000)
-        .setTitle("❌ Error")
-        .setDescription("You need the permission `Kick members` to use this command");
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need the permission `Kick members` to use this command");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -46,22 +40,38 @@ module.exports = {
       }
     }
 
-    try {
-      if (message.mentions.members.first() == null) {
-        embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need to mention the member you want to kick");
+    if (message.mentions.members.first() == null) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need to mention the member you want to kick");
 
-        try {
-          return await message.reply({ embeds: [embed] });
-        } catch (error) {
-          return;
-        }
+      try {
+        return await message.reply({ embeds: [embed] });
+      } catch (error) {
+        return;
       }
-    } catch (error) {
-      return;
+    }
+
+    if (message.mentions.members.first().user.id === message.author.id) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You can't kick yourself lol");
+
+      try {
+        return await message.reply({ embeds: [embed] });
+      } catch (error) {
+        return;
+      }
+    }
+
+    if (!message.mentions.members.first().kickable) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("I can't kick this user, maybe they have a higher role than me?");
+
+      try {
+        return await message.reply({ embeds: [embed] });
+      } catch (error) {
+        return;
+      }
     }
 
     const userToKick = message.mentions.users.first();
-    const kickReason = args[1] || "No reason provided";
+    const kickReason = args.slice(1).join(" ") || "No reason provided";
 
     try {
       await userToKick.kick({
@@ -80,7 +90,7 @@ module.exports = {
     embed
       .setColor(0x33ff33)
       .setTitle("✅ Done")
-      .setDescription("The user **" + userToKick.tag + "** has been kicked from the server");
+      .setDescription("The user **" + userToKick.user.tag + "** has been kicked from the server");
 
     try {
       await message.reply({ embeds: [embed] });
@@ -102,7 +112,7 @@ module.exports = {
         embed
           .setColor(0x33ff33)
           .setTitle("👢 Kicked member")
-          .setDescription("**" + userToKick.tag + "** has been kick from the server" + "\n" + "Reason: " + kickReason)
+          .setDescription("**" + userToKick.user.tag + "** has been kick from the server" + "\n" + "Reason: " + kickReason)
           .setFooter({ text: "Action by " + message.author.tag, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
           .setTimestamp();
 

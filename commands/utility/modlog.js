@@ -11,10 +11,7 @@ module.exports = {
     if (isModEnabled == null) return;
 
     if (isModEnabled == 0) {
-      embed
-        .setColor(0xff0000)
-        .setTitle("❌ Error")
-        .setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -24,10 +21,7 @@ module.exports = {
     }
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
-      embed
-        .setColor(0xff0000)
-        .setTitle("❌ Error")
-        .setDescription("You need the permission `Manage channels` to use this command");
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need the permission `Manage channels` to use this command");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -64,10 +58,7 @@ module.exports = {
     }
 
     if (!message.guild.members.me.permissionsIn(channel).has(PermissionsBitField.Flags.SendMessages)) {
-      embed
-        .setColor(0xff0000)
-        .setTitle("❌ Error")
-        .setDescription("I don't have the permission to `Send messages` in that channel");
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("I don't have the permission to `Send messages` in that channel");
 
       try {
         return await message.reply({ embeds: [embed] });

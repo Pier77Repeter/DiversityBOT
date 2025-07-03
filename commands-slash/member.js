@@ -4,9 +4,7 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName("member")
     .setDescription("Display the information of a member")
-    .addUserOption((option) =>
-      option.setName("user").setDescription("The member to display information about").setRequired(false)
-    ),
+    .addUserOption((option) => option.setName("user").setDescription("The member to display information about").setRequired(false)),
 
   async execute(client, interaction) {
     const user = interaction.options.getUser("user") || interaction.user;

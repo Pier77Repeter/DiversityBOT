@@ -7,10 +7,7 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-      embed
-        .setColor(0xff0000)
-        .setTitle("❌ Error")
-        .setDescription("You need the permission `Administrator` to use this command");
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need the permission `Administrator` to use this command");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -20,10 +17,7 @@ module.exports = {
     }
 
     if (!args[0]) {
-      embed
-        .setColor(0xff0000)
-        .setTitle("❌ Error")
-        .setDescription("Specify one of the following names: **mod**, **music**, **event**, **community**");
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Specify one of the following names: **mod**, **music**, **event**, **community**");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -167,14 +161,10 @@ module.exports = {
 
       case "community":
         await new Promise((resolve, reject) => {
-          client.database.run(
-            "UPDATE Server SET communityCmd = NOT communityCmd WHERE serverId = ?",
-            message.guild.id,
-            (err) => {
-              if (err) reject(err);
-              else resolve();
-            }
-          );
+          client.database.run("UPDATE Server SET communityCmd = NOT communityCmd WHERE serverId = ?", message.guild.id, (err) => {
+            if (err) reject(err);
+            else resolve();
+          });
         });
 
         row = await new Promise((resolve, reject) => {
@@ -213,10 +203,7 @@ module.exports = {
         }
 
       default:
-        embed
-          .setColor(0xff0000)
-          .setTitle("❌ Error")
-          .setDescription("That config dosen't exist, choose between: **mod**, **music**, **event**, **community**");
+        embed.setColor(0xff0000).setTitle("❌ Error").setDescription("That config dosen't exist, choose between: **mod**, **music**, **event**, **community**");
 
         try {
           return await message.reply({ embeds: [embed] });

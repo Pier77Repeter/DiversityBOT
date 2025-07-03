@@ -5,14 +5,10 @@ module.exports = {
   description: "Shows bot configurations",
   async execute(client, message, args) {
     const row = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT modCmd, musiCmd, eventCmd, communityCmd, modLogChannel FROM Server WHERE serverId = ?",
-        message.guild.id,
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
+      client.database.get("SELECT modCmd, musiCmd, eventCmd, communityCmd, modLogChannel FROM Server WHERE serverId = ?", message.guild.id, (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
     });
 
     const embed = new EmbedBuilder();
@@ -34,7 +30,7 @@ module.exports = {
     embed
       .setColor(0x000099)
       .setTitle("⚙️ " + message.guild.name + "'s Bot settings")
-      .setDescription("You are seeing this with **d!setup** command, i suggest you to use **/setup** instead, it's much easier")
+      .setDescription("You are seeing this with **d!config** command, i suggest you to use **/config** instead, it's much easier to configure")
       .spliceFields(0, 1);
 
     if (row.modCmd) {

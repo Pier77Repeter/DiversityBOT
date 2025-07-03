@@ -13,10 +13,7 @@ module.exports = {
     if (isModEnabled == null) return;
 
     if (isModEnabled == 0) {
-      embed
-        .setColor(0xff0000)
-        .setTitle("❌ Error")
-        .setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -26,10 +23,7 @@ module.exports = {
     }
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-      embed
-        .setColor(0xff0000)
-        .setTitle("❌ Error")
-        .setDescription("You need the permission `Manage messages` to use this command");
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need the permission `Manage messages` to use this command");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -39,10 +33,7 @@ module.exports = {
     }
 
     if (!message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.ManageMessages)) {
-      embed
-        .setColor(0xff0000)
-        .setTitle("❌ Error")
-        .setDescription("I don't have the permission to `Manage messages` in this channel");
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("I don't have the permission to `Manage messages` in this channel");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -87,9 +78,7 @@ module.exports = {
       embed
         .setColor(0xff0000)
         .setTitle("❌ Error")
-        .setDescription(
-          "An error occurred while trying to clean messages, messages older than 14 days cannot be deleted, try a smaller amount"
-        );
+        .setDescription("An error occurred while trying to clean messages, messages older than 14 days cannot be deleted, try a smaller amount");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -98,10 +87,7 @@ module.exports = {
       }
     }
 
-    embed
-      .setColor(0x33ff33)
-      .setTitle("✅ Done")
-      .setDescription(`Successfully cleaned **${deletedCount}** messages from the channel`);
+    embed.setColor(0x33ff33).setTitle("✅ Done").setDescription(`Successfully cleaned **${deletedCount}** messages from the channel`);
 
     try {
       await message.channel.send({ embeds: [embed] }).then(async (sentMessage) => {
