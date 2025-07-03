@@ -2,6 +2,7 @@ const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
 const serverCooldownManager = require("../../utils/serverCooldownManager");
 const delay = require("../../utils/delay");
 const listsGetRandomItem = require("../../utils/listsGetRandomItem");
+const configChecker = require("../../utils/configChecker");
 
 module.exports = {
   name: "jm",
@@ -9,11 +10,26 @@ module.exports = {
   description: "Java moment",
   cooldown: 30,
   async execute(client, message, args) {
+    const embed = new EmbedBuilder();
+
+    const isCommunityEnabled = await configChecker(client, message, "communityCmd");
+    if (isCommunityEnabled == null) return;
+
+    if (isCommunityEnabled == 0) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Community commands are off! Type **d!setup community** to enable them");
+
+      try {
+        return await message.reply({ embeds: [embed] });
+      } catch (error) {
+        return;
+      }
+    }
+
     const cooldown = await serverCooldownManager(client, message, "jmCooldown", this.cooldown);
     if (cooldown == null) return;
 
     if (cooldown != 0) {
-      const embed = new EmbedBuilder().setColor(0x000000).setDescription("⏰ Wait: **<t:" + cooldown[1] + ":R>** to make another Java moment");
+      embed.setColor(0x000000).setDescription("⏰ Wait: **<t:" + cooldown[1] + ":R>** to make another Java moment");
 
       try {
         return await message.reply({ embeds: [embed] });

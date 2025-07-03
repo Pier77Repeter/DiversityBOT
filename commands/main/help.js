@@ -358,18 +358,20 @@ module.exports = {
             break;
 
           case "menuOption-help-menuHelp-community":
-            menuOptionEmbed.setColor(0x00cccc).setTitle("🌍 Community section:").setDescription(
-              [
-                "**This section will often change due to new commands being, added, changed or removed**",
-                "You can suggest your own command at: https://discord.gg/KxadTdz",
-                "",
-                "**d!hm** - Hausemaster moment",
-                "**d!jm** - Java moment",
-                // needs to be rewritten
-                "**d!canny** - Play canny the game",
-                "**d!uncanny** - Same game but uncanny version",
-              ].join("\n")
-            );
+            menuOptionEmbed
+              .setColor(0x00cccc)
+              .setTitle("🌍 Community section:")
+              .setDescription(
+                [
+                  "**This section will often change due to new commands being, added, changed or removed**",
+                  "You can suggest your own command at: https://discord.gg/KxadTdz",
+                  "",
+                  "**d!hm** - Hausemaster moment",
+                  "**d!jm** - Java moment",
+                  "**d!canny** - Play canny the game",
+                  "**d!uncanny** - Same game but uncanny version",
+                ].join("\n")
+              );
 
             try {
               await menuInteraction.update({
