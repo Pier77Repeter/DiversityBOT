@@ -87,7 +87,6 @@ module.exports = {
     try {
       await userToMute.timeout(muteTime * 60 * 1000, muteReason);
     } catch (error) {
-      console.error(error);
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Something bad happened while trying to mute this user");
 
       try {

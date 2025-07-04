@@ -340,6 +340,7 @@ module.exports = {
                 "**d!clean <amount>** - Remove an amount of messages from a channel (Only admin)",
                 "**d!kick <@user> <reason>** - Kick mentioned user (Only admin)",
                 "**d!ban <@user> <reason>** - Ban mentioned user (Only admin)",
+                "**d!unban <userId> <reason>** - Unban the user from the server (Only admin)",
                 "**d!mute <@user> <minutes> <reason>** - Mute a member (Only admin)",
                 "**d!unmute <@user> <reason>** - Unmute a member (Only admin)",
                 "**d!warn <@user> <reason>** - Warn a member (Only admin)",

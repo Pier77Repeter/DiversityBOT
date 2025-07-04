@@ -53,6 +53,7 @@ module.exports = {
     const userToWarn = message.mentions.members.first();
     const warnReason = args.slice(1).join(" ") || "No reason provided";
 
+    // this can work even if the user isn't in db, you need to actually type at least something to be warned so, this isn't an issue
     await new Promise((resolve, reject) => {
       client.database.run("UPDATE User SET warns = warns + 1 WHERE serverId = ? AND userId = ?", [message.guild.id, userToWarn.user.id], (err) => {
         if (err) reject(err);

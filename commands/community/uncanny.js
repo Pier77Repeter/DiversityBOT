@@ -5,7 +5,7 @@ const configChecker = require("../../utils/configChecker");
 module.exports = {
   name: "uncanny",
   description: "Play the Mr Incredible UNcanny game",
-  cooldown: 1,
+  cooldown: 300,
   async execute(client, message, args) {
     const embed = new EmbedBuilder();
 
