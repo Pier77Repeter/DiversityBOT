@@ -5,13 +5,18 @@ Copyright: DiversityBOT© 2021-2025
 Notes: This is the rewrite of the DiversityBOT, completly from 0. The biggest project i've ever did!
 */
 
+// error handler to prevent crashes, top priority even tho position dosen't metter
+process.on("uncaughtException", function (err) {
+  console.warn("\n[Error handler]: CRASH PREVENTED, PLEASE LOOK AT THE ERROR!!!" + "\n" + "=============================================================");
+  console.error(err);
+  console.warn("=============================================================" + "\n" + "[Error handler]: CRASH PREVENTED, PLEASE LOOK AT THE ERROR!!!\n");
+});
+
 // init log
-const logPrefix = "[Main]:";
-const logErrPrefix = "[Main/ERROR]:";
-console.log(logPrefix, "Initializing DiversityBOT...");
+const logger = require("./logger")("Main"); // what is this JS feature? idk but you can pass parameter when you require()
+logger.info("Initializing DiversityBOT...");
 
 // checking config.json
-console.log(logPrefix, "Checking Bot configuration...");
 const fs = require("fs");
 const path = require("path");
 
@@ -57,12 +62,12 @@ if (fs.existsSync(configFilePath)) {
     const configFileContent = fs.readFileSync(configFilePath, "utf8");
     JSON.parse(configFileContent);
   } catch (error) {
-    console.error(logErrPrefix, "Error parsing 'config.json': " + error);
+    logger.error("Error parsing 'config.json'", error);
     process.exit(1);
   }
 } else {
   // first time running the bot, creating the file
-  console.log(logPrefix, "Creating 'config.json' with default configurations...");
+  logger.info("Creating 'config.json' with default configurations...");
   try {
     const configString = JSON.stringify(defaultConfigs, null, 2);
     fs.writeFileSync(configFilePath, configString, "utf8");
@@ -70,19 +75,10 @@ if (fs.existsSync(configFilePath)) {
     const configFileContent = fs.readFileSync(configFilePath, "utf8");
     JSON.parse(configFileContent);
   } catch (error) {
-    console.error(logErrPrefix, "Error creating or parsing 'config.json': " + error);
+    logger.error("Error creating or parsing 'config.json'", error);
     process.exit(1);
   }
 }
-
-// error handler to prevent crashes, we put this here because config.json is like very important, more than the database
-process.on("uncaughtException", function (err) {
-  console.warn("\n[Error handler]: CRASH PREVENTED, PLEASE LOOK AT THE ERROR!!!");
-  console.warn("=============================================================");
-  console.error(err);
-  console.warn("=============================================================");
-  console.warn("[Error handler]: CRASH PREVENTED, PLEASE LOOK AT THE ERROR!!!\n");
-});
 
 // imports for necessary discord.js classes
 const { Client, Events, GatewayIntentBits, ActivityType } = require("discord.js");
@@ -153,22 +149,22 @@ keepAlive();
 // bot logging in
 client
   .login(botToken)
-  .then(() => {
+  .then(async () => {
     // AFTER the bot logged in THEN we can start load the whole thing
-    loader.initLoader(client);
+    await loader.initLoader(client);
   })
   .catch((error) => {
-    console.error(logErrPrefix, "Failed to log into Discord: " + error);
+    logger.error("Failed to log into Discord", error);
     process.exit(1);
   });
 
 // when the client is ready
 client.once(Events.ClientReady, (readyClient) => {
-  console.log(logPrefix, "DiversityBOT is ready, logged in as " + readyClient.user.tag);
+  logger.info("DiversityBOT is ready, logged in as " + readyClient.user.tag);
 
   // bot status
   setInterval(() => {
-    if (loader.getRestartStatus()) return;
+    if (loader.getRestartStatus()) return; // if true stop updating else it will vomit an error when client is logged off but code still running
     if (botStatusIndex === botStatus.length) botStatusIndex = 0;
     client.user.setActivity(botStatus[botStatusIndex]);
     botStatusIndex++;

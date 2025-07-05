@@ -1,14 +1,13 @@
 const { Events } = require("discord.js");
+const logger = require("../logger")("GuildDelete");
 
 module.exports = (client) => {
-  const logError = "[GuildDelete/ERROR]:";
-
   client.on(Events.GuildDelete, async (guild) => {
     await new Promise((resolve, reject) => {
       client.database.serialize(() => {
         client.database.run("DELETE FROM Server WHERE serverId = ?", guild.id, (err) => {
           if (err) {
-            console.error(logError, "Failed to delete guild: " + guild.id + " error: " + err);
+            logger.error("Failed to delete guild: '" + guild.id + "'", err);
             reject(err);
           } else {
             resolve();
@@ -17,7 +16,7 @@ module.exports = (client) => {
 
         client.database.run("DELETE FROM Channel WHERE serverId = ?", guild.id, (err) => {
           if (err) {
-            console.error(logError, "Failed to delete channels guild: " + guild.id + " error: " + err);
+            logger.error("Failed to delete channels guild: '" + guild.id + "'", err);
             reject(err);
           } else {
             resolve();
@@ -26,7 +25,7 @@ module.exports = (client) => {
 
         client.database.run("DELETE FROM User WHERE serverId = ?", guild.id, (err) => {
           if (err) {
-            console.error(logError, "Failed to delete users guild: " + guild.id + " error: " + err);
+            logger.error("Failed to delete users guild: '" + guild.id + "'", err);
             reject(err);
           } else {
             resolve();

@@ -1,6 +1,6 @@
 # DiversityBOT v2.0
 
-Yay, this is the complete rewrite of the Bot, still a work in progress (it's gonna take so much time :pain:)
+Yay, this is the complete rewrite of the Bot
 
 ## Installation
 
@@ -44,7 +44,7 @@ Yay, this is the complete rewrite of the Bot, still a work in progress (it's gon
 
 ### PROVIDE FEEDBACK IF THIS DOCUMENTATION IS EASY AND UNDERSTANDABLE
 
-- If you want to understand how the bot works, well here it is, hopefully it is understandable. There are comments in the code when and where it gets complicated. Suggestions before reading the commands? Start from `commands/templates/ping.js` or for slash commands `commands-slash/help.js`. Also read: [Discord.JS docs](https://discord.js.org/docs/packages/discord.js/14.18.0) AND [Discord Player docs](https://discord-player.js.org/)
+- If you want to understand how the bot works, well here it is, hopefully it is understandable. There are comments in the code when and where it gets complicated. Suggestions before reading the commands? Start from `commands/templates/ping.js` or for slash commands `commands-slash/help.js`. Also read: [Discord.JS docs](https://discord.js.org/docs/packages/discord.js/14.18.0) AND [Discord Player docs](https://discord-player.js.org/) not to mention [SQLite3](https://github.com/TryGhost/node-sqlite3/wiki)
 
 ### Core Files
 
@@ -83,6 +83,10 @@ Yay, this is the complete rewrite of the Bot, still a work in progress (it's gon
 - **`server.js`**:
 
   - Simple web server that redirects to DiversityCraft's website, just needed to keep the bot online
+
+- **`logger.js`**:
+
+  - Fancy way to console.log(), pretty simple file
 
 ### Directories
 

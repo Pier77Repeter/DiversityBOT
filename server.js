@@ -1,3 +1,4 @@
+const logger = require("./logger")("Server");
 const express = require("express");
 const server = express();
 
@@ -13,7 +14,7 @@ function keepAlive() {
   });
 
   server.listen(3000, () => {
-    console.log("[Server] KeepAlive server is running");
+    logger.info("KeepAlive server is running");
   });
 }
 

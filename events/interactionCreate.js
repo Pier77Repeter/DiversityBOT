@@ -1,10 +1,8 @@
 const { Events, MessageFlags } = require("discord.js");
+const logger = require("../logger")("InteractionCreate");
 const listsGetRandomItem = require("../utils/listsGetRandomItem");
 
 module.exports = (client) => {
-  // init log format stuff
-  var logPrefix = "[InteractionCreate]:";
-
   client.on(Events.InteractionCreate, async (interaction) => {
     // check if the interaction is a slash command
     if (!interaction.isChatInputCommand()) return;
@@ -16,13 +14,13 @@ module.exports = (client) => {
     if (!command) return;
 
     // ready to log for the specific slash command
-    logPrefix = "[InteractionCreate/" + interaction.commandName + ".js]:";
+    logger.setFileName("InteractionCreate/" + interaction.commandName + ".js");
 
     // if slash commands get an error log it and tell the user
     try {
       await command.execute(client, interaction);
     } catch (error) {
-      console.error(logPrefix, error);
+      logger.error("Error while exeuting a slash command", error);
 
       try {
         await interaction.reply({

@@ -4,7 +4,6 @@ const serverCooldownManager = require("../utils/serverCooldownManager");
 
 // mentionedUser is an optional parameter, look https://www.geeksforgeeks.org/javascript/how-to-declare-the-optional-function-parameters-in-javascript/
 module.exports = async function discImgGen(client, message, imageName, mentionedUser = null) {
-  const logPrefix = "[DiscImgGen]: ";
   const cooldownInSecs = 10;
 
   const cooldown = await serverCooldownManager(client, message, "imageCooldown", cooldownInSecs);

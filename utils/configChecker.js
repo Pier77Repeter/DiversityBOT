@@ -1,15 +1,13 @@
 const { EmbedBuilder } = require("discord.js");
+const logger = require("../logger")("ConfigChecker");
 
-// checks for server config in database
+// this is very useful since it's gonna save tons of lines and time when checking configs
 module.exports = async function configChecker(client, message, configName) {
-  // This is very useful since it's gonna save tons of lines and time when checking configs
-  const logPrefix = "[ConfigChecker.js/ERROR]:";
-
   // checking for valid config name in db
   const validConfigNames = ["modCmd", "musiCmd", "eventCmd", "communityCmd"]; // may add more
   if (!validConfigNames.includes(configName)) {
     // assign error handling to the catch block
-    throw "invalid config name, must be 'modCmd', 'musiCmd', 'eventCmd' or 'communityCmd'";
+    throw "Invalid config name, must be 'modCmd', 'musiCmd', 'eventCmd' or 'communityCmd'";
   }
 
   try {
@@ -20,19 +18,20 @@ module.exports = async function configChecker(client, message, configName) {
       });
     });
 
-    if (!row) throw "server '" + message.guild.id + "' was not found in database";
+    if (!row) throw "Server '" + message.guild.id + "' was not found in database";
 
     const configValue = row[configName];
 
     return configValue;
   } catch (error) {
-    console.error(logPrefix + " Error getting config '" + configName + "': " + error);
+    // this is important, we must log it
+    logger.error("Error getting config '" + configName + "': Server " + message.guild.id, error);
 
     const embed = new EmbedBuilder()
       .setColor(0xff0000)
-      .setTitle("❌ Error")
+      .setTitle("⚠️ Critical error")
       .setDescription("Failed to get server config, please **report this error with your server ID**")
-      .addFields({ name: "Submit here", value: "https://discord.gg/KxadTdz" });
+      .addFields({ name: "Submit report here", value: "https://discord.gg/KxadTdz" });
 
     try {
       await message.reply({ embeds: [embed] });

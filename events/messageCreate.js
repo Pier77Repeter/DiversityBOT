@@ -2,12 +2,12 @@ const { PermissionsBitField, Events, EmbedBuilder, AttachmentBuilder } = require
 const listsGetRandomItem = require("../utils/listsGetRandomItem");
 const cooldownManager = require("../utils/cooldownManager");
 const mathRandomInt = require("../utils/mathRandomInt");
+const logger = require("../logger")("MessageCreate");
+const loader = require("../loader");
 
 module.exports = (client) => {
   // prefix and init log format stuff
   const botPrefix = "d!";
-  var logPrefix = "[MessageCreate]:",
-    logError = "[MessageCreate/ERROR]:";
 
   client.on(Events.MessageCreate, async (message) => {
     // only members can use the bot, not other bots
@@ -16,19 +16,24 @@ module.exports = (client) => {
     // check if the bot can send messages to the message.channel (it's useless to use the bot if you cant interact with it)
     if (!message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.SendMessages)) return;
 
+    // re-naiming the logger, else it will keep the specific log of the command, below
+    logger.setFileName("MessageCreate");
+
     // calling updaters
-    await xpUpdater(message).catch((err) => {
-      return console.error(logError, "XpUpdater threw this " + err);
-    });
-    await repUpdater(message).catch((err) => {
-      return console.error(logError, "RepUpdater threw this " + err);
-    });
-    await debtsUpdater(message).catch((err) => {
-      return console.error(logError, "DebtsUpdater threw this " + err);
-    });
-    await petStatsUpdater(message).catch((err) => {
-      return console.error(logError, "PetStatsUpdater threw this " + err);
-    });
+    if (!loader.getRestartStatus()) {
+      await xpUpdater(message).catch((err) => {
+        return logger.error("XpUpdater threw an error", err);
+      });
+      await repUpdater(message).catch((err) => {
+        return logger.error("RepUpdater threw an error", err);
+      });
+      await debtsUpdater(message).catch((err) => {
+        return logger.error("DebtsUpdater threw an error", err);
+      });
+      await petStatsUpdater(message).catch((err) => {
+        return logger.error("PetStatsUpdater threw an error", err);
+      });
+    }
 
     // check if bot gets pinged
     if (message.mentions.has(client.user) && !message.content.toLowerCase().startsWith(botPrefix)) {
@@ -73,6 +78,17 @@ module.exports = (client) => {
 
     // check if the message starts with the bot prefix
     if (!message.content.toLowerCase().startsWith(botPrefix)) return;
+
+    // check if bot is restarting, you aren't supposed to use the bot while it restarts
+    if (loader.getRestartStatus()) {
+      try {
+        return await message.reply(
+          "I'm currently restarting, in order to preserve the integrity of your data in my database, you won't be able to use me until restart is completed"
+        );
+      } catch (error) {
+        return;
+      }
+    }
 
     // client.database setting up user data
     const row = await new Promise((resolve, reject) => {
@@ -136,13 +152,14 @@ module.exports = (client) => {
     }
 
     // ready to log for the specific command
-    logPrefix = "[MessageCreate/" + command.name + ".js]:";
+    logger.setFileName("MessageCreate/" + command.name + ".js");
 
     // if command gets an error, log it (buggy)
     try {
       await command.execute(client, message, args);
     } catch (error) {
-      console.error(logPrefix, error);
+      logger.error("Error while executing a message command", error);
+
       try {
         await message.reply(
           listsGetRandomItem(

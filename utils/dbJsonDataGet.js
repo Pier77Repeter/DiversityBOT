@@ -1,25 +1,20 @@
 const { EmbedBuilder } = require("discord.js");
+const logger = require("../logger")("DbJsonDataGet");
 
 // this just gets the 'items' or 'fishes' from db
 module.exports = async function dbJsonDataGet(client, user, message, dataName) {
-  const logPrefix = "[DbJsonDataGet.js/ERROR]:";
-
   const jsonDataName = dataName.toLowerCase();
 
   if (jsonDataName != "items" && jsonDataName != "fishes") {
-    throw "invalid data name, must be 'items' or 'fishes'";
+    throw "Invalid data name, must be 'items' or 'fishes'";
   }
 
   try {
     const row = await new Promise((resolve, reject) => {
-      client.database.get(
-        `SELECT ${dataName} FROM User WHERE serverId = ? AND userId = ?`,
-        [message.guild.id, user.id],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
+      client.database.get(`SELECT ${dataName} FROM User WHERE serverId = ? AND userId = ?`, [message.guild.id, user.id], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
     });
 
     if (!row) {
@@ -52,13 +47,13 @@ module.exports = async function dbJsonDataGet(client, user, message, dataName) {
 
     return JSON.parse(row[jsonDataName]); // it's a string
   } catch (error) {
-    console.error(logPrefix, "Something wrong happened while getting JSON data: " + error);
+    logger.error("Error getting JSON data '" + dataName + "': Server '" + message.guild.id + "' - User '" + message.author.id + "'", error);
 
     const embed = new EmbedBuilder()
       .setColor(0xff0000)
-      .setTitle("❌ Error")
-      .setDescription("Failed to get your stuff from my database, **report this issue with your ID**")
-      .addFields({ name: "Submit here", value: "https://discord.gg/KxadTdz" });
+      .setTitle("⚠️ Critical error")
+      .setDescription("Failed to get your stuff from my database, please **report this error with your server ID AND user ID**")
+      .addFields({ name: "Submit report here", value: "https://discord.gg/KxadTdz" });
 
     try {
       await message.reply({ embeds: [embed] });
