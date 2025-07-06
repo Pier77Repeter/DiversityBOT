@@ -42,10 +42,7 @@ module.exports = {
 
       if ((await dbJsonDataSet(client, message, "items", items)) == null) return;
 
-      embed
-        .setColor(0xff0000)
-        .setTitle("😢 Oh no")
-        .setDescription("Your fishing rod broken, go buy a new one to start fishing again");
+      embed.setColor(0xff0000).setTitle("😢 Oh no").setDescription("Your fishing rod broken, go buy a new one to start fishing again");
 
       try {
         return await message.reply({ embeds: [embed] });

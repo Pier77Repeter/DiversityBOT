@@ -16,12 +16,10 @@ module.exports = {
       }
     }
 
-    const sayMessageEmbed = new EmbedBuilder()
-      .setColor(randomColor())
-      .setDescription("<" + message.author.username + "> " + args.join(" "));
+    const embed = new EmbedBuilder().setColor(randomColor()).setDescription("<" + message.author.username + "> " + args.join(" "));
 
     try {
-      await message.channel.send({ embeds: [sayMessageEmbed] });
+      await message.channel.send({ embeds: [embed] });
     } catch (error) {
       return;
     }

@@ -21,14 +21,10 @@ module.exports = {
 
     // checking if the mentioned user has the right amount of money
     const row = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT money FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, mentionedUser.id],
-        (err, row) => {
-          if (err) reject();
-          else resolve(row);
-        }
-      );
+      client.database.get("SELECT money FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, mentionedUser.id], (err, row) => {
+        if (err) reject();
+        else resolve(row);
+      });
     });
 
     if (!row || row.money < 1000) {
@@ -90,14 +86,10 @@ module.exports = {
     // updating mentioned user's money
     money = mathRandomInt(300, 600);
     await new Promise((resolve, reject) => {
-      client.database.run(
-        "UPDATE User SET money = ? WHERE serverId = ? AND userId = ?",
-        [money, message.guild.id, mentionedUser.id],
-        (err) => {
-          if (err) reject(err);
-          else resolve();
-        }
-      );
+      client.database.run("UPDATE User SET money = ? WHERE serverId = ? AND userId = ?", [money, message.guild.id, mentionedUser.id], (err) => {
+        if (err) reject(err);
+        else resolve();
+      });
     });
 
     embed

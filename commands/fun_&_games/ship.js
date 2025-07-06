@@ -6,18 +6,17 @@ module.exports = {
   description: "See the love power with mentioned user",
   async execute(client, message, args) {
     try {
-      if (message.mentions.members.first() == null)
-        return await message.reply(message.author.username + ", mention your crush <3");
+      if (message.mentions.members.first() == null) return await message.reply(message.author.username + ", mention your crush <3");
     } catch (error) {
       return;
     }
 
-    const shipMessageEmbed = new EmbedBuilder();
+    const embed = new EmbedBuilder();
 
     const lovePower = mathRandomInt(0, 101);
 
     if (lovePower == 0) {
-      shipMessageEmbed
+      embed
         .setColor(0xcc33cc)
         .setTitle("💘 Love machine 9000(TM)")
         .setDescription("Love power: **" + lovePower + "%** ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛")
@@ -26,7 +25,7 @@ module.exports = {
     }
 
     if (lovePower > 0 && lovePower < 11) {
-      shipMessageEmbed
+      embed
         .setColor(0xcc33cc)
         .setTitle("💘 Love machine 9000(TM)")
         .setDescription("Love power: **" + lovePower + "%** 🟪⬛⬛⬛⬛⬛⬛⬛⬛⬛")
@@ -35,7 +34,7 @@ module.exports = {
     }
 
     if (lovePower > 10 && lovePower < 21) {
-      shipMessageEmbed
+      embed
         .setColor(0xcc33cc)
         .setTitle("💘 Love machine 9000(TM)")
         .setDescription("Love power: **" + lovePower + "%** 🟪🟪⬛⬛⬛⬛⬛⬛⬛⬛")
@@ -44,7 +43,7 @@ module.exports = {
     }
 
     if (lovePower > 20 && lovePower < 31) {
-      shipMessageEmbed
+      embed
         .setColor(0xcc33cc)
         .setTitle("💘 Love machine 9000(TM)")
         .setDescription("Love power: **" + lovePower + "%** 🟪🟪🟪⬛⬛⬛⬛⬛⬛⬛")
@@ -53,7 +52,7 @@ module.exports = {
     }
 
     if (lovePower > 30 && lovePower < 41) {
-      shipMessageEmbed
+      embed
         .setColor(0xcc33cc)
         .setTitle("💘 Love machine 9000(TM)")
         .setDescription("Love power: **" + lovePower + "%** 🟪🟪🟪🟪⬛⬛⬛⬛⬛⬛")
@@ -62,7 +61,7 @@ module.exports = {
     }
 
     if (lovePower > 40 && lovePower < 51) {
-      shipMessageEmbed
+      embed
         .setColor(0xcc33cc)
         .setTitle("💘 Love machine 9000(TM)")
         .setDescription("Love power: **" + lovePower + "%** 🟪🟪🟪🟪🟪⬛⬛⬛⬛⬛")
@@ -71,7 +70,7 @@ module.exports = {
     }
 
     if (lovePower > 50 && lovePower < 61) {
-      shipMessageEmbed
+      embed
         .setColor(0xcc33cc)
         .setTitle("💘 Love machine 9000(TM)")
         .setDescription("Love power: **" + lovePower + "%** 🟪🟪🟪🟪🟪🟪⬛⬛⬛⬛")
@@ -80,7 +79,7 @@ module.exports = {
     }
 
     if (lovePower > 60 && lovePower < 71) {
-      shipMessageEmbed
+      embed
         .setColor(0xcc33cc)
         .setTitle("💘 Love machine 9000(TM)")
         .setDescription("Love power: **" + lovePower + "%** 🟪🟪🟪🟪🟪🟪🟪⬛⬛⬛")
@@ -89,7 +88,7 @@ module.exports = {
     }
 
     if (lovePower > 70 && lovePower < 81) {
-      shipMessageEmbed
+      embed
         .setColor(0xcc33cc)
         .setTitle("💘 Love machine 9000(TM)")
         .setDescription("Love power: **" + lovePower + "%** 🟪🟪🟪🟪🟪🟪🟪🟪⬛⬛")
@@ -98,7 +97,7 @@ module.exports = {
     }
 
     if (lovePower > 80 && lovePower < 91) {
-      shipMessageEmbed
+      embed
         .setColor(0xcc33cc)
         .setTitle("💘 Love machine 9000(TM)")
         .setDescription("Love power: **" + lovePower + "%** 🟪🟪🟪🟪🟪🟪🟪🟪🟪⬛")
@@ -107,7 +106,7 @@ module.exports = {
     }
 
     if (lovePower > 90 && lovePower < 101) {
-      shipMessageEmbed
+      embed
         .setColor(0xcc33cc)
         .setTitle("💘 Love machine 9000(TM)")
         .setDescription("Love power: **" + lovePower + "%** 🟪🟪🟪🟪🟪🟪🟪🟪🟪🟪")
@@ -116,7 +115,7 @@ module.exports = {
     }
 
     if (lovePower == 101) {
-      shipMessageEmbed
+      embed
         .setColor(0xffff00)
         .setTitle("❤️‍🔥 Love machine 9000(TM)")
         .setDescription("Love power: **ERROR** 🟨🟨🟨🟨🟨🟨🟨🟨🟨🟨")
@@ -125,7 +124,7 @@ module.exports = {
     }
 
     try {
-      return await message.reply({ embeds: [shipMessageEmbed] });
+      return await message.reply({ embeds: [embed] });
     } catch (error) {
       return;
     }

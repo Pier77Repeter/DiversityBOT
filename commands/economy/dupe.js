@@ -25,24 +25,12 @@ module.exports = {
       }
     }
 
-    embed
-      .setColor(0xff6600)
-      .setTitle("🪄 Available dupes")
-      .setDescription("Select one of the following methods to duplicate your money");
+    embed.setColor(0xff6600).setTitle("🪄 Available dupes").setDescription("Select one of the following methods to duplicate your money");
 
-    const btnDupeDonkey = new ButtonBuilder()
-      .setCustomId("btn-dupe-btnDupeDonkey")
-      .setLabel("Donkey")
-      .setStyle(ButtonStyle.Primary);
-    const btnDupeChunk = new ButtonBuilder()
-      .setCustomId("btn-dupe-btnDupeChunk")
-      .setLabel("Chunk")
-      .setStyle(ButtonStyle.Primary);
+    const btnDupeDonkey = new ButtonBuilder().setCustomId("btn-dupe-btnDupeDonkey").setLabel("Donkey").setStyle(ButtonStyle.Primary);
+    const btnDupeChunk = new ButtonBuilder().setCustomId("btn-dupe-btnDupeChunk").setLabel("Chunk").setStyle(ButtonStyle.Primary);
     const btnDupeAlt = new ButtonBuilder().setCustomId("btn-dupe-btnDupeAlt").setLabel("Alt F4").setStyle(ButtonStyle.Primary);
-    const btnDupePopbob = new ButtonBuilder()
-      .setCustomId("btn-dupe-btnDupePopbob")
-      .setLabel("popbob")
-      .setStyle(ButtonStyle.Primary);
+    const btnDupePopbob = new ButtonBuilder().setCustomId("btn-dupe-btnDupePopbob").setLabel("popbob").setStyle(ButtonStyle.Primary);
 
     const btnRow = new ActionRowBuilder().addComponents(btnDupeDonkey, btnDupeChunk, btnDupeAlt);
 

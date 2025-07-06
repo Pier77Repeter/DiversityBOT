@@ -6,8 +6,7 @@ module.exports = {
   description: "Troll the mentioned user",
   async execute(client, message, args) {
     try {
-      if (message.mentions.members.first() == null)
-        return await message.reply(message.author.username + ", insert troll target");
+      if (message.mentions.members.first() == null) return await message.reply(message.author.username + ", insert troll target");
     } catch (error) {
       return;
     }
@@ -45,13 +44,13 @@ module.exports = {
       false
     );
     const imageFile = new AttachmentBuilder("./media/" + trollImageName);
-    const trollMessageEmbed = new EmbedBuilder()
+    const embed = new EmbedBuilder()
       .setColor(0xc0c0c0)
       .setTitle(message.mentions.members.first().user.username + " HAS BEEN TROLLED")
       .setImage("attachment://" + trollImageName);
 
     try {
-      return await message.reply({ embeds: [trollMessageEmbed], files: [imageFile] });
+      return await message.reply({ embeds: [embed], files: [imageFile] });
     } catch (error) {
       return;
     }

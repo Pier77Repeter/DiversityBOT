@@ -1,12 +1,4 @@
-const {
-  EmbedBuilder,
-  AttachmentBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  ActionRowBuilder,
-  ComponentType,
-  MessageFlags,
-} = require("discord.js");
+const { EmbedBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, MessageFlags } = require("discord.js");
 const cooldownManager = require("../../utils/cooldownManager");
 
 module.exports = {
@@ -14,16 +6,17 @@ module.exports = {
   description: "Take a random meme from r/memes",
   cooldown: 30,
   async execute(client, message, args) {
+    const embed = new EmbedBuilder();
+    const imageFile = new AttachmentBuilder();
+
     const cooldown = await cooldownManager(client, message, "memeCooldown", this.cooldown);
     if (cooldown == null) return;
 
     if (cooldown != 0) {
-      const memeMessageEmbed = new EmbedBuilder()
-        .setColor(0x000000)
-        .setDescription("⏰ Memes out of stock, wait: **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription("⏰ Memes out of stock, wait: **<t:" + cooldown[1] + ":R>**");
 
       try {
-        return await message.reply({ embeds: [memeMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
@@ -45,9 +38,9 @@ module.exports = {
     }
 
     if (memeData.nsfw) {
-      const imageFile = new AttachmentBuilder("./media/arnoldSchwarzeneggerStopMeme.jpg");
+      imageFile.setFile("./media/arnoldSchwarzeneggerStopMeme.jpg");
 
-      const memeMessageEmbed = new EmbedBuilder()
+      embed
         .setColor(0xcc0000)
         .setTitle("STOP RIGHT THERE!")
         .setDescription(
@@ -56,34 +49,26 @@ module.exports = {
         .setImage("attachment://arnoldSchwarzeneggerStopMeme.jpg");
 
       try {
-        return await message.reply({ embeds: [memeMessageEmbed], files: [imageFile] });
+        return await message.reply({ embeds: [embed], files: [imageFile] });
       } catch (error) {
         return;
       }
     }
 
-    const memeMessageEmbed = new EmbedBuilder()
+    embed
       .setColor(0xffcc00)
       .setTitle(memeData.title)
       .setDescription("From: r/" + memeData.subreddit + " | " + memeData.postLink)
       .setImage(memeData.url)
       .setFooter({ text: "Upvotes: " + memeData.ups + " 👍" });
 
-    const btnNextMeme = new ButtonBuilder()
-      .setCustomId("btn-meme-btnNextMeme")
-      .setEmoji("🔄")
-      .setLabel("Next Meme")
-      .setStyle(ButtonStyle.Primary);
-    const btnStop = new ButtonBuilder()
-      .setCustomId("btn-meme-btnStop")
-      .setEmoji("🛑")
-      .setLabel("Stop")
-      .setStyle(ButtonStyle.Danger);
+    const btnNextMeme = new ButtonBuilder().setCustomId("btn-meme-btnNextMeme").setEmoji("🔄").setLabel("Next Meme").setStyle(ButtonStyle.Primary);
+    const btnStop = new ButtonBuilder().setCustomId("btn-meme-btnStop").setEmoji("🛑").setLabel("Stop").setStyle(ButtonStyle.Danger);
     const btnRow = new ActionRowBuilder().addComponents(btnNextMeme, btnStop);
 
     var sentMessage;
     try {
-      sentMessage = await message.reply({ embeds: [memeMessageEmbed], components: [btnRow] });
+      sentMessage = await message.reply({ embeds: [embed], components: [btnRow] });
     } catch (error) {
       return;
     }
@@ -110,19 +95,16 @@ module.exports = {
             btnCollector.stop();
 
             try {
-              return await btnInteraction.update({
-                content: "Opsy, i couldn't get the meme, try typing the command again",
-                components: [],
-              });
+              return await btnInteraction.update({ content: "Opsy, i couldn't get the meme, try typing the command again", components: [] });
             } catch (error) {
               return;
             }
           }
 
           if (memeData.nsfw) {
-            const imageFile = new AttachmentBuilder("./media/arnoldSchwarzeneggerStopMeme.jpg");
+            imageFile.setFile("./media/arnoldSchwarzeneggerStopMeme.jpg");
 
-            const memeMessageEmbed = new EmbedBuilder()
+            embed
               .setColor(0xcc0000)
               .setTitle("STOP RIGHT THERE!")
               .setDescription(
@@ -133,13 +115,13 @@ module.exports = {
             btnCollector.stop();
 
             try {
-              return await btnInteraction.update({ embeds: [memeMessageEmbed], components: [], files: [imageFile] });
+              return await btnInteraction.update({ embeds: [embed], components: [], files: [imageFile] });
             } catch (error) {
               return;
             }
           }
 
-          memeMessageEmbed
+          embed
             .setColor(0xffcc00)
             .setTitle(memeData.title)
             .setDescription("From: **r/" + memeData.subreddit + "** | " + memeData.postLink)
@@ -149,7 +131,7 @@ module.exports = {
           btnCollector.resetTimer();
 
           try {
-            await btnInteraction.update({ embeds: [memeMessageEmbed], components: [btnRow] });
+            await btnInteraction.update({ embeds: [embed], components: [btnRow] });
           } catch (error) {
             return;
           }
@@ -161,7 +143,7 @@ module.exports = {
           btnStop.setDisabled(true);
 
           try {
-            await btnInteraction.update({ embeds: [memeMessageEmbed], components: [btnRow] });
+            await btnInteraction.update({ embeds: [embed], components: [btnRow] });
           } catch (error) {
             return;
           }
@@ -175,7 +157,7 @@ module.exports = {
       btnStop.setDisabled(true);
 
       try {
-        return await sentMessage.edit({ embeds: [memeMessageEmbed], components: [btnRow] });
+        return await sentMessage.edit({ embeds: [embed], components: [btnRow] });
       } catch (error) {
         return;
       }

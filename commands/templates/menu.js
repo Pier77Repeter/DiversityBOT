@@ -1,10 +1,4 @@
-const {
-  ActionRowBuilder,
-  StringSelectMenuBuilder,
-  StringSelectMenuOptionBuilder,
-  ComponentType,
-  MessageFlags,
-} = require("discord.js");
+const { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ComponentType, MessageFlags } = require("discord.js");
 
 module.exports = {
   name: "menu",
@@ -15,14 +9,8 @@ module.exports = {
       .setCustomId("menu-menu-menu")
       .setPlaceholder("Choose!")
       .addOptions(
-        new StringSelectMenuOptionBuilder()
-          .setLabel("Get the Biden blast")
-          .setDescription("Very OP weapon")
-          .setValue("bidenBlast"),
-        new StringSelectMenuOptionBuilder()
-          .setLabel("Curse of RA")
-          .setDescription("Old but effective weapon")
-          .setValue("curseOfRA"),
+        new StringSelectMenuOptionBuilder().setLabel("Get the Biden blast").setDescription("Very OP weapon").setValue("bidenBlast"),
+        new StringSelectMenuOptionBuilder().setLabel("Curse of RA").setDescription("Old but effective weapon").setValue("curseOfRA"),
         new StringSelectMenuOptionBuilder().setLabel("Bob").setDescription("justBob").setValue("bob")
       );
 
@@ -65,30 +53,21 @@ module.exports = {
           case "bidenBlast":
             try {
               // update the interaction, we can only do that 1 time, after this we need to do: sentMessage.edit()
-              await menuInteraction.update({
-                content: "Biden blast selected",
-                components: [actionRow],
-              });
+              await menuInteraction.update({ content: "Biden blast selected", components: [actionRow] });
             } catch (error) {
               return;
             }
             break;
           case "curseOfRA":
             try {
-              await menuInteraction.update({
-                content: "Curse of RA selected",
-                components: [actionRow],
-              });
+              await menuInteraction.update({ content: "Curse of RA selected", components: [actionRow] });
             } catch (error) {
               return;
             }
             break;
           case "bob":
             try {
-              await menuInteraction.update({
-                content: "Bob selected",
-                components: [actionRow],
-              });
+              await menuInteraction.update({ content: "Bob selected", components: [actionRow] });
             } catch (error) {
               return;
             }
@@ -102,10 +81,7 @@ module.exports = {
 
       // update the menu when disabled
       try {
-        await sentMessage.edit({
-          content: "Bob selected",
-          components: [actionRow],
-        });
+        await sentMessage.edit({ content: "Bob selected", components: [actionRow] });
       } catch (error) {
         return;
       }

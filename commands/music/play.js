@@ -8,30 +8,29 @@ module.exports = {
   description: "Play a song from SoundCloud, can't use Youtube",
   cooldown: 15,
   async execute(client, message, args) {
-    const playMessageEmbed = new EmbedBuilder()
-      .setColor(0xff0000)
-      .setTitle("❌ Error")
-      .setDescription("Music commands are off, type: **d!musicmd on**");
+    const embed = new EmbedBuilder();
 
     const isMusicEnabled = await configChecker(client, message, "musiCmd");
     if (isMusicEnabled == null) return;
 
     if (isMusicEnabled == 0) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
+
       try {
-        return await message.reply({ embeds: [playMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
     }
 
     if (!args.length > 0) {
-      playMessageEmbed
+      embed
         .setColor(0xff0000)
         .setTitle("❌ Error")
         .setDescription("Correct usage is: **d!play <song author> <song name>**")
         .setImage("https://c.tenor.com/W_aA0wh5C4gAAAAd/tenor.gif");
       try {
-        return await message.reply({ embeds: [playMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
@@ -41,19 +40,19 @@ module.exports = {
     if (cooldown == null) return;
 
     if (cooldown[0] == 1) {
-      playMessageEmbed
+      embed
         .setColor(0x000000)
         .setTitle(null)
         .setDescription("⏰ Listen some music before using **d!play** again in: **<t:" + cooldown[1] + ":R>**");
       try {
-        return await message.reply({ embeds: [playMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
     }
 
     const query = args.join(" ");
-    playMessageEmbed.setImage(null); // in case the command gets typed again correctly
+    embed.setImage(null); // in case the command gets typed again correctly
 
     const voiceChannel = message.member.voice.channel;
 
@@ -91,7 +90,7 @@ module.exports = {
 
     var isFirstSong; // this is needed to make the fancy "Music API is connected" msg
 
-    playMessageEmbed
+    embed
       .setColor(0x666666)
       .setTitle("🔍 Searching the song...")
       .setDescription(
@@ -100,7 +99,7 @@ module.exports = {
 
     var sentMessage;
     try {
-      sentMessage = await message.reply({ embeds: [playMessageEmbed] });
+      sentMessage = await message.reply({ embeds: [embed] });
     } catch (error) {
       return;
     }
@@ -111,9 +110,10 @@ module.exports = {
     });
 
     if (!search.hasTracks()) {
-      playMessageEmbed.setColor(0xff0000).setTitle("❌ Error").setDescription("No tracks has been found for your query");
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("No tracks has been found for your query");
+
       try {
-        return await sentMessage.edit({ embeds: [playMessageEmbed] });
+        return await sentMessage.edit({ embeds: [embed] });
       } catch (error) {
         return;
       }
@@ -139,15 +139,15 @@ module.exports = {
     // connect to vc if not connected
     if (!queue.connection) {
       await queue.connect(message.member.voice?.channelId);
-      playMessageEmbed.setColor(0x666666).setTitle("⚙️ Connecting, please wait...").setDescription(null);
+      embed.setColor(0x666666).setTitle("⚙️ Connecting, please wait...").setDescription(null);
       isFirstSong = true; // connecting to VC
     } else {
       // already connected to vc
-      playMessageEmbed.setColor(0x33cc00).setTitle("✅ Done").setDescription("Music has been added to the queue");
+      embed.setColor(0x33cc00).setTitle("✅ Done").setDescription("Music has been added to the queue");
     }
 
     try {
-      await sentMessage.edit({ embeds: [playMessageEmbed] });
+      await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
       return;
     }
@@ -157,13 +157,10 @@ module.exports = {
     try {
       await queue.node.play(queue.currentTrack); // play the current playing track, so that it won't immediatly start playing another one when added
     } catch (error) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Something went wrong while playing the song");
+
       try {
-        playMessageEmbed.setColor(0xff0000).setTitle("❌ Error").setDescription("Something went wrong while playing the song");
-        try {
-          return await sentMessage.edit({ embeds: [playMessageEmbed] });
-        } catch (error) {
-          return;
-        }
+        return await sentMessage.edit({ embeds: [embed] });
       } catch (error) {
         return;
       }
@@ -171,11 +168,8 @@ module.exports = {
 
     if (isFirstSong) {
       try {
-        playMessageEmbed
-          .setColor(0x33cc00)
-          .setTitle("✅ Music API is connected")
-          .setDescription("The music will now start in a few seconds!");
-        await sentMessage.edit({ embeds: [playMessageEmbed] });
+        embed.setColor(0x33cc00).setTitle("✅ Music API is connected").setDescription("The music will now start in a few seconds!");
+        await sentMessage.edit({ embeds: [embed] });
       } catch (error) {
         return;
       }

@@ -7,17 +7,16 @@ module.exports = {
   aliases: ["np"],
   description: "Shows the currently playing song.",
   async execute(client, message, args) {
-    const npMessageEmbed = new EmbedBuilder()
-      .setColor(0xff0000)
-      .setTitle("❌ Error")
-      .setDescription("Music commands are off, type: **d!musicmd on**");
+    const embed = new EmbedBuilder();
 
     const isMusicEnabled = await configChecker(client, message, "musiCmd");
     if (isMusicEnabled == null) return;
 
     if (isMusicEnabled == 0) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
+
       try {
-        return await message.reply({ embeds: [npMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
@@ -44,7 +43,7 @@ module.exports = {
       timecodes: true,
     });
 
-    npMessageEmbed
+    embed
       .setColor(0x00b0ff)
       .setTitle("🎶 Now Playing")
       .setDescription(`**${currentTrack.title}** by ${currentTrack.author}\n${progressBar}`)
@@ -53,7 +52,7 @@ module.exports = {
       .setFooter({ text: `Requested by ${currentTrack.requestedBy.tag}` });
 
     try {
-      return await message.reply({ embeds: [npMessageEmbed] });
+      return await message.reply({ embeds: [embed] });
     } catch (error) {
       return;
     }

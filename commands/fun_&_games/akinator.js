@@ -5,12 +5,11 @@ module.exports = {
   name: "akinator",
   description: "Plays the Akinator game",
   async execute(client, message, args) {
-    if (!args[0]) {
-      try {
-        return await message.reply("Akinator what? Specify a category: **character**, **animal** or **object**");
-      } catch (error) {
-        return;
-      }
+    // this also works when checking if there are or there aren't args
+    try {
+      if (!args[0]) return await message.reply("Akinator what? Specify a category: **character**, **animal** or **object**");
+    } catch (error) {
+      return;
     }
 
     switch (args[0].toLowerCase()) {
@@ -52,12 +51,13 @@ module.exports = {
         break;
 
       default:
-        const akinatorMessageEmbed = new EmbedBuilder()
+        const embed = new EmbedBuilder()
           .setColor(0x33ccff)
           .setTitle("🎮 Akinator game menu")
           .setDescription("Pick the category you would like to choose: **character**, **animal** or **object**");
+
         try {
-          return await message.reply({ embeds: [akinatorMessageEmbed] });
+          return await message.reply({ embeds: [embed] });
         } catch (error) {
           return;
         }

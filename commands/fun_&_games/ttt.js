@@ -5,8 +5,7 @@ module.exports = {
   description: "Play tic tac toe with mentioned user",
   async execute(client, message, args) {
     try {
-      if (message.mentions.members.first() == null)
-        return await message.reply(message.author.username + ", can't play alone, mention a buddy");
+      if (message.mentions.members.first() == null) return await message.reply(message.author.username + ", can't play alone, mention a buddy");
     } catch (error) {
       return;
     }

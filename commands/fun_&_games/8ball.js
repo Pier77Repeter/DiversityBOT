@@ -5,6 +5,7 @@ module.exports = {
   name: "8ball",
   description: "8ball gives random reply to a question",
   async execute(client, message, args) {
+    // compact way to check and reply
     try {
       if (args.length < 1) return await message.reply(message.author.username + " what is your beautiful question?");
     } catch (error) {

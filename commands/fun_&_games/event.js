@@ -4,7 +4,7 @@ module.exports = {
   name: "event",
   description: "Display the ongoing Bot event",
   async execute(client, message, args) {
-    const eventMessageEmbed = new EmbedBuilder()
+    const embed = new EmbedBuilder()
       .setColor(0x339999)
       .setTitle("Ongoing event: None")
       .setDescription(["There are no ongoing events, check the Discord for more: https://discord.gg/KxadTdz"].join("\n"))
@@ -13,7 +13,7 @@ module.exports = {
       });
 
     try {
-      return await message.reply({ embeds: [eventMessageEmbed] });
+      return await message.reply({ embeds: [embed] });
     } catch (error) {
       return;
     }

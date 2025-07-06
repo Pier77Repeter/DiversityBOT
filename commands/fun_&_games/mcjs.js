@@ -6,12 +6,10 @@ module.exports = {
   async execute(client, message, args) {
     const ip = args[0];
 
-    if (!ip) {
-      try {
-        return await message.reply("Give the server IP to ping");
-      } catch (error) {
-        return;
-      }
+    try {
+      if (!ip) return await message.reply("Give the server IP to ping");
+    } catch (error) {
+      return;
     }
 
     var getServerData = await fetch("https://mcapi.us/server/status?ip=" + ip);
@@ -25,22 +23,19 @@ module.exports = {
       }
     }
 
-    const mcjsMessageEmbed = new EmbedBuilder()
-      .setTitle(serverData.server.name)
+    const embed = new EmbedBuilder()
+      .setTitle("🎮" + ip)
       .setDescription(
         [
           "Status: " + "`" + serverData.status + "`",
-          "\n",
-          "IP: " + "`" + ip + "`",
-          "\n",
+          "Version: " + "`" + serverData.server.name + "`",
           "MOTD: " + "`" + serverData.motd + "`",
-          "\n",
           "Players: " + "`" + serverData.players.now + "/" + serverData.players.max + "`",
-        ].join(" ")
+        ].join("\n")
       );
 
     try {
-      return await message.reply({ embeds: [mcjsMessageEmbed] });
+      return await message.reply({ embeds: [embed] });
     } catch (error) {
       return;
     }

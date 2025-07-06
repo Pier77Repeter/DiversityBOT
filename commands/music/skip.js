@@ -6,17 +6,16 @@ module.exports = {
   name: "skip",
   description: "Skips the currently playing song",
   async execute(client, message, args) {
-    const skipMessageEmbed = new EmbedBuilder()
-      .setColor(0xff0000)
-      .setTitle("❌ Error")
-      .setDescription("Music commands are off, type: **d!musicmd on**");
+    const embed = new EmbedBuilder();
 
     const isMusicEnabled = await configChecker(client, message, "musiCmd");
     if (isMusicEnabled == null) return;
 
     if (isMusicEnabled == 0) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
+
       try {
-        return await message.reply({ embeds: [skipMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
@@ -42,10 +41,11 @@ module.exports = {
     }
 
     queue.node.skip();
-    skipMessageEmbed.setColor(0x33ff33).setTitle("⏭️ Done").setDescription("Music skipped, you can go back with **d!back**");
+
+    embed.setColor(0x33ff33).setTitle("⏭️ Done").setDescription("Music skipped, you can go back with **d!back**");
 
     try {
-      return await message.reply({ embeds: [skipMessageEmbed] });
+      return await message.reply({ embeds: [embed] });
     } catch (error) {
       return;
     }

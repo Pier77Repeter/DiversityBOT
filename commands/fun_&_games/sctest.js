@@ -1,30 +1,22 @@
-const {
-  EmbedBuilder,
-  AttachmentBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  ActionRowBuilder,
-  ComponentType,
-  MessageFlags,
-} = require("discord.js");
+const { EmbedBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, MessageFlags } = require("discord.js");
 const cooldownManager = require("../../utils/cooldownManager");
 const delay = require("../../utils/delay");
 
 module.exports = {
   name: "sctest",
   description: "Starts the social credits test",
-  cooldown: 90,
+  cooldown: 120,
   async execute(client, message, args) {
-    const cooldown = cooldownManager(client, message, "scTestCooldown", this.cooldown);
+    const cooldown = await cooldownManager(client, message, "scTestCooldown", this.cooldown);
     if (cooldown == null) return;
 
+    const embed = new EmbedBuilder();
+
     if (cooldown != 0) {
-      const scTestMessageEmbed = new EmbedBuilder()
-        .setColor(0x000000)
-        .setDescription("⏰ You you can do this test again: **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription("⏰ You you can do this test again: **<t:" + cooldown[1] + ":R>**");
 
       try {
-        return await message.reply({ embeds: [scTestMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
@@ -32,26 +24,16 @@ module.exports = {
 
     const scThumbnailFile = new AttachmentBuilder("./media/scTestThumbnail.jpg");
 
-    const scTestMessageEmbed = new EmbedBuilder()
-      .setColor(0xff0000)
-      .setTitle("Social credit test")
-      .setDescription("Are you sure to start the quiz?")
-      .setImage("attachment://scTestThumbnail.jpg");
+    embed.setColor(0xff0000).setTitle("Social credit test").setDescription("Are you sure to start the quiz?").setImage("attachment://scTestThumbnail.jpg");
 
-    const btnStartTestOne = new ButtonBuilder()
-      .setCustomId("btn-sctest-testStartOne")
-      .setLabel("Yes")
-      .setStyle(ButtonStyle.Success);
-    const btnStartTestTwo = new ButtonBuilder()
-      .setCustomId("btn-sctest-testStartTwo")
-      .setLabel("Yes")
-      .setStyle(ButtonStyle.Success);
+    const btnStartTestOne = new ButtonBuilder().setCustomId("btn-sctest-testStartOne").setLabel("Yes").setStyle(ButtonStyle.Success);
+    const btnStartTestTwo = new ButtonBuilder().setCustomId("btn-sctest-testStartTwo").setLabel("Yes").setStyle(ButtonStyle.Success);
 
     const btnRow = new ActionRowBuilder().addComponents(btnStartTestOne, btnStartTestTwo);
 
     var sentMessage;
     try {
-      sentMessage = await message.reply({ embeds: [scTestMessageEmbed], files: [scThumbnailFile], components: [btnRow] });
+      sentMessage = await message.reply({ embeds: [embed], files: [scThumbnailFile], components: [btnRow] });
     } catch (error) {
       return;
     }
@@ -92,192 +74,70 @@ module.exports = {
     const btnQuestionOneB = new ButtonBuilder().setCustomId("btn-sctest-qOne-ansB").setLabel("B").setStyle(ButtonStyle.Primary);
     const btnQuestionOneC = new ButtonBuilder().setCustomId("btn-sctest-qOne-ansC").setLabel("C").setStyle(ButtonStyle.Primary);
     const btnQuestionOneD = new ButtonBuilder().setCustomId("btn-sctest-qOne-ansD").setLabel("D").setStyle(ButtonStyle.Primary);
-    const btnRowQuestionOne = new ActionRowBuilder().addComponents(
-      btnQuestionOneA,
-      btnQuestionOneB,
-      btnQuestionOneC,
-      btnQuestionOneD
-    );
+    const btnRowQuestionOne = new ActionRowBuilder().addComponents(btnQuestionOneA, btnQuestionOneB, btnQuestionOneC, btnQuestionOneD);
 
     // Question 2
     const btnQuestionTwoA = new ButtonBuilder().setCustomId("btn-sctest-qTwo-ansA").setLabel("A").setStyle(ButtonStyle.Primary);
     const btnQuestionTwoB = new ButtonBuilder().setCustomId("btn-sctest-qTwo-ansB").setLabel("B").setStyle(ButtonStyle.Primary);
     const btnQuestionTwoC = new ButtonBuilder().setCustomId("btn-sctest-qTwo-ansC").setLabel("C").setStyle(ButtonStyle.Primary);
     const btnQuestionTwoD = new ButtonBuilder().setCustomId("btn-sctest-qTwo-ansD").setLabel("D").setStyle(ButtonStyle.Primary);
-    const btnRowQuestionTwo = new ActionRowBuilder().addComponents(
-      btnQuestionTwoA,
-      btnQuestionTwoB,
-      btnQuestionTwoC,
-      btnQuestionTwoD
-    );
+    const btnRowQuestionTwo = new ActionRowBuilder().addComponents(btnQuestionTwoA, btnQuestionTwoB, btnQuestionTwoC, btnQuestionTwoD);
 
     // Question 3
-    const btnQuestionThreeA = new ButtonBuilder()
-      .setCustomId("btn-sctest-qThree-ansA")
-      .setLabel("A")
-      .setStyle(ButtonStyle.Primary);
-    const btnQuestionThreeB = new ButtonBuilder()
-      .setCustomId("btn-sctest-qThree-ansB")
-      .setLabel("B")
-      .setStyle(ButtonStyle.Primary);
-    const btnQuestionThreeC = new ButtonBuilder()
-      .setCustomId("btn-sctest-qThree-ansC")
-      .setLabel("C")
-      .setStyle(ButtonStyle.Primary);
-    const btnQuestionThreeD = new ButtonBuilder()
-      .setCustomId("btn-sctest-qThree-ansD")
-      .setLabel("D")
-      .setStyle(ButtonStyle.Primary);
-    const btnRowQuestionThree = new ActionRowBuilder().addComponents(
-      btnQuestionThreeA,
-      btnQuestionThreeB,
-      btnQuestionThreeC,
-      btnQuestionThreeD
-    );
+    const btnQuestionThreeA = new ButtonBuilder().setCustomId("btn-sctest-qThree-ansA").setLabel("A").setStyle(ButtonStyle.Primary);
+    const btnQuestionThreeB = new ButtonBuilder().setCustomId("btn-sctest-qThree-ansB").setLabel("B").setStyle(ButtonStyle.Primary);
+    const btnQuestionThreeC = new ButtonBuilder().setCustomId("btn-sctest-qThree-ansC").setLabel("C").setStyle(ButtonStyle.Primary);
+    const btnQuestionThreeD = new ButtonBuilder().setCustomId("btn-sctest-qThree-ansD").setLabel("D").setStyle(ButtonStyle.Primary);
+    const btnRowQuestionThree = new ActionRowBuilder().addComponents(btnQuestionThreeA, btnQuestionThreeB, btnQuestionThreeC, btnQuestionThreeD);
 
     // Question 4
-    const btnQuestionFourA = new ButtonBuilder()
-      .setCustomId("btn-sctest-qFour-ansA")
-      .setLabel("A")
-      .setStyle(ButtonStyle.Primary);
-    const btnQuestionFourB = new ButtonBuilder()
-      .setCustomId("btn-sctest-qFour-ansB")
-      .setLabel("B")
-      .setStyle(ButtonStyle.Primary);
-    const btnQuestionFourC = new ButtonBuilder()
-      .setCustomId("btn-sctest-qFour-ansC")
-      .setLabel("C")
-      .setStyle(ButtonStyle.Primary);
-    const btnQuestionFourD = new ButtonBuilder()
-      .setCustomId("btn-sctest-qFour-ansD")
-      .setLabel("D")
-      .setStyle(ButtonStyle.Primary);
-    const btnRowQuestionFour = new ActionRowBuilder().addComponents(
-      btnQuestionFourA,
-      btnQuestionFourB,
-      btnQuestionFourC,
-      btnQuestionFourD
-    );
+    const btnQuestionFourA = new ButtonBuilder().setCustomId("btn-sctest-qFour-ansA").setLabel("A").setStyle(ButtonStyle.Primary);
+    const btnQuestionFourB = new ButtonBuilder().setCustomId("btn-sctest-qFour-ansB").setLabel("B").setStyle(ButtonStyle.Primary);
+    const btnQuestionFourC = new ButtonBuilder().setCustomId("btn-sctest-qFour-ansC").setLabel("C").setStyle(ButtonStyle.Primary);
+    const btnQuestionFourD = new ButtonBuilder().setCustomId("btn-sctest-qFour-ansD").setLabel("D").setStyle(ButtonStyle.Primary);
+    const btnRowQuestionFour = new ActionRowBuilder().addComponents(btnQuestionFourA, btnQuestionFourB, btnQuestionFourC, btnQuestionFourD);
 
     // Question 5
-    const btnQuestionFiveA = new ButtonBuilder()
-      .setCustomId("btn-sctest-qFive-ansA")
-      .setLabel("A")
-      .setStyle(ButtonStyle.Primary);
-    const btnQuestionFiveB = new ButtonBuilder()
-      .setCustomId("btn-sctest-qFive-ansB")
-      .setLabel("B")
-      .setStyle(ButtonStyle.Primary);
-    const btnQuestionFiveC = new ButtonBuilder()
-      .setCustomId("btn-sctest-qFive-ansC")
-      .setLabel("C")
-      .setStyle(ButtonStyle.Primary);
-    const btnQuestionFiveD = new ButtonBuilder()
-      .setCustomId("btn-sctest-qFive-ansD")
-      .setLabel("D")
-      .setStyle(ButtonStyle.Primary);
-    const btnRowQuestionFive = new ActionRowBuilder().addComponents(
-      btnQuestionFiveA,
-      btnQuestionFiveB,
-      btnQuestionFiveC,
-      btnQuestionFiveD
-    );
+    const btnQuestionFiveA = new ButtonBuilder().setCustomId("btn-sctest-qFive-ansA").setLabel("A").setStyle(ButtonStyle.Primary);
+    const btnQuestionFiveB = new ButtonBuilder().setCustomId("btn-sctest-qFive-ansB").setLabel("B").setStyle(ButtonStyle.Primary);
+    const btnQuestionFiveC = new ButtonBuilder().setCustomId("btn-sctest-qFive-ansC").setLabel("C").setStyle(ButtonStyle.Primary);
+    const btnQuestionFiveD = new ButtonBuilder().setCustomId("btn-sctest-qFive-ansD").setLabel("D").setStyle(ButtonStyle.Primary);
+    const btnRowQuestionFive = new ActionRowBuilder().addComponents(btnQuestionFiveA, btnQuestionFiveB, btnQuestionFiveC, btnQuestionFiveD);
 
     // Question 6
     const btnQuestionSixA = new ButtonBuilder().setCustomId("btn-sctest-qSix-ansA").setLabel("A").setStyle(ButtonStyle.Primary);
     const btnQuestionSixB = new ButtonBuilder().setCustomId("btn-sctest-qSix-ansB").setLabel("B").setStyle(ButtonStyle.Primary);
     const btnQuestionSixC = new ButtonBuilder().setCustomId("btn-sctest-qSix-ansC").setLabel("C").setStyle(ButtonStyle.Primary);
     const btnQuestionSixD = new ButtonBuilder().setCustomId("btn-sctest-qSix-ansD").setLabel("D").setStyle(ButtonStyle.Primary);
-    const btnRowQuestionSix = new ActionRowBuilder().addComponents(
-      btnQuestionSixA,
-      btnQuestionSixB,
-      btnQuestionSixC,
-      btnQuestionSixD
-    );
+    const btnRowQuestionSix = new ActionRowBuilder().addComponents(btnQuestionSixA, btnQuestionSixB, btnQuestionSixC, btnQuestionSixD);
 
     // Question 7
-    const btnQuestionSevenA = new ButtonBuilder()
-      .setCustomId("btn-sctest-qSeven-ansA")
-      .setLabel("A")
-      .setStyle(ButtonStyle.Primary);
-    const btnQuestionSevenB = new ButtonBuilder()
-      .setCustomId("btn-sctest-qSeven-ansB")
-      .setLabel("B")
-      .setStyle(ButtonStyle.Primary);
-    const btnQuestionSevenC = new ButtonBuilder()
-      .setCustomId("btn-sctest-qSeven-ansC")
-      .setLabel("C")
-      .setStyle(ButtonStyle.Primary);
-    const btnQuestionSevenD = new ButtonBuilder()
-      .setCustomId("btn-sctest-qSeven-ansD")
-      .setLabel("D")
-      .setStyle(ButtonStyle.Primary);
-    const btnRowQuestionSeven = new ActionRowBuilder().addComponents(
-      btnQuestionSevenA,
-      btnQuestionSevenB,
-      btnQuestionSevenC,
-      btnQuestionSevenD
-    );
+    const btnQuestionSevenA = new ButtonBuilder().setCustomId("btn-sctest-qSeven-ansA").setLabel("A").setStyle(ButtonStyle.Primary);
+    const btnQuestionSevenB = new ButtonBuilder().setCustomId("btn-sctest-qSeven-ansB").setLabel("B").setStyle(ButtonStyle.Primary);
+    const btnQuestionSevenC = new ButtonBuilder().setCustomId("btn-sctest-qSeven-ansC").setLabel("C").setStyle(ButtonStyle.Primary);
+    const btnQuestionSevenD = new ButtonBuilder().setCustomId("btn-sctest-qSeven-ansD").setLabel("D").setStyle(ButtonStyle.Primary);
+    const btnRowQuestionSeven = new ActionRowBuilder().addComponents(btnQuestionSevenA, btnQuestionSevenB, btnQuestionSevenC, btnQuestionSevenD);
 
     // Question 8
-    const btnQuestionEightA = new ButtonBuilder()
-      .setCustomId("btn-sctest-qEight-ansA")
-      .setLabel("A")
-      .setStyle(ButtonStyle.Primary);
-    const btnQuestionEightB = new ButtonBuilder()
-      .setCustomId("btn-sctest-qEight-ansB")
-      .setLabel("B")
-      .setStyle(ButtonStyle.Primary);
-    const btnQuestionEightC = new ButtonBuilder()
-      .setCustomId("btn-sctest-qEight-ansC")
-      .setLabel("C")
-      .setStyle(ButtonStyle.Primary);
-    const btnQuestionEightD = new ButtonBuilder()
-      .setCustomId("btn-sctest-qEight-ansD")
-      .setLabel("D")
-      .setStyle(ButtonStyle.Primary);
-    const btnRowQuestionEight = new ActionRowBuilder().addComponents(
-      btnQuestionEightA,
-      btnQuestionEightB,
-      btnQuestionEightC,
-      btnQuestionEightD
-    );
+    const btnQuestionEightA = new ButtonBuilder().setCustomId("btn-sctest-qEight-ansA").setLabel("A").setStyle(ButtonStyle.Primary);
+    const btnQuestionEightB = new ButtonBuilder().setCustomId("btn-sctest-qEight-ansB").setLabel("B").setStyle(ButtonStyle.Primary);
+    const btnQuestionEightC = new ButtonBuilder().setCustomId("btn-sctest-qEight-ansC").setLabel("C").setStyle(ButtonStyle.Primary);
+    const btnQuestionEightD = new ButtonBuilder().setCustomId("btn-sctest-qEight-ansD").setLabel("D").setStyle(ButtonStyle.Primary);
+    const btnRowQuestionEight = new ActionRowBuilder().addComponents(btnQuestionEightA, btnQuestionEightB, btnQuestionEightC, btnQuestionEightD);
 
     // Question 9
-    const btnQuestionNineA = new ButtonBuilder()
-      .setCustomId("btn-sctest-qNine-ansA")
-      .setLabel("A")
-      .setStyle(ButtonStyle.Primary);
-    const btnQuestionNineB = new ButtonBuilder()
-      .setCustomId("btn-sctest-qNine-ansB")
-      .setLabel("B")
-      .setStyle(ButtonStyle.Primary);
-    const btnQuestionNineC = new ButtonBuilder()
-      .setCustomId("btn-sctest-qNine-ansC")
-      .setLabel("C")
-      .setStyle(ButtonStyle.Primary);
-    const btnQuestionNineD = new ButtonBuilder()
-      .setCustomId("btn-sctest-qNine-ansD")
-      .setLabel("D")
-      .setStyle(ButtonStyle.Primary);
-    const btnRowQuestionNine = new ActionRowBuilder().addComponents(
-      btnQuestionNineA,
-      btnQuestionNineB,
-      btnQuestionNineC,
-      btnQuestionNineD
-    );
+    const btnQuestionNineA = new ButtonBuilder().setCustomId("btn-sctest-qNine-ansA").setLabel("A").setStyle(ButtonStyle.Primary);
+    const btnQuestionNineB = new ButtonBuilder().setCustomId("btn-sctest-qNine-ansB").setLabel("B").setStyle(ButtonStyle.Primary);
+    const btnQuestionNineC = new ButtonBuilder().setCustomId("btn-sctest-qNine-ansC").setLabel("C").setStyle(ButtonStyle.Primary);
+    const btnQuestionNineD = new ButtonBuilder().setCustomId("btn-sctest-qNine-ansD").setLabel("D").setStyle(ButtonStyle.Primary);
+    const btnRowQuestionNine = new ActionRowBuilder().addComponents(btnQuestionNineA, btnQuestionNineB, btnQuestionNineC, btnQuestionNineD);
 
     // Question 10
     const btnQuestionTenA = new ButtonBuilder().setCustomId("btn-sctest-qTen-ansA").setLabel("A").setStyle(ButtonStyle.Primary);
     const btnQuestionTenB = new ButtonBuilder().setCustomId("btn-sctest-qTen-ansB").setLabel("B").setStyle(ButtonStyle.Primary);
     const btnQuestionTenC = new ButtonBuilder().setCustomId("btn-sctest-qTen-ansC").setLabel("C").setStyle(ButtonStyle.Primary);
     const btnQuestionTenD = new ButtonBuilder().setCustomId("btn-sctest-qTen-ansD").setLabel("D").setStyle(ButtonStyle.Primary);
-    const btnRowQuestionTen = new ActionRowBuilder().addComponents(
-      btnQuestionTenA,
-      btnQuestionTenB,
-      btnQuestionTenC,
-      btnQuestionTenD
-    );
+    const btnRowQuestionTen = new ActionRowBuilder().addComponents(btnQuestionTenA, btnQuestionTenB, btnQuestionTenC, btnQuestionTenD);
 
     const btnCollector = sentMessage.createMessageComponentCollector({
       componentType: ComponentType.Button,
@@ -300,7 +160,7 @@ module.exports = {
 
       switch (btnInteraction.customId) {
         case "btn-sctest-testStartOne":
-          scTestMessageEmbed
+          embed
             .setColor(0xff0000)
             .setTitle("Question 1: How many children should one family have?")
             .setDescription(["A) 4 twin", "\n", "B) 13", "\n", "C) Make as possible as you can", "\n", "D) 1"].join(""))
@@ -308,17 +168,13 @@ module.exports = {
             .setImage();
 
           try {
-            await btnInteraction.update({
-              embeds: [scTestMessageEmbed],
-              files: [scThumbnailFile],
-              components: [btnRowQuestionOne],
-            });
+            await btnInteraction.update({ embeds: [embed], files: [scThumbnailFile], components: [btnRowQuestionOne] });
           } catch (error) {
             return;
           }
           break;
         case "btn-sctest-testStartTwo":
-          scTestMessageEmbed
+          embed
             .setColor(0xff0000)
             .setTitle("Question 1: How many children should one family have?")
             .setDescription(["A) 4 twin", "\n", "B) 13", "\n", "C) Make as possible as you can", "\n", "D) 1"].join(""))
@@ -326,11 +182,7 @@ module.exports = {
             .setImage();
 
           try {
-            await btnInteraction.update({
-              embeds: [scTestMessageEmbed],
-              files: [scThumbnailFile],
-              components: [btnRowQuestionOne],
-            });
+            await btnInteraction.update({ embeds: [embed], files: [scThumbnailFile], components: [btnRowQuestionOne] });
           } catch (error) {
             return;
           }
@@ -417,21 +269,13 @@ module.exports = {
           break;
 
         case "btn-sctest-qFive-ansA":
-          scTestMessageEmbed.setImage("attachment://scTestXi.jpg");
+          embed.setImage("attachment://scTestXi.jpg");
           await correctAnswerHandler(
             btnInteraction,
             btnRowQuestionFive,
             btnQuestionFiveA,
             "Question 6: Who is this guy?",
-            [
-              "A) Winnie the Pooh",
-              "\n",
-              "B) I don't know",
-              "\n",
-              "C) Some random Chinese polician",
-              "\n",
-              "D) Xi Jinping",
-            ].join(""),
+            ["A) Winnie the Pooh", "\n", "B) I don't know", "\n", "C) Some random Chinese polician", "\n", "D) Xi Jinping"].join(""),
             btnRowQuestionSix
           );
           break;
@@ -455,7 +299,7 @@ module.exports = {
           await wrongAnswerHandler(btnInteraction);
           break;
         case "btn-sctest-qSix-ansD":
-          scTestMessageEmbed.setImage();
+          embed.setImage();
           await correctAnswerHandler(
             btnInteraction,
             btnRowQuestionSix,
@@ -561,29 +405,20 @@ module.exports = {
     btnCollector.on("end", async () => {
       if (testFinished) return;
 
-      scTestMessageEmbed
+      embed
         .setColor(0xff0000)
         .setTitle("The test has ended")
-        .setDescription(
-          "You didn't answer in time, you will now be monitored by the Chinese goverment until you finish the test"
-        )
+        .setDescription("You didn't answer in time, you will now be monitored by the Chinese goverment until you finish the test")
         .setFooter({ text: "Finish the test..." });
 
       try {
-        return await sentMessage.edit({ embeds: [scTestMessageEmbed], files: [scThumbnailFile], components: [] });
+        return await sentMessage.edit({ embeds: [embed], files: [scThumbnailFile], components: [] });
       } catch (error) {
         return;
       }
     });
 
-    async function correctAnswerHandler(
-      btnInteraction,
-      btnRowToDisable,
-      correctBtn,
-      nextQuestionTitle,
-      nextQuestionDescription,
-      nextQuestionBtnRow
-    ) {
+    async function correctAnswerHandler(btnInteraction, btnRowToDisable, correctBtn, nextQuestionTitle, nextQuestionDescription, nextQuestionBtnRow) {
       await updateScCredits(100000);
 
       questionProgressCounter++;
@@ -609,26 +444,19 @@ module.exports = {
 
       await delay(3000);
 
-      scTestMessageEmbed.setTitle(nextQuestionTitle).setDescription(nextQuestionDescription);
+      embed.setTitle(nextQuestionTitle).setDescription(nextQuestionDescription);
 
+      // since question 6 requires the Xi image
       if (correctBtn.data.custom_id === "btn-sctest-qFive-ansA") {
         try {
-          return await sentMessage.edit({
-            embeds: [scTestMessageEmbed],
-            files: [scThumbnailFile, xiPortraitImage],
-            components: [nextQuestionBtnRow],
-          });
+          return await sentMessage.edit({ embeds: [embed], files: [scThumbnailFile, xiPortraitImage], components: [nextQuestionBtnRow] });
         } catch (error) {
           return;
         }
       }
 
       try {
-        await sentMessage.edit({
-          embeds: [scTestMessageEmbed],
-          files: [scThumbnailFile],
-          components: [nextQuestionBtnRow],
-        });
+        await sentMessage.edit({ embeds: [embed], files: [scThumbnailFile], components: [nextQuestionBtnRow] });
       } catch (error) {
         return;
       }
@@ -640,11 +468,7 @@ module.exports = {
 
       try {
         // last thing we gonna do
-        return await btnInteraction.update({
-          embeds: [scTestWrongAnswerMessageEmbed],
-          files: [wrongAnswerImage],
-          components: [],
-        });
+        return await btnInteraction.update({ embeds: [scTestWrongAnswerMessageEmbed], files: [wrongAnswerImage], components: [] });
       } catch (error) {
         return;
       }

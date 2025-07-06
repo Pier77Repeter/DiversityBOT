@@ -5,14 +5,12 @@ module.exports = {
   name: "stealemoji",
   description: "Returns the emoji has PNG or GIF",
   async execute(client, message, args) {
-    var emoji = args[0];
+    const emoji = args[0];
 
-    if (!emoji) {
-      try {
-        return await message.reply("Provide an emoji, thanks");
-      } catch (error) {
-        return;
-      }
+    try {
+      if (!emoji) return await message.reply("Provide an emoji, thanks");
+    } catch (error) {
+      return;
     }
 
     const emojiName = args[0].split(":")[1];
@@ -40,14 +38,14 @@ module.exports = {
         emojiUrl += ".png?quality=lossless";
       }
 
-      const emojistealMessageEmbed = new EmbedBuilder()
+      const embed = new EmbedBuilder()
         .setColor(0x33ccff)
         .setTitle("Stealed emoji: " + emojiName)
         .setImage(emojiUrl)
         .setFooter({ text: "Click the image to download" });
 
       try {
-        return await message.reply({ embeds: [emojistealMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }

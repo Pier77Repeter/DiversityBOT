@@ -4,7 +4,7 @@ const cooldownManager = require("../../utils/cooldownManager");
 module.exports = {
   name: "cooldown",
   description: "Cooldown example, db table is fake",
-  cooldown: 30, // cooldown in seconds
+  cooldown: 86400, // cooldown in seconds
   async execute(client, message, args) {
     // for every cooldown, we'll use the cooldownManager, take a look into it at: utils/cooldownManager.js
     const cooldown = await cooldownManager(client, "dailyCooldown", this.cooldown, message.guild.id, message.author.id);
@@ -12,12 +12,10 @@ module.exports = {
 
     // if everything went gut, the return value is this: cooldownData = [statusCode, timeLeft]
     if (cooldown != 0) {
-      const cooldownMessageEmbed = new EmbedBuilder()
-        .setColor(0x000000)
-        .setDescription("⏰ WAIT: **<t:" + cooldown[1] + ":R>** to use this again");
+      const embed = new EmbedBuilder().setColor(0x000000).setDescription("⏰ WAIT: **<t:" + cooldown[1] + ":R>** to use this again");
 
       try {
-        return await message.reply({ embeds: [cooldownMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }

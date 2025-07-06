@@ -11,10 +11,7 @@ module.exports = {
     const itemToUse = args[0];
 
     if (!itemToUse) {
-      embed
-        .setColor(0xff6600)
-        .setTitle("Here is the list of usable items:")
-        .setDescription(["d!use banana", "d!use beans", "d!use poo <@user>"].join("\n"));
+      embed.setColor(0xff6600).setTitle("Here is the list of usable items:").setDescription(["d!use banana", "d!use beans", "d!use poo <@user>"].join("\n"));
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -129,10 +126,7 @@ module.exports = {
         }
 
       default:
-        embed
-          .setColor(0xff0000)
-          .setTitle("❌ Error")
-          .setDescription("That items dosen't exist, type **d!use** to see the list");
+        embed.setColor(0xff0000).setTitle("❌ Error").setDescription("That items dosen't exist, type **d!use** to see the list");
 
         try {
           return await message.reply({ embeds: [embed] });

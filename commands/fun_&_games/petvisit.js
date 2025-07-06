@@ -8,24 +8,19 @@ module.exports = {
   cooldown: 3600,
   async execute(client, message, args) {
     const row = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT hasPet, petStatsHealth FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, message.author.id],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
+      client.database.get("SELECT hasPet, petStatsHealth FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
     });
 
-    const petVisitMessageEmbed = new EmbedBuilder()
-      .setColor(0xff0000)
-      .setTitle("❌ Error")
-      .setDescription("You don't have a pet, adopt it with **d!adopt <@user>**");
+    const embed = new EmbedBuilder();
 
     if (!row || !row.hasPet) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have a pet, adopt it with **d!adopt <@user>**");
+
       try {
-        return await message.reply({ embeds: [petVisitMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
@@ -35,13 +30,13 @@ module.exports = {
     if (cooldown == null) return;
 
     if (cooldown != 0) {
-      petVisitMessageEmbed
+      embed
         .setColor(0x000000)
         .setTitle(null)
         .setDescription("⏰ Slowdown man, vet will be available again: **<t:" + cooldown[1] + ":R>**");
 
       try {
-        return await message.reply({ embeds: [petVisitMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
@@ -58,36 +53,30 @@ module.exports = {
         "UPDATE User SET petStatsHealth = petStatsHealth + ? WHERE serverId = ? AND userId = ?",
         [petHealthToAdd, message.guild.id, message.author.id],
         (err) => {
-          if (err) {
-            console.error("Error updating user pet health:", err);
-            return reject(err);
-          }
-          resolve();
+          if (err) return reject(err);
+          else resolve();
         }
       );
     });
 
     if (row.petStatsHealth + petHealthToAdd >= 100) {
-      petVisitMessageEmbed
-        .setColor(0xff0000)
-        .setTitle("Your pet is fine")
-        .setDescription("Your pet is healty, no need to bring it to the vet");
+      embed.setColor(0xff0000).setTitle("Your pet is fine").setDescription("Your pet is healty, no need to bring it to the vet");
 
       try {
-        return await message.reply({ embeds: [petVisitMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
     }
 
-    petVisitMessageEmbed
+    embed
       .setColor(0x33cc00)
       .setTitle("You broght your pet to the vet")
       .setDescription("The vet visited your pet giving the right treatment")
       .setFooter({ text: "Your pet gained +" + petHealthToAdd + " health" });
 
     try {
-      return await message.reply({ embeds: [petVisitMessageEmbed] });
+      return await message.reply({ embeds: [embed] });
     } catch (error) {
       return;
     }

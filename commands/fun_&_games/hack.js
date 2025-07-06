@@ -9,13 +9,13 @@ module.exports = {
   description: "Hack the mentioned user",
   cooldown: 70,
   async execute(client, message, args) {
-    if (message.mentions.members.first() == null) {
-      try {
-        return await message.reply("You need to **mention** an user, else who do i hack?");
-      } catch (error) {
-        return;
-      }
+    try {
+      if (message.mentions.members.first() == null) return await message.reply("You need to **mention** an user, else who do i hack?");
+    } catch (error) {
+      return;
     }
+
+    const embed = new EmbedBuilder();
 
     const member = message.mentions.members.first().user;
     const messageAuthor = message.author.username;
@@ -24,114 +24,63 @@ module.exports = {
     if (cooldown == null) return;
 
     if (cooldown != 0) {
-      const hackMessageEmbed = new EmbedBuilder()
-        .setColor(0x000000)
-        .setDescription("⏰ Better wait **<t:" + cooldown[1] + ":R>** before hacking again, you might be found by the FBI");
+      embed.setColor(0x000000).setDescription("⏰ Better wait **<t:" + cooldown[1] + ":R>** before hacking again, you might be found by the FBI");
 
       try {
-        return await message.reply({ embeds: [hackMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
     }
 
     const imageFile = new AttachmentBuilder("./media/hackerMan.jpg");
-    const hackMessageEmbed = new EmbedBuilder()
+    embed
       .setColor(0x990000)
       .setDescription(
-        [
-          "```diff",
-          "\n",
-          "DiversityBOT's magic command prompt!",
-          "\n",
-          "\n",
-          "\n",
-          "\n",
-          "\n",
-          "> hack -u ",
-          member.username,
-          "\n",
-          "```",
-        ].join("")
+        ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> hack -u ", member.username, "\n", "```"].join("")
       )
       .setThumbnail("attachment://hackerMan.jpg");
 
     var sentMessage;
     try {
-      sentMessage = await message.reply({ embeds: [hackMessageEmbed], files: [imageFile] });
+      sentMessage = await message.reply({ embeds: [embed], files: [imageFile] });
     } catch (error) {
       return;
     }
 
     await delay(2000);
-    hackMessageEmbed.setDescription(
-      [
-        "```diff",
-        "\n",
-        "DiversityBOT's magic command prompt!",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        "> [▖] Injecting Brownware...",
-        "\n",
-        "```",
-      ].join("")
+    embed.setDescription(
+      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▖] Injecting Brownware...", "\n", "```"].join("")
     );
     try {
-      await sentMessage.edit({ embeds: [hackMessageEmbed] });
+      await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
       return;
     }
 
     await delay(2000);
-    hackMessageEmbed.setDescription(
-      [
-        "```diff",
-        "\n",
-        "DiversityBOT's magic command prompt!",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        "> [▘] Brownware injected, time to hack!",
-        "\n",
-        "```",
-      ].join("")
+    embed.setDescription(
+      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▘] Brownware injected, time to hack!", "\n", "```"].join("")
     );
     try {
-      await sentMessage.edit({ embeds: [hackMessageEmbed] });
+      await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
       return;
     }
 
     await delay(2000);
-    hackMessageEmbed.setDescription(
-      [
-        "```diff",
-        "\n",
-        "DiversityBOT's magic command prompt!",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        "> [▝] Getting Discord account token...",
-        "\n",
-        "```",
-      ].join("")
+    embed.setDescription(
+      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▝] Getting Discord account token...", "\n", "```"].join("")
     );
     try {
-      await sentMessage.edit({ embeds: [hackMessageEmbed] });
+      await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
       return;
     }
 
     await delay(2000);
     const hackcmdTokenRandom = mathRandomInt(1000000000000000, 9007199254740991);
-    hackMessageEmbed.setDescription(
+    embed.setDescription(
       [
         "```diff",
         "\n",
@@ -147,36 +96,24 @@ module.exports = {
       ].join("")
     );
     try {
-      await sentMessage.edit({ embeds: [hackMessageEmbed] });
+      await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
       return;
     }
 
     await delay(2000);
-    hackMessageEmbed.setDescription(
-      [
-        "```diff",
-        "\n",
-        "DiversityBOT's magic command prompt!",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        "> [▖] Getting IP address...",
-        "\n",
-        "```",
-      ].join("")
+    embed.setDescription(
+      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▖] Getting IP address...", "\n", "```"].join("")
     );
     try {
-      await sentMessage.edit({ embeds: [hackMessageEmbed] });
+      await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
       return;
     }
 
     await delay(2000);
     const hackcmdIpNumbers = [mathRandomInt(1, 255), mathRandomInt(1, 255), mathRandomInt(1, 255), mathRandomInt(1, 255)];
-    hackMessageEmbed.setDescription(
+    embed.setDescription(
       [
         "```diff",
         "\n",
@@ -186,48 +123,29 @@ module.exports = {
         "\n",
         "\n",
         "\n",
-        "> [▘] IP address: " +
-          hackcmdIpNumbers[0] +
-          "." +
-          hackcmdIpNumbers[1] +
-          "." +
-          hackcmdIpNumbers[2] +
-          "." +
-          hackcmdIpNumbers[3],
+        "> [▘] IP address: " + hackcmdIpNumbers[0] + "." + hackcmdIpNumbers[1] + "." + hackcmdIpNumbers[2] + "." + hackcmdIpNumbers[3],
         "\n",
         "```",
       ].join("")
     );
     try {
-      await sentMessage.edit({ embeds: [hackMessageEmbed] });
+      await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
       return;
     }
 
     await delay(2000);
-    hackMessageEmbed.setDescription(
-      [
-        "```diff",
-        "\n",
-        "DiversityBOT's magic command prompt!",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        "> [▝] Stealing all the important data...",
-        "\n",
-        "```",
-      ].join("")
+    embed.setDescription(
+      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▝] Stealing all the important data...", "\n", "```"].join("")
     );
     try {
-      await sentMessage.edit({ embeds: [hackMessageEmbed] });
+      await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
       return;
     }
 
     await delay(2000);
-    hackMessageEmbed.setDescription(
+    embed.setDescription(
       [
         "```diff",
         "\n",
@@ -263,29 +181,17 @@ module.exports = {
       ].join("")
     );
     try {
-      await sentMessage.edit({ embeds: [hackMessageEmbed] });
+      await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
       return;
     }
 
     await delay(2000);
-    hackMessageEmbed.setDescription(
-      [
-        "```diff",
-        "\n",
-        "DiversityBOT's magic command prompt!",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        "> [▖] Exploiting coords using Nocom...",
-        "\n",
-        "```",
-      ].join("")
+    embed.setDescription(
+      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▖] Exploiting coords using Nocom...", "\n", "```"].join("")
     );
     try {
-      await sentMessage.edit({ embeds: [hackMessageEmbed] });
+      await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
       return;
     }
@@ -293,7 +199,7 @@ module.exports = {
     await delay(2000);
     const hackcmdCoordsX = mathRandomInt(-30000000, 30000000);
     const hackcmdCoordsZ = mathRandomInt(-30000000, 30000000);
-    hackMessageEmbed.setDescription(
+    embed.setDescription(
       [
         "```diff",
         "\n",
@@ -309,35 +215,23 @@ module.exports = {
       ].join("")
     );
     try {
-      await sentMessage.edit({ embeds: [hackMessageEmbed] });
+      await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
       return;
     }
 
     await delay(2000);
-    hackMessageEmbed.setDescription(
-      [
-        "```diff",
-        "\n",
-        "DiversityBOT's magic command prompt!",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        "> [▝] Hacking all important accounts...",
-        "\n",
-        "```",
-      ].join("")
+    embed.setDescription(
+      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▝] Hacking all important accounts...", "\n", "```"].join("")
     );
     try {
-      await sentMessage.edit({ embeds: [hackMessageEmbed] });
+      await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
       return;
     }
 
     await delay(2000);
-    hackMessageEmbed.setDescription(
+    embed.setDescription(
       [
         "```diff",
         "\n",
@@ -348,31 +242,19 @@ module.exports = {
         "\n",
         "\n",
         "> [▗] Hacked account: " +
-          listsGetRandomItem([
-            "Instagram",
-            "School",
-            "Youtube",
-            "Twitch",
-            "Discord",
-            "Reddit",
-            "Minecraft",
-            "Roblox",
-            "Steam",
-            "PornHub",
-            "Reddit",
-          ]),
+          listsGetRandomItem(["Instagram", "School", "Youtube", "Twitch", "Discord", "Reddit", "Minecraft", "Roblox", "Steam", "PornHub", "Reddit"]),
         "\n",
         "```",
       ].join("")
     );
     try {
-      await sentMessage.edit({ embeds: [hackMessageEmbed] });
+      await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
       return;
     }
 
     await delay(2000);
-    hackMessageEmbed.setDescription(
+    embed.setDescription(
       [
         "```diff",
         "\n",
@@ -388,35 +270,23 @@ module.exports = {
       ].join("")
     );
     try {
-      await sentMessage.edit({ embeds: [hackMessageEmbed] });
+      await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
       return;
     }
 
     await delay(2000);
-    hackMessageEmbed.setDescription(
-      [
-        "```diff",
-        "\n",
-        "DiversityBOT's magic command prompt!",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        "> [▘] The remote code has been executed",
-        "\n",
-        "```",
-      ].join("")
+    embed.setDescription(
+      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▘] The remote code has been executed", "\n", "```"].join("")
     );
     try {
-      await sentMessage.edit({ embeds: [hackMessageEmbed] });
+      await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
       return;
     }
 
     await delay(2000);
-    hackMessageEmbed.setDescription(
+    embed.setDescription(
       [
         "```diff",
         "\n",
@@ -444,57 +314,35 @@ module.exports = {
       ].join("")
     );
     try {
-      await sentMessage.edit({ embeds: [hackMessageEmbed] });
+      await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
       return;
     }
 
     await delay(2000);
-    hackMessageEmbed.setDescription(
-      [
-        "```diff",
-        "\n",
-        "DiversityBOT's magic command prompt!",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        "> [▗] Changed desktop background :trollolol:",
-        "\n",
-        "```",
-      ].join("")
+    embed.setDescription(
+      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▗] Changed desktop background :trollolol:", "\n", "```"].join(
+        ""
+      )
     );
     try {
-      await sentMessage.edit({ embeds: [hackMessageEmbed] });
+      await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
       return;
     }
 
     await delay(2000);
-    hackMessageEmbed.setDescription(
-      [
-        "```diff",
-        "\n",
-        "DiversityBOT's magic command prompt!",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        "> [▖] Opening the '+18' folder...",
-        "\n",
-        "```",
-      ].join("")
+    embed.setDescription(
+      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▖] Opening the '+18' folder...", "\n", "```"].join("")
     );
     try {
-      await sentMessage.edit({ embeds: [hackMessageEmbed] });
+      await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
       return;
     }
 
     await delay(2000);
-    hackMessageEmbed.setDescription(
+    embed.setDescription(
       [
         "```diff",
         "\n",
@@ -522,13 +370,13 @@ module.exports = {
       ].join("")
     );
     try {
-      await sentMessage.edit({ embeds: [hackMessageEmbed] });
+      await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
       return;
     }
 
     await delay(2000);
-    hackMessageEmbed.setDescription(
+    embed.setDescription(
       [
         "```diff",
         "\n",
@@ -544,13 +392,13 @@ module.exports = {
       ].join("")
     );
     try {
-      await sentMessage.edit({ embeds: [hackMessageEmbed] });
+      await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
       return;
     }
 
     await delay(2000);
-    hackMessageEmbed.setDescription(
+    embed.setDescription(
       [
         "```diff",
         "\n",
@@ -566,36 +414,26 @@ module.exports = {
       ].join("")
     );
     try {
-      await sentMessage.edit({ embeds: [hackMessageEmbed] });
+      await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
       return;
     }
 
     await delay(2000);
-    hackMessageEmbed.setDescription(
-      [
-        "```diff",
-        "\n",
-        "DiversityBOT's magic command prompt!",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        "> [▖] Sending found +18 files to the FBI...",
-        "\n",
-        "```",
-      ].join("")
+    embed.setDescription(
+      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▖] Sending found +18 files to the FBI...", "\n", "```"].join(
+        ""
+      )
     );
     try {
-      await sentMessage.edit({ embeds: [hackMessageEmbed] });
+      await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
       return;
     }
 
     await delay(2000);
-    hackMessageEmbed.setColor(0x33cc00);
-    hackMessageEmbed.setDescription(
+    embed.setColor(0x33cc00);
+    embed.setDescription(
       [
         "```diff",
         "\n",
@@ -611,7 +449,7 @@ module.exports = {
       ].join("")
     );
     try {
-      return await sentMessage.edit({ embeds: [hackMessageEmbed] });
+      return await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
       return;
     }

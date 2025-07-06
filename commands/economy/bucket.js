@@ -8,6 +8,7 @@ module.exports = {
   async execute(client, message, args) {
     const user = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
 
+    // take a look into dbJsonDataGet AND dbJsonDataSet, it replys and returns null if shit goes wrong
     const fishes = await dbJsonDataGet(client, user, message, "fishes");
     if (fishes == null) return; // message is already sent, so just return
 

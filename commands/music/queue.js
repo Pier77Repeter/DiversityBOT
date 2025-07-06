@@ -7,17 +7,16 @@ module.exports = {
   aliases: ["q"],
   description: "Shows the music queue of the server",
   async execute(client, message, args) {
-    const queueMessageEmbed = new EmbedBuilder()
-      .setColor(0xff0000)
-      .setTitle("❌ Error")
-      .setDescription("Music commands are off, type: **d!musicmd on**");
+    const embed = new EmbedBuilder();
 
     const isMusicEnabled = await configChecker(client, message, "musiCmd");
     if (isMusicEnabled == null) return;
 
     if (isMusicEnabled == 0) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
+
       try {
-        return await message.reply({ embeds: [queueMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
@@ -40,18 +39,16 @@ module.exports = {
     const upcomingTracks = queue.tracks.toArray().slice(0, 10);
 
     // i just took this from discord-player docs, just mapping the array of upcoming tracks
-    const upcomingTracksList = [...upcomingTracks.map((track, index) => `${index + 1}. ${track.title} - ${track.author}`)].join(
-      "\n"
-    );
+    const upcomingTracksList = [...upcomingTracks.map((track, index) => `${index + 1}. ${track.title} - ${track.author}`)].join("\n");
 
-    queueMessageEmbed
+    embed
       .setColor(0xffcc66)
       .setTitle("⌚ Server music queue:")
       .setDescription("Now playing: " + currentTrack.title)
       .addFields({ name: "Upcoming tracks:", value: upcomingTracksList });
 
     try {
-      return await message.reply({ embeds: [queueMessageEmbed] });
+      return await message.reply({ embeds: [embed] });
     } catch (error) {
       return;
     }

@@ -4,27 +4,26 @@ module.exports = {
   name: "rep",
   description: "Check user reputation on a server",
   async execute(client, message, args) {
-    var member;
-    if (message.mentions.members.first() == null) {
-      member = message.author;
-    } else {
-      member = message.mentions.members.first().user;
-    }
+    const user = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
 
     const row = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT reputation FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, member.id],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
+      client.database.get("SELECT reputation FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, user.id], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
     });
 
+    const embed = new EmbedBuilder();
+
     if (!row) {
+      embed
+        .setColor(0x33cc00)
+        .setTitle(user.username + "'s reputation")
+        .setDescription("Reputation on the server is: **0**")
+        .setThumbnail(user.displayAvatarURL());
+
       try {
-        return await message.reply(member.username + " dosen't have any reputation on this server");
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
@@ -32,14 +31,14 @@ module.exports = {
 
     const rep = row.reputation;
 
-    const repMessageEmbed = new EmbedBuilder()
+    embed
       .setColor(0x33cc00)
-      .setTitle(member.username + "'s reputation")
+      .setTitle(user.username + "'s reputation")
       .setDescription("Reputation on the server is: **" + rep + "**")
-      .setThumbnail(member.displayAvatarURL());
+      .setThumbnail(user.displayAvatarURL());
 
     try {
-      return await message.reply({ embeds: [repMessageEmbed] });
+      return await message.reply({ embeds: [embed] });
     } catch (error) {
       return;
     }

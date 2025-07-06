@@ -1,12 +1,4 @@
-const {
-  EmbedBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  ActionRowBuilder,
-  ComponentType,
-  MessageFlags,
-  AttachmentBuilder,
-} = require("discord.js");
+const { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, MessageFlags, AttachmentBuilder } = require("discord.js");
 const cooldownManager = require("../../utils/cooldownManager");
 const manageUserMoney = require("../../utils/manageUserMoney");
 const mathRandomInt = require("../../utils/mathRandomInt");
@@ -43,10 +35,7 @@ module.exports = {
     const btnFunny = new ButtonBuilder().setCustomId("btn-pm-btnFunny").setLabel("Funny").setStyle(ButtonStyle.Primary);
     const btnMeIrl = new ButtonBuilder().setCustomId("btn-pm-btnMeIrl").setLabel("Me_irl").setStyle(ButtonStyle.Primary);
     const btnClassic = new ButtonBuilder().setCustomId("btn-pm-btnClassic").setLabel("Classic").setStyle(ButtonStyle.Primary);
-    const btnCopyPasta = new ButtonBuilder()
-      .setCustomId("btn-pm-btnCopyPasta")
-      .setLabel("Copy pasta")
-      .setStyle(ButtonStyle.Primary);
+    const btnCopyPasta = new ButtonBuilder().setCustomId("btn-pm-btnCopyPasta").setLabel("Copy pasta").setStyle(ButtonStyle.Primary);
     const btnOld = new ButtonBuilder().setCustomId("btn-pm-btnOld").setLabel("Old").setStyle(ButtonStyle.Primary);
 
     const actionRow = new ActionRowBuilder().addComponents(btnFunny, btnMeIrl, btnClassic, btnCopyPasta, btnOld);
@@ -70,10 +59,7 @@ module.exports = {
     collector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
         try {
-          return await btnInteraction.reply({
-            content: "Don't steal his meme",
-            flags: MessageFlags.Ephemeral,
-          });
+          return await btnInteraction.reply({ content: "Don't steal his meme", flags: MessageFlags.Ephemeral });
         } catch (error) {
           return;
         }
@@ -293,10 +279,7 @@ module.exports = {
       if (!hasClickedBtn) {
         imageFile.setFile("./media/Reddit.png");
 
-        embed
-          .setTitle("🤷 Nothing to post")
-          .setDescription("I guess the meme you were about to post wasn't that good")
-          .setThumbnail("attachment://Reddit.png");
+        embed.setTitle("🤷 Nothing to post").setDescription("I guess the meme you were about to post wasn't that good").setThumbnail("attachment://Reddit.png");
 
         btnFunny.setStyle(ButtonStyle.Secondary).setDisabled(true);
         btnMeIrl.setStyle(ButtonStyle.Secondary).setDisabled(true);

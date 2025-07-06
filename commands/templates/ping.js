@@ -3,6 +3,8 @@ module.exports = {
   // this is the name of the command, for example, in this case d!ping
   name: "ping",
 
+  aliases: ["pang", "pong"], // the same command can have different names, so we use these (see loader.js)
+
   // optional description, may help to understand in short how it's supposed to work
   description: "Replies with Pong!",
 

@@ -10,11 +10,12 @@ module.exports = {
   cooldown: 60,
   async execute(client, message, args) {
     try {
-      if (message.mentions.members.first() == null)
-        return await message.reply("Herr " + message.author.username + ", you need to mention an opponent!");
+      if (message.mentions.members.first() == null) return await message.reply("Herr " + message.author.username + ", you need to mention an opponent!");
     } catch (error) {
       return;
     }
+
+    const embed = new EmbedBuilder();
 
     const mentionedUser = message.mentions.members.first().user;
     const messageAuthor = message.author;
@@ -23,19 +24,17 @@ module.exports = {
     if (cooldown == null) return;
 
     if (cooldown != 0) {
-      const battleMessageEmbed = new EmbedBuilder()
-        .setColor(0x000000)
-        .setDescription("⏰ Herr user, wait: **<t:" + cooldown[1] + ":R>** to battle again");
+      embed.setColor(0x000000).setDescription("⏰ Herr user, wait: **<t:" + cooldown[1] + ":R>** to battle again");
 
       try {
-        return await message.reply({ embeds: [battleMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
     }
 
     const imageFileBegin = new AttachmentBuilder("./media/letBattleBegin.jpg");
-    const battleMessageEmbed = new EmbedBuilder()
+    embed
       .setColor(0xc0c0c0)
       .setTitle("⚙️ Preparing the arena...")
       .setDescription(messageAuthor.username + " ⚔️ vs ⚔️ " + mentionedUser.username)
@@ -43,7 +42,7 @@ module.exports = {
 
     var sentMessage;
     try {
-      sentMessage = await message.reply({ embeds: [battleMessageEmbed], files: [imageFileBegin] });
+      sentMessage = await message.reply({ embeds: [embed], files: [imageFileBegin] });
     } catch (error) {
       return;
     }
@@ -55,11 +54,11 @@ module.exports = {
     var battleDamage = 0;
     var preventInfiniteLoop = 0; // i dont trust my own code O_O
 
-    const imageFileFight = new AttachmentBuilder("./media/battleBegins.jpg");
-    battleMessageEmbed.setImage("attachment://battleBegins.jpg");
+    imageFileFight.setFile("./media/battleBegins.jpg");
+    embed.setImage("attachment://battleBegins.jpg");
 
     try {
-      await sentMessage.edit({ embeds: [battleMessageEmbed], files: [imageFileFight] });
+      await sentMessage.edit({ embeds: [embed], files: [imageFileFight] });
     } catch (error) {
       return;
     }
@@ -71,32 +70,24 @@ module.exports = {
       opponentHp = opponentHp - battleDamage;
 
       if (opponentHp <= 0) {
-        battleMessageEmbed
+        embed
           .setColor(0x33cc00)
           .setTitle(messageAuthor.username + " ⚔️ vs ⚔️ " + mentionedUser.username)
-          .setDescription(
-            "➡️ " +
-              messageAuthor.username +
-              " did the final strike and destroyed " +
-              mentionedUser.username +
-              " for **-" +
-              battleDamage +
-              "HP**"
-          )
+          .setDescription("➡️ " + messageAuthor.username + " did the final strike and destroyed " + mentionedUser.username + " for **-" + battleDamage + "HP**")
           .setFields({
             name: "HP stats:",
             value: messageAuthor.username + ": **" + authorHp + "HP**   |   " + mentionedUser.username + ": **0HP**",
           });
 
         try {
-          await sentMessage.edit({ embeds: [battleMessageEmbed] });
+          await sentMessage.edit({ embeds: [embed] });
         } catch (error) {
           return;
         }
 
         await delay(4000);
 
-        battleMessageEmbed
+        embed
           .setColor(0xffcc00)
           .setTitle(messageAuthor.username + " won 🏆")
           .setDescription("That was an epik fight, GG!")
@@ -104,13 +95,13 @@ module.exports = {
           .setFooter({ text: "ezzz" });
 
         try {
-          return await sentMessage.edit({ embeds: [battleMessageEmbed], files: [] });
+          return await sentMessage.edit({ embeds: [embed], files: [] });
         } catch (error) {
           return;
         }
       }
 
-      battleMessageEmbed
+      embed
         .setColor(0x33cc00)
         .setTitle(messageAuthor.username + " ⚔️ vs ⚔️ " + mentionedUser.username)
         .setDescription(
@@ -146,12 +137,11 @@ module.exports = {
         )
         .setFields({
           name: "HP stats:",
-          value:
-            messageAuthor.username + ": **" + authorHp + "HP**   |   " + mentionedUser.username + ": **" + opponentHp + "HP**",
+          value: messageAuthor.username + ": **" + authorHp + "HP**   |   " + mentionedUser.username + ": **" + opponentHp + "HP**",
         });
 
       try {
-        await sentMessage.edit({ embeds: [battleMessageEmbed] });
+        await sentMessage.edit({ embeds: [embed] });
       } catch (error) {
         return;
       }
@@ -162,32 +152,24 @@ module.exports = {
       authorHp = authorHp - battleDamage;
 
       if (authorHp <= 0) {
-        battleMessageEmbed
+        embed
           .setColor(0xff0000)
           .setTitle(messageAuthor.username + " ⚔️ vs ⚔️ " + mentionedUser.username)
-          .setDescription(
-            "⬅️ " +
-              mentionedUser.username +
-              " did the final strike and destroyed " +
-              messageAuthor.username +
-              " for **-" +
-              battleDamage +
-              "HP**"
-          )
+          .setDescription("⬅️ " + mentionedUser.username + " did the final strike and destroyed " + messageAuthor.username + " for **-" + battleDamage + "HP**")
           .setFields({
             name: "HP stats:",
             value: messageAuthor.username + ": **0HP**   |   " + mentionedUser.username + ": **" + opponentHp + "HP**",
           });
 
         try {
-          await sentMessage.edit({ embeds: [battleMessageEmbed] });
+          await sentMessage.edit({ embeds: [embed] });
         } catch (error) {
           return;
         }
 
         await delay(4000);
 
-        battleMessageEmbed
+        embed
           .setColor(0xffcc00)
           .setTitle(mentionedUser.username + " won 🏆")
           .setDescription("That was an epik fight, GG!")
@@ -195,13 +177,13 @@ module.exports = {
           .setFooter({ text: "ezzz" });
 
         try {
-          return await sentMessage.edit({ embeds: [battleMessageEmbed], files: [] });
+          return await sentMessage.edit({ embeds: [embed], files: [] });
         } catch (error) {
           return;
         }
       }
 
-      battleMessageEmbed
+      embed
         .setColor(0xff0000)
         .setTitle(messageAuthor.username + " ⚔️ vs ⚔️ " + mentionedUser.username)
         .setDescription(
@@ -234,12 +216,11 @@ module.exports = {
         )
         .setFields({
           name: "HP stats:",
-          value:
-            messageAuthor.username + ": **" + authorHp + "HP**   |   " + mentionedUser.username + ": **" + opponentHp + "HP**",
+          value: messageAuthor.username + ": **" + authorHp + "HP**   |   " + mentionedUser.username + ": **" + opponentHp + "HP**",
         });
 
       try {
-        await sentMessage.edit({ embeds: [battleMessageEmbed] });
+        await sentMessage.edit({ embeds: [embed] });
       } catch (error) {
         return;
       }

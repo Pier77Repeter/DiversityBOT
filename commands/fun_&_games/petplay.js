@@ -8,24 +8,19 @@ module.exports = {
   cooldown: 3600,
   async execute(client, message, args) {
     const row = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT hasPet, petStatsFun FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, message.author.id],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
+      client.database.get("SELECT hasPet, petStatsFun FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
     });
 
-    const petPlayMessageEmbed = new EmbedBuilder()
-      .setColor(0xff0000)
-      .setTitle("❌ Error")
-      .setDescription("You don't have a pet, adopt it with **d!adopt <@user>**");
+    const embed = new EmbedBuilder();
 
     if (!row || !row.hasPet) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have a pet, adopt it with **d!adopt <@user>**");
+
       try {
-        return await message.reply({ embeds: [petPlayMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
@@ -35,13 +30,13 @@ module.exports = {
     if (cooldown == null) return;
 
     if (cooldown != 0) {
-      petPlayMessageEmbed
+      embed
         .setColor(0x000000)
         .setTitle(null)
         .setDescription("⏰ Play with your pet again in: **<t:" + cooldown[1] + ":R>**");
 
       try {
-        return await message.reply({ embeds: [petPlayMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
@@ -58,33 +53,30 @@ module.exports = {
         "UPDATE User SET petStatsFun = petStatsFun + ? WHERE serverId = ? AND userId = ?",
         [petFunToAdd, message.guild.id, message.author.id],
         (err) => {
-          if (err) {
-            console.error("Error updating user pet fun:", err);
-            return reject(err);
-          }
-          resolve();
+          if (err) reject(err);
+          else resolve();
         }
       );
     });
 
     if (row.petStatsFun + petFunToAdd >= 100) {
-      petPlayMessageEmbed.setColor(0xff0000).setTitle("Already happy").setDescription("Your pet is not getting bored");
+      embed.setColor(0xff0000).setTitle("Already happy").setDescription("Your pet is not getting bored");
 
       try {
-        return await message.reply({ embeds: [petPlayMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
     }
 
-    petPlayMessageEmbed
+    embed
       .setColor(0x33cc00)
       .setTitle("You played with your pet")
       .setDescription("Your pet was really happy to play with you")
       .setFooter({ text: "Your pet gained +" + petFunToAdd + " fun" });
 
     try {
-      return await message.reply({ embeds: [petPlayMessageEmbed] });
+      return await message.reply({ embeds: [embed] });
     } catch (error) {
       return;
     }

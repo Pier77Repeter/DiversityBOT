@@ -6,17 +6,16 @@ module.exports = {
   name: "volume",
   description: "Sets the playback volume (0-100)",
   async execute(client, message, args) {
-    const volumeMessageEmbed = new EmbedBuilder()
-      .setColor(0xff0000)
-      .setTitle("❌ Error")
-      .setDescription("Music commands are off, type: **d!musicmd on**");
+    const embed = new EmbedBuilder();
 
     const isMusicEnabled = await configChecker(client, message, "musiCmd");
     if (isMusicEnabled == null) return;
 
     if (isMusicEnabled == 0) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
+
       try {
-        return await message.reply({ embeds: [volumeMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
@@ -36,25 +35,23 @@ module.exports = {
     const volumeArg = parseInt(args[0]);
 
     if (isNaN(volumeArg) || volumeArg < 0 || volumeArg > 100) {
-      volumeMessageEmbed
-        .setColor(0xff0000)
-        .setTitle("❌ Error")
-        .setDescription("Please provide a valid volume level between **0 and 100**");
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Please provide a valid volume level between **0 and 100**");
       try {
-        return await message.reply({ embeds: [volumeMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
     }
 
     queue.node.setVolume(volumeArg);
-    volumeMessageEmbed
+
+    embed
       .setColor(0x33cc00)
       .setTitle("🎚️ Done")
       .setDescription("🔊 Volume set to **" + volumeArg + "%**");
 
     try {
-      return await message.reply({ embeds: [volumeMessageEmbed] });
+      return await message.reply({ embeds: [embed] });
     } catch (error) {
       return;
     }

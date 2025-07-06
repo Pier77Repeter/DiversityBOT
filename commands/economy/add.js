@@ -54,14 +54,10 @@ module.exports = {
     }
 
     const row = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT money FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, user.id],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
+      client.database.get("SELECT money FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, user.id], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
     });
 
     if (!row) {
@@ -77,6 +73,7 @@ module.exports = {
       }
     }
 
+    // take a look into utils/manageUserMoney.js
     if ((await manageUserMoney(client, message, "+", args[1])) == null) return;
 
     embed

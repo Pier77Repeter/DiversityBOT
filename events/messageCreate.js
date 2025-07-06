@@ -6,7 +6,7 @@ const logger = require("../logger")("MessageCreate");
 const loader = require("../loader");
 
 module.exports = (client) => {
-  // prefix and init log format stuff
+  // bot prefix is d!
   const botPrefix = "d!";
 
   client.on(Events.MessageCreate, async (message) => {
@@ -15,25 +15,6 @@ module.exports = (client) => {
 
     // check if the bot can send messages to the message.channel (it's useless to use the bot if you cant interact with it)
     if (!message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.SendMessages)) return;
-
-    // re-naiming the logger, else it will keep the specific log of the command, below
-    logger.setFileName("MessageCreate");
-
-    // calling updaters
-    if (!loader.getRestartStatus()) {
-      await xpUpdater(message).catch((err) => {
-        return logger.error("XpUpdater threw an error", err);
-      });
-      await repUpdater(message).catch((err) => {
-        return logger.error("RepUpdater threw an error", err);
-      });
-      await debtsUpdater(message).catch((err) => {
-        return logger.error("DebtsUpdater threw an error", err);
-      });
-      await petStatsUpdater(message).catch((err) => {
-        return logger.error("PetStatsUpdater threw an error", err);
-      });
-    }
 
     // check if bot gets pinged
     if (message.mentions.has(client.user) && !message.content.toLowerCase().startsWith(botPrefix)) {
@@ -74,6 +55,25 @@ module.exports = (client) => {
       } catch (error) {
         // dont return just do nothing
       }
+    }
+
+    // re-naiming the logger, else it will keep the specific log of the command, below
+    logger.setFileName("MessageCreate");
+
+    // calling updaters when bot isn't restarting
+    if (!loader.getRestartStatus()) {
+      await xpUpdater(message).catch((err) => {
+        return logger.error("XpUpdater threw an error", err);
+      });
+      await repUpdater(message).catch((err) => {
+        return logger.error("RepUpdater threw an error", err);
+      });
+      await debtsUpdater(message).catch((err) => {
+        return logger.error("DebtsUpdater threw an error", err);
+      });
+      await petStatsUpdater(message).catch((err) => {
+        return logger.error("PetStatsUpdater threw an error", err);
+      });
     }
 
     // check if the message starts with the bot prefix
@@ -154,7 +154,7 @@ module.exports = (client) => {
     // ready to log for the specific command
     logger.setFileName("MessageCreate/" + command.name + ".js");
 
-    // if command gets an error, log it (buggy)
+    // if command gets an error, log it
     try {
       await command.execute(client, message, args);
     } catch (error) {

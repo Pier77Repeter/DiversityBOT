@@ -9,37 +9,30 @@ module.exports = {
   description: "Nuke the chat or a specific user",
   cooldown: 30,
   async execute(client, message, args) {
-    if (!args[0]) {
-      try {
-        return await message.reply("You need to specify a location to nuke");
-      } catch (error) {
-        return;
-      }
+    try {
+      if (!args[0]) return await message.reply("You need to specify a location to nuke");
+    } catch (error) {
+      return;
     }
+
+    const embed = new EmbedBuilder();
 
     const cooldown = await cooldownManager(client, message, "nukeCooldown", this.cooldown);
     if (cooldown == null) return;
 
     if (cooldown != 0) {
-      const nukeMessageEmbed = new EmbedBuilder()
-        .setColor(0x000000)
-        .setDescription("⏰ Slowdown man, no need to nuke this fast, wait: **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription("⏰ Slowdown man, no need to nuke this fast, wait: **<t:" + cooldown[1] + ":R>**");
 
       try {
-        return await message.reply({ embeds: [nukeMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
     }
 
-    var target;
-    if (message.mentions.members.first() == null) {
-      target = args[0];
-    } else {
-      target = message.mentions.members.first().user.username;
-    }
+    const target = message.mentions.members.first() ? message.mentions.members.first().user.username : args[0];
 
-    const nukeMessageEmbed = new EmbedBuilder()
+    embed
       .setColor(0x14141f)
       .setTitle("🚀 ICBM control panel")
       .setDescription("Target location: " + target)
@@ -49,19 +42,13 @@ module.exports = {
         text: "Waiting launch approval",
       });
 
-    const btnConfirmLaunch = new ButtonBuilder()
-      .setCustomId("btn-nuke-confirmLaunch")
-      .setLabel("✅ Confirm launch")
-      .setStyle(ButtonStyle.Danger);
-    const btnCancelLaunch = new ButtonBuilder()
-      .setCustomId("btn-nuke-cancelLaunch")
-      .setLabel("❌ Cancel launch")
-      .setStyle(ButtonStyle.Success);
+    const btnConfirmLaunch = new ButtonBuilder().setCustomId("btn-nuke-confirmLaunch").setLabel("✅ Confirm launch").setStyle(ButtonStyle.Danger);
+    const btnCancelLaunch = new ButtonBuilder().setCustomId("btn-nuke-cancelLaunch").setLabel("❌ Cancel launch").setStyle(ButtonStyle.Success);
     const btnRow = new ActionRowBuilder().addComponents(btnConfirmLaunch, btnCancelLaunch);
 
     var sentMessage;
     try {
-      sentMessage = await message.reply({ embeds: [nukeMessageEmbed], components: [btnRow] });
+      sentMessage = await message.reply({ embeds: [embed], components: [btnRow] });
     } catch (error) {
       return;
     }
@@ -92,81 +79,84 @@ module.exports = {
           btnConfirmLaunch.setDisabled(true);
           btnCancelLaunch.setDisabled(true);
 
-          nukeMessageEmbed
+          embed
             .setColor(0xff3300)
             .setDescription("Launching nuke towards: " + target)
-            .setThumbnail();
+            .setThumbnail()
+            .setFooter({
+              text: "Initiating nuke launch",
+            });
 
           try {
-            await btnInteraction.update({ embeds: [nukeMessageEmbed], components: [btnRow] });
+            await btnInteraction.update({ embeds: [embed], components: [btnRow] });
           } catch (error) {
             return;
           }
 
           await delay(2000);
 
-          nukeMessageEmbed.setDescription(["Launching nuke towards: " + target, "\n", "**5...**"].join(""));
+          embed.setDescription(["Launching nuke towards: " + target, "\n", "**5...**"].join(""));
 
           try {
-            await sentMessage.edit({ embeds: [nukeMessageEmbed], components: [btnRow] });
+            await sentMessage.edit({ embeds: [embed], components: [btnRow] });
           } catch (error) {
             return;
           }
 
           await delay(1000);
 
-          nukeMessageEmbed.setDescription(["Launching nuke towards: " + target, "\n", "**4...**"].join(""));
+          embed.setDescription(["Launching nuke towards: " + target, "\n", "**4...**"].join(""));
 
           try {
-            await sentMessage.edit({ embeds: [nukeMessageEmbed], components: [btnRow] });
+            await sentMessage.edit({ embeds: [embed], components: [btnRow] });
           } catch (error) {
             return;
           }
 
           await delay(1000);
 
-          nukeMessageEmbed.setDescription(["Launching nuke towards: " + target, "\n", "**3...**"].join(""));
+          embed.setDescription(["Launching nuke towards: " + target, "\n", "**3...**"].join(""));
 
           try {
-            await sentMessage.edit({ embeds: [nukeMessageEmbed], components: [btnRow] });
+            await sentMessage.edit({ embeds: [embed], components: [btnRow] });
           } catch (error) {
             return;
           }
 
           await delay(1000);
 
-          nukeMessageEmbed.setDescription(["Launching nuke towards: " + target, "\n", "**2...**"].join(""));
+          embed.setDescription(["Launching nuke towards: " + target, "\n", "**2...**"].join(""));
 
           try {
-            await sentMessage.edit({ embeds: [nukeMessageEmbed], components: [btnRow] });
+            await sentMessage.edit({ embeds: [embed], components: [btnRow] });
           } catch (error) {
             return;
           }
 
           await delay(1000);
 
-          nukeMessageEmbed.setDescription(["Launching nuke towards: " + target, "\n", "**1...**"].join(""));
+          embed.setDescription(["Launching nuke towards: " + target, "\n", "**1...**"].join(""));
 
           try {
-            await sentMessage.edit({ embeds: [nukeMessageEmbed], components: [btnRow] });
+            await sentMessage.edit({ embeds: [embed], components: [btnRow] });
           } catch (error) {
             return;
           }
 
           await delay(1000);
 
-          nukeMessageEmbed.setDescription("🚀🚀🚀 Nuke is flying towards: " + target);
-          nukeMessageEmbed.setImage("https://c.tenor.com/I2ZKnQpI2GcAAAAd/tenor.gif");
+          embed.setDescription("🚀🚀🚀 Nuke is flying towards: " + target);
+          embed.setImage("https://c.tenor.com/I2ZKnQpI2GcAAAAd/tenor.gif");
 
           try {
-            await sentMessage.edit({ embeds: [nukeMessageEmbed], components: [btnRow] });
+            await sentMessage.edit({ embeds: [embed], components: [btnRow] });
           } catch (error) {
             return;
           }
 
           await delay(5000);
 
-          nukeMessageEmbed
+          embed
             .setColor(0xcc0000)
             .setTitle(message.author.username + " WHAT HAVE YOU DONE?!")
             .setDescription(target + " has been nuked with extreme success!")
@@ -176,7 +166,7 @@ module.exports = {
             .setFooter({ text: "Launch completed" });
 
           try {
-            await sentMessage.edit({ embeds: [nukeMessageEmbed], components: [btnRow] });
+            await sentMessage.edit({ embeds: [embed], components: [btnRow] });
           } catch (error) {
             return;
           }
@@ -192,7 +182,7 @@ module.exports = {
           btnConfirmLaunch.setDisabled(true);
           btnCancelLaunch.setDisabled(true);
 
-          nukeMessageEmbed
+          embed
             .setColor(0x33cc00)
             .setDescription("Nuke launch failed, " + target + " is safe :P")
             .setThumbnail()
@@ -200,7 +190,7 @@ module.exports = {
             .setFooter({ text: "Launch cancelled" });
 
           try {
-            await btnInteraction.update({ embeds: [nukeMessageEmbed], files: [imageFile], components: [btnRow] });
+            await btnInteraction.update({ embeds: [embed], files: [imageFile], components: [btnRow] });
           } catch (error) {
             return;
           }
@@ -212,17 +202,13 @@ module.exports = {
 
     btnCollector.on("end", async () => {
       if (!hasUserClickedBtn) {
-        nukeMessageEmbed
-          .setColor(0x33cc00)
-          .setDescription("Nuke launch has been terminated, no answer received")
-          .setThumbnail()
-          .setFooter({ text: "Launch failed" });
+        embed.setColor(0x33cc00).setDescription("Nuke launch has been terminated, no answer received").setThumbnail().setFooter({ text: "Launch failed" });
 
         btnConfirmLaunch.setDisabled(true);
         btnCancelLaunch.setDisabled(true);
 
         try {
-          return await sentMessage.edit({ embeds: [nukeMessageEmbed], components: [btnRow] });
+          return await sentMessage.edit({ embeds: [embed], components: [btnRow] });
         } catch (error) {
           return;
         }

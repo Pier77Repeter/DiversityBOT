@@ -20,14 +20,10 @@ module.exports = {
     const moneyToWithdraw = args[0];
 
     const row = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT bankMoney, money FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, message.author.id],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
+      client.database.get("SELECT bankMoney, money FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
     });
 
     if (!row) {
@@ -68,10 +64,7 @@ module.exports = {
           .setDescription("✅ Successfully transfered **" + row.bankMoney + "**$ to your wallet")
           .setFields({
             name: "Transaction ended!",
-            value: [
-              "💰 Now you have: **" + (row.money + row.bankMoney) + "$** in your wallet",
-              "🏦 Now you have: **0$** in your bank",
-            ].join("\n"),
+            value: ["💰 Now you have: **" + (row.money + row.bankMoney) + "$** in your wallet", "🏦 Now you have: **0$** in your bank"].join("\n"),
           });
 
         try {
@@ -82,10 +75,7 @@ module.exports = {
 
       default:
         if (isNaN(parseInt(moneyToWithdraw)) || moneyToWithdraw <= 0) {
-          embed
-            .setColor(0xff0000)
-            .setTitle("❌ Error")
-            .setDescription("Not a valid number, put a number starting from at **least 1**");
+          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Not a valid number, put a number starting from at **least 1**");
 
           try {
             return await message.reply({ embeds: [embed] });
@@ -95,10 +85,7 @@ module.exports = {
         }
 
         if (moneyToWithdraw > row.bankMoney) {
-          embed
-            .setColor(0xff0000)
-            .setTitle("❌ Transaction failed")
-            .setDescription("You don't have that money to deposit in bank");
+          embed.setColor(0xff0000).setTitle("❌ Transaction failed").setDescription("You don't have that money to deposit in bank");
 
           try {
             return await message.reply({ embeds: [embed] });

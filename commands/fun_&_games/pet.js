@@ -4,12 +4,12 @@ module.exports = {
   name: "pet",
   description: "Check user pet",
   async execute(client, message, args) {
-    const member = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
+    const user = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
 
     const row = await new Promise((resolve, reject) => {
       client.database.get(
         "SELECT hasPet, petId, petStatsHealth, petStatsFun, petStatsHunger, petStatsThirst FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, member.id],
+        [message.guild.id, user.id],
         (err, row) => {
           if (err) reject(err);
           else resolve(row);
@@ -17,32 +17,28 @@ module.exports = {
       );
     });
 
-    const petMessageEmbed = new EmbedBuilder()
-      .setColor(0xff0000)
-      .setTitle("❌ Error")
-      .setDescription("No pet here, type **d!adopt <@user>** to adopt one");
+    const embed = new EmbedBuilder();
 
     if (!row || !row.hasPet) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("No pet here, type **d!adopt <@user>** to adopt one");
+
       try {
-        return await message.reply({ embeds: [petMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
     }
 
-    petMessageEmbed
+    embed
       .setColor(0x00cccc)
       .setTitle("🐱 Your fluffy " + client.users.cache.get(row.petId).username)
       .setDescription(
         [
           "These are all the pet stats, don't make them reach 0%",
-          "\n",
           "Otherwise you will lose your pet",
-          "\n",
           "Your pet name and image gets updated everytime the user you...",
-          "\n",
           '..."adopted" (sounds kinda sussy) change them',
-        ].join("")
+        ].join("\n")
       )
       .setThumbnail(client.users.cache.get(row.petId).displayAvatarURL())
       .setFields(
@@ -75,7 +71,7 @@ module.exports = {
       .setFooter({ text: "Remember to check them often, stats go down" });
 
     try {
-      return await message.reply({ embeds: [petMessageEmbed] });
+      return await message.reply({ embeds: [embed] });
     } catch (error) {
       return;
     }

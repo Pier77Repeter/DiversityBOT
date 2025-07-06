@@ -11,10 +11,7 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (!args[0]) {
-      embed
-        .setColor(0xff0000)
-        .setTitle("❌ Error")
-        .setDescription("Wrong syntax, choose an item you want to buy **d!buy <itemName>**");
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Wrong syntax, choose an item you want to buy **d!buy <itemName>**");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -27,14 +24,10 @@ module.exports = {
     if (items == null) return;
 
     const row = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT money FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, message.author.id],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
+      client.database.get("SELECT money FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
     });
 
     if (!row) {
@@ -69,9 +62,8 @@ module.exports = {
 
         items.itemId1 = true;
 
-        // take a look into dbJsonDataSet, it replys and returns null if shit goes wrong
         if ((await dbJsonDataSet(client, message, "items", items)) == null) return;
-        // look this too, used only to update message.auhtor's money
+
         if ((await manageUserMoney(client, message, "-", itemPrices.diversityGemPrice)) == null) return;
 
         embed

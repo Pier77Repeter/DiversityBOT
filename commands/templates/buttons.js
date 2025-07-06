@@ -7,10 +7,7 @@ module.exports = {
     // creating the buttons, button id must have the following format: "btn-<commandName>-<buttonName>", label is the name of the button, button style is color
     const btnOne = new ButtonBuilder().setCustomId("btn-buttons-btnOne").setLabel("Change red").setStyle(ButtonStyle.Danger);
     const btnTwo = new ButtonBuilder().setCustomId("btn-buttons-btnTwo").setLabel("Change green").setStyle(ButtonStyle.Success);
-    const btnThree = new ButtonBuilder()
-      .setCustomId("btn-buttons-btnThree")
-      .setLabel("Change blue")
-      .setStyle(ButtonStyle.Primary);
+    const btnThree = new ButtonBuilder().setCustomId("btn-buttons-btnThree").setLabel("Change blue").setStyle(ButtonStyle.Primary);
 
     // every button must be assigned in a row, and the row will be sent in the message.reply()
     const actionRow = new ActionRowBuilder().addComponents(btnOne, btnTwo, btnThree);
@@ -61,11 +58,7 @@ module.exports = {
 
           try {
             // updating the message sent by the bot with the updated embed AND actionRow (so that the changes we made are visible), we can only do that 1 time, after this we need to do: sentMessage.edit()
-            return await btnInteraction.update({
-              content: "Updated the embed color to **RED**",
-              embeds: [embed],
-              components: [actionRow],
-            });
+            return await btnInteraction.update({ content: "Updated the embed color to **RED**", embeds: [embed], components: [actionRow] });
           } catch (error) {
             return;
           }
@@ -75,11 +68,7 @@ module.exports = {
           btnTwo.setDisabled(true);
 
           try {
-            return await btnInteraction.update({
-              content: "Updated the embed color to **GREEN**",
-              embeds: [embed],
-              components: [actionRow],
-            });
+            return await btnInteraction.update({ content: "Updated the embed color to **GREEN**", embeds: [embed], components: [actionRow] });
           } catch (error) {
             return;
           }
@@ -88,11 +77,7 @@ module.exports = {
           btnThree.setDisabled(true);
 
           try {
-            return await btnInteraction.update({
-              content: "Updated the embed color to **BLUE**",
-              embeds: [embed],
-              components: [actionRow],
-            });
+            return await btnInteraction.update({ content: "Updated the embed color to **BLUE**", embeds: [embed], components: [actionRow] });
           } catch (error) {
             return;
           }

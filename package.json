@@ -11,11 +11,9 @@
   "dependencies": {
     "@discord-player/extractor": "^7.1.0",
     "axios": "^1.10.0",
-    "discord-gamecord": "^4.4.2",
     "discord-image-generation": "^1.4.25",
     "discord-player": "^7.1.0",
     "discord.js": "^14.21.0",
-    "discord.js-akinator": "^5.0.1",
     "express": "^5.1.0",
     "ffmpeg-static": "^5.2.0",
     "sqlite3": "^5.1.7"

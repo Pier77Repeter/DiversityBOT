@@ -6,25 +6,19 @@ module.exports = {
   async execute(client, message, args) {
     const rows = await new Promise((resolve, reject) => {
       // using '.all()' because we get more than 1 row
-      client.database.all(
-        "SELECT userId, level FROM User WHERE serverId = ? ORDER BY level DESC LIMIT 10",
-        message.guild.id,
-        (err, rows) => {
-          if (err) reject(err);
-          else resolve(rows);
-        }
-      );
+      client.database.all("SELECT userId, level FROM User WHERE serverId = ? ORDER BY level DESC LIMIT 10", message.guild.id, (err, rows) => {
+        if (err) reject(err);
+        else resolve(rows);
+      });
     });
 
-    const lxpbMessageEmbed = new EmbedBuilder()
-      .setColor(0x00cccc)
-      .setTitle("Nobody has XP")
-      .setDescription("Empty...")
-      .setFooter({ text: "Make some of your members chat" });
+    const embed = new EmbedBuilder().setColor(0x00cccc);
 
     if (!rows) {
+      embed.setTitle("Nobody has XP").setDescription("Empty...").setFooter({ text: "Make some of your members chat" });
+
       try {
-        return await message.reply({ embeds: [lxpbMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
@@ -46,13 +40,13 @@ module.exports = {
       }
     }
 
-    lxpbMessageEmbed
+    embed
       .setTitle("📊 Top 10 highest levels in the server:")
       .setDescription(leaderBoardText)
       .setFooter({ text: message.guild.name, iconURL: message.guild.iconURL() });
 
     try {
-      return await message.reply({ embeds: [lxpbMessageEmbed] });
+      return await message.reply({ embeds: [embed] });
     } catch (error) {
       return;
     }

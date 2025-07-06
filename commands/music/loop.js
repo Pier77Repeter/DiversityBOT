@@ -6,17 +6,16 @@ module.exports = {
   name: "loop",
   description: "Loops the currently playing song",
   async execute(client, message, args) {
-    const loopMessageEmbed = new EmbedBuilder()
-      .setColor(0xff0000)
-      .setTitle("❌ Error")
-      .setDescription("Music commands are off, type: **d!musicmd on**");
+    const embed = new EmbedBuilder();
 
     const isMusicEnabled = await configChecker(client, message, "musiCmd");
     if (isMusicEnabled == null) return;
 
     if (isMusicEnabled == 0) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
+
       try {
-        return await message.reply({ embeds: [loopMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
@@ -35,13 +34,14 @@ module.exports = {
 
     const loopEnabled = queue.repeatMode === QueueRepeatMode.TRACK;
     queue.setRepeatMode(loopEnabled ? QueueRepeatMode.OFF : QueueRepeatMode.TRACK);
-    loopMessageEmbed
+
+    embed
       .setColor(0x33cc00)
       .setTitle("✅ Done")
       .setDescription(`Looping the current song is now **${loopEnabled ? "disabled" : "enabled"}**`);
 
     try {
-      return await message.reply({ embeds: [loopMessageEmbed] });
+      return await message.reply({ embeds: [embed] });
     } catch (error) {
       return;
     }

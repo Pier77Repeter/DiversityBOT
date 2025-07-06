@@ -4,12 +4,11 @@ module.exports = {
   name: "emojify",
   description: "Convert your text into emojis",
   async execute(client, message, args) {
-    if (args.lenght == 0) {
-      try {
-        return await message.reply("Provide ***t e x t*** to convert into emojis");
-      } catch (error) {
-        return;
-      }
+    // this is yet another way to check if there are args or not
+    try {
+      if (args.lenght == 0) return await message.reply("Provide ***t e x t*** to convert into emojis");
+    } catch (error) {
+      return;
     }
 
     if (args.lenght > 1024) {

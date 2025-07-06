@@ -25,14 +25,10 @@ module.exports = {
     }
 
     const row = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT money FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, message.author.id],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
+      client.database.get("SELECT money FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
     });
 
     if (!row) {
@@ -43,19 +39,14 @@ module.exports = {
         .addFields({ name: "Submit here", value: "https://discord.gg/KxadTdz" });
 
       try {
-        await message.reply({ embeds: [embed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
-        // continue for the throw
+        return;
       }
-
-      throw "error updating user money: " + error;
     }
 
     if (isNaN(args[0]) || args[0] > row.money) {
-      embed
-        .setColor(0xff0000)
-        .setTitle("❌ Error")
-        .setDescription("You don't have enough money in your wallet to play the roulette, at least **1000$**");
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have enough money in your wallet to play the roulette, at least **1000$**");
 
       try {
         return await message.reply({ embeds: [embed] });

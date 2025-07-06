@@ -37,17 +37,11 @@ module.exports = {
       }
     }
 
-    embed
-      .setColor(0x3366ff)
-      .setTitle("🦹 Villain time")
-      .setDescription("Choose the crime you want to commit, if you fail you WILL lose a lot of money");
+    embed.setColor(0x3366ff).setTitle("🦹 Villain time").setDescription("Choose the crime you want to commit, if you fail you WILL lose a lot of money");
 
     const btnMuder = new ButtonBuilder().setCustomId("btn-crime-btnMurder").setLabel("Murder").setStyle(ButtonStyle.Primary);
     const btnArson = new ButtonBuilder().setCustomId("btn-crime-btnArson").setLabel("Arson").setStyle(ButtonStyle.Primary);
-    const btnRobbery = new ButtonBuilder()
-      .setCustomId("btn-crime-btnRobbery")
-      .setLabel("Robbery")
-      .setStyle(ButtonStyle.Primary);
+    const btnRobbery = new ButtonBuilder().setCustomId("btn-crime-btnRobbery").setLabel("Robbery").setStyle(ButtonStyle.Primary);
     const btnDrug = new ButtonBuilder().setCustomId("btn-crime-btnDrug").setLabel("Drug").setStyle(ButtonStyle.Primary);
 
     const actionRow = new ActionRowBuilder().addComponents(btnMuder, btnArson, btnRobbery, btnDrug);
@@ -139,9 +133,7 @@ module.exports = {
           embed
             .setColor(0x990000)
             .setTitle("🕵️‍♂️ You commited ARSON")
-            .setDescription(
-              "You burned down a whole forest, you needed to wood to build the house, you got **" + money + "$**"
-            );
+            .setDescription("You burned down a whole forest, you needed to wood to build the house, you got **" + money + "$**");
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });

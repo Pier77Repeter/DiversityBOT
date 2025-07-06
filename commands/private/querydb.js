@@ -37,10 +37,7 @@ module.exports = {
         }
 
         // Use Embeds for better formatting, especially for large results
-        const embed = new EmbedBuilder()
-          .setColor(0x0099ff)
-          .setTitle("SQL Query Results")
-          .setDescription(`\`\`\`sql\n${query}\`\`\``);
+        const embed = new EmbedBuilder().setColor(0x0099ff).setTitle("SQL Query Results").setDescription(`\`\`\`sql\n${query}\`\`\``);
 
         // Format and add rows to the embed (handling potential embed limits)
         const maxFieldsPerEmbed = 25; // Discord embed field limit
@@ -62,9 +59,7 @@ module.exports = {
               return;
             }
 
-            currentEmbed = new EmbedBuilder()
-              .setColor(0x0099ff)
-              .addFields({ name: `Row ${fieldCount + 1}`, value: `\`\`\`json\n${rowString}\`\`\`` });
+            currentEmbed = new EmbedBuilder().setColor(0x0099ff).addFields({ name: `Row ${fieldCount + 1}`, value: `\`\`\`json\n${rowString}\`\`\`` });
             fieldCount = 1;
           }
         }

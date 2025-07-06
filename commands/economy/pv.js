@@ -1,12 +1,4 @@
-const {
-  EmbedBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  ActionRowBuilder,
-  ComponentType,
-  MessageFlags,
-  AttachmentBuilder,
-} = require("discord.js");
+const { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, MessageFlags, AttachmentBuilder } = require("discord.js");
 const cooldownManager = require("../../utils/cooldownManager");
 const manageUserMoney = require("../../utils/manageUserMoney");
 const mathRandomInt = require("../../utils/mathRandomInt");
@@ -42,15 +34,9 @@ module.exports = {
       .setThumbnail("attachment://YouTube.png");
 
     const btnGaming = new ButtonBuilder().setCustomId("btn-pm-btnGaming").setLabel("Gaming").setStyle(ButtonStyle.Primary);
-    const btnDocumentary = new ButtonBuilder()
-      .setCustomId("btn-pm-btnDocumentary")
-      .setLabel("Documentary")
-      .setStyle(ButtonStyle.Primary);
+    const btnDocumentary = new ButtonBuilder().setCustomId("btn-pm-btnDocumentary").setLabel("Documentary").setStyle(ButtonStyle.Primary);
     const btnFunny = new ButtonBuilder().setCustomId("btn-pm-btnFunny").setLabel("Funny").setStyle(ButtonStyle.Primary);
-    const btnTutorial = new ButtonBuilder()
-      .setCustomId("btn-pm-btnTutorial")
-      .setLabel("Tutorial")
-      .setStyle(ButtonStyle.Primary);
+    const btnTutorial = new ButtonBuilder().setCustomId("btn-pm-btnTutorial").setLabel("Tutorial").setStyle(ButtonStyle.Primary);
 
     const actionRow = new ActionRowBuilder().addComponents(btnGaming, btnDocumentary, btnFunny, btnTutorial);
 
@@ -73,10 +59,7 @@ module.exports = {
     collector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
         try {
-          return await btnInteraction.reply({
-            content: "Don't steal his YT content!",
-            flags: MessageFlags.Ephemeral,
-          });
+          return await btnInteraction.reply({ content: "Don't steal his YT content!", flags: MessageFlags.Ephemeral });
         } catch (error) {
           return;
         }
@@ -118,10 +101,7 @@ module.exports = {
             .setTitle("👍 You posted a gaming video")
             .setDescription(
               "Your video about: **" +
-                listsGetRandomItem(
-                  ["Minecraft", "Garry's Mod", "Roblox", "Sex with Stalin", "TF2", "GTA V", "Gen*shit* Impact"],
-                  false
-                ) +
+                listsGetRandomItem(["Minecraft", "Garry's Mod", "Roblox", "Sex with Stalin", "TF2", "GTA V", "Gen*shit* Impact"], false) +
                 "** and you got **" +
                 money +
                 "$** for the content!"
@@ -167,10 +147,7 @@ module.exports = {
             .setTitle("👍 You posted a documentary video")
             .setDescription(
               "Your video about: **" +
-                listsGetRandomItem(
-                  ["History", "Science", "Geography", "Physics", "Psychology", "2b2t history", "Mechanics"],
-                  false
-                ) +
+                listsGetRandomItem(["History", "Science", "Geography", "Physics", "Psychology", "2b2t history", "Mechanics"], false) +
                 "** and you got **" +
                 money +
                 "$** for the content!"
@@ -218,10 +195,7 @@ module.exports = {
             .setTitle("👍 You posted a funny video")
             .setDescription(
               "Your video about: **" +
-                listsGetRandomItem(
-                  ["Memes", "Funny Cats", "Funny Dogs", "Funny images", "Funny moments", "Trolls", "Funny people"],
-                  false
-                ) +
+                listsGetRandomItem(["Memes", "Funny Cats", "Funny Dogs", "Funny images", "Funny moments", "Trolls", "Funny people"], false) +
                 "** and you got **" +
                 money +
                 "$** for the content!"

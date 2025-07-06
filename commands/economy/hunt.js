@@ -135,10 +135,7 @@ module.exports = {
         }
 
         if (mathRandomInt(1, 3) == 1) {
-          embed
-            .setColor(0xff0000)
-            .setTitle("💨🔫 You missed")
-            .setDescription("The animal heard the shoot and ran away, unlucky");
+          embed.setColor(0xff0000).setTitle("💨🔫 You missed").setDescription("The animal heard the shoot and ran away, unlucky");
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
@@ -165,9 +162,7 @@ module.exports = {
 
     collector.on("end", async () => {
       if (!hasClicked) {
-        embed
-          .setTitle("💨 The animal left")
-          .setDescription("You did nothing and you lost your prey, gotta wait for another one to show up");
+        embed.setTitle("💨 The animal left").setDescription("You did nothing and you lost your prey, gotta wait for another one to show up");
 
         btnShoot.setStyle(ButtonStyle.Secondary).setDisabled(true);
 

@@ -25,15 +25,9 @@ module.exports = {
       }
     }
 
-    embed
-      .setColor(0xff6600)
-      .setTitle("🔍 Base hunting time")
-      .setDescription("Choose the dimention you are going to explore for base hunting");
+    embed.setColor(0xff6600).setTitle("🔍 Base hunting time").setDescription("Choose the dimention you are going to explore for base hunting");
 
-    const btnOverworld = new ButtonBuilder()
-      .setCustomId("btn-search-btnOverworld")
-      .setLabel("Overworld")
-      .setStyle(ButtonStyle.Primary);
+    const btnOverworld = new ButtonBuilder().setCustomId("btn-search-btnOverworld").setLabel("Overworld").setStyle(ButtonStyle.Primary);
     const btnNether = new ButtonBuilder().setCustomId("btn-search-btnNether").setLabel("Nether").setStyle(ButtonStyle.Primary);
     const btnEnd = new ButtonBuilder().setCustomId("btn-search-btnEnd").setLabel("End").setStyle(ButtonStyle.Primary);
 
@@ -60,10 +54,7 @@ module.exports = {
     btnCollector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
         try {
-          return await btnInteraction.reply({
-            content: "This isn't your dooping button",
-            flags: MessageFlags.Ephemeral,
-          });
+          return await btnInteraction.reply({ content: "This isn't your dooping button", flags: MessageFlags.Ephemeral });
         } catch (error) {
           return;
         }
@@ -91,10 +82,7 @@ module.exports = {
 
           switch (searchProbs) {
             case 1:
-              embed
-                .setColor(0xcc6600)
-                .setTitle("👀 You found a griefed zone")
-                .setDescription("There are some withers, random obsidian structures and ruins");
+              embed.setColor(0xcc6600).setTitle("👀 You found a griefed zone").setDescription("There are some withers, random obsidian structures and ruins");
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
@@ -103,10 +91,7 @@ module.exports = {
               }
 
             case 2:
-              embed
-                .setColor(0xcc6600)
-                .setTitle("👀 You found a random structure")
-                .setDescription("Nothing of interesting, sadly no loot");
+              embed.setColor(0xcc6600).setTitle("👀 You found a random structure").setDescription("Nothing of interesting, sadly no loot");
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
@@ -115,10 +100,7 @@ module.exports = {
               }
 
             case 3:
-              embed
-                .setColor(0xcc6600)
-                .setTitle("👀 You found a griefed stash")
-                .setDescription("Sadly all the shulker were gone and you got nothing");
+              embed.setColor(0xcc6600).setTitle("👀 You found a griefed stash").setDescription("Sadly all the shulker were gone and you got nothing");
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
@@ -217,10 +199,7 @@ module.exports = {
 
           switch (searchProbs) {
             case 1:
-              embed
-                .setColor(0xcc6600)
-                .setTitle("👀 You found a griefed zone")
-                .setDescription("There are some withers, random obsidian structures and ruins");
+              embed.setColor(0xcc6600).setTitle("👀 You found a griefed zone").setDescription("There are some withers, random obsidian structures and ruins");
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
@@ -229,10 +208,7 @@ module.exports = {
               }
 
             case 2:
-              embed
-                .setColor(0xcc6600)
-                .setTitle("👀 You found a random structure")
-                .setDescription("Nothing of interesting, sadly no loot");
+              embed.setColor(0xcc6600).setTitle("👀 You found a random structure").setDescription("Nothing of interesting, sadly no loot");
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
@@ -241,10 +217,7 @@ module.exports = {
               }
 
             case 3:
-              embed
-                .setColor(0xcc6600)
-                .setTitle("👀 You found a griefed stash")
-                .setDescription("Sadly all the shulker were gone and you got nothing");
+              embed.setColor(0xcc6600).setTitle("👀 You found a griefed stash").setDescription("Sadly all the shulker were gone and you got nothing");
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
@@ -343,10 +316,7 @@ module.exports = {
 
           switch (searchProbs) {
             case 1:
-              embed
-                .setColor(0xcc6600)
-                .setTitle("👀 You found a griefed zone")
-                .setDescription("There are some withers, random obsidian structures and ruins");
+              embed.setColor(0xcc6600).setTitle("👀 You found a griefed zone").setDescription("There are some withers, random obsidian structures and ruins");
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
@@ -355,10 +325,7 @@ module.exports = {
               }
 
             case 2:
-              embed
-                .setColor(0xcc6600)
-                .setTitle("👀 You found a random structure")
-                .setDescription("Nothing of interesting, sadly no loot");
+              embed.setColor(0xcc6600).setTitle("👀 You found a random structure").setDescription("Nothing of interesting, sadly no loot");
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
@@ -367,10 +334,7 @@ module.exports = {
               }
 
             case 3:
-              embed
-                .setColor(0xcc6600)
-                .setTitle("👀 You found a griefed stash")
-                .setDescription("Sadly all the shulker were gone and you got nothing");
+              embed.setColor(0xcc6600).setTitle("👀 You found a griefed stash").setDescription("Sadly all the shulker were gone and you got nothing");
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
@@ -454,10 +418,7 @@ module.exports = {
 
     btnCollector.on("end", async () => {
       if (!hasClickedBtn) {
-        embed
-          .setColor(0x000000)
-          .setTitle("Giving up")
-          .setDescription("Sooo you refuse to search? Well alright, you can do it later");
+        embed.setColor(0x000000).setTitle("Giving up").setDescription("Sooo you refuse to search? Well alright, you can do it later");
 
         btnOverworld.setStyle(ButtonStyle.Secondary).setDisabled(true);
         btnNether.setStyle(ButtonStyle.Secondary).setDisabled(true);

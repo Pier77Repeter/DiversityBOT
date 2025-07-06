@@ -5,8 +5,7 @@ module.exports = {
   description: "Roast mentioned user",
   async execute(client, message, args) {
     try {
-      if (message.mentions.members.first() == null)
-        return await message.reply(message.author.username + ", mention the user to roast");
+      if (message.mentions.members.first() == null) return await message.reply(message.author.username + ", mention the user to roast");
     } catch (error) {
       return;
     }

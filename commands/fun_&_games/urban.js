@@ -7,12 +7,10 @@ module.exports = {
   async execute(client, message, args) {
     const searchTerm = args.join(" ");
 
-    if (!searchTerm) {
-      try {
-        return await message.reply("Please provide a search term.");
-      } catch (error) {
-        return;
-      }
+    try {
+      if (!searchTerm) return await message.reply("Please provide a search term");
+    } catch (error) {
+      return;
     }
 
     var response;
@@ -40,7 +38,7 @@ module.exports = {
     // create an embed for a specific definition
     const createDefinitionEmbed = (definition, index, total) => {
       const MAX_DESCRIPTION_LENGTH = 1024;
-      var description = definition.definition.replace(/[\[\]]/g, ""); // remove brackets
+      var description = definition.definition.replace(/[\[\]]/g, ""); // remove brackets, see the API response
 
       if (description.length > MAX_DESCRIPTION_LENGTH) {
         description = description.substring(0, MAX_DESCRIPTION_LENGTH - 3) + "...";
@@ -53,7 +51,7 @@ module.exports = {
         example = example.substring(0, MAX_EXAMPLE_LENGTH - 3) + "...";
       }
 
-      return new EmbedBuilder()
+      return new EmbedBuilder() // return the embed with the new data
         .setTitle("Definition of: " + definition.word)
         .setURL(definition.permalink)
         .setDescription(description)
@@ -68,8 +66,8 @@ module.exports = {
         .setFooter({ text: `Pages ${index + 1} of ${total}` });
     };
 
-    // init embed
-    const urbanMessageEmbed = createDefinitionEmbed(definitions[currentIndex], currentIndex, definitions.length);
+    // initial embed
+    const embed = createDefinitionEmbed(definitions[currentIndex], currentIndex, definitions.length);
 
     const prevBtn = new ButtonBuilder()
       .setCustomId("btn-urban-prevBbtn")
@@ -87,7 +85,7 @@ module.exports = {
 
     var sentMessage;
     try {
-      sentMessage = await message.reply({ embeds: [urbanMessageEmbed], components: [btnRow] });
+      sentMessage = await message.reply({ embeds: [embed], components: [btnRow] });
     } catch (error) {
       return;
     }

@@ -11,10 +11,7 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (!args[0]) {
-      embed
-        .setColor(0xff0000)
-        .setTitle("❌ Error")
-        .setDescription("Wrong syntax, choose an item you want to sell **d!sell <itemName>**");
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Wrong syntax, choose an item you want to sell **d!sell <itemName>**");
 
       try {
         return await message.reply({ embeds: [embed] });

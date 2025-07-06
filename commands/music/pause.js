@@ -6,17 +6,16 @@ module.exports = {
   name: "pause",
   description: "Pauses the currently playing song",
   async execute(client, message, args) {
-    const pauseMessageEmbed = new EmbedBuilder()
-      .setColor(0xff0000)
-      .setTitle("❌ Error")
-      .setDescription("Music commands are off, type: **d!musicmd on**");
+    const embed = new EmbedBuilder();
 
     const isMusicEnabled = await configChecker(client, message, "musiCmd");
     if (isMusicEnabled == null) return;
 
     if (isMusicEnabled == 0) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
+
       try {
-        return await message.reply({ embeds: [pauseMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
@@ -42,10 +41,11 @@ module.exports = {
     }
 
     queue.node.pause();
-    pauseMessageEmbed.setColor(0xcc0000).setTitle("⏸️ Music paused").setDescription("Resume playing with **d!resume**");
+
+    embed.setColor(0xcc0000).setTitle("⏸️ Music paused").setDescription("Resume playing with **d!resume**");
 
     try {
-      return await message.reply({ embeds: [pauseMessageEmbed] });
+      return await message.reply({ embeds: [embed] });
     } catch (error) {
       return;
     }

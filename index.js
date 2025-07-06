@@ -2,14 +2,14 @@
 Author: Pier77Repeter
 Project started on: 21 August 2021
 Copyright: DiversityBOT© 2021-2025
-Notes: This is the rewrite of the DiversityBOT, completly from 0. The biggest project i've ever did!
+Notes: DiversityBOT is the biggest project i've ever did!
 */
 
 // error handler to prevent crashes, top priority even tho position dosen't metter
 process.on("uncaughtException", function (err) {
-  console.warn("\n[Error handler]: CRASH PREVENTED, PLEASE LOOK AT THE ERROR!!!" + "\n" + "=============================================================");
+  console.warn("\n[Error handler]: CRASH PREVENTED, PLEASE LOOK AT THE ERROR!!!\n=============================================================");
   console.error(err);
-  console.warn("=============================================================" + "\n" + "[Error handler]: CRASH PREVENTED, PLEASE LOOK AT THE ERROR!!!\n");
+  console.warn("=============================================================\n[Error handler]: CRASH PREVENTED, PLEASE LOOK AT THE ERROR!!!\n");
 });
 
 // init log

@@ -36,14 +36,10 @@ module.exports = {
 
     // first check message author's money
     const row = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT money FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, message.author.id],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
+      client.database.get("SELECT money FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
     });
 
     if (!row) {
@@ -61,14 +57,10 @@ module.exports = {
 
     // second check mentioned member's money
     const mUserRow = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT money FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, user.id],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
+      client.database.get("SELECT money FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, user.id], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
     });
 
     if (!mUserRow) {
@@ -99,24 +91,16 @@ module.exports = {
         await new Promise((resolve, reject) => {
           client.database.serialize(function () {
             // message author
-            client.database.run(
-              "UPDATE User SET money = 0 WHERE serverId = ? AND userId = ?",
-              [message.guild.id, message.author.id],
-              (err) => {
-                if (err) reject(err);
-                else resolve();
-              }
-            );
+            client.database.run("UPDATE User SET money = 0 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
+              if (err) reject(err);
+              else resolve();
+            });
 
             // mentioned user
-            client.database.run(
-              "UPDATE User SET money = money + ? WHERE serverId = ? AND userId = ?",
-              [row.money, message.guild.id, user.id],
-              (err) => {
-                if (err) reject(err);
-                else resolve();
-              }
-            );
+            client.database.run("UPDATE User SET money = money + ? WHERE serverId = ? AND userId = ?", [row.money, message.guild.id, user.id], (err) => {
+              if (err) reject(err);
+              else resolve();
+            });
           });
         });
 
@@ -136,10 +120,7 @@ module.exports = {
 
       default:
         if (isNaN(parseInt(moneyToGive)) || moneyToGive <= 0) {
-          embed
-            .setColor(0xff0000)
-            .setTitle("❌ Error")
-            .setDescription("Not a valid number, put a number starting from at **least 1**");
+          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Not a valid number, put a number starting from at **least 1**");
 
           try {
             return await message.reply({ embeds: [embed] });
@@ -149,10 +130,7 @@ module.exports = {
         }
 
         if (moneyToGive > row.money) {
-          embed
-            .setColor(0xff0000)
-            .setTitle("❌ Transaction failed")
-            .setDescription("You don't have that money in your wallet to give");
+          embed.setColor(0xff0000).setTitle("❌ Transaction failed").setDescription("You don't have that money in your wallet to give");
 
           try {
             return await message.reply({ embeds: [embed] });
@@ -174,14 +152,10 @@ module.exports = {
             );
 
             // mentioned user
-            client.database.run(
-              "UPDATE User SET money = money + ? WHERE serverId = ? AND userId = ?",
-              [moneyToGive, message.guild.id, user.id],
-              (err) => {
-                if (err) reject(err);
-                else resolve();
-              }
-            );
+            client.database.run("UPDATE User SET money = money + ? WHERE serverId = ? AND userId = ?", [moneyToGive, message.guild.id, user.id], (err) => {
+              if (err) reject(err);
+              else resolve();
+            });
           });
         });
 

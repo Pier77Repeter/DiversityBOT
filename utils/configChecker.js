@@ -6,7 +6,7 @@ module.exports = async function configChecker(client, message, configName) {
   // checking for valid config name in db
   const validConfigNames = ["modCmd", "musiCmd", "eventCmd", "communityCmd"]; // may add more
   if (!validConfigNames.includes(configName)) {
-    // assign error handling to the catch block
+    // error will be disaplyed with the name of the command
     throw "Invalid config name, must be 'modCmd', 'musiCmd', 'eventCmd' or 'communityCmd'";
   }
 

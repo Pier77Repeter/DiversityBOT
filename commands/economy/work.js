@@ -9,14 +9,10 @@ module.exports = {
   cooldown: 3600,
   async execute(client, message, args) {
     const row = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT jobType FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, message.author.id],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
+      client.database.get("SELECT jobType FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
     });
 
     const embed = new EmbedBuilder();
@@ -46,100 +42,46 @@ module.exports = {
 
     // AI is back again
     // Firefighter Buttons
-    const fireFighterOneBtn = new ButtonBuilder()
-      .setCustomId("btn-work-fireFighter-one")
-      .setLabel("Save an animal")
-      .setStyle(ButtonStyle.Primary);
+    const fireFighterOneBtn = new ButtonBuilder().setCustomId("btn-work-fireFighter-one").setLabel("Save an animal").setStyle(ButtonStyle.Primary);
 
-    const fireFighterTwoBtn = new ButtonBuilder()
-      .setCustomId("btn-work-fireFighter-two")
-      .setLabel("Extinguish fire")
-      .setStyle(ButtonStyle.Primary);
+    const fireFighterTwoBtn = new ButtonBuilder().setCustomId("btn-work-fireFighter-two").setLabel("Extinguish fire").setStyle(ButtonStyle.Primary);
 
-    const fireFighterThreeBtn = new ButtonBuilder()
-      .setCustomId("btn-work-fireFighter-three")
-      .setLabel("Rescue a person")
-      .setStyle(ButtonStyle.Primary);
+    const fireFighterThreeBtn = new ButtonBuilder().setCustomId("btn-work-fireFighter-three").setLabel("Rescue a person").setStyle(ButtonStyle.Primary);
 
     // Teacher Buttons
-    const teacherOneBtn = new ButtonBuilder()
-      .setCustomId("btn-work-teacher-one")
-      .setLabel("Math")
-      .setStyle(ButtonStyle.Primary);
+    const teacherOneBtn = new ButtonBuilder().setCustomId("btn-work-teacher-one").setLabel("Math").setStyle(ButtonStyle.Primary);
 
-    const teacherTwoBtn = new ButtonBuilder()
-      .setCustomId("btn-work-teacher-two")
-      .setLabel("Literature")
-      .setStyle(ButtonStyle.Primary);
+    const teacherTwoBtn = new ButtonBuilder().setCustomId("btn-work-teacher-two").setLabel("Literature").setStyle(ButtonStyle.Primary);
 
-    const teacherThreeBtn = new ButtonBuilder()
-      .setCustomId("btn-work-teacher-three")
-      .setLabel("History")
-      .setStyle(ButtonStyle.Primary);
+    const teacherThreeBtn = new ButtonBuilder().setCustomId("btn-work-teacher-three").setLabel("History").setStyle(ButtonStyle.Primary);
 
     // Discord Mod Buttons
-    const discordModOneBtn = new ButtonBuilder()
-      .setCustomId("btn-work-discordMod-one")
-      .setLabel("Check the chat")
-      .setStyle(ButtonStyle.Primary);
+    const discordModOneBtn = new ButtonBuilder().setCustomId("btn-work-discordMod-one").setLabel("Check the chat").setStyle(ButtonStyle.Primary);
 
-    const discordModTwoBtn = new ButtonBuilder()
-      .setCustomId("btn-work-discordMod-two")
-      .setLabel("Moderate the vc")
-      .setStyle(ButtonStyle.Primary);
+    const discordModTwoBtn = new ButtonBuilder().setCustomId("btn-work-discordMod-two").setLabel("Moderate the vc").setStyle(ButtonStyle.Primary);
 
-    const discordModThreeBtn = new ButtonBuilder()
-      .setCustomId("btn-work-discordMod-three")
-      .setLabel("Answer DMs")
-      .setStyle(ButtonStyle.Primary);
+    const discordModThreeBtn = new ButtonBuilder().setCustomId("btn-work-discordMod-three").setLabel("Answer DMs").setStyle(ButtonStyle.Primary);
 
     // Mechanic Buttons
-    const mechanicOneBtn = new ButtonBuilder()
-      .setCustomId("btn-work-mechanic-one")
-      .setLabel("Repair a vehicle")
-      .setStyle(ButtonStyle.Primary);
+    const mechanicOneBtn = new ButtonBuilder().setCustomId("btn-work-mechanic-one").setLabel("Repair a vehicle").setStyle(ButtonStyle.Primary);
 
-    const mechanicTwoBtn = new ButtonBuilder()
-      .setCustomId("btn-work-mechanic-two")
-      .setLabel("Do a control")
-      .setStyle(ButtonStyle.Primary);
+    const mechanicTwoBtn = new ButtonBuilder().setCustomId("btn-work-mechanic-two").setLabel("Do a control").setStyle(ButtonStyle.Primary);
 
-    const mechanicThreeBtn = new ButtonBuilder()
-      .setCustomId("btn-work-mechanic-three")
-      .setLabel("Rescue a vehicle")
-      .setStyle(ButtonStyle.Primary);
+    const mechanicThreeBtn = new ButtonBuilder().setCustomId("btn-work-mechanic-three").setLabel("Rescue a vehicle").setStyle(ButtonStyle.Primary);
 
     // Chef Buttons
-    const chefOneBtn = new ButtonBuilder()
-      .setCustomId("btn-work-chef-one")
-      .setLabel("First dish")
-      .setStyle(ButtonStyle.Primary);
+    const chefOneBtn = new ButtonBuilder().setCustomId("btn-work-chef-one").setLabel("First dish").setStyle(ButtonStyle.Primary);
 
-    const chefTwoBtn = new ButtonBuilder()
-      .setCustomId("btn-work-chef-two")
-      .setLabel("Second dish")
-      .setStyle(ButtonStyle.Primary);
+    const chefTwoBtn = new ButtonBuilder().setCustomId("btn-work-chef-two").setLabel("Second dish").setStyle(ButtonStyle.Primary);
 
-    const chefThreeBtn = new ButtonBuilder()
-      .setCustomId("btn-work-chef-three")
-      .setLabel("Dessert")
-      .setStyle(ButtonStyle.Primary);
+    const chefThreeBtn = new ButtonBuilder().setCustomId("btn-work-chef-three").setLabel("Dessert").setStyle(ButtonStyle.Primary);
 
     // Scientist Buttons
-    const scientistOneBtn = new ButtonBuilder()
-      .setCustomId("btn-work-scientist-one")
-      .setLabel("Study")
-      .setStyle(ButtonStyle.Primary);
+    const scientistOneBtn = new ButtonBuilder().setCustomId("btn-work-scientist-one").setLabel("Study").setStyle(ButtonStyle.Primary);
 
-    const scientistTwoBtn = new ButtonBuilder()
-      .setCustomId("btn-work-scientist-two")
-      .setLabel("Publish research")
-      .setStyle(ButtonStyle.Primary);
+    const scientistTwoBtn = new ButtonBuilder().setCustomId("btn-work-scientist-two").setLabel("Publish research").setStyle(ButtonStyle.Primary);
 
-    const scientistThreeBtn = new ButtonBuilder()
-      .setCustomId("btn-work-scientist-three")
-      .setLabel("Experiment")
-      .setStyle(ButtonStyle.Primary);
+    const scientistThreeBtn = new ButtonBuilder().setCustomId("btn-work-scientist-three").setLabel("Experiment").setStyle(ButtonStyle.Primary);
 
     const actionRow = new ActionRowBuilder();
 
@@ -148,50 +90,32 @@ module.exports = {
       case "fireFighter":
         actionRow.setComponents(fireFighterOneBtn, fireFighterTwoBtn, fireFighterThreeBtn);
 
-        embed
-          .setColor(0x999999)
-          .setTitle("‼️ EMERGENCY")
-          .setDescription("There are 3 emergencys, you have to choose one to work on");
+        embed.setColor(0x999999).setTitle("‼️ EMERGENCY").setDescription("There are 3 emergencys, you have to choose one to work on");
         break;
       case "teacher":
         actionRow.setComponents(teacherOneBtn, teacherTwoBtn, teacherThreeBtn);
 
-        embed
-          .setColor(0x999999)
-          .setTitle("📚 Time to teach")
-          .setDescription("There are 3 classes, you have to choose one to work on");
+        embed.setColor(0x999999).setTitle("📚 Time to teach").setDescription("There are 3 classes, you have to choose one to work on");
         break;
       case "discordMod":
         actionRow.setComponents(discordModOneBtn, discordModTwoBtn, discordModThreeBtn);
 
-        embed
-          .setColor(0x999999)
-          .setTitle("👮 Never stop moderating Discord")
-          .setDescription("There are 3 tasks, you have to choose one to work on");
+        embed.setColor(0x999999).setTitle("👮 Never stop moderating Discord").setDescription("There are 3 tasks, you have to choose one to work on");
         break;
       case "mechanic":
         actionRow.setComponents(mechanicOneBtn, mechanicTwoBtn, mechanicThreeBtn);
 
-        embed
-          .setColor(0x999999)
-          .setTitle("🔧 Time to work")
-          .setDescription("There are 3 tasks, you have to choose one to work on");
+        embed.setColor(0x999999).setTitle("🔧 Time to work").setDescription("There are 3 tasks, you have to choose one to work on");
         break;
       case "chef":
         actionRow.setComponents(chefOneBtn, chefTwoBtn, chefThreeBtn);
 
-        embed
-          .setColor(0x999999)
-          .setTitle("👨‍🍳 It's cooking time")
-          .setDescription("There are 3 dishes, you have to choose one to work on");
+        embed.setColor(0x999999).setTitle("👨‍🍳 It's cooking time").setDescription("There are 3 dishes, you have to choose one to work on");
         break;
       case "scientist":
         actionRow.setComponents(scientistOneBtn, scientistTwoBtn, scientistThreeBtn);
 
-        embed
-          .setColor(0x999999)
-          .setTitle("🔬 Looks like science")
-          .setDescription("There are 3 tasks, you have to choose one to work on");
+        embed.setColor(0x999999).setTitle("🔬 Looks like science").setDescription("There are 3 tasks, you have to choose one to work on");
         break;
     }
 
@@ -223,14 +147,10 @@ module.exports = {
       // probability to get fired, put this here so i dont copy and paste it every time
       if (mathRandomInt(1, 5) == 1) {
         await new Promise((resolve, reject) => {
-          client.database.run(
-            "UPDATE User SET jobType = 'null' WHERE serverId = ? AND userId = ?",
-            [message.guild.id, message.author.id],
-            (err) => {
-              if (err) reject(err);
-              else resolve();
-            }
-          );
+          client.database.run("UPDATE User SET jobType = 'null' WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
+            if (err) reject(err);
+            else resolve();
+          });
         });
 
         fireFighterOneBtn.setDisabled(true);
