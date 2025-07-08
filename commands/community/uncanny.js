@@ -1,4 +1,4 @@
-const { EmbedBuilder, AttachmentBuilder, MessageFlags } = require("discord.js");
+const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
 const serverCooldownManager = require("../../utils/serverCooldownManager");
 const configChecker = require("../../utils/configChecker");
 

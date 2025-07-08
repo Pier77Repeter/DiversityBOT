@@ -5,6 +5,13 @@ module.exports = {
   name: "akinator",
   description: "Plays the Akinator game",
   async execute(client, message, args) {
+    // bruh, akinator isn't working rn, those devs must fix their npm package
+    try {
+      return await message.reply("I'm sorry but at the moment this command isn't working, it will be re-enable asap");
+    } catch (error) {
+      return;
+    }
+
     // this also works when checking if there are or there aren't args
     try {
       if (!args[0]) return await message.reply("Akinator what? Specify a category: **character**, **animal** or **object**");

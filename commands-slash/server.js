@@ -12,7 +12,7 @@ module.exports = {
     const textChannelCount = channels.filter((channel) => channel.type === 0).size;
     const voiceChannelCount = channels.filter((channel) => channel.type === 2).size;
 
-    const serverStatsMessageEmbed = new EmbedBuilder()
+    const embed = new EmbedBuilder()
       .setColor(0x000099)
       .setTitle([interaction.guild.name + "'s informations"].join(""))
       .setDescription(
@@ -46,7 +46,7 @@ module.exports = {
       .setFooter({ text: "View the server's configs with /config" });
 
     try {
-      return await interaction.reply({ embeds: [serverStatsMessageEmbed] });
+      return await interaction.reply({ embeds: [embed] });
     } catch (error) {
       return;
     }

@@ -47,13 +47,13 @@ module.exports = {
       });
     });
 
-    const setupMessageEmbed = new EmbedBuilder()
+    const embed = new EmbedBuilder()
       .setColor(0x33ff33)
       .setTitle("✅ Configuration updated")
       .setDescription(`**${category.charAt(0).toUpperCase() + category.slice(1)}** commands are now **${enabled ? "ACTIVE" : "NOT ACTIVE"}**`);
 
     try {
-      return await interaction.reply({ embeds: [setupMessageEmbed] });
+      return await interaction.reply({ embeds: [embed] });
     } catch (error) {
       return;
     }

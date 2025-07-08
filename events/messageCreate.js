@@ -32,7 +32,7 @@ module.exports = (client) => {
               "d!help in case you need me",
               "i'm here already",
               "HEEEEEEEEEEEEELLLLLLLLOOOOOOOOOOOOOOOOOOOOOOOOOO",
-              "https://cdn.discordapp.com/attachments/1332347523725004901/1340726430069166191/scream-meme-song-wild-west.gif?ex=67b3684a&is=67b216ca&hm=c4f53f38d6ce2a3e390fdcf06b968dcb4c61708dd0e36e0fa99be4e19d4b5a09&",
+              "https://c.tenor.com/O3GWEV35QfsAAAAd/tenor.gif",
               "Will you shut up!?",
               "Let me work in peace...",
               "Again?!",

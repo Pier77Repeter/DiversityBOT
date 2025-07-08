@@ -5,12 +5,12 @@ module.exports = {
   data: new SlashCommandBuilder().setName("ping").setDescription("Replies with Pong!"),
 
   async execute(client, interaction) {
-    const pingMessageEmbed = new EmbedBuilder().setColor(0xff0000).setTitle("📡 Pinging, please wait...");
+    const embed = new EmbedBuilder().setColor(0xff0000).setTitle("📡 Pinging, please wait...");
 
     var sentMessage;
 
     try {
-      await interaction.reply({ embeds: [pingMessageEmbed] });
+      await interaction.reply({ embeds: [embed] });
     } catch (error) {
       return;
     }
@@ -22,7 +22,7 @@ module.exports = {
       latency = `${sentMessage.createdTimestamp - interaction.createdTimestamp}ms`;
     }
 
-    pingMessageEmbed
+    embed
       .setColor(0x33ff33)
       .setTitle("🏓 Bot is functioning")
       .setDescription("I'm working as expected :P")
@@ -32,7 +32,7 @@ module.exports = {
       });
 
     try {
-      return await interaction.editReply({ embeds: [pingMessageEmbed] });
+      return await interaction.editReply({ embeds: [embed] });
     } catch (error) {
       return;
     }

@@ -12,7 +12,7 @@ module.exports = {
     const memberPfp = user.displayAvatarURL({ dynamic: true });
     const globalName = user.globalName || "None";
 
-    const memberInfoMessageEmbed = new EmbedBuilder()
+    const embed = new EmbedBuilder()
       .setColor(0x000099)
       .setTitle([user.username + "'s informations"].join(""))
       .setDescription(
@@ -33,7 +33,7 @@ module.exports = {
       .setImage(memberPfp);
 
     try {
-      return await interaction.reply({ embeds: [memberInfoMessageEmbed] });
+      return await interaction.reply({ embeds: [embed] });
     } catch (error) {
       return;
     }

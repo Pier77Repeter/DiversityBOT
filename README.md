@@ -1,6 +1,6 @@
 # DiversityBOT v2.0
 
-Yay, this is the complete rewrite of the Bot
+This is the biggest coding project i've ever made! It all started as a dream i had about making a Discord Bot for my community (DiversityCraft), in the end i made come true!
 
 ## Installation
 

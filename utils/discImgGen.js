@@ -356,7 +356,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
     return 0;
   }
 
-  // i dont want to rewrite everytime this peace of code
+  // i dont want to rewrite everytime this piece of code
   async function sendMessage() {
     try {
       return await message.reply({ files: [attachment] });

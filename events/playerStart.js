@@ -7,9 +7,9 @@ module.exports = (client) => {
     const queueLoopEnabled = queue.repeatMode === QueueRepeatMode.QUEUE;
     if (loopEnabled || queueLoopEnabled) return;
 
-    const playerStartEventMessageEmbed = new EmbedBuilder();
+    const embed = new EmbedBuilder();
     try {
-      playerStartEventMessageEmbed
+      embed
         .setColor(0xcc66cc)
         .setTitle(track.title)
         .setDescription(
@@ -25,7 +25,7 @@ module.exports = (client) => {
         .setImage(track.thumbnail)
         .setFooter({ text: "Offered by SoundCloud" });
     } catch (error) {
-      playerStartEventMessageEmbed
+      embed
         .setColor(0xcc66cc)
         .setTitle(track.title)
         .setDescription(
@@ -41,7 +41,7 @@ module.exports = (client) => {
     }
 
     try {
-      return await queue.metadata.channel.send({ embeds: [playerStartEventMessageEmbed] });
+      return await queue.metadata.channel.send({ embeds: [embed] });
     } catch (error) {
       return;
     }

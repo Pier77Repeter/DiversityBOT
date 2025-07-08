@@ -24,7 +24,7 @@ module.exports = {
     }
 
     const embed = new EmbedBuilder()
-      .setTitle("🎮" + ip)
+      .setTitle(ip)
       .setDescription(
         [
           "Status: " + "`" + serverData.status + "`",

@@ -131,19 +131,19 @@ module.exports = {
                   "**d!8ball** - Ask a question to me",
                   "**d!say <message>** - Better message with Embed",
                   "**d!kill <@user>** - Kill mentioned user with funny image",
-                  "**d!snipe** - To snipe to latest deleted message",
+                  "**d!snipe** - Snipe to latest deleted message",
                   "**d!rate <message>** - I'll rate 0 to 10 whatever you say",
                   "**d!rps <@user>** - Play Rock Paper Scissors game pvp",
                   "**d!stealemoji <emoji>** - Converts the emoji into png/gif",
                   "**d!nuke <location or @user>** - You decide if you want to launch the nuke.",
                   "**d!meme <sub name> (optional)** - Takes random meme from Reddit",
-                  "**d!rep** or **d!rep <user>** - Check your reputation or mentioned user's rep",
+                  "**d!rep** or **d!rep <@user>** - Check your reputation or mentioned user's rep",
                   "**d!hack <@user>** - Hack the mentioned user",
                   "**d!battle <@user>** - Start an epik battle",
                   "**d!pp <@user>** - Check mentioned user's pp",
-                  "**d!roast <@user>** - To roast someone >:)",
+                  "**d!roast <@user>** - Let me roast the mentioned user >:)",
                   "**d!ship <@user>** - See how much you love the mentioned user",
-                  "**d!troll <@user>** - To troll the mentioned user",
+                  "**d!troll <@user>** - Troll the mentioned user with a funny face",
                   "**d!urban <word/pharse>** - Search the content in the Urban dictionary",
                   "**d!mcjs <server ip>** - Display Minecraft Java server stats",
                   "**d!2048** - Play 2048 game, but on Discord",
@@ -162,12 +162,12 @@ module.exports = {
                   "**d!wyr** - Would you rather do this or that",
                   "**d!akinator** - And i'll try to guess your character",
                   "**d!sctest** - Start the Social Credits test",
-                  "**d!scredits** or **d!scredits <user>** - To check credits score",
+                  "**d!scredits** or **d!scredits <@user>** - Check credits score",
                   "**d!xp** - See your current xp",
                   "**d!level** - See your current level",
                   "**d!lxpb** - See the server XP leaderboard (levels)",
-                  "**d!adopt <user>** - To adopt a new pet",
-                  "**d!unadopt <user>** - To leave your pet",
+                  "**d!adopt <@user>** - Adopt a new 'pet'",
+                  "**d!unadopt <@user>** - Abandon your 'pet'",
                   "**d!pet** - Check your pet's stats",
                   "**d!petvisit** - Bring your pet to the vet",
                   "**d!petplay** - Play with your pet",
@@ -324,29 +324,31 @@ module.exports = {
             }
             break;
           case "menuOption-help-menuHelp-utility":
-            menuOptionEmbed.setColor(0x00cccc).setTitle("🧰 Utility section:").setDescription(
-              [
-                "**/help** - Check all the slash commands",
-                "**d!config** - See Bot's configurations",
-                "**d!setup <configName>** - Configure the Bot (Only admin)",
-                "**d!status** - Check Bot's stats",
-                "**d!news** - See Bot news and changelogs",
-                "**d!link** - Get the link to invite me", // NEEDS INVITE LINK UPDATE
-                "**d!credits** - Get all the credits",
-                "**d!ping** - Example command (see on GitHub)",
-                "**d!stats** or **d!stats <@user>** - See your stats",
-                "**d!server** - Get information about the server",
-                "**d!modlog <#channel>** - Set the channel for logging mod actions (Only admin)",
-                "**d!clean <amount>** - Remove an amount of messages from a channel (Only admin)",
-                "**d!kick <@user> <reason>** - Kick mentioned user (Only admin)",
-                "**d!ban <@user> <reason>** - Ban mentioned user (Only admin)",
-                "**d!unban <userId> <reason>** - Unban the user from the server (Only admin)",
-                "**d!mute <@user> <minutes> <reason>** - Mute a member (Only admin)",
-                "**d!unmute <@user> <reason>** - Unmute a member (Only admin)",
-                "**d!warn <@user> <reason>** - Warn a member (Only admin)",
-                "**d!warns <@user>** - Check or clear member's warns (Only admin)",
-              ].join("\n")
-            );
+            menuOptionEmbed
+              .setColor(0x00cccc)
+              .setTitle("🧰 Utility section:")
+              .setDescription(
+                [
+                  "**d!config** - See Bot's configurations",
+                  "**d!setup <configName>** - Configure the Bot (Only admin)",
+                  "**d!status** - Check Bot's stats",
+                  "**d!news** - See Bot news and changelogs",
+                  "**d!link** - Get the link to invite me",
+                  "**d!credits** - Get all the credits",
+                  "**d!ping** - Example command (see on GitHub)",
+                  "**d!stats** or **d!stats <@user>** - See your stats",
+                  "**d!server** - Get information about the server",
+                  "**d!modlog <#channel>** - Set the channel for logging mod actions (Only admin)",
+                  "**d!clean <amount>** - Remove an amount of messages from a channel (Only admin)",
+                  "**d!kick <@user> <reason>** - Kick mentioned user (Only admin)",
+                  "**d!ban <@user> <reason>** - Ban mentioned user (Only admin)",
+                  "**d!unban <userId> <reason>** - Unban the user from the server (Only admin)",
+                  "**d!mute <@user> <minutes> <reason>** - Mute a member (Only admin)",
+                  "**d!unmute <@user> <reason>** - Unmute a member (Only admin)",
+                  "**d!warn <@user> <reason>** - Warn a member (Only admin)",
+                  "**d!warns <@user>** - Check or clear member's warns (Only admin)",
+                ].join("\n")
+              );
 
             try {
               await menuInteraction.update({

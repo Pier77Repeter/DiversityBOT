@@ -5,9 +5,9 @@ module.exports = {
   data: new SlashCommandBuilder().setName("status").setDescription("See the status of the Bot"),
 
   async execute(client, interaction) {
-    const statusMessageEmbed = new EmbedBuilder().setColor(0x990000).setTitle("💻 Gathering all the needed data...");
+    const embed = new EmbedBuilder().setColor(0x990000).setTitle("💻 Gathering all the needed data...");
     try {
-      await interaction.reply({ embeds: [statusMessageEmbed] });
+      await interaction.reply({ embeds: [embed] });
     } catch (error) {
       return;
     }
@@ -55,7 +55,7 @@ module.exports = {
         cpuPercent = Math.round(100 * (1 - idleDiff / totalDiff) * 10) / 10;
       }
 
-      statusMessageEmbed
+      embed
         .setColor(0x990000)
         .setTitle("⚙️ Server status")
         .setDescription(["Here you can see all of my hardware and Discord's stats"].join(""))
@@ -82,7 +82,7 @@ module.exports = {
         });
 
       try {
-        return await interaction.editReply({ embeds: [statusMessageEmbed] });
+        return await interaction.editReply({ embeds: [embed] });
       } catch (error) {
         return;
       }
