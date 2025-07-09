@@ -62,17 +62,20 @@ module.exports = (client) => {
 
     // calling updaters when bot isn't restarting
     if (!loader.getRestartStatus()) {
-      await xpUpdater(message).catch((err) => {
-        return logger.error("XpUpdater threw an error", err);
+      await oldServerChecker(message).catch(() => {
+        return logger.error("OldServerChecker threw an error, look here ^^^");
       });
-      await repUpdater(message).catch((err) => {
-        return logger.error("RepUpdater threw an error", err);
+      await xpUpdater(message).catch(() => {
+        return logger.error("XpUpdater threw an error, look here ^^^");
       });
-      await debtsUpdater(message).catch((err) => {
-        return logger.error("DebtsUpdater threw an error", err);
+      await repUpdater(message).catch(() => {
+        return logger.error("RepUpdater threw an error, look here ^^^");
       });
-      await petStatsUpdater(message).catch((err) => {
-        return logger.error("PetStatsUpdater threw an error", err);
+      await debtsUpdater(message).catch(() => {
+        return logger.error("DebtsUpdater threw an error, look here ^^^");
+      });
+      await petStatsUpdater(message).catch(() => {
+        return logger.error("PetStatsUpdater threw an error, look here ^^^");
       });
     }
 
@@ -98,7 +101,7 @@ module.exports = (client) => {
       });
     });
 
-    // if it's new create the new row
+    // if it's new user, insert the default data in db
     if (!row) {
       const itemsJsonData =
         '{"itemId1": false, "itemId2": false, "itemId2Count": 0, "itemId3": false, "itemId3Count": 0, "itemId4": false, "itemId5": false, "itemId6": false, "itemId7": false, "itemId8": false, "itemId9": false, "itemId10": false, "itemId10Count": 0, "itemId11": false, "itemId11Count": 0}';
@@ -183,6 +186,31 @@ module.exports = (client) => {
     }
   });
 
+  // some servers need to kick and re-invite the bot to their server data in the new SQL db, here's the fix
+  async function oldServerChecker(message) {
+    const sRow = await new Promise((resolve, reject) => {
+      client.database.get("SELECT serverId FROM Server WHERE serverId = ?", message.guild.id, (err, row) => {
+        if (err) reject(err);
+        resolve(row);
+      });
+    });
+
+    // well, server dosen't exist because they invited the bot BEFORE release 2.0
+    if (!sRow) {
+      await new Promise((resolve, reject) => {
+        client.database.run("INSERT INTO Server VALUES (?, 1, 1, 1, 1, 'null', 0, 0, 0, 0, 0, 0)", message.guild.id, (err) => {
+          if (err) {
+            logger.error("Error while INSERTING data in db: Server '" + message.guild.id + "'", err);
+            reject(err);
+          } else {
+            resolve();
+          }
+        });
+      });
+    }
+  }
+
+  // pretty clear of what it does
   async function xpUpdater(message) {
     const xpRow = await new Promise((resolve, reject) => {
       client.database.get("SELECT xp, nextXp, level FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
@@ -191,7 +219,7 @@ module.exports = (client) => {
       });
     });
 
-    // if user exists
+    // only if user exists
     if (xpRow) {
       await new Promise((resolve, reject) => {
         client.database.run("UPDATE User SET xp = xp + 1 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
@@ -200,6 +228,7 @@ module.exports = (client) => {
         });
       });
 
+      // user can go to the next level
       if (xpRow.xp >= xpRow.nextXp) {
         await new Promise((resolve, reject) => {
           client.database.serialize(function () {
@@ -240,19 +269,20 @@ module.exports = (client) => {
     }
   }
 
+  // same for this, it needs to be a mentioned user and the word "thank" in the message
   async function repUpdater(message) {
     if (message.mentions.members.first() != null && message.content.toLowerCase().includes("thank")) {
       const mentionedMember = message.mentions.members.first().user;
 
-      const row = await new Promise((resolve, reject) => {
+      const repRow = await new Promise((resolve, reject) => {
         client.database.get("SELECT reputation FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, mentionedMember.id], (err, row) => {
           if (err) reject(err);
           else resolve(row);
         });
       });
 
-      // if user exists
-      if (row) {
+      // ONLY if user exists
+      if (repRow) {
         await new Promise((resolve, reject) => {
           client.database.run(
             "UPDATE User SET reputation = reputation + 1 WHERE serverId = ? AND userId = ?",
@@ -273,6 +303,7 @@ module.exports = (client) => {
     }
   }
 
+  // be ready when i'll add taxes...
   async function debtsUpdater(message) {
     const debtRow = await new Promise((resolve, reject) => {
       client.database.get("SELECT debts, money, bankMoney FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
@@ -300,6 +331,7 @@ module.exports = (client) => {
     }
   }
 
+  // a pet needs constant caring, this thing updates it's stats making them go down like the Titanic
   async function petStatsUpdater(message) {
     const petRow = await new Promise((resolve, reject) => {
       client.database.get(
@@ -312,48 +344,47 @@ module.exports = (client) => {
       );
     });
 
-    if (petRow) {
-      if (petRow.hasPet) {
-        const petCooldown = await cooldownManager(client, message, "petCooldown", 10800, false);
-        if (petCooldown == null) return;
+    // if user has a pet
+    if (petRow && petRow.hasPet) {
+      const petCooldown = await cooldownManager(client, message, "petCooldown", 10800, false);
+      if (petCooldown == null) return;
 
-        // updating the stats
-        if (petCooldown == 0) {
-          await new Promise((resolve, reject) => {
-            client.database.run(
-              "UPDATE User SET petStatsHealth = petStatsHealth - ?, petStatsFun = petStatsFun - ?, petStatsHunger = petStatsHunger - ?, petStatsThirst = petStatsThirst - ? WHERE serverId = ? AND userId = ?",
-              [mathRandomInt(5, 20), mathRandomInt(5, 20), mathRandomInt(5, 20), mathRandomInt(5, 20), message.guild.id, message.author.id],
-              (err) => {
-                if (err) reject(err);
-                resolve();
-              }
-            );
-          });
-        }
+      // updating the stats
+      if (petCooldown == 0) {
+        await new Promise((resolve, reject) => {
+          client.database.run(
+            "UPDATE User SET petStatsHealth = petStatsHealth - ?, petStatsFun = petStatsFun - ?, petStatsHunger = petStatsHunger - ?, petStatsThirst = petStatsThirst - ? WHERE serverId = ? AND userId = ?",
+            [mathRandomInt(5, 20), mathRandomInt(5, 20), mathRandomInt(5, 20), mathRandomInt(5, 20), message.guild.id, message.author.id],
+            (err) => {
+              if (err) reject(err);
+              resolve();
+            }
+          );
+        });
+      }
 
-        // check if pet is still alive
-        if (petRow.petStatsHealth <= 0 || petRow.petStatsHunger <= 0 || petRow.petStatsThirst <= 0) {
-          await new Promise((resolve, reject) => {
-            client.database.run(
-              "UPDATE User SET hasPet = 0, petId = 'null', petStatsHealth = 0, petStatsFun = 0, petStatsHunger = 0, petStatsThirst = 0 WHERE serverId = ? AND userId = ?",
-              [message.guild.id, message.author.id],
-              (err) => {
-                if (err) reject(err);
-                resolve();
-              }
-            );
-          });
+      // check if pet is still alive
+      if (petRow.petStatsHealth <= 0 || petRow.petStatsHunger <= 0 || petRow.petStatsThirst <= 0) {
+        await new Promise((resolve, reject) => {
+          client.database.run(
+            "UPDATE User SET hasPet = 0, petId = 'null', petStatsHealth = 0, petStatsFun = 0, petStatsHunger = 0, petStatsThirst = 0 WHERE serverId = ? AND userId = ?",
+            [message.guild.id, message.author.id],
+            (err) => {
+              if (err) reject(err);
+              resolve();
+            }
+          );
+        });
 
-          const petMessageEmbed = new EmbedBuilder()
-            .setColor(0xff0000)
-            .setTitle("🪦 Oh no")
-            .setDescription("Your pet sadly died, you didn't care for it enough >:(");
+        const petMessageEmbed = new EmbedBuilder()
+          .setColor(0xff0000)
+          .setTitle("🪦 Oh no")
+          .setDescription("Your pet sadly died, you didn't care for it enough >:(");
 
-          try {
-            await message.reply({ embeds: [petMessageEmbed] });
-          } catch (error) {
-            // do nothing, continue
-          }
+        try {
+          await message.reply({ embeds: [petMessageEmbed] });
+        } catch (error) {
+          // do nothing, continue
         }
       }
     }

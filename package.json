@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Pier77Repeter",
-  "license": "ISC",
+  "license": "PPL",
   "dependencies": {
     "@discord-player/extractor": "^7.1.0",
     "axios": "^1.10.0",

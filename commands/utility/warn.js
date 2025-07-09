@@ -53,7 +53,24 @@ module.exports = {
     const userToWarn = message.mentions.members.first();
     const warnReason = args.slice(1).join(" ") || "No reason provided";
 
-    // this can work even if the user isn't in db, you need to actually type at least something to be warned so, this isn't an issue
+    // if user dosen't exist in database we gotta let them know
+    const checkRow = await new Promise((resolve, reject) => {
+      client.database.get("SELECT userId FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, userToWarn.user.id], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
+    });
+
+    if (!checkRow) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Couldn't warn the user because...they need to use at least **1** of my commands");
+
+      try {
+        return await message.reply({ embeds: [embed] });
+      } catch (error) {
+        return;
+      }
+    }
+
     await new Promise((resolve, reject) => {
       client.database.run("UPDATE User SET warns = warns + 1 WHERE serverId = ? AND userId = ?", [message.guild.id, userToWarn.user.id], (err) => {
         if (err) reject(err);
