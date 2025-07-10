@@ -62,6 +62,7 @@ module.exports = {
       client.guilds.cache.forEach((guild) => {
         totalMembers += guild.memberCount;
       });
+
       embed
         .setColor(0x990000)
         .setTitle("⚙️ Server status")
