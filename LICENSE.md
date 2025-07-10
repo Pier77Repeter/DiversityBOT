@@ -2,7 +2,7 @@
 
 This license is designed to be easy to understand. It explains what you **can** and **cannot** do with the DiversityBOT project.
 
-**By using, modifying, or distributing this project, you agree to the terms of this license.**
+**By using, modifying, or distributing this DiversityBOT project, you agree to the terms of this license.**
 
 ---
 
@@ -11,10 +11,10 @@ This license is designed to be easy to understand. It explains what you **can** 
 - **Personal and private use:** You are welcome to use this project for your own personal, private, and non-commercial purposes. This means you can:
   - Run the project privately.
   - Modify the project to suit your own personal needs.
-  - Use it within closed group or community (your own Discord server).
+  - Use it within closed group or community (like your own Discord server).
   - Experiment with the code and learn from it.
 
-**Basically, if it's for your own enjoyment or your own community and doesn't make money it, you're good to go.**
+**Basically, if it's for your own enjoyment or private non-profit community and doesn't make money, you're good to go.**
 
 ---
 

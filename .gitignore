@@ -1,0 +1,6 @@
+config.json
+node_modules/*
+!node_modules/discord.js-akinator/
+!node_modules/discord-gamecord/
+package-lock.json
+database.db
