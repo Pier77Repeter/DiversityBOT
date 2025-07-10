@@ -1,5 +1,4 @@
 const { EmbedBuilder, PermissionsBitField } = require("discord.js");
-const manageUserMoney = require("../../utils/manageUserMoney");
 
 module.exports = {
   name: "remove",
@@ -62,7 +61,12 @@ module.exports = {
       }
     }
 
-    if ((await manageUserMoney(client, message, "-", args[1])) == null) return;
+    await new Promise((resolve, reject) => {
+      client.database.run("UPDATE User SET money = money + ? WHERE serverId = ? AND userId = ?", [args[1], message.guild.id, user.id], (err) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
 
     embed
       .setColor(0x33ff33)

@@ -20,7 +20,7 @@ module.exports = {
 
     // as always putting the message.reply() in try-catch
     try {
-      // to send the button row we gotta do '{ components: [btnRow1, btnRow2] }'
+      // to send the button row we gotta do '{ components: [actionRow] }'
       sentMessage = await message.reply({ embeds: [embed], components: [actionRow] });
     } catch (error) {
       return; // stop the command execution, no longer needed since we couldn't reply
@@ -93,7 +93,7 @@ module.exports = {
 
       try {
         // updating the message sent by the bot with the updated actionRow with all the buttons disabled
-        return await sentMessage.update({ content: "Buttons has veen disabled! Time out", components: [actionRow] });
+        return await sentMessage.edit({ content: "Buttons has veen disabled! Time out", components: [actionRow] });
       } catch (error) {
         return;
       }

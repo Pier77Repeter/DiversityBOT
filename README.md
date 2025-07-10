@@ -128,6 +128,10 @@ This is the biggest coding project i've ever made! It all started as a dream i h
     - Database interactions and checks.
   - **Note:** Files within this folder are loaded and used by other parts of the bot (commands, events, etc.) but are _not_ directly loaded as commands or events by the `loader.js`.
 
+- **`local_modules/`**:
+
+  - Some npm packages requiers some customization for the Bot, this directory contains all the edited npm packages
+
 ## Contributing
 
 - You can contribute to the project by, submiting pull requests OR the best thing to do, is to invite the bot to your Discord server and find any bugs, bot invite link: [here](https://discord.com/api/oauth2/authorize?client_id=878594739744673863&permissions=2080948874566&scope=bot)

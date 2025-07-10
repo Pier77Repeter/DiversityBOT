@@ -86,8 +86,9 @@ const { botToken } = require("./config.json");
 const loader = require("./loader");
 const listsGetRandomItem = require("./utils/listsGetRandomItem");
 
-// variables
-var botStatusIndex = 0;
+// web server is needed to keep the bot online
+const keepAlive = require("./server");
+keepAlive();
 
 // creating Discord client
 const client = new Client({
@@ -99,52 +100,6 @@ const client = new Client({
     GatewayIntentBits.GuildVoiceStates,
   ],
 });
-
-// bot status setup
-var botStatus = [
-  { name: "DiversityCraft", type: ActivityType.Playing },
-  { name: client.guilds.cache.size + " servers!", type: ActivityType.Watching },
-  { name: "Version 2.0??? WOW!!!", type: ActivityType.Playing },
-  // { name: "It's Christmas season boyz 🎅🎄", type: ActivityType.Playing },
-  {
-    name: listsGetRandomItem(
-      [
-        "Still debugging!",
-        "Daily lag :i",
-        "hello",
-        "i'm online rn",
-        "Pier77Repeter is Bob's best friend",
-        "game",
-        "d!help",
-        "Now with slash commands!",
-        "every day is a great day!",
-        "/help",
-        "Now with daily crashes!",
-        "bye",
-        "after all, why not",
-        "Do you want some music? d!play!",
-        "default text",
-        ">DiversityCraft on top",
-        "Since 2014!",
-        "Not a normal bot",
-        "d!ag exists for a reason :>",
-        "bottom text",
-        "Hey look, this is my status",
-        "Did you join DiversityCraft yet? :/",
-        "The perfect code, dosen't exist",
-        "*randomly joins chat*",
-        "Flipping trains on your area (╯°□°)╯︵ ┻━┻",
-        "V2.0 took ages bruh",
-      ],
-      false
-    ),
-    type: ActivityType.Playing,
-  },
-];
-
-// keep alive the bot while it loads, start the web server
-const keepAlive = require("./server");
-keepAlive();
 
 // bot logging in
 client
@@ -161,6 +116,50 @@ client
 // when the client is ready
 client.once(Events.ClientReady, (readyClient) => {
   logger.info("DiversityBOT is ready, logged in as " + readyClient.user.tag);
+
+  // bot status setup, client.guilds.cache.size returns the correct number AFTER the 'ready' event fires
+  const botStatus = [
+    { name: "DiversityCraft", type: ActivityType.Playing },
+    { name: client.guilds.cache.size + " servers!", type: ActivityType.Watching },
+    { name: "Version 2.0??? WOW!!!", type: ActivityType.Playing },
+    // { name: "It's Christmas season boyz 🎅🎄", type: ActivityType.Playing },
+    {
+      name: listsGetRandomItem(
+        [
+          "hello",
+          "bye",
+          "i'm online right now",
+          "I'm currently gaming",
+          "Hey look, this is my status",
+          "*randomly joins the chat*",
+          "HHEEEEELLLLLLLLLLOOOOOOOOOOOOO",
+          "Still debugging!",
+          "Daily lag :i",
+          "Now with slash commands!",
+          "Now with daily crashes!",
+          "The perfect code dosen't exist",
+          "V2.0 took ages bruh",
+          "Not a normal bot",
+          "d!help",
+          "/help",
+          "Do you want some music? d!play!",
+          "Imagine using d!meme to watch NSFW",
+          "Pier77Repeter is Bob's best friend",
+          ">DiversityCraft on top",
+          "Did you join DiversityCraft yet? :/",
+          "Since 2014!",
+          "Every day is a great day!",
+          "default text",
+          "bottom text",
+          "Flipping trains on your area (╯°□°)╯︵ ┻━┻",
+        ],
+        false
+      ),
+      type: ActivityType.Playing,
+    },
+  ];
+
+  var botStatusIndex = 0;
 
   // bot status
   setInterval(() => {

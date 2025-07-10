@@ -4,6 +4,7 @@ about: Suggest an idea for the Bot
 title: ""
 labels: ""
 assignees: ""
+
 ---
 
 # Please provide the followings things IN ORDER:
