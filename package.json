@@ -17,7 +17,7 @@
     "express": "^5.1.0",
     "ffmpeg-static": "^5.2.0",
     "sqlite3": "^5.1.7",
-    "discord.js-akinator": "file:./local_modules/discord.js-akinator",
+    "discord.js-akinator": "file:./local_modules/discord-akinator",
     "discord-gamecord": "file:./local_modules/discord-gamecord"
   }
 }
