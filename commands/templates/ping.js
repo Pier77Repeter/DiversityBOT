@@ -15,7 +15,7 @@ module.exports = {
       // sending the reply, since it's the last thing it's gonna do, we returns with an 'await' because message.reply() is async
       return await message.reply("🏓 Pong!");
     } catch (error) {
-      return; // in case of error, simply return, i don't want the consolo filled with shit because the bot couldn't reply
+      return; // in case of error, simply return, i don't want the console filled with shit because the bot couldn't reply
     }
   },
 };

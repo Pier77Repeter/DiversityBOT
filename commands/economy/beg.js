@@ -35,6 +35,8 @@ module.exports = {
     }
 
     const money = mathRandomInt(20, 70);
+
+    // take a look into utils/manageUserMoney.js
     if ((await manageUserMoney(client, message, "+", money)) == null) return;
 
     embed

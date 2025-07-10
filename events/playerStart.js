@@ -23,7 +23,7 @@ module.exports = (client) => {
           ].join("\n")
         )
         .setImage(track.thumbnail)
-        .setFooter({ text: "Offered by SoundCloud" });
+        .setFooter({ text: "If this song instantly stops, it's because of COPYRIGHT issues" });
     } catch (error) {
       embed
         .setColor(0xcc66cc)
@@ -37,7 +37,7 @@ module.exports = (client) => {
             "Requested by: **" + track.requestedBy.username + "**",
           ].join("\n")
         )
-        .setFooter({ text: "Offered by SoundCloud" });
+        .setFooter({ text: "If this song instantly stops, it's because of COPYRIGHT issues" });
     }
 
     try {

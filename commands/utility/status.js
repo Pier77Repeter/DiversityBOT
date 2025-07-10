@@ -58,6 +58,11 @@ module.exports = {
         cpuPercent = Math.round(100 * (1 - idleDiff / totalDiff) * 10) / 10;
       }
 
+      let totalMembers = 0;
+      client.guilds.cache.forEach((guild) => {
+        totalMembers += guild.memberCount;
+      });
+
       embed
         .setColor(0x990000)
         .setTitle("⚙️ Server status")
@@ -66,7 +71,7 @@ module.exports = {
           name: "**Discord stats:**",
           value: [
             "Total servers: `" + client.guilds.cache.size + "`",
-            "Total users: `" + client.users.cache.size + "`",
+            "Total users: `" + totalMembers + "`",
             "Latency to Discord: `" + client.ws.ping + "ms`",
           ].join("\n"),
           inline: false,

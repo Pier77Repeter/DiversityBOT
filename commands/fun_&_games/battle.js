@@ -33,7 +33,7 @@ module.exports = {
       }
     }
 
-    const imageFileBegin = new AttachmentBuilder("./media/letBattleBegin.jpg");
+    const imageFile = new AttachmentBuilder("./media/letBattleBegin.jpg");
     embed
       .setColor(0xc0c0c0)
       .setTitle("⚙️ Preparing the arena...")
@@ -42,7 +42,7 @@ module.exports = {
 
     var sentMessage;
     try {
-      sentMessage = await message.reply({ embeds: [embed], files: [imageFileBegin] });
+      sentMessage = await message.reply({ embeds: [embed], files: [imageFile] });
     } catch (error) {
       return;
     }
@@ -54,11 +54,11 @@ module.exports = {
     var battleDamage = 0;
     var preventInfiniteLoop = 0; // i dont trust my own code O_O
 
-    imageFileFight.setFile("./media/battleBegins.jpg");
+    imageFile.setFile("./media/battleBegins.jpg");
     embed.setImage("attachment://battleBegins.jpg");
 
     try {
-      await sentMessage.edit({ embeds: [embed], files: [imageFileFight] });
+      await sentMessage.edit({ embeds: [embed], files: [imageFile] });
     } catch (error) {
       return;
     }
