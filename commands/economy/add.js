@@ -32,7 +32,7 @@ module.exports = {
       }
     }
 
-    if (isNaN(parseInt(args[1]))) {
+    if (isNaN(args[1])) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You must provide a valid number");
 
       try {
@@ -42,7 +42,7 @@ module.exports = {
       }
     }
 
-    if (parseInt(args[1]) < 1 || parseInt(args[1]) > 1000000) {
+    if (args[1] < 1 || args[1] > 1000000) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Number must be between **1 and 1000000**");
 
       try {
@@ -72,8 +72,11 @@ module.exports = {
       }
     }
 
+    // prevent users from adding decimals
+    const money = Math.trunc(args[1]);
+
     await new Promise((resolve, reject) => {
-      client.database.run("UPDATE User SET money = money + ? WHERE serverId = ? AND userId = ?", [args[1], message.guild.id, user.id], (err) => {
+      client.database.run("UPDATE User SET money = money + ? WHERE serverId = ? AND userId = ?", [money, message.guild.id, user.id], (err) => {
         if (err) reject(err);
         else resolve();
       });
@@ -82,7 +85,7 @@ module.exports = {
     embed
       .setColor(0x33ff33)
       .setTitle("✅ Operation completed")
-      .setDescription("Successfully added **" + args[1] + "$** to " + user.username);
+      .setDescription("Successfully added **" + money + "$** to " + user.username);
 
     try {
       return await message.reply({ embeds: [embed] });

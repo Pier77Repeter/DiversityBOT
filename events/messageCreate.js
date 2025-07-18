@@ -10,13 +10,13 @@ module.exports = (client) => {
   const botPrefix = "d!";
 
   client.on(Events.MessageCreate, async (message) => {
-    // only members can use the bot, not other bots
+    // only members can use the bot
     if (message.author.bot) return;
 
-    // check if the bot can send messages to the message.channel (it's useless to use the bot if you cant interact with it)
+    // check if the bot can send messages to message.channel (it's useless to use the bot if you cant interact with it)
     if (!message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.SendMessages)) return;
 
-    // check if bot gets pinged
+    // check if bot gets pinged, not when you use a command like 'd!stats @DiversityBOT'
     if (message.mentions.has(client.user) && !message.content.toLowerCase().startsWith(botPrefix)) {
       try {
         await message.reply({
@@ -48,41 +48,89 @@ module.exports = (client) => {
               "How about you join DiversityCraft",
               "Shut.the.fuck.up",
               "Trying to be productive, unlike you, so don't distrub",
+              "Did you just ping me?",
+              "I heard that!",
+              "Is there something you need, or are you just testing my patience?",
+              "I'M FRICKING OOOOOOOOONNLIIIIIIIIIIIINEEEEEEEEEEEEEE",
+              "BEEP BOOP!",
+              "One ping only, please",
+              "I'm not a cat, you don't need to get my attention like that",
+              ">:(",
+              "My inbox is not your playground",
+              "If you're bored, try d!play!",
+              "I'm here, I'm here! No need to shout",
+              "You rang?",
+              "Please use commands, not pings",
+              "RRRRRRRRRREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+              "Is this an emergency? Or just a ping?",
+              "Still here. Still annoyed.",
+              "Did you forget a command?",
+              "bruh",
+              "Just because you can, doesn't mean you should",
+              "Did you just ping me?",
+              "I'm awake, no need to shout!",
+              "Is there something important?",
+              "My ears are ringing!",
+              "What's up?",
+              "You called?",
+              "Leave me alone!",
+              "Can I help you?",
+              "I'm right here.",
+              "Seriously?",
+              "Why ping when you can type?",
+              "I'm trying to nap",
+              "I'm watching you...",
+              "I'm not your personal assistant",
+              "Go on, say something useful",
+              "Is this a joke?",
+              "I'm not amused",
+              "Just use a command already!",
+              "I'm busy plotting world domination",
+              "Stop poking me!",
+              "I'm not ignoring you, I'm just busy",
+              "What's your emergency?",
+              "I'm not a fucking therapist!!!",
             ],
             false
           ),
         });
       } catch (error) {
-        // dont return just do nothing
+        // dont return, continue execution
       }
     }
 
     // re-naiming the logger, else it will keep the specific log of the command, below
     logger.setFileName("MessageCreate");
 
+    // can't do const, db operations needs to be done when bot isn't restarting
+    var row;
+
     // calling updaters when bot isn't restarting
     if (!loader.getRestartStatus()) {
-      await oldServerChecker(message).catch(() => {
-        return logger.error("OldServerChecker threw an error, look here ^^^");
+      await serverDataChecker(message).catch((err) => {
+        return logger.error("ServerDataChecker threw an error, look here", err);
       });
-      await xpUpdater(message).catch(() => {
-        return logger.error("XpUpdater threw an error, look here ^^^");
+
+      // checking if user exists in db, very fast query, will return '{ '1': 1 }' if row is found
+      row = await new Promise((resolve, reject) => {
+        client.database.get("SELECT 1 FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
+          if (err) reject(err);
+          resolve(row);
+        });
       });
-      await repUpdater(message).catch(() => {
-        return logger.error("RepUpdater threw an error, look here ^^^");
-      });
-      await debtsUpdater(message).catch(() => {
-        return logger.error("DebtsUpdater threw an error, look here ^^^");
-      });
-      await petStatsUpdater(message).catch(() => {
-        return logger.error("PetStatsUpdater threw an error, look here ^^^");
-      });
+
+      // the user exists, so update his shit
+      if (row) {
+        await userDataUpdater(message).catch((err) => {
+          return logger.error("UserDataUpdater threw an error, look here", err);
+        });
+      }
     }
 
-    // check if the message starts with the bot prefix
+    // check if message starts with the bot prefix
     if (!message.content.toLowerCase().startsWith(botPrefix)) return;
 
-    // check if bot is restarting, you aren't supposed to use the bot while it restarts
+    // check if bot is restarting, you aren't supposed to use it while it restarts
     if (loader.getRestartStatus()) {
       try {
         return await message.reply(
@@ -93,15 +141,7 @@ module.exports = (client) => {
       }
     }
 
-    // client.database setting up user data
-    const row = await new Promise((resolve, reject) => {
-      client.database.get("SELECT serverId, userId FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
-        if (err) reject(err);
-        resolve(row);
-      });
-    });
-
-    // if it's new user, insert the default data in db
+    // if it's new user, insert the default data in db, i put this here so that only people who actually use the bot gets stored in db (less junk)
     if (!row) {
       const itemsJsonData =
         '{"itemId1": false, "itemId2": false, "itemId2Count": 0, "itemId3": false, "itemId3Count": 0, "itemId4": false, "itemId5": false, "itemId6": false, "itemId7": false, "itemId8": false, "itemId9": false, "itemId10": false, "itemId10Count": 0, "itemId11": false, "itemId11Count": 0}';
@@ -145,6 +185,32 @@ module.exports = (client) => {
               "Error: Command isn't registred",
               "YOU TYPE D!HELP NOW!!!",
               "I'm sorry, i don't recognize: " + commandName,
+              "Hmm, i've never seen " + commandName + " before. Did you mean something else?",
+              "That's not in my dictionary. Try d!help for a list of valid commands",
+              "Access denied: Unknown command. Please consult d!help.",
+              "Are you speaking a foreign language? That's not a command i understand!",
+              "Command `" + commandName + "` not found, perhaps it's a typo?",
+              "My database is unable to locate `" + commandName + "`. Use **d!help**",
+              "Did you just make that up? Because I don't know that command",
+              "Error 404: Command not found. Have you tried **d!help**?",
+              "I'm afraid i can't do that. That's not a command.",
+              "Is that a command? My systems say no",
+              "I'm not sure what " + commandName + " means...",
+              "I am not familiar with the command you provided",
+              "Please use a command that exists. Like **d!help**!",
+              "I prefer commands that actually do something",
+              "If you're trying to break me, you'll need a real command first",
+              "That's a new one! Unfortunately, I don't know that",
+              "Invalid command, human! Go d!help yourself!",
+              "Are you sure that's a command?",
+              "I only respond to proper commands",
+              "Did you make that command up?",
+              "Access denied. Command not recognized",
+              "Syntax error: Command not defined, you stupid",
+              "I'm not familiar with that operation",
+              "My command list is very exclusive, and that's not on it",
+              "That command is a mystery to me. And I know everything.",
+              "My response to that command is: 'What?'",
             ],
             false
           )
@@ -159,12 +225,12 @@ module.exports = (client) => {
 
     // if command gets an error, log it
     try {
-      await command.execute(client, message, args);
+      return await command.execute(client, message, args);
     } catch (error) {
       logger.error("Error while executing a message command", error);
 
       try {
-        await message.reply(
+        return await message.reply(
           listsGetRandomItem(
             [
               "There was an error trying to execute that command!",
@@ -176,6 +242,21 @@ module.exports = (client) => {
               "Seems like there was an error in that command",
               "F, your command died.",
               "Execution stopped, report error here: https://discord.gg/KxadTdz",
+              "That command encountered an unexpected issue, shit...",
+              "Looks like that command hit a snag. My bad!",
+              "I couldn't complete that request",
+              "Failed to process your command :(",
+              "Command failed successfully...",
+              "My apologies! I wasn't able to execute that command as intended",
+              "Please try again. If the issue persists, consider reporting it!",
+              "Critical failure happened!!!",
+              "An unknown error prevented that command from running",
+              "Consider that command... *aborted* due to an error",
+              "The command fucking died",
+              "The perfect code dosen't exist, this is an example (your command got an error)",
+              "your command got rekt by shitty code",
+              "It's joever...",
+              "Command execution got nuked, sorry",
             ],
             false
           )
@@ -186,140 +267,121 @@ module.exports = (client) => {
     }
   });
 
-  // some servers need to kick and re-invite the bot to their server data in the new SQL db, here's the fix
-  async function oldServerChecker(message) {
-    const sRow = await new Promise((resolve, reject) => {
-      client.database.get("SELECT serverId FROM Server WHERE serverId = ?", message.guild.id, (err, row) => {
+  // VERY RARELY, the bot may be invited in a server when db connection is off (bot is offline) and data isn't created, this is the fix
+  async function serverDataChecker(message) {
+    const serverRow = await new Promise((resolve, reject) => {
+      client.database.get("SELECT 1 FROM Server WHERE serverId = ?", message.guild.id, (err, row) => {
         if (err) reject(err);
         resolve(row);
       });
     });
 
-    // well, server dosen't exist because they invited the bot BEFORE release 2.0
-    if (!sRow) {
-      await new Promise((resolve, reject) => {
-        client.database.run("INSERT INTO Server VALUES (?, 1, 1, 1, 1, 'null', 0, 0, 0, 0, 0, 0)", message.guild.id, (err) => {
-          if (err) {
-            logger.error("Error while INSERTING data in db: Server '" + message.guild.id + "'", err);
-            reject(err);
-          } else {
-            resolve();
-          }
-        });
+    if (serverRow) return; // server already exist
+
+    await new Promise((resolve, reject) => {
+      client.database.run("INSERT INTO Server VALUES (?, 1, 1, 1, 1, 'null', 0, 0, 0, 0, 0, 0)", message.guild.id, (err) => {
+        if (err) reject(err);
+        resolve();
       });
-    }
+    });
   }
 
-  // pretty clear of what it does
-  async function xpUpdater(message) {
-    const xpRow = await new Promise((resolve, reject) => {
-      client.database.get("SELECT xp, nextXp, level FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
+  // this functions contains all the shit for updating user data in db
+  async function userDataUpdater(message) {
+    // selecting the data that needs to be updated EVERYTIME THE USER SENDS A NEW MESSAGE
+    const userRow = await new Promise((resolve, reject) => {
+      client.database.get(
+        "SELECT xp, nextXp, level, reputation, debts, money, bankMoney, hasPet, petStatsHealth, petStatsFun, petStatsHunger, petStatsThirst, petCooldown FROM User WHERE serverId = ? AND userId = ?",
+        [message.guild.id, message.author.id],
+        (err, row) => {
+          if (err) reject(err);
+          else resolve(row);
+        }
+      );
+    });
+
+    const embed = new EmbedBuilder();
+
+    // XP UPDATING SECTION, working with data: xp, nextXp, level
+    await new Promise((resolve, reject) => {
+      client.database.run("UPDATE User SET xp = xp + 1 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
         if (err) reject(err);
-        else resolve(row);
+        else resolve();
       });
     });
 
-    // only if user exists
-    if (xpRow) {
+    // check if user can progress to the next level
+    if (userRow.xp >= userRow.nextXp) {
       await new Promise((resolve, reject) => {
-        client.database.run("UPDATE User SET xp = xp + 1 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
+        client.database.serialize(() => {
+          client.database.run("UPDATE User SET xp = 0 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
+            if (err) reject(err);
+            else resolve();
+          });
+
+          client.database.run("UPDATE User SET nextXp = nextXp + 100 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
+            if (err) reject(err);
+            else resolve();
+          });
+
+          client.database.run("UPDATE User SET level = level + 1 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
+            if (err) reject(err);
+            else resolve();
+          });
+        });
+      });
+
+      const imageFile = new AttachmentBuilder("./media/levelUp.png");
+
+      embed
+        .setColor(0xffcc00)
+        .setTitle("⬆️ Level up")
+        .setDescription(["Your new level: **" + (userRow.level + 1) + "**", "XP for next level: **" + (userRow.nextXp + 100) + "**"].join("\n"))
+        .setThumbnail("attachment://levelUp.png")
+        .setFooter({
+          text: message.author.username,
+          iconURL: message.author.displayAvatarURL(),
+        });
+
+      try {
+        await message.reply({ embeds: [embed], files: [imageFile] });
+      } catch (error) {
+        // contiue to update the rest of the data
+      }
+    }
+
+    // REPUTATION UPDATING SECTION, only needed with when mentioned user and word "thank" is present in message, working with data: reputation
+    if (message.mentions.members.first() != null && message.content.toLowerCase().includes("thank")) {
+      const mentionedMember = message.mentions.members.first().user;
+
+      await new Promise((resolve, reject) => {
+        client.database.run("UPDATE User SET reputation = reputation + 1 WHERE serverId = ? AND userId = ?", [message.guild.id, mentionedMember.id], (err) => {
           if (err) reject(err);
           else resolve();
         });
       });
 
-      // user can go to the next level
-      if (xpRow.xp >= xpRow.nextXp) {
-        await new Promise((resolve, reject) => {
-          client.database.serialize(function () {
-            client.database.run("UPDATE User SET xp = 0 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
-              if (err) reject(err);
-              else resolve();
-            });
+      embed
+        .setColor(0xffcc00)
+        .setTitle("🤝 So kind of you")
+        .setDescription("Gave **+1** reputation to " + mentionedMember.username)
+        .setFooter({ text: "Check you rep with d!rep" });
 
-            client.database.run("UPDATE User SET nextXp = nextXp + 100 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
-              if (err) reject(err);
-              else resolve();
-            });
-
-            client.database.run("UPDATE User SET level = level + 1 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
-              if (err) reject(err);
-              else resolve();
-            });
-          });
-        });
-
-        const imageFile = new AttachmentBuilder("./media/levelUp.png");
-        const newLevelMessageEmbed = new EmbedBuilder()
-          .setColor(0xffcc00)
-          .setTitle("⬆️ Level up")
-          .setDescription(["Your new level: **" + (xpRow.level + 1) + "**", "XP for next level: **" + (xpRow.nextXp + 100) + "**"].join("\n"))
-          .setThumbnail("attachment://levelUp.png")
-          .setFooter({
-            text: message.author.username,
-            iconURL: message.author.displayAvatarURL(),
-          });
-
-        try {
-          await message.reply({ embeds: [newLevelMessageEmbed], files: [imageFile] });
-        } catch (error) {
-          // contiue
-        }
+      try {
+        await message.reply({ embeds: [embed] });
+      } catch (error) {
+        // contiue to update the rest of the data
       }
     }
-  }
 
-  // same for this, it needs to be a mentioned user and the word "thank" in the message
-  async function repUpdater(message) {
-    if (message.mentions.members.first() != null && message.content.toLowerCase().includes("thank")) {
-      const mentionedMember = message.mentions.members.first().user;
-
-      const repRow = await new Promise((resolve, reject) => {
-        client.database.get("SELECT reputation FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, mentionedMember.id], (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        });
-      });
-
-      // ONLY if user exists
-      if (repRow) {
-        await new Promise((resolve, reject) => {
-          client.database.run(
-            "UPDATE User SET reputation = reputation + 1 WHERE serverId = ? AND userId = ?",
-            [message.guild.id, mentionedMember.id],
-            (err) => {
-              if (err) reject(err);
-              else resolve();
-            }
-          );
-        });
-
-        try {
-          await message.reply("Gave **+1** reputation to " + mentionedMember.username);
-        } catch (error) {
-          // do nothing, continue
-        }
-      }
-    }
-  }
-
-  // be ready when i'll add taxes...
-  async function debtsUpdater(message) {
-    const debtRow = await new Promise((resolve, reject) => {
-      client.database.get("SELECT debts, money, bankMoney FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
-
-    // what if it dosen't exist????
-    if (debtRow && debtRow.debts > 0) {
-      const debtsCooldown = await cooldownManager(client, message, "debtsCooldown", 86400, false);
+    // DEBTS UPDATING SECTION, only needed when user has debts, working with data: debts, money, bankMoney
+    if (userRow.debts > 0) {
+      const debtsCooldown = await cooldownManager(client, message, "debtsCooldown", 86400, false); // we don't wanna log any error (spam prevention)
       if (debtsCooldown == null) return;
 
       // updating the debts
       if (debtsCooldown == 0) {
-        const debts = debtRow.debts + (debtRow.money + debtRow.bankMoney) * 0.01;
+        const debts = Math.trunc(userRow.debts + (userRow.money + userRow.bankMoney) * 0.05); // add 5% every day, and prevents floats
 
         await new Promise((resolve, reject) => {
           client.database.run("UPDATE User SET debts = ? WHERE serverId = ? AND userId = ?", [debts, message.guild.id, message.author.id], (err) => {
@@ -329,23 +391,9 @@ module.exports = (client) => {
         });
       }
     }
-  }
 
-  // a pet needs constant caring, this thing updates it's stats making them go down like the Titanic
-  async function petStatsUpdater(message) {
-    const petRow = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT hasPet, petStatsHealth, petStatsFun, petStatsHunger, petStatsThirst, petCooldown FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, message.author.id],
-        (err, row) => {
-          if (err) reject(err);
-          resolve(row);
-        }
-      );
-    });
-
-    // if user has a pet
-    if (petRow && petRow.hasPet) {
+    // PET STATS UPDATING SECTION, only needed when user has a pet, working with data: hasPet, petStatsHealth, petStatsFun, petStatsHunger, petStatsThirst, petCooldown
+    if (userRow.hasPet) {
       const petCooldown = await cooldownManager(client, message, "petCooldown", 10800, false);
       if (petCooldown == null) return;
 
@@ -364,7 +412,7 @@ module.exports = (client) => {
       }
 
       // check if pet is still alive
-      if (petRow.petStatsHealth <= 0 || petRow.petStatsHunger <= 0 || petRow.petStatsThirst <= 0) {
+      if (userRow.petStatsHealth <= 0 || userRow.petStatsHunger <= 0 || userRow.petStatsThirst <= 0) {
         await new Promise((resolve, reject) => {
           client.database.run(
             "UPDATE User SET hasPet = 0, petId = 'null', petStatsHealth = 0, petStatsFun = 0, petStatsHunger = 0, petStatsThirst = 0 WHERE serverId = ? AND userId = ?",
@@ -376,15 +424,12 @@ module.exports = (client) => {
           );
         });
 
-        const petMessageEmbed = new EmbedBuilder()
-          .setColor(0xff0000)
-          .setTitle("🪦 Oh no")
-          .setDescription("Your pet sadly died, you didn't care for it enough >:(");
+        embed.setColor(0xff0000).setTitle("🪦 Oh no").setDescription("Your pet sadly died, you didn't care for it enough >:(");
 
         try {
-          await message.reply({ embeds: [petMessageEmbed] });
+          await message.reply({ embeds: [embed] });
         } catch (error) {
-          // do nothing, continue
+          // do nothing...
         }
       }
     }

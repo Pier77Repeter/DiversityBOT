@@ -19,7 +19,7 @@ module.exports = {
 
     // have to remove this description if user has something ^
     for (const key in fishes) {
-      if (key.startsWith("itemId") && !key.endsWith("Count")) {
+      if (key.startsWith("fishId") && !key.endsWith("Count")) {
         if (fishes[key] === true) {
           embed.setDescription(null);
           break;

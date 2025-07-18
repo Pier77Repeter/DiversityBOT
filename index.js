@@ -6,7 +6,7 @@ Notes: DiversityBOT is the biggest project i've ever made!
 */
 
 // error handler to prevent crashes, top priority even tho position dosen't metter
-process.on("uncaughtException", function (err) {
+process.on("uncaughtException", (err) => {
   console.warn("\n[Error handler]: CRASH PREVENTED, PLEASE LOOK AT THE ERROR!!!\n=============================================================");
   console.error(err);
   console.warn("=============================================================\n[Error handler]: CRASH PREVENTED, PLEASE LOOK AT THE ERROR!!!\n");

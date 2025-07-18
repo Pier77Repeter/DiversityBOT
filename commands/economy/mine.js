@@ -171,7 +171,7 @@ module.exports = {
       embed.setColor(0xff0000).setTitle("👷‍♂️⛏️⬛").setDescription("You found nothing").setFooter({ text: "Just rocks" });
 
       try {
-        return await message.reply({ embeds: [embed] });
+        return await sentMessage.edit({ embeds: [embed] });
       } catch (error) {
         return;
       }

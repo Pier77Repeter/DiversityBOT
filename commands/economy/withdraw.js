@@ -74,8 +74,8 @@ module.exports = {
         }
 
       default:
-        if (isNaN(parseInt(moneyToWithdraw)) || moneyToWithdraw <= 0) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Not a valid number, put a number starting from at **least 1**");
+        if (isNaN(moneyToWithdraw) || moneyToWithdraw < 1) {
+          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Not a valid number, put a number starting from **at least 1**");
 
           try {
             return await message.reply({ embeds: [embed] });
@@ -94,10 +94,12 @@ module.exports = {
           }
         }
 
+        const money = Math.trunc(moneyToWithdraw);
+
         await new Promise((resolve, reject) => {
           client.database.run(
             "UPDATE User SET bankMoney = bankMoney - ?, money = money + ? WHERE serverId = ? AND userId = ?",
-            [moneyToWithdraw, moneyToWithdraw, message.guild.id, message.author.id],
+            [money, money, message.guild.id, message.author.id],
             (err) => {
               if (err) reject(err);
               else resolve();
@@ -107,12 +109,12 @@ module.exports = {
 
         embed
           .setColor(0x33ff33)
-          .setDescription("✅ Successfully transfered **" + moneyToWithdraw + "**$ to your wallet")
+          .setDescription("✅ Successfully transfered **" + money + "**$ to your wallet")
           .setFields({
             name: "Transaction ended!",
             value: [
-              "💰 Now you have: **" + (row.money + parseInt(moneyToWithdraw)) + "$** in your wallet",
-              "🏦 Now you have: **" + (row.bankMoney - parseInt(moneyToWithdraw)) + "$** in your bank",
+              "💰 Now you have: **" + (row.money + parseInt(money)) + "$** in your wallet",
+              "🏦 Now you have: **" + (row.bankMoney - parseInt(money)) + "$** in your bank",
             ].join("\n"),
           });
 

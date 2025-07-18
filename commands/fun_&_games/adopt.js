@@ -19,11 +19,11 @@ module.exports = {
       });
     });
 
-    const adoptMessageEmbed = new EmbedBuilder().setColor(0xff0000).setTitle("❌ Error").setDescription("You already have a pet, type **d!pet** to check it!");
+    const embed = new EmbedBuilder().setColor(0xff0000).setTitle("❌ Error").setDescription("You already have a pet, type **d!pet** to check it!");
 
     if (row.hasPet) {
       try {
-        return await message.reply({ embeds: [adoptMessageEmbed] });
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }
@@ -32,7 +32,7 @@ module.exports = {
     const petStatsCooldown = Date.now() + 10800000; // start imediatly at 3h
     await new Promise((resolve, reject) => {
       client.database.run(
-        "UPDATE Usr SET hasPet = 1, petId = ?, petStatsHealth = 100, petStatsFun = 100, petStatsHunger = 100, petStatsThirst = 100, petCooldown = ? WHERE serverId = ? AND userId = ?",
+        "UPDATE User SET hasPet = 1, petId = ?, petStatsHealth = 100, petStatsFun = 100, petStatsHunger = 100, petStatsThirst = 100, petCooldown = ? WHERE serverId = ? AND userId = ?",
         [adoptedMember.id, petStatsCooldown, message.guild.id, message.author.id],
         (err) => {
           if (err) reject(err);
@@ -41,7 +41,7 @@ module.exports = {
       );
     });
 
-    adoptMessageEmbed
+    embed
       .setColor(0x33cc00)
       .setTitle("You sucessfully adopted " + adoptedMember.username)
       .setDescription("You have now a pet, type **d!pet** to check his stats!")
@@ -49,7 +49,7 @@ module.exports = {
       .setFooter({ text: "It is important to check his stats often" });
 
     try {
-      return await message.reply({ embeds: [adoptMessageEmbed] });
+      return await message.reply({ embeds: [embed] });
     } catch (error) {
       return;
     }

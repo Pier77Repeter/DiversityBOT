@@ -26,7 +26,7 @@ module.exports = {
     const fishes = await dbJsonDataGet(client, message.author, message, "fishes");
     if (fishes == null) return;
 
-    switch (args[0].toLowerCase()) {
+    switch (args.join(" ").toLowerCase()) {
       case "diversitygem":
         if (!items.itemId1) {
           embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't own this item");
@@ -704,7 +704,7 @@ module.exports = {
         }
 
       default:
-        embed.setColor(0xff0000).setTitle("❌ Error").setDescription("That thing you trying to sell dosen't exist");
+        embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Item dosen't exist! You can only sell items by name like **d!sell fishing rod**");
 
         try {
           return await message.reply({ embeds: [embed] });

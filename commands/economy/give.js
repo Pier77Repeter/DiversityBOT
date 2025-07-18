@@ -89,7 +89,7 @@ module.exports = {
         }
 
         await new Promise((resolve, reject) => {
-          client.database.serialize(function () {
+          client.database.serialize(() => {
             // message author
             client.database.run("UPDATE User SET money = 0 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
               if (err) reject(err);
@@ -119,8 +119,8 @@ module.exports = {
         }
 
       default:
-        if (isNaN(parseInt(moneyToGive)) || moneyToGive <= 0) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Not a valid number, put a number starting from at **least 1**");
+        if (isNaN(moneyToGive) || moneyToGive < 1) {
+          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Not a valid number, put a number starting from **at least 1**");
 
           try {
             return await message.reply({ embeds: [embed] });
@@ -139,20 +139,18 @@ module.exports = {
           }
         }
 
+        const money = Math.trunc(moneyToGive);
+
         await new Promise((resolve, reject) => {
-          client.database.serialize(function () {
+          client.database.serialize(() => {
             // message author
-            client.database.run(
-              "UPDATE User SET money = money - ? WHERE serverId = ? AND userId = ?",
-              [moneyToGive, message.guild.id, message.author.id],
-              (err) => {
-                if (err) reject(err);
-                else resolve();
-              }
-            );
+            client.database.run("UPDATE User SET money = money - ? WHERE serverId = ? AND userId = ?", [money, message.guild.id, message.author.id], (err) => {
+              if (err) reject(err);
+              else resolve();
+            });
 
             // mentioned user
-            client.database.run("UPDATE User SET money = money + ? WHERE serverId = ? AND userId = ?", [moneyToGive, message.guild.id, user.id], (err) => {
+            client.database.run("UPDATE User SET money = money + ? WHERE serverId = ? AND userId = ?", [money, message.guild.id, user.id], (err) => {
               if (err) reject(err);
               else resolve();
             });
@@ -161,10 +159,10 @@ module.exports = {
 
         embed
           .setColor(0x33ff33)
-          .setDescription("✅ You successfully gave **" + moneyToGive + "$** to **" + user.username + "**")
+          .setDescription("✅ You successfully gave **" + money + "$** to **" + user.username + "**")
           .setFields({
             name: "Transaction ended!",
-            value: "💰 Now you have: **" + (row.money - parseInt(moneyToGive)) + "$** in your wallet",
+            value: "💰 Now you have: **" + (row.money - parseInt(money)) + "$** in your wallet",
           });
 
         try {

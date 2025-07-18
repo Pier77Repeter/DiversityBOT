@@ -194,7 +194,7 @@ module.exports = {
           btnScientist.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
           await new Promise((resolve, reject) => {
-            client.database.run("UPDATE User SET jobType = 'chief' WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
+            client.database.run("UPDATE User SET jobType = 'chef' WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
               if (err) reject(err);
               else resolve();
             });

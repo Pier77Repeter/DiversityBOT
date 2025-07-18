@@ -22,7 +22,7 @@ module.exports = {
       embed
         .setColor(0xff0000)
         .setTitle("❌ Error")
-        .setDescription("How much money are you remove to " + user.username + "?");
+        .setDescription("How much money are you removing from " + user.username + "?");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -31,7 +31,17 @@ module.exports = {
       }
     }
 
-    if (parseInt(args[1]) < 1 || parseInt(args[1]) > 1000000) {
+    if (isNaN(args[1])) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You must provide a valid number");
+
+      try {
+        return await message.reply({ embeds: [embed] });
+      } catch (error) {
+        return;
+      }
+    }
+
+    if (args[1] < 1 || args[1] > 1000000) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Number must be between **1 and 1000000**");
 
       try {
@@ -52,7 +62,7 @@ module.exports = {
       embed
         .setColor(0xff0000)
         .setTitle("❌ Error")
-        .setDescription("You can't give money to " + user.username + " because he never tried EVEN 1 of my commands! >:(");
+        .setDescription("You can't remove money from " + user.username + " because he never tried EVEN 1 of my commands! >:(");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -61,17 +71,31 @@ module.exports = {
       }
     }
 
-    await new Promise((resolve, reject) => {
-      client.database.run("UPDATE User SET money = money + ? WHERE serverId = ? AND userId = ?", [args[1], message.guild.id, user.id], (err) => {
-        if (err) reject(err);
-        else resolve();
+    const money = Math.trunc(args[1]);
+
+    // handling debts logic
+    if (money > row.money) {
+      const debts = money - row.money;
+
+      await new Promise((resolve, reject) => {
+        client.database.run("UPDATE User SET money = 0, debts = debts + ? WHERE serverId = ? AND userId = ?", [debts, message.guild.id, user.id], (err) => {
+          if (err) reject(err);
+          else resolve();
+        });
       });
-    });
+    } else {
+      await new Promise((resolve, reject) => {
+        client.database.run("UPDATE User SET money = money - ? WHERE serverId = ? AND userId = ?", [money, message.guild.id, user.id], (err) => {
+          if (err) reject(err);
+          else resolve();
+        });
+      });
+    }
 
     embed
       .setColor(0x33ff33)
       .setTitle("✅ Operation completed")
-      .setDescription("Successfully added **" + args[1] + "$** to " + user.username);
+      .setDescription("Successfully removed **" + money + "$** to " + user.username);
 
     try {
       return await message.reply({ embeds: [embed] });

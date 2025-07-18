@@ -31,7 +31,7 @@ module.exports = {
       });
     });
     await new Promise((resolve, reject) => {
-      client.database.serialize(function () {
+      client.database.serialize(() => {
         client.database.run(
           "CREATE TABLE IF NOT EXISTS Server (serverId VARCHAR(20) NOT NULL PRIMARY KEY, modCmd BOOLEAN, musiCmd BOOLEAN, eventCmd BOOLEAN, communityCmd BOOLEAN, modLogChannel VARCHAR(20), playCooldown INT, imageCooldown INT, hmCooldown INT, jmCooldown INT, cannyCooldown INT, uncannyCooldown INT);",
           (err) => {
@@ -63,12 +63,12 @@ module.exports = {
         );
 
         /*
-        Note: This is useless at the moment, it will be used when Christmas
+        Note: This is inactive at the moment, will be used when Christmas arrives
         client.database.run(
-          "CREATE TABLE IF NOT EXISTS EventsUser (userId VARCHAR(20) NOT NULL PRIMARY KEY, treeLevel INT, twigs INT, leaves INT, goldenCoins INT, decoid1 BOOLEAN, decoid2 BOOLEAN, decoid3 BOOLEAN, decoid4 BOOLEAN);",
+          "CREATE TABLE IF NOT EXISTS Event (serverId VARCHAR(20) NOT NULL, userId VARCHAR(20) NOT NULL, treeLevel INT, twigs INT, leaves INT, goldenCoins INT, decoid1 BOOLEAN, decoid2 BOOLEAN, decoid3 BOOLEAN, decoid4 BOOLEAN, PRIMARY KEY (serverId, userId), FOREIGN KEY(serverId) REFERENCES Server(serverId) ON DELETE CASCADE);",
           (err) => {
             if (err) {
-              console.error(logPrefix, "Error building database (creating Event user table)");
+              logger.error("Error building database in 'Event' table", err);
               return reject(err);
             }
           }

@@ -498,7 +498,7 @@ module.exports = {
         }
 
       default:
-        embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Items dosen't exist in the store");
+        embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Item dosen't exist! You can only buy items by name like **d!buy fishing rod**");
 
         try {
           return await message.reply({ embeds: [embed] });

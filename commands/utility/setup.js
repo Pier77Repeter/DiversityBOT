@@ -59,7 +59,7 @@ module.exports = {
           }
         }
 
-        embed.setColor(0x33ff33).setTitle("✅ Done");
+        embed.setColor(0x33ff33).setTitle("✅ Configuration updated");
 
         if (row.modCmd) {
           embed.setDescription("🔨 Moderation commands are now: **ON**");
@@ -102,7 +102,7 @@ module.exports = {
           }
         }
 
-        embed.setColor(0x33ff33).setTitle("✅ Done");
+        embed.setColor(0x33ff33).setTitle("✅ Configuration updated");
 
         if (row.musiCmd) {
           embed.setDescription("🎵 Music commands are now: **ON**");
@@ -145,7 +145,7 @@ module.exports = {
           }
         }
 
-        embed.setColor(0x33ff33).setTitle("✅ Done");
+        embed.setColor(0x33ff33).setTitle("✅ Configuration updated");
 
         if (row.eventCmd) {
           embed.setDescription("🎉 Events commands are now: **ON**");
@@ -188,7 +188,7 @@ module.exports = {
           }
         }
 
-        embed.setColor(0x33ff33).setTitle("✅ Done");
+        embed.setColor(0x33ff33).setTitle("✅ Configuration updated");
 
         if (row.communityCmd) {
           embed.setDescription("🌍 Community commands are now: **ON**");
