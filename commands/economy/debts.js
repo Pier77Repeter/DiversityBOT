@@ -7,7 +7,7 @@ module.exports = {
     const user = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
 
     const row = await new Promise((resolve, reject) => {
-      client.database.get("SELECT userId, money, debts FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, user.id], (err, row) => {
+      client.database.get("SELECT userId, money, bankMoney, debts FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, user.id], (err, row) => {
         if (err) reject(err);
         else resolve(row);
       });
@@ -28,9 +28,11 @@ module.exports = {
       }
     }
 
+    const dailyIncrease = Math.trunc((row.debts + row.money + row.bankMoney) * 0.05);
+
     embed
       .setTitle(user.username + "'s debts")
-      .setDescription("**📈 Debts:** `" + row.debts + "$`")
+      .setDescription(["**🧾 Debts:** `" + row.debts + "$`", "**📈 Daily increase:** `" + dailyIncrease + "$`"].join("\n"))
       .setFooter({ text: "The longer you wait, the higher the debts get" });
 
     const payDebtsBtn = new ButtonBuilder().setCustomId("btn-debts-btnPayDebts").setLabel("Pay debts").setStyle(ButtonStyle.Primary);
@@ -76,10 +78,13 @@ module.exports = {
       }
 
       if (btnInteraction.customId === "btn-debts-btnPayDebts") {
-        if (row.debts > row.money) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have enough money in your wallet to pay the debts").setFooter(null);
-
-          payDebtsBtn.setStyle(ButtonStyle.Danger).setDisabled(true);
+        if (row.money == 0) {
+          embed
+            .setColor(0xff0000)
+            .setTitle("❌ Error")
+            .setDescription("You have 0 money in your wallet, you need to withdraw them from your bank")
+            .setFooter(null);
+          payDebtsBtn.setDisabled(true);
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [btnRow] });
@@ -88,20 +93,29 @@ module.exports = {
           }
         }
 
-        const paidMoney = row.money - row.debts;
+        // determine the amount to pay, either all the money in wallet or the total amount of debts
+        const amountToPay = Math.min(row.money, row.debts);
+        const newDebts = row.debts - amountToPay;
+        const newMoney = row.money - amountToPay;
 
         await new Promise((resolve, reject) => {
-          client.database.run("UPDATE User SET debts = 0, money = ? WHERE serverId = ? AND userId = ?", [paidMoney, message.guild.id, user.id], (err) => {
-            if (err) reject(err);
-            else resolve();
-          });
+          client.database.run(
+            "UPDATE User SET debts = ?, money = ? WHERE serverId = ? AND userId = ?",
+            [newDebts, newMoney, message.guild.id, user.id],
+            (err) => {
+              if (err) reject(err);
+              else resolve();
+            }
+          );
         });
 
-        embed
-          .setColor(0x33ff33)
-          .setTitle("✅ Debts paid")
-          .setDescription("You paid your debts completely for **" + row.debts + "$**")
-          .setFooter(null);
+        embed.setColor(0x33ff33).setTitle("✅ Payment successful").setFooter(null);
+
+        if (newDebts > 0) {
+          embed.setDescription(["You paid **" + amountToPay + "$** towards your debts", "You still owe **" + newDebts + "$**"].join("\n"));
+        } else {
+          embed.setDescription("You paid off your remaining debts for **" + amountToPay + "$**");
+        }
 
         payDebtsBtn.setStyle(ButtonStyle.Success).setDisabled(true);
 

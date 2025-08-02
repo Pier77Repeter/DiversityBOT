@@ -10,7 +10,7 @@
   "license": "PPL",
   "dependencies": {
     "@discord-player/extractor": "^7.1.0",
-    "axios": "^1.10.0",
+    "axios": "^1.11.0",
     "discord-gamecord": "file:local_modules/discord-gamecord",
     "discord-image-generation": "^1.4.25",
     "discord-player": "^7.1.0",

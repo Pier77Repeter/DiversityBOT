@@ -381,7 +381,7 @@ module.exports = (client) => {
 
       // updating the debts
       if (debtsCooldown == 0) {
-        const debts = Math.trunc(userRow.debts + (userRow.money + userRow.bankMoney) * 0.05); // add 5% every day, and prevents floats
+        const debts = Math.trunc((userRow.debts + userRow.money + userRow.bankMoney) * 0.05); // add 5% every day, and prevents floats
 
         await new Promise((resolve, reject) => {
           client.database.run("UPDATE User SET debts = ? WHERE serverId = ? AND userId = ?", [debts, message.guild.id, message.author.id], (err) => {

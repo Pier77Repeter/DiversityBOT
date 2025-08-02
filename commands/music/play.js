@@ -1,5 +1,6 @@
-const { QueryType } = require("discord-player");
+const { SoundCloudExtractor } = require("@discord-player/extractor");
 const { EmbedBuilder, PermissionsBitField } = require("discord.js");
+const { useMainPlayer } = require("discord-player");
 const configChecker = require("../../utils/configChecker");
 const serverCooldownManager = require("../../utils/serverCooldownManager");
 
@@ -94,7 +95,7 @@ module.exports = {
       .setColor(0x666666)
       .setTitle("🔍 Searching the song...")
       .setDescription(
-        "Hopefully i'm able to find the song you asked on **SoundCloud**, if it's not what you wanted try adding the song author BEFORE the song name, else just go on: **https://soundcloud.com/** and see if your song is there"
+        "Hopefully i'm able to find the song you asked on **SoundCloud**, if it's not what you wanted try adding the song author BEFORE the song name, else just go on **https://soundcloud.com/** and see if your song is there"
       );
 
     var sentMessage;
@@ -104,14 +105,15 @@ module.exports = {
       return;
     }
 
-    const search = await client.player.search(query, {
-      searchEngine: QueryType.SOUNDCLOUD,
+    const player = useMainPlayer();
+
+    const search = await player.search(query, {
+      searchEngine: `ext:${SoundCloudExtractor.identifier}`,
       requestedBy: message.author,
     });
 
     if (!search.hasTracks()) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("No tracks has been found for your query");
-
+      embed.setColor(0xff0000).setTitle("❌ Not Found").setDescription("No track was found for your query.");
       try {
         return await sentMessage.edit({ embeds: [embed] });
       } catch (error) {
@@ -119,28 +121,39 @@ module.exports = {
       }
     }
 
-    // idk how i managed to make a functioning play command, discord player documentation SUCK SO BADLY!!!
-    const queue = client.player.nodes.create(message.guild.id, {
-      metadata: {
-        channel: message.channel,
-        client: message.guild.members.me,
-      },
-      selfDeaf: false,
-      bufferingTimeout: 30000,
-      leaveOnStop: true,
-      leaveOnStopCooldown: 5000,
-      leaveOnEnd: true,
-      leaveOnEndCooldown: 15000,
-      leaveOnEmpty: true,
-      leaveOnEmptyCooldown: 300000,
-      skipOnNoStream: false,
-    });
+    const queue =
+      player.nodes.get(message.guild.id) ||
+      player.nodes.create(message.guild.id, {
+        metadata: {
+          channel: message.channel,
+          client: message.guild.members.me,
+        },
+        selfDeaf: true,
+        leaveOnStop: true,
+        leaveOnStopCooldown: 5000,
+        leaveOnEnd: true,
+        leaveOnEndCooldown: 15000,
+        leaveOnEmpty: true,
+        leaveOnEmptyCooldown: 300000,
+      });
 
     // connect to vc if not connected
     if (!queue.connection) {
-      await queue.connect(message.member.voice?.channelId);
-      embed.setColor(0x666666).setTitle("⚙️ Connecting, please wait...").setDescription(null);
+      try {
+        await queue.connect(message.member.voice?.channelId);
+      } catch (error) {
+        // rip, couldnt connect to vc
+        embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Failed to connect to your voice channel, check if i have the permission to connect");
+
+        try {
+          return await sentMessage.edit({ embeds: [embed] });
+        } catch (error) {
+          return;
+        }
+      }
+
       isFirstSong = true; // connecting to VC
+      embed.setColor(0x666666).setTitle("⚙️ Connecting, please wait...");
     } else {
       // already connected to vc
       embed.setColor(0x33cc00).setTitle("✅ Done").setDescription("Music has been added to the queue");
@@ -152,10 +165,21 @@ module.exports = {
       return;
     }
 
-    queue.addTrack(search.tracks[0]); // add only the first result
+    // add only the first result
+    const track = search.tracks[0];
 
     try {
-      await queue.node.play(queue.currentTrack); // play the current playing track, so that it won't immediatly start playing another one when added
+      // await queue.node.play(track);
+      // play the current playing track, so that it won't immediatly start playing another one when added
+      await player.play(voiceChannel, track, {
+        nodeOptions: {
+          metadata: {
+            channel: message.channel,
+            client: message.guild.members.me,
+            requestedBy: message.user,
+          },
+        },
+      });
     } catch (error) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Something went wrong while playing the song");
 
@@ -167,14 +191,14 @@ module.exports = {
     }
 
     if (isFirstSong) {
+      isFirstSong = false; // not anymore, bot is connected to VC
+      embed.setColor(0x33cc00).setTitle("✅ Music API is connected").setDescription("The music will now start in a few seconds!");
+
       try {
-        embed.setColor(0x33cc00).setTitle("✅ Music API is connected").setDescription("The music will now start in a few seconds!");
-        await sentMessage.edit({ embeds: [embed] });
+        return await sentMessage.edit({ embeds: [embed] });
       } catch (error) {
         return;
       }
     }
-
-    isFirstSong = false; // not anymore, bot is connected to VC
   },
 };

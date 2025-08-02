@@ -1,8 +1,10 @@
-const { GuildQueueEvent } = require("discord-player");
+const { GuildQueueEvent, useMainPlayer } = require("discord-player");
 const { EmbedBuilder } = require("discord.js");
 
 module.exports = (client) => {
-  client.player.events.on(GuildQueueEvent.EmptyQueue, async (queue, track) => {
+  const player = useMainPlayer();
+
+  player.events.on(GuildQueueEvent.EmptyQueue, async (queue, track) => {
     const embed = new EmbedBuilder()
       .setColor(0x000000)
       .setTitle("✅ Queue is over, thanks for listening!")
