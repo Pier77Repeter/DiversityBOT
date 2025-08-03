@@ -20,7 +20,7 @@ module.exports = {
     });
 
     try {
-      matchPairs.startGame();
+      return await matchPairs.startGame();
     } catch (error) {
       return;
     }

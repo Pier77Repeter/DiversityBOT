@@ -16,7 +16,7 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (cooldown != 0) {
-      embed.setColor(0x000000).setDescription("⏰ Don't doop too fast, wait: **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription("⏰ Don't doop too fast, do it later **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -86,7 +86,7 @@ module.exports = {
           await delay(3000);
 
           // the chance to fail to doop
-          if (mathRandomInt(1, 4) == 1) {
+          if (mathRandomInt(1, 6) == 1) {
             money = mathRandomInt(2000, 3000);
             if ((await manageUserMoney(client, message, "-", money)) == null) return;
 
@@ -132,7 +132,7 @@ module.exports = {
 
           await delay(3000);
 
-          if (mathRandomInt(1, 4) == 1) {
+          if (mathRandomInt(1, 6) == 1) {
             money = mathRandomInt(2000, 3000);
             if ((await manageUserMoney(client, message, "-", money)) == null) return;
 
@@ -178,7 +178,7 @@ module.exports = {
 
           await delay(3000);
 
-          if (mathRandomInt(1, 4) == 1) {
+          if (mathRandomInt(1, 6) == 1) {
             money = mathRandomInt(2000, 3000);
             if ((await manageUserMoney(client, message, "-", money)) == null) return;
 
@@ -223,22 +223,6 @@ module.exports = {
           }
 
           await delay(3000);
-
-          if (mathRandomInt(1, 4) == 1) {
-            money = mathRandomInt(2000, 3000);
-            if ((await manageUserMoney(client, message, "-", money)) == null) return;
-
-            embed
-              .setColor(0xff0000)
-              .setTitle("👮 Hausemaster caught you")
-              .setDescription("Hause saw you duping, and removed **" + money + "$** from your balance");
-
-            try {
-              return await sentMessage.edit({ embeds: [embed] });
-            } catch (error) {
-              return;
-            }
-          }
 
           money = mathRandomInt(300, 500);
           if ((await manageUserMoney(client, message, "+", money)) == null) return;

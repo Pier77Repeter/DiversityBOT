@@ -11,7 +11,7 @@ module.exports = {
     const itemToUse = args[0];
 
     if (!itemToUse) {
-      embed.setColor(0xff6600).setTitle("Here is the list of usable items:").setDescription(["d!use banana", "d!use beans", "d!use poo <@user>"].join("\n"));
+      embed.setColor(0xff6600).setTitle("Here is the list of usable items").setDescription(["d!use banana", "d!use beans", "d!use poo <@user>"].join("\n"));
 
       try {
         return await message.reply({ embeds: [embed] });

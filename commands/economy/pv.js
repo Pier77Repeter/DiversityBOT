@@ -16,7 +16,7 @@ module.exports = {
     if (cooldown == null) return;
 
     if (cooldown != 0) {
-      embed.setColor(0x000000).setDescription("⏰ You can publish another video in: **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription("⏰ You can publish another video **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });

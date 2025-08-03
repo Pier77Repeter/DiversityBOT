@@ -7,7 +7,7 @@ module.exports = {
     const ip = args[0];
 
     try {
-      if (!ip) return await message.reply("Give the server IP to ping");
+      if (!ip) return await message.reply("Give the server IP to ping like **diversitycraft.xyz**");
     } catch (error) {
       return;
     }

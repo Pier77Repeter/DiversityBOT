@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require("discord.js");
 const listsGetRandomItem = require("../../utils/listsGetRandomItem");
 
 module.exports = {
@@ -12,9 +11,8 @@ module.exports = {
       return;
     }
 
-    const ball8MessageEmbed = new EmbedBuilder()
-      .setColor(0xff6666)
-      .setDescription(
+    try {
+      return await message.reply(
         [
           message.author.username,
           ", ",
@@ -58,9 +56,6 @@ module.exports = {
           ),
         ].join("")
       );
-
-    try {
-      return await message.reply({ embeds: [ball8MessageEmbed] });
     } catch (error) {
       return;
     }

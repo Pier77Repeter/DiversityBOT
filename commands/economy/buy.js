@@ -11,7 +11,7 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (!args[0]) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Wrong syntax, choose an item you want to buy **d!buy <itemName>**");
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Wrong syntax, choose the item you want to buy **d!buy <itemName>**");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -24,18 +24,18 @@ module.exports = {
     if (items == null) return;
 
     const row = await new Promise((resolve, reject) => {
-      client.database.get("SELECT money FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
+      client.database.get("SELECT money FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, 1], (err, row) => {
         if (err) reject(err);
         else resolve(row);
       });
     });
 
+    // this shouldn't happen since data is created before command gets executed, still wise to have this
     if (!row) {
-      try {
-        return await message.reply("Failed to get your money");
-      } catch (error) {
-        return;
-      }
+      throw [
+        "The record 'money' was NOT found in the database, CHECK THE QUERY",
+        "Requested from Server: '" + message.guild.id + "' - User: '" + message.author.id + "'",
+      ].join("\n");
     }
 
     switch (args.join(" ").toLowerCase()) {

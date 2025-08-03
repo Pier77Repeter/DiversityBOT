@@ -27,7 +27,7 @@ module.exports = {
     if (cooldown == null) return;
 
     if (cooldown != 0) {
-      embed.setColor(0x000000).setDescription("⏰ Wait: **<t:" + cooldown[1] + ":R>** to make another Hausemaster moment");
+      embed.setColor(0x000000).setDescription("⏰ You can do another Hausemaster moment **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });

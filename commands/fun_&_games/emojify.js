@@ -13,7 +13,7 @@ module.exports = {
 
     if (args.lenght > 1024) {
       try {
-        return await message.reply("Text is too long bruh");
+        return await message.reply("Text is too looooooooooong, max 1024 chars!");
       } catch (error) {
         return;
       }
@@ -23,7 +23,7 @@ module.exports = {
       return await message.reply(await Emojify(args.join(" ")));
     } catch (error) {
       try {
-        return await message.reply("Text is too long, make it shorter i cant send it");
+        return await message.reply("Text is too long, make it shorter so that i can send it");
       } catch (error) {
         return;
       }

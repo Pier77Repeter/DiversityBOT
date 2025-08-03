@@ -10,7 +10,7 @@ module.exports = {
 
     // take a look into dbJsonDataGet AND dbJsonDataSet, it replys and returns null if shit goes wrong
     const fishes = await dbJsonDataGet(client, user, message, "fishes");
-    if (fishes == null) return; // message is already sent, so just return
+    if (fishes == null) return; // if error message is already sent, so just return
 
     const embed = new EmbedBuilder()
       .setColor(0x33ccff)

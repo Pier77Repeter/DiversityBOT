@@ -16,7 +16,7 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (cooldown != 0) {
-      embed.setColor(0x000000).setDescription("⏰ Take a break from searching: **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription("⏰ Take a break from searching, come back **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });

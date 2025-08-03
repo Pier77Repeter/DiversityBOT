@@ -19,7 +19,7 @@ module.exports = {
     });
 
     try {
-      pokeGuess.startGame();
+      return await pokeGuess.startGame();
     } catch (error) {
       return;
     }

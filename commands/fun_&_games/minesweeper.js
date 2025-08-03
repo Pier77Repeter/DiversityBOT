@@ -21,7 +21,7 @@ module.exports = {
     });
 
     try {
-      minesweeper.startGame();
+      return await minesweeper.startGame();
     } catch (error) {
       return;
     }

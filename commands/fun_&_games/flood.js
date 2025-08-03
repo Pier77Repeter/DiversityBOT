@@ -21,7 +21,7 @@ module.exports = {
     });
 
     try {
-      flood.startGame();
+      return await flood.startGame();
     } catch (error) {
       return;
     }

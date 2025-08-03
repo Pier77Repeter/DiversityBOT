@@ -33,7 +33,7 @@ module.exports = {
       embed
         .setColor(0x000000)
         .setTitle(null)
-        .setDescription("⏰ Give water to your pet in: **<t:" + cooldown[1] + ":R>**");
+        .setDescription("⏰ Give water to your pet **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });

@@ -21,7 +21,7 @@ module.exports = {
     if (cooldown == null) return;
 
     if (cooldown != 0) {
-      embed.setColor(0x000000).setDescription("⏰ Slowdown man, no need to nuke this fast, wait: **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription("⏰ No need to nuke this fast, another nuke will be ready **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });

@@ -8,7 +8,7 @@ module.exports = {
       message: message,
       isSlashGame: false,
       embed: {
-        title: "Find Emoji",
+        title: "Find the emoji",
         color: "#5865F2",
         description: "Remember the emojis from the board below.",
         findDescription: "Find the {emoji} emoji before the time runs out.",
@@ -24,7 +24,7 @@ module.exports = {
     });
 
     try {
-      findEmoji.startGame();
+      return await findEmoji.startGame();
     } catch (error) {
       return;
     }

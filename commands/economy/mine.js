@@ -30,7 +30,7 @@ module.exports = {
     if (cooldown == null) return;
 
     if (cooldown != 0) {
-      embed.setColor(0x000000).setDescription("⏰ Mine is closed, will reopen: **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription("⏰ Mine is closed, will re-open **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -39,7 +39,7 @@ module.exports = {
       }
     }
 
-    if (mathRandomInt(1, 5) == 1) {
+    if (mathRandomInt(1, 8) == 1) {
       items.itemId13 = false;
 
       if ((await dbJsonDataSet(client, message, "items", items)) == null) return;

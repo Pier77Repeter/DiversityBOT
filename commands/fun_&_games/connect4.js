@@ -35,7 +35,7 @@ module.exports = {
     });
 
     try {
-      connectFour.startGame();
+      return await connectFour.startGame();
     } catch (error) {
       return;
     }

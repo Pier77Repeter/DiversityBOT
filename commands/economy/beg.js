@@ -15,7 +15,7 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (cooldown != 0) {
-      embed.setColor(0x000000).setDescription("⏰ Beg again in: **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription("⏰ Beg again **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });

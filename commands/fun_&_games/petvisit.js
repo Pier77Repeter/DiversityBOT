@@ -33,7 +33,7 @@ module.exports = {
       embed
         .setColor(0x000000)
         .setTitle(null)
-        .setDescription("⏰ Slowdown man, vet will be available again: **<t:" + cooldown[1] + ":R>**");
+        .setDescription("⏰ Slowdown man, vet will be available again **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });

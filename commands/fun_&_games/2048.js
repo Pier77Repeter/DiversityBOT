@@ -23,7 +23,7 @@ module.exports = {
     });
 
     try {
-      twoZeroFourEight.startGame();
+      return await twoZeroFourEight.startGame();
     } catch (error) {
       return;
     }

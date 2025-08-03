@@ -25,7 +25,7 @@ module.exports = {
     });
 
     try {
-      trivia.startGame();
+      return await trivia.startGame();
     } catch (error) {
       return;
     }

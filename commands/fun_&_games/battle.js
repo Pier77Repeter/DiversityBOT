@@ -75,7 +75,7 @@ module.exports = {
           .setTitle(messageAuthor.username + " ⚔️ vs ⚔️ " + mentionedUser.username)
           .setDescription("➡️ " + messageAuthor.username + " did the final strike and destroyed " + mentionedUser.username + " for **-" + battleDamage + "HP**")
           .setFields({
-            name: "HP stats:",
+            name: "Final HP:",
             value: messageAuthor.username + ": **" + authorHp + "HP**   |   " + mentionedUser.username + ": **0HP**",
           });
 
@@ -157,7 +157,7 @@ module.exports = {
           .setTitle(messageAuthor.username + " ⚔️ vs ⚔️ " + mentionedUser.username)
           .setDescription("⬅️ " + mentionedUser.username + " did the final strike and destroyed " + messageAuthor.username + " for **-" + battleDamage + "HP**")
           .setFields({
-            name: "HP stats:",
+            name: "Final HP:",
             value: messageAuthor.username + ": **0HP**   |   " + mentionedUser.username + ": **" + opponentHp + "HP**",
           });
 

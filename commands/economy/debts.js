@@ -28,6 +28,7 @@ module.exports = {
       }
     }
 
+    // 5% of everything, seems gut
     const dailyIncrease = Math.trunc((row.debts + row.money + row.bankMoney) * 0.05);
 
     embed
@@ -36,7 +37,6 @@ module.exports = {
       .setFooter({ text: "The longer you wait, the higher the debts get" });
 
     const payDebtsBtn = new ButtonBuilder().setCustomId("btn-debts-btnPayDebts").setLabel("Pay debts").setStyle(ButtonStyle.Primary);
-
     const btnRow = new ActionRowBuilder().addComponents(payDebtsBtn);
 
     if (row.debts == 0) {
@@ -69,7 +69,7 @@ module.exports = {
       if (row.userId !== message.author.id) {
         try {
           return await btnInteraction.reply({
-            content: "You wont to pay debts for someone else? Nah you won't",
+            content: "You want to pay debts for someone else? Nah you won't",
             flags: MessageFlags.Ephemeral,
           });
         } catch (error) {

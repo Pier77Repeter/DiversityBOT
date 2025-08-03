@@ -28,7 +28,7 @@ module.exports = {
     if (cooldown == null) return;
 
     if (cooldown != 0) {
-      embed.setColor(0x000000).setDescription("⏰ Next fishing session in: **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription("⏰ Next fishing session **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -37,7 +37,7 @@ module.exports = {
       }
     }
 
-    if (mathRandomInt(1, 4) == 1) {
+    if (mathRandomInt(1, 10) == 1) {
       items.itemId6 = false;
 
       if ((await dbJsonDataSet(client, message, "items", items)) == null) return;

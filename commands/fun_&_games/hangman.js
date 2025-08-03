@@ -597,7 +597,7 @@ module.exports = {
     });
 
     try {
-      hangman.startGame();
+      return await hangman.startGame();
     } catch (error) {
       return;
     }

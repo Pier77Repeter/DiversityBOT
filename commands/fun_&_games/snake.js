@@ -28,7 +28,7 @@ module.exports = {
     });
 
     try {
-      snake.startGame();
+      return await snake.startGame();
     } catch (error) {
       return;
     }

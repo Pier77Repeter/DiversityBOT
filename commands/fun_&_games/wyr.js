@@ -21,7 +21,7 @@ module.exports = {
     });
 
     try {
-      wouldYouRather.startGame();
+      return await wouldYouRather.startGame();
     } catch (error) {
       return;
     }

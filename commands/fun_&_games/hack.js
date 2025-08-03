@@ -24,7 +24,7 @@ module.exports = {
     if (cooldown == null) return;
 
     if (cooldown != 0) {
-      embed.setColor(0x000000).setDescription("⏰ Better wait **<t:" + cooldown[1] + ":R>** before hacking again, you might be found by the FBI");
+      embed.setColor(0x000000).setDescription("⏰ Better do it again **<t:" + cooldown[1] + ":R>**, you might be found by the FBI");
 
       try {
         return await message.reply({ embeds: [embed] });

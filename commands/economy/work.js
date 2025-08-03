@@ -31,7 +31,7 @@ module.exports = {
     if (cooldown == null) return;
 
     if (cooldown != 0) {
-      embed.setColor(0x000000).setDescription("⏰ You already worked, next turn in: **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription("⏰ You've already worked, next turn **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -145,7 +145,7 @@ module.exports = {
       hasClickedBtn = true;
 
       // probability to get fired, put this here so i dont copy and paste it every time
-      if (mathRandomInt(1, 5) == 1) {
+      if (mathRandomInt(1, 7) == 1) {
         await new Promise((resolve, reject) => {
           client.database.run("UPDATE User SET jobType = 'null' WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
             if (err) reject(err);

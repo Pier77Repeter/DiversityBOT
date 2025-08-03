@@ -30,7 +30,7 @@ module.exports = {
     if (cooldown == null) return;
 
     if (cooldown != 0) {
-      embed.setColor(0x000000).setDescription("⏰ Break time, you can hunt again: **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription("⏰ Break time, you can hunt again **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -113,8 +113,8 @@ module.exports = {
         var money;
         btnShoot.setStyle(ButtonStyle.Success).setDisabled(true);
 
-        if (mathRandomInt(1, 5) == 1) {
-          money = mathRandomInt(800, 1500);
+        if (mathRandomInt(1, 7) == 1) {
+          money = mathRandomInt(1200, 1500);
           items.itemId12 = false;
 
           if ((await dbJsonDataSet(client, message, "items", items)) == null) return;

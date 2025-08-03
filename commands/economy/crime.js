@@ -76,13 +76,13 @@ module.exports = {
 
       hasClickedBtn = true;
 
-      if (mathRandomInt(1, 4) == 1) {
+      if (mathRandomInt(1, 5) == 1) {
         btnMuder.setStyle(ButtonStyle.Danger).setDisabled(true);
         btnArson.setStyle(ButtonStyle.Danger).setDisabled(true);
         btnRobbery.setStyle(ButtonStyle.Danger).setDisabled(true);
         btnDrug.setStyle(ButtonStyle.Danger).setDisabled(true);
 
-        money = mathRandomInt(2000, 4000);
+        money = mathRandomInt(3000, 4000);
 
         if ((await manageUserMoney(client, message, "-", money)) == null) return;
 

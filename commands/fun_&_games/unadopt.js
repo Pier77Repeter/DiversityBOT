@@ -37,7 +37,7 @@ module.exports = {
     embed
       .setColor(0x990000)
       .setTitle("You unadopted " + client.users.cache.get(row.petId).username)
-      .setDescription("you commited bad action >:(")
+      .setDescription("You've commited a bad action >:(")
       .setThumbnail(client.users.cache.get(row.petId).displayAvatarURL());
 
     try {

@@ -43,16 +43,10 @@ module.exports = {
     });
 
     if (!row) {
-      embed
-        .setColor(0xff0000)
-        .setTitle("❌ Error")
-        .setDescription("Failed to give money to " + user.username);
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return;
-      }
+      throw [
+        "The record 'money' was NOT found in the database, CHECK THE QUERY",
+        "Requested from Server: '" + message.guild.id + "' - User: '" + message.author.id + "'",
+      ].join("\n");
     }
 
     // second check mentioned member's money
@@ -130,7 +124,7 @@ module.exports = {
         }
 
         if (moneyToGive > row.money) {
-          embed.setColor(0xff0000).setTitle("❌ Transaction failed").setDescription("You don't have that money in your wallet to give");
+          embed.setColor(0xff0000).setTitle("❌ Transaction failed").setDescription("You don't have that amount of money in your wallet to give");
 
           try {
             return await message.reply({ embeds: [embed] });

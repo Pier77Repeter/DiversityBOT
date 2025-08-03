@@ -27,13 +27,10 @@ module.exports = {
     });
 
     if (!row) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Failed to withdraw your money");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return;
-      }
+      throw [
+        "The records 'bankMoney', 'money' were NOT found in the database, CHECK THE QUERY",
+        "Requested from Server: '" + message.guild.id + "' - User: '" + message.author.id + "'",
+      ].join("\n");
     }
 
     switch (moneyToWithdraw) {
