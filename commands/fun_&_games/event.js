@@ -6,8 +6,8 @@ module.exports = {
   async execute(client, message, args) {
     const embed = new EmbedBuilder()
       .setColor(0x339999)
-      .setTitle("Ongoing event: None")
-      .setDescription(["There are no ongoing events, check the Discord for more: https://discord.gg/KxadTdz"].join("\n"))
+      .setTitle("🪩 Ongoing event: None")
+      .setDescription(["There are currently no ongoing events, **check the Discord for more https://discord.gg/KxadTdz**"].join("\n"))
       .setFooter({
         text: "Sadly, no events at the moment",
       });

@@ -66,14 +66,14 @@ module.exports = {
       .setTitle("📖 Help menu")
       .setDescription(
         [
-          'Hello there! I\'m DiversityBOT, a totally "normal" Discord Bot',
-          "Feel free to look at all my commands by using the menu below",
-          "Remember to give me all the needed permissions to interact, else some features wont work corretly",
+          '👋 Hello there! I\'m DiversityBOT, a totally "normal" Discord Bot!',
+          "Feel free to look at aalllll of my commands by using the menu below",
+          "Remember to give me all the needed permissions, else some features may not work properly",
           "Important commands: **d!help**, **/help**",
           "More commands will come soon. Please, be patient ;)",
           "", // for jumping down 2 times
-          "Bot current version: **2.0.1**",
-          "Support me by **joining in the discord: https://discord.gg/KxadTdz**",
+          "Bot current version: **2.0.2**",
+          "Support me by **joining in here: https://discord.gg/KxadTdz**",
         ].join("\n")
       )
       .setThumbnail("attachment://DVC_highquality.jpg")

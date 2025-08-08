@@ -132,10 +132,16 @@ module.exports = (client) => {
 
     // check if bot is restarting, you aren't supposed to use it while it restarts
     if (loader.getRestartStatus()) {
+      const embed = new EmbedBuilder()
+        .setColor(0x990000)
+        .setTitle("⚠️ Bot is restarting")
+        .setDescription(
+          "I'm currently restarting, in order to preserve the integrity of your data in my database, you won't be able to use me until restart is completed."
+        )
+        .setFooter({ text: "Estimated downtime is 5 minute" });
+
       try {
-        return await message.reply(
-          "I'm currently restarting, in order to preserve the integrity of your data in my database, you won't be able to use me until restart is completed"
-        );
+        return await message.reply({ embeds: [embed] });
       } catch (error) {
         return;
       }

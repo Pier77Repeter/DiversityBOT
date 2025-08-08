@@ -58,9 +58,9 @@ module.exports = {
     embed
       .setColor(0xffcc00)
       .setTitle(memeData.title)
-      .setDescription("From: r/" + memeData.subreddit + " | " + memeData.postLink)
+      .setDescription("From **r/" + memeData.subreddit + "** | " + memeData.postLink)
       .setImage(memeData.url)
-      .setFooter({ text: "Upvotes: " + memeData.ups + " 👍" });
+      .setFooter({ text: "⬆️ Upvotes " + memeData.ups });
 
     const btnNextMeme = new ButtonBuilder().setCustomId("btn-meme-btnNextMeme").setEmoji("🔄").setLabel("Next Meme").setStyle(ButtonStyle.Primary);
     const btnStop = new ButtonBuilder().setCustomId("btn-meme-btnStop").setEmoji("🛑").setLabel("Stop").setStyle(ButtonStyle.Danger);
@@ -110,7 +110,8 @@ module.exports = {
               .setDescription(
                 "The post i was about to send is NSFW, luckily i've blocked it for your safety, if you are trying to get posts from NSFW subs, well, you can't!"
               )
-              .setImage("attachment://arnoldSchwarzeneggerStopMeme.jpg");
+              .setImage("attachment://arnoldSchwarzeneggerStopMeme.jpg")
+              .setFooter(null); // so that it dosen't keep the 'Upvotes' footer
 
             btnCollector.stop();
 
@@ -124,9 +125,9 @@ module.exports = {
           embed
             .setColor(0xffcc00)
             .setTitle(memeData.title)
-            .setDescription("From: **r/" + memeData.subreddit + "** | " + memeData.postLink)
+            .setDescription("From **r/" + memeData.subreddit + "** | " + memeData.postLink)
             .setImage(memeData.url)
-            .setFooter({ text: "Upvotes: " + memeData.ups + " 👍" });
+            .setFooter({ text: "⬆️ Upvotes " + memeData.ups });
 
           btnCollector.resetTimer();
 

@@ -1,4 +1,3 @@
-const { EmbedBuilder } = require("discord.js");
 const akinator = require("discord.js-akinator");
 
 module.exports = {
@@ -58,13 +57,8 @@ module.exports = {
         break;
 
       default:
-        const embed = new EmbedBuilder()
-          .setColor(0x33ccff)
-          .setTitle("🎮 Akinator game menu")
-          .setDescription("Pick the category you would like to choose: **character**, **animal** or **object**");
-
         try {
-          return await message.reply({ embeds: [embed] });
+          return await message.reply("What? These are the only available options: **character**, **animal** or **object**");
         } catch (error) {
           return;
         }

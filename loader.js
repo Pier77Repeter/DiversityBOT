@@ -30,6 +30,8 @@ module.exports = {
         }
       });
     });
+
+    // valid only for the first time or when Channel/Event table gets dropped
     await new Promise((resolve, reject) => {
       client.database.serialize(() => {
         client.database.run(
@@ -37,7 +39,7 @@ module.exports = {
           (err) => {
             if (err) {
               logger.error("Error building database in 'Server' table", err);
-              return reject(err);
+              process.exit(1); // of course, we can't continue
             }
           }
         );
@@ -47,7 +49,7 @@ module.exports = {
           (err) => {
             if (err) {
               logger.error("Error building database in 'Channel' table", err);
-              return reject(err);
+              process.exit(1);
             }
           }
         );
@@ -57,7 +59,7 @@ module.exports = {
           (err) => {
             if (err) {
               logger.error("Error building database in 'User' table", err);
-              return reject(err);
+              process.exit(1);
             }
           }
         );
@@ -69,7 +71,7 @@ module.exports = {
           (err) => {
             if (err) {
               logger.error("Error building database in 'Event' table", err);
-              return reject(err);
+              process.exit(1);
             }
           }
         );
@@ -199,6 +201,7 @@ module.exports = {
     logger.info("Shutdown completed, terminating process");
     process.exit(0);
   },
+  // needed for 'd!restart' and restart checking
   getRestartStatus: () => isBotRestarting,
   setRestartStatus: (status) => (isBotRestarting = status),
 };

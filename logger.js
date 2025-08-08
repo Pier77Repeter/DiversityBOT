@@ -5,7 +5,7 @@ function createLogger(initialFileName) {
 
   // basic validation for initialFileName
   if (typeof initialFileName !== "string" || initialFileName.trim() === "") {
-    console.error("[Logger/ERROR]: A valid initial fileName must be provided when creating a logger instance.");
+    console.error("[Logger/ERROR]: A valid initial file name must be provided when creating a logger");
     currentFileName = "UNKNOWN_FILE";
   }
 

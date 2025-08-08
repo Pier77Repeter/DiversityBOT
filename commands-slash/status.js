@@ -76,12 +76,12 @@ module.exports = {
         .addFields({
           name: "**Hardware stats:**",
           value: [
-            "System: `" + os.type() + "`",
-            "System Architecture: `" + os.arch() + "`",
-            "System version: `" + os.release() + "`",
+            "OS: `" + os.type() + "`",
+            "OS Architecture: `" + os.arch() + "`",
+            "Kernel version: `" + os.release() + "`",
             "System uptime: `" + formatUptime(os.uptime()) + "`",
-            "CPU: `" + cpuPercent + "%`",
-            "RAM: `" + formatMemory(os.totalmem(), os.freemem()) + "`",
+            "CPU usage: `" + cpuPercent + "%`",
+            "RAM usage: `" + formatMemory(os.totalmem(), os.freemem()) + "`",
           ].join("\n"),
           inline: false,
         });

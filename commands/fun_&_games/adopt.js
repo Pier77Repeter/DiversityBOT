@@ -43,10 +43,10 @@ module.exports = {
 
     embed
       .setColor(0x33cc00)
-      .setTitle("You sucessfully adopted " + adoptedMember.username)
-      .setDescription("You have now a pet, type **d!pet** to check his stats!")
+      .setTitle("🐶 You adopted " + adoptedMember.username)
+      .setDescription("You've just got a new pet, type **d!pet** to check his stats!")
       .setThumbnail(adoptedMember.displayAvatarURL())
-      .setFooter({ text: "It is important to check his stats often" });
+      .setFooter({ text: "It's important to check them often" });
 
     try {
       return await message.reply({ embeds: [embed] });

@@ -1,4 +1,4 @@
-const { Events, MessageFlags } = require("discord.js");
+const { Events, MessageFlags, EmbedBuilder } = require("discord.js");
 const listsGetRandomItem = require("../utils/listsGetRandomItem");
 const logger = require("../logger")("InteractionCreate");
 const loader = require("../loader");
@@ -25,12 +25,16 @@ module.exports = (client) => {
 
     // check if bot is restarting, you aren't supposed to use the bot while it restarts
     if (loader.getRestartStatus()) {
+      const embed = new EmbedBuilder()
+        .setColor(0x990000)
+        .setTitle("⚠️ Bot is restarting")
+        .setDescription(
+          "I'm currently restarting, in order to preserve the integrity of your data in my database, you won't be able to use me until restart is completed."
+        )
+        .setFooter({ text: "Estimated downtime is 5 minute" });
+
       try {
-        return await interaction.reply({
-          content:
-            "I'm currently restarting, in order to preserve the integrity of your data in my database, you won't be able to use me until restart is completed",
-          flags: MessageFlags.Ephemeral,
-        });
+        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
       } catch (error) {
         return;
       }
