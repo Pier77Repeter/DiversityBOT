@@ -24,7 +24,7 @@ module.exports = {
     if (items == null) return;
 
     const row = await new Promise((resolve, reject) => {
-      client.database.get("SELECT money FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, 1], (err, row) => {
+      client.database.get("SELECT money FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
         if (err) reject(err);
         else resolve(row);
       });

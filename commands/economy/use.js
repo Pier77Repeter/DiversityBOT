@@ -20,12 +20,10 @@ module.exports = {
       }
     }
 
-    const items = await dbJsonDataGet(client, message, "items");
+    const items = await dbJsonDataGet(client, message.author, message, "items");
     if (items == null) return;
 
-    itemToUse.toLowerCase();
-
-    switch (itemToUse) {
+    switch (itemToUse.toLowerCase()) {
       case "banana":
         if (!items.itemId7) {
           embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have a banana, buy it!");
