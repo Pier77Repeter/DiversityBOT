@@ -300,9 +300,9 @@ module.exports = {
         case "btn-search-btnEnd":
           embed.setTitle("🔍 You start searching around the End...").setDescription(null);
 
-          btnOverworld.setStyle(ButtonStyle.Success).setDisabled(true);
+          btnOverworld.setStyle(ButtonStyle.Secondary).setDisabled(true);
           btnNether.setStyle(ButtonStyle.Secondary).setDisabled(true);
-          btnEnd.setStyle(ButtonStyle.Secondary).setDisabled(true);
+          btnEnd.setStyle(ButtonStyle.Success).setDisabled(true);
 
           try {
             await btnInteraction.update({ embeds: [embed], components: [btnRow] });
@@ -418,7 +418,7 @@ module.exports = {
 
     btnCollector.on("end", async () => {
       if (!hasClickedBtn) {
-        embed.setColor(0x000000).setTitle("Giving up").setDescription("Sooo you refuse to search? Well alright, you can do it later");
+        embed.setColor(0x000000).setTitle("🤷‍♂️ Giving up").setDescription("Sooo you refuse to search? Well alright, you can do it later");
 
         btnOverworld.setStyle(ButtonStyle.Secondary).setDisabled(true);
         btnNether.setStyle(ButtonStyle.Secondary).setDisabled(true);

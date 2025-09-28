@@ -6,7 +6,7 @@ module.exports = {
   async execute(client, message, args) {
     const user = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
 
-    const row = await new Promise((resolve, reject) => {
+    var row = await new Promise((resolve, reject) => {
       client.database.get("SELECT userId, money, bankMoney, debts FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, user.id], (err, row) => {
         if (err) reject(err);
         else resolve(row);
@@ -78,11 +78,19 @@ module.exports = {
       }
 
       if (btnInteraction.customId === "btn-debts-btnPayDebts") {
+        // re-cheking the money, since you could send the command 2 times and fuck up everything
+        row = await new Promise((resolve, reject) => {
+          client.database.get("SELECT userId, money, bankMoney, debts FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, user.id], (err, row) => {
+            if (err) reject(err);
+            else resolve(row);
+          });
+        });
+
         if (row.money == 0) {
           embed
             .setColor(0xff0000)
             .setTitle("❌ Error")
-            .setDescription("You have 0 money in your wallet, you need to withdraw them from your bank")
+            .setDescription("You have **0 money in your wallet**, you need to withdraw them from your bank")
             .setFooter(null);
           payDebtsBtn.setDisabled(true);
 

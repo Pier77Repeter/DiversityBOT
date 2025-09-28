@@ -42,7 +42,7 @@ module.exports = {
 
       if ((await dbJsonDataSet(client, message, "items", items)) == null) return;
 
-      embed.setColor(0xff0000).setTitle("😢 Oh no").setDescription("Your fishing rod broken, go buy a new one to start fishing again");
+      embed.setColor(0xff0000).setTitle("😢 Oh no").setDescription("Your fishing rod broke, go buy a new one to start fishing again");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -52,7 +52,7 @@ module.exports = {
     }
 
     if (mathRandomInt(1, 3) == 1) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You haven't caught any fish, try again later");
+      embed.setColor(0xff0000).setTitle("🌊 Nothing, just water").setDescription("You haven't caught any fish, try again later");
 
       try {
         return await message.reply({ embeds: [embed] });

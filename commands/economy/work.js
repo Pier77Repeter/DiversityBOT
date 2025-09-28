@@ -153,31 +153,31 @@ module.exports = {
           });
         });
 
-        fireFighterOneBtn.setDisabled(true);
-        fireFighterTwoBtn.setDisabled(true);
-        fireFighterThreeBtn.setDisabled(true);
+        fireFighterOneBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
+        fireFighterTwoBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
+        fireFighterThreeBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-        teacherOneBtn.setDisabled(true);
-        teacherTwoBtn.setDisabled(true);
-        teacherThreeBtn.setDisabled(true);
+        teacherOneBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
+        teacherTwoBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
+        teacherThreeBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-        discordModOneBtn.setDisabled(true);
-        discordModTwoBtn.setDisabled(true);
-        discordModThreeBtn.setDisabled(true);
+        discordModOneBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
+        discordModTwoBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
+        discordModThreeBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-        mechanicOneBtn.setDisabled(true);
-        mechanicTwoBtn.setDisabled(true);
-        mechanicThreeBtn.setDisabled(true);
+        mechanicOneBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
+        mechanicTwoBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
+        mechanicThreeBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-        chefOneBtn.setDisabled(true);
-        chefTwoBtn.setDisabled(true);
-        chefThreeBtn.setDisabled(true);
+        chefOneBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
+        chefTwoBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
+        chefThreeBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-        scientistOneBtn.setDisabled(true);
-        scientistTwoBtn.setDisabled(true);
-        scientistThreeBtn.setDisabled(true);
+        scientistOneBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
+        scientistTwoBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
+        scientistThreeBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-        embed.setColor(0xff0000).setTitle("Oh no").setDescription("You got fired and you lost your job :(");
+        embed.setColor(0xff0000).setTitle("☹️ Oh no").setDescription("You got fired and you lost your job :(");
 
         try {
           return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
@@ -559,7 +559,7 @@ module.exports = {
         scientistTwoBtn.setDisabled(true);
         scientistThreeBtn.setDisabled(true);
 
-        embed.setColor(0xff0000).setTitle("❌ Timeout").setDescription("You didn't choose any task, you lost your turn");
+        embed.setColor(0xff0000).setTitle("🕛 Timeout").setDescription("You didn't choose any task, you lost your turn");
 
         try {
           return await sentMessage.edit({ embeds: [embed], components: [actionRow] });
