@@ -14,7 +14,8 @@ module.exports = {
           { name: "🔨 Moderation commands", value: "moderation" },
           { name: "🎵 Music commands", value: "music" },
           { name: "🎉 Events commands", value: "events" },
-          { name: "🌍 Community commands", value: "community" }
+          { name: "🌍 Community commands", value: "community" },
+          { name: "🏆 Leveling commands", value: "leveling" }
         )
     )
     .addBooleanOption((option) => option.setName("enabled").setDescription("Enable or disable the category").setRequired(true)),
@@ -22,19 +23,27 @@ module.exports = {
     const category = interaction.options.getString("category");
     const enabled = interaction.options.getBoolean("enabled");
 
-    let columnName;
+    let columnName, enabledCmds;
     switch (category) {
       case "moderation":
         columnName = "modCmd";
+        enabledCmds = "🔨 Moderation commands";
         break;
       case "music":
         columnName = "musiCmd";
+        enabledCmds = "🎵 Music commands";
         break;
       case "events":
         columnName = "eventCmd";
+        enabledCmds = "🎉 Events commands";
         break;
       case "community":
         columnName = "communityCmd";
+        enabledCmds = "🌍 Community commands";
+        break;
+      case "leveling":
+        columnName = "levelingCmd";
+        enabledCmds = "🏆 Leveling commands";
         break;
       default:
         return interaction.reply({ content: "Invalid category.", ephemeral: MessageFlags.Ephemeral }); // should not happen, but good to have
@@ -50,7 +59,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setColor(0x33ff33)
       .setTitle("✅ Configuration updated")
-      .setDescription(`**${category.charAt(0).toUpperCase() + category.slice(1)}** commands are now **${enabled ? "ACTIVE" : "NOT ACTIVE"}**`);
+      .setDescription(`${enabledCmds} are now **${enabled ? "ACTIVE" : "NOT ACTIVE"}**`);
 
     try {
       return await interaction.reply({ embeds: [embed] });

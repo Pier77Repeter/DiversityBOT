@@ -135,7 +135,7 @@ module.exports = (client) => {
     if (serverRow) return; // server already exist
 
     await new Promise((resolve, reject) => {
-      client.database.run("INSERT INTO Server VALUES (?, 1, 1, 1, 1, 'null', 0, 0, 0, 0, 0, 0)", interaction.guild.id, (err) => {
+      client.database.run("INSERT INTO Server VALUES (?, 1, 1, 1, 1, 1, 'null', 0, 0, 0, 0, 0, 0)", interaction.guild.id, (err) => {
         if (err) reject(err);
         resolve();
       });

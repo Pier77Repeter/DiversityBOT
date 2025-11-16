@@ -1,9 +1,25 @@
 const { EmbedBuilder } = require("discord.js");
+const configChecker = require("../../utils/configChecker");
 
 module.exports = {
   name: "lxpb",
   description: "Shows the server XP leaderboard",
   async execute(client, message, args) {
+    const embed = new EmbedBuilder();
+
+    const isLevelingEnabled = await configChecker(client, message, "levelingCmd");
+    if (isLevelingEnabled == null) return;
+
+    if (isLevelingEnabled == 0) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Leveling commands are off! Type **d!setup leveling** to enable them");
+
+      try {
+        return await message.reply({ embeds: [embed] });
+      } catch (error) {
+        return;
+      }
+    }
+
     const rows = await new Promise((resolve, reject) => {
       // using '.all()' because we get more than 1 row
       client.database.all("SELECT userId, level FROM User WHERE serverId = ? ORDER BY level DESC LIMIT 10", message.guild.id, (err, rows) => {
@@ -12,7 +28,7 @@ module.exports = {
       });
     });
 
-    const embed = new EmbedBuilder().setColor(0x00cccc);
+    embed.setColor(0x00cccc);
 
     if (!rows) {
       embed.setTitle("Nobody has XP").setDescription("Empty...").setFooter({ text: "Make some of your members chat" });

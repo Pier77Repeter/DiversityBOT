@@ -5,10 +5,14 @@ module.exports = {
 
   async execute(client, interaction) {
     const row = await new Promise((resolve, reject) => {
-      client.database.get("SELECT modCmd, musiCmd, eventCmd, communityCmd, modLogChannel FROM Server WHERE serverId = ?", interaction.guild.id, (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
+      client.database.get(
+        "SELECT modCmd, musiCmd, eventCmd, communityCmd, levelingCmd, modLogChannel FROM Server WHERE serverId = ?",
+        interaction.guild.id,
+        (err, row) => {
+          if (err) reject(err);
+          else resolve(row);
+        }
+      );
     });
 
     const embed = new EmbedBuilder();
@@ -78,6 +82,18 @@ module.exports = {
       embed.addFields({
         name: "🌍 Community commands",
         value: "❌ Community commands are: **NOT ACTIVE**",
+      });
+    }
+
+    if (row.levelingCmd) {
+      embed.addFields({
+        name: "🏆 Leveling commands",
+        value: "✅ Leveling commands are: **ACTIVE**",
+      });
+    } else {
+      embed.addFields({
+        name: "🏆 Leveling commands",
+        value: "❌ Leveling commands are: **NOT ACTIVE**",
       });
     }
 

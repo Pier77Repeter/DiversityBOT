@@ -35,7 +35,7 @@ module.exports = {
     await new Promise((resolve, reject) => {
       client.database.serialize(() => {
         client.database.run(
-          "CREATE TABLE IF NOT EXISTS Server (serverId VARCHAR(20) NOT NULL PRIMARY KEY, modCmd BOOLEAN, musiCmd BOOLEAN, eventCmd BOOLEAN, communityCmd BOOLEAN, modLogChannel VARCHAR(20), playCooldown INT, imageCooldown INT, hmCooldown INT, jmCooldown INT, cannyCooldown INT, uncannyCooldown INT);",
+          "CREATE TABLE IF NOT EXISTS Server (serverId VARCHAR(20) NOT NULL PRIMARY KEY, modCmd BOOLEAN, musiCmd BOOLEAN, eventCmd BOOLEAN, communityCmd BOOLEAN, levelingCmd BOOLEAN, modLogChannel VARCHAR(20), playCooldown INT, imageCooldown INT, hmCooldown INT, jmCooldown INT, cannyCooldown INT, uncannyCooldown INT);",
           (err) => {
             if (err) {
               logger.error("Error building database in 'Server' table", err);

@@ -21,6 +21,16 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
     }
   }
 
+  embed.setColor(0xffcc66).setTitle("👨‍🍳 Cooking the image, please wait...");
+
+  var sentMessage;
+
+  try {
+    sentMessage = await message.reply({ embeds: [embed] });
+  } catch (error) {
+    return;
+  }
+
   const attachment = new AttachmentBuilder();
   const avatar = message.mentions.members.first()
     ? message.mentions.members.first().user.displayAvatarURL({ extension: "png" })
@@ -359,7 +369,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
   // i dont want to rewrite everytime this piece of code
   async function sendMessage() {
     try {
-      return await message.reply({ files: [attachment] });
+      return await sentMessage.edit({ files: [attachment], embeds: [] });
     } catch (error) {
       return;
     }

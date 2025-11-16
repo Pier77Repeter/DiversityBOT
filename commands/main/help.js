@@ -72,7 +72,7 @@ module.exports = {
           "Important commands: **d!help**, **/help**",
           "More commands will come soon. Please, be patient ;)",
           "", // for jumping down 2 times
-          "Bot current version: **2.0.3**",
+          "Bot current version: **2.0.4**",
           "Support me by **joining in here: https://discord.gg/KxadTdz**",
         ].join("\n")
       )

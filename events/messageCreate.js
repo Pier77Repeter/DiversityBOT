@@ -2,6 +2,7 @@ const { PermissionsBitField, Events, EmbedBuilder, AttachmentBuilder } = require
 const listsGetRandomItem = require("../utils/listsGetRandomItem");
 const cooldownManager = require("../utils/cooldownManager");
 const mathRandomInt = require("../utils/mathRandomInt");
+const configChecker = require("../utils/configChecker");
 const logger = require("../logger")("MessageCreate");
 const loader = require("../loader");
 
@@ -285,7 +286,7 @@ module.exports = (client) => {
     if (serverRow) return; // server already exist
 
     await new Promise((resolve, reject) => {
-      client.database.run("INSERT INTO Server VALUES (?, 1, 1, 1, 1, 'null', 0, 0, 0, 0, 0, 0)", message.guild.id, (err) => {
+      client.database.run("INSERT INTO Server VALUES (?, 1, 1, 1, 1, 1, 'null', 0, 0, 0, 0, 0, 0)", message.guild.id, (err) => {
         if (err) reject(err);
         resolve();
       });
@@ -306,53 +307,57 @@ module.exports = (client) => {
       );
     });
 
+    const isLevelingEnabled = await configChecker(client, message, "levelingCmd");
+
     const embed = new EmbedBuilder();
 
     // XP UPDATING SECTION, working with data: xp, nextXp, level
-    await new Promise((resolve, reject) => {
-      client.database.run("UPDATE User SET xp = xp + 1 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
-
-    // check if user can progress to the next level
-    if (userRow.xp >= userRow.nextXp) {
+    if (isLevelingEnabled) {
       await new Promise((resolve, reject) => {
-        client.database.serialize(() => {
-          client.database.run("UPDATE User SET xp = 0 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
-            if (err) reject(err);
-            else resolve();
-          });
-
-          client.database.run("UPDATE User SET nextXp = nextXp + 100 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
-            if (err) reject(err);
-            else resolve();
-          });
-
-          client.database.run("UPDATE User SET level = level + 1 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
-            if (err) reject(err);
-            else resolve();
-          });
+        client.database.run("UPDATE User SET xp = xp + 1 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
+          if (err) reject(err);
+          else resolve();
         });
       });
 
-      const imageFile = new AttachmentBuilder("./media/levelUp.png");
+      // check if user can progress to the next level
+      if (userRow.xp >= userRow.nextXp) {
+        await new Promise((resolve, reject) => {
+          client.database.serialize(() => {
+            client.database.run("UPDATE User SET xp = 0 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
+              if (err) reject(err);
+              else resolve();
+            });
 
-      embed
-        .setColor(0xffcc00)
-        .setTitle("⬆️ Level up")
-        .setDescription(["Your new level: **" + (userRow.level + 1) + "**", "XP for next level: **" + (userRow.nextXp + 100) + "**"].join("\n"))
-        .setThumbnail("attachment://levelUp.png")
-        .setFooter({
-          text: message.author.username,
-          iconURL: message.author.displayAvatarURL(),
+            client.database.run("UPDATE User SET nextXp = nextXp + 100 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
+              if (err) reject(err);
+              else resolve();
+            });
+
+            client.database.run("UPDATE User SET level = level + 1 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
+              if (err) reject(err);
+              else resolve();
+            });
+          });
         });
 
-      try {
-        await message.reply({ embeds: [embed], files: [imageFile] });
-      } catch (error) {
-        // contiue to update the rest of the data
+        const imageFile = new AttachmentBuilder("./media/levelUp.png");
+
+        embed
+          .setColor(0xffcc00)
+          .setTitle("⬆️ Level up")
+          .setDescription(["Your new level: **" + (userRow.level + 1) + "**", "XP for next level: **" + (userRow.nextXp + 100) + "**"].join("\n"))
+          .setThumbnail("attachment://levelUp.png")
+          .setFooter({
+            text: message.author.username,
+            iconURL: message.author.displayAvatarURL(),
+          });
+
+        try {
+          await message.reply({ embeds: [embed], files: [imageFile] });
+        } catch (error) {
+          // contiue to update the rest of the data
+        }
       }
     }
 

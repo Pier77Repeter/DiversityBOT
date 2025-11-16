@@ -4,10 +4,10 @@ const logger = require("../logger")("ConfigChecker");
 // this is very useful since it's gonna save tons of lines and time when checking configs
 module.exports = async function configChecker(client, message, configName) {
   // checking for valid config name in db
-  const validConfigNames = ["modCmd", "musiCmd", "eventCmd", "communityCmd"]; // may add more
+  const validConfigNames = ["modCmd", "musiCmd", "eventCmd", "communityCmd", "levelingCmd"]; // may add more
   if (!validConfigNames.includes(configName)) {
     // error will be disaplyed with the name of the command
-    throw "Invalid config name, must be 'modCmd', 'musiCmd', 'eventCmd' or 'communityCmd'";
+    throw "Invalid config name, must be 'modCmd', 'musiCmd', 'eventCmd', 'communityCmd' or 'levelingCmd'";
   }
 
   try {

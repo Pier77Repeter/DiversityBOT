@@ -17,7 +17,10 @@ module.exports = {
     }
 
     if (!args[0]) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Specify one of the following names: **mod**, **music**, **event**, **community**");
+      embed
+        .setColor(0xff0000)
+        .setTitle("❌ Error")
+        .setDescription("Specify one of the following names: **mod**, **music**, **event**, **community**, **leveling**");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -202,8 +205,54 @@ module.exports = {
           return;
         }
 
+      case "leveling":
+        await new Promise((resolve, reject) => {
+          client.database.run("UPDATE Server SET levelingCmd = NOT levelingCmd WHERE serverId = ?", message.guild.id, (err) => {
+            if (err) reject(err);
+            else resolve();
+          });
+        });
+
+        row = await new Promise((resolve, reject) => {
+          client.database.get("SELECT levelingCmd FROM Server WHERE serverId = ?", message.guild.id, (err, row) => {
+            if (err) reject(err);
+            else resolve(row);
+          });
+        });
+
+        if (!row) {
+          embed
+            .setColor(0xff0000)
+            .setTitle("❌ Error")
+            .setDescription("Failed to update server config, please **report this error with your server ID**")
+            .addFields({ name: "Submit here", value: "https://discord.gg/KxadTdz" });
+
+          try {
+            return await message.reply({ embeds: [embed] });
+          } catch (error) {
+            return;
+          }
+        }
+
+        embed.setColor(0x33ff33).setTitle("✅ Configuration updated");
+
+        if (row.levelingCmd) {
+          embed.setDescription("🏆 Leveling commands are now: **ON**");
+        } else {
+          embed.setDescription("🏆 Leveling commands are now: **OFF**");
+        }
+
+        try {
+          return await message.reply({ embeds: [embed] });
+        } catch (error) {
+          return;
+        }
+
       default:
-        embed.setColor(0xff0000).setTitle("❌ Error").setDescription("That config dosen't exist, choose between: **mod**, **music**, **event**, **community**");
+        embed
+          .setColor(0xff0000)
+          .setTitle("❌ Error")
+          .setDescription("That config dosen't exist, choose between: **mod**, **music**, **event**, **community**, **leveling**");
 
         try {
           return await message.reply({ embeds: [embed] });
