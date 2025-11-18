@@ -7,9 +7,20 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setColor(0x339999)
       .setTitle("🪩 Ongoing event: None")
-      .setDescription(["There are currently no ongoing events, **check the Discord for more https://discord.gg/KxadTdz**"].join("\n"))
+      .setDescription(
+        [
+          "⛄Event commands",
+          "",
+          "**d!tree or d!tree <@user>** See your Christmas tree",
+          "**d!forest** Go in the forest to get some materials for the tree",
+          "**d!helpsanta** Help Santa to get golden coins",
+          "**d!materials** Shows all your materials that you got",
+          "**d!decoshop** Shows the shop where you can buy decorations for your tree",
+          "**d!buydeco <decoration name>** Buy a decoration (Automatically apply to the tree)",
+        ].join("\n")
+      )
       .setFooter({
-        text: "Sadly, no events at the moment",
+        text: "Christmas season event will end on the 25th of December",
       });
 
     try {

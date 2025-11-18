@@ -64,10 +64,8 @@ module.exports = {
           }
         );
 
-        /*
-        Note: This is inactive at the moment, will be used when Christmas arrives
         client.database.run(
-          "CREATE TABLE IF NOT EXISTS Event (serverId VARCHAR(20) NOT NULL, userId VARCHAR(20) NOT NULL, treeLevel INT, twigs INT, leaves INT, goldenCoins INT, decoid1 BOOLEAN, decoid2 BOOLEAN, decoid3 BOOLEAN, decoid4 BOOLEAN, PRIMARY KEY (serverId, userId), FOREIGN KEY(serverId) REFERENCES Server(serverId) ON DELETE CASCADE);",
+          "CREATE TABLE IF NOT EXISTS Event (serverId VARCHAR(20) NOT NULL, userId VARCHAR(20) NOT NULL, treeLevel INT, twigs INT, leaves INT, goldenCoins INT, decoId1 BOOLEAN, decoId2 BOOLEAN, decoId3 BOOLEAN, decoId4 BOOLEAN, forestCooldown INT, helpsantaCooldown INT, PRIMARY KEY (serverId, userId), FOREIGN KEY(serverId) REFERENCES Server(serverId) ON DELETE CASCADE);",
           (err) => {
             if (err) {
               logger.error("Error building database in 'Event' table", err);
@@ -75,7 +73,6 @@ module.exports = {
             }
           }
         );
-        */
 
         resolve();
       });

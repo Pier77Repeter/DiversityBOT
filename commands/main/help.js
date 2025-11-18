@@ -84,7 +84,7 @@ module.exports = {
           inline: false,
         },
         {
-          name: "🎉 Ongoing event: None",
+          name: "🎉 Ongoing event: Christmas Season 🎅",
           value: "More info about events in the Discord server!",
           inline: false,
         }
