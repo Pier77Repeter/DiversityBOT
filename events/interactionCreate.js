@@ -75,6 +75,11 @@ module.exports = (client) => {
       });
     }
 
+    // last but not least, event data, put this for the same reason as this ^
+    await userEventDataChecker(interaction).catch((err) => {
+      return logger.error("UserEventDataChecker threw an error, look here", err);
+    });
+
     // ready to log for the specific slash command
     logger.setFileName("InteractionCreate/" + interaction.commandName + ".js");
 
@@ -140,5 +145,24 @@ module.exports = (client) => {
         resolve();
       });
     });
+  }
+
+  // for bot events data
+  async function userEventDataChecker(interaction) {
+    row = await new Promise((resolve, reject) => {
+      client.database.get("SELECT 1 FROM Event WHERE serverId = ? AND userId = ?", [interaction.guild.id, interaction.user.id], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
+    });
+
+    if (!row) {
+      await new Promise((resolve, reject) => {
+        client.database.run("INSERT INTO Event VALUES (?, ?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);", [interaction.guild.id, interaction.user.id], (err) => {
+          if (err) reject(err);
+          else resolve();
+        });
+      });
+    }
   }
 };

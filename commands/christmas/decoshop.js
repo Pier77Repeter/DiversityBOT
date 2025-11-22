@@ -27,22 +27,22 @@ module.exports = {
       .addFields([
         {
           name: "🌟 Christmas star",
-          value: "Item cost: **300 golden coins**",
+          value: "Item cost: **300 🪙**",
           inline: false,
         },
         {
           name: "🕯️ Candles",
-          value: "Item cost: **100 golden coins**",
+          value: "Item cost: **100 🪙**",
           inline: false,
         },
         {
           name: "🔴 Christmas balls (multi-color)",
-          value: "Item cost: **50 golden coins**",
+          value: "Item cost: **50 🪙**",
           inline: false,
         },
         {
           name: "🟥 Tree decorations (multi-color)",
-          value: "Item cost: **50 golden coins**",
+          value: "Item cost: **50 🪙**",
           inline: false,
         },
       ])

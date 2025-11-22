@@ -168,6 +168,11 @@ module.exports = (client) => {
       });
     }
 
+    // last but not least, event data, put this for the same reason as this ^
+    await userEventDataChecker(message).catch((err) => {
+      return logger.error("UserEventDataChecker threw an error, look here", err);
+    });
+
     // split the message into command and arguments
     const args = message.content.slice(botPrefix.length).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
@@ -443,6 +448,25 @@ module.exports = (client) => {
           // do nothing...
         }
       }
+    }
+  }
+
+  // for bot events data
+  async function userEventDataChecker(message) {
+    row = await new Promise((resolve, reject) => {
+      client.database.get("SELECT 1 FROM Event WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
+        if (err) reject(err);
+        else resolve(row);
+      });
+    });
+
+    if (!row) {
+      await new Promise((resolve, reject) => {
+        client.database.run("INSERT INTO Event VALUES (?, ?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);", [message.guild.id, message.author.id], (err) => {
+          if (err) reject(err);
+          else resolve();
+        });
+      });
     }
   }
 };
