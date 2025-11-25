@@ -28,7 +28,7 @@ module.exports = {
     }
 
     if (fishes.fishId1) {
-      embed.addFields({ name: "🐟 " + fishes.fishId1Count + " Classic fish", value: "Fish ID: **f1**" });
+      embed.addFields({ name: "🐟 " + fishes.fishId1Count + " Fish", value: "Fish ID: **f1**" });
     }
     if (fishes.fishId2) {
       embed.addFields({ name: "🐠 " + fishes.fishId2Count + " Tropical fish", value: "Fish ID: **f2**" });

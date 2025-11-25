@@ -34,7 +34,7 @@ module.exports = {
     });
 
     if (!row) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Failed to load your materials list from the database");
+      embed.setColor(0xff0000).setTitle("😥 Sad").setDescription("It seems like the user dosen't know i exist and won't get the materials for his tree");
 
       try {
         return await message.reply({ embeds: [embed] });

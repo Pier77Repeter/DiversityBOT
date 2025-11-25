@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ComponentType, MessageFlags, ButtonStyle } = require("discord.js");
 const configChecker = require("../../utils/configChecker");
 
 module.exports = {
@@ -24,7 +24,7 @@ module.exports = {
 
     const row = await new Promise((resolve, reject) => {
       client.database.get(
-        "SELECT treeLevel, twigs, leaves, decoid1, decoid2, decoid3, decoid4 FROM Event WHERE serverId = ? AND userId = ?",
+        "SELECT treeLevel, twigs, leaves, decoId1, decoId2, decoId3, decoId4 FROM Event WHERE serverId = ? AND userId = ?",
         [message.guild.id, user.id],
         (err, row) => {
           if (err) reject(err);
@@ -34,7 +34,7 @@ module.exports = {
     });
 
     if (!row) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Failed to load your Christmas tree from the database");
+      embed.setColor(0xff0000).setTitle("😥 Very very sad").setDescription("It seems like the user dosen't know i exist and won't build his tree");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -42,6 +42,9 @@ module.exports = {
         return;
       }
     }
+
+    const btnUpgrade = new ButtonBuilder().setCustomId("btn-tree-btnUpgrade").setLabel("Upgrade tree").setStyle("Primary");
+    const actionRow = new ActionRowBuilder().addComponents(btnUpgrade);
 
     switch (row.treeLevel) {
       case 0:
@@ -154,11 +157,11 @@ module.exports = {
           ["⬛", "⬛", "⬛", "⬛", "🟫", "🟫", "🟫", "🟫", "🟫", "⬛", "⬛", "⬛", "⬛"],
         ];
 
-        if (row.decoid1) {
+        if (row.decoId1) {
           matrixForDecoratedTree[0][6] = "🌟";
         }
 
-        if (row.decoid2) {
+        if (row.decoId2) {
           matrixForDecoratedTree[3][3] = "🕯️";
           matrixForDecoratedTree[3][9] = "🕯️";
           matrixForDecoratedTree[5][2] = "🕯️";
@@ -167,7 +170,7 @@ module.exports = {
           matrixForDecoratedTree[7][11] = "🕯️";
         }
 
-        if (row.decoid3) {
+        if (row.decoId3) {
           matrixForDecoratedTree[3][7] = "🔴";
           matrixForDecoratedTree[4][5] = "🟣";
           matrixForDecoratedTree[4][8] = "🔵";
@@ -178,7 +181,7 @@ module.exports = {
           matrixForDecoratedTree[8][7] = "🟡";
         }
 
-        if (row.decoid4) {
+        if (row.decoId4) {
           matrixForDecoratedTree[2][5] = "🟪";
           matrixForDecoratedTree[2][6] = "🟪";
           matrixForDecoratedTree[3][4] = "🟧";
@@ -212,13 +215,273 @@ module.exports = {
           .setColor(0x339999)
           .setTitle("🎄 " + user.username + "'s Christmas tree")
           .setDescription(embedDescription);
+
+        btnUpgrade.setLabel("Upgrade tree").setStyle("Secondary").setDisabled(true);
         break;
     }
 
+    var sentMessage;
+
     try {
-      return await message.reply({ embeds: [embed] });
+      sentMessage = await message.reply({ embeds: [embed], components: [actionRow] });
     } catch (error) {
       return;
     }
+
+    const collector = sentMessage.createMessageComponentCollector({
+      componentType: ComponentType.Button,
+      time: 15_000,
+    });
+
+    collector.on("collect", async (btnInteraction) => {
+      if (btnInteraction.user.id !== message.author.id) {
+        try {
+          return await btnInteraction.reply({
+            content: "This upgrade isn't for you bruh",
+            flags: MessageFlags.Ephemeral,
+          });
+        } catch (error) {
+          return;
+        }
+      }
+
+      if (btnInteraction.customId == "btn-tree-btnUpgrade") {
+        switch (row.treeLevel) {
+          case 0:
+            if (row.twigs < 50 || row.leaves < 50) {
+              embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need at least **50 twigs** and **50 leaves** to upgrade your tree");
+
+              btnUpgrade.setStyle(ButtonStyle.Secondary).setDisabled(true);
+
+              try {
+                return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
+              } catch (error) {
+                return;
+              }
+            }
+
+            await new Promise((resolve, reject) => {
+              client.database.run(
+                "UPDATE Event SET treeLevel = 1, twigs = twigs - 50, leaves = leaves - 50 WHERE serverId = ? AND userId = ?",
+                [message.guild.id, message.author.id],
+                (err) => {
+                  if (err) reject(err);
+                  else resolve();
+                }
+              );
+            });
+
+            embed
+              .setColor(0x339999)
+              .setTitle("🎄 " + user.username + "'s tree got upgraded!")
+              .setDescription(
+                `⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛`
+              )
+              .setFooter({ text: "Christmas tree level 1/5" });
+
+            break;
+          case 1:
+            if (row.twigs < 100 || row.leaves < 100) {
+              embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need at least **100 twigs** and **100 leaves** to upgrade your tree");
+
+              btnUpgrade.setStyle(ButtonStyle.Secondary).setDisabled(true);
+
+              try {
+                return await sentMessage.edit({ embeds: [embed], components: [actionRow] });
+              } catch (error) {
+                return;
+              }
+            }
+
+            await new Promise((resolve, reject) => {
+              client.database.run(
+                "UPDATE Event SET treeLevel = 2, twigs = twigs - 100, leaves = leaves - 100 WHERE serverId = ? AND userId = ?",
+                [message.guild.id, message.author.id],
+                (err) => {
+                  if (err) reject(err);
+                  else resolve();
+                }
+              );
+            });
+
+            embed
+              .setColor(0x339999)
+              .setTitle("🎄 " + user.username + "'s tree got upgraded!")
+              .setDescription(
+                `⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛🟫🟫🟫🟫🟫🟫🟫⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛`
+              )
+              .setFooter({ text: "Christmas tree level 2/5" });
+
+            break;
+          case 2:
+            if (row.twigs < 150 || row.leaves < 200) {
+              embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need at least **150 twigs** and **200 leaves** to upgrade your tree");
+
+              btnUpgrade.setStyle(ButtonStyle.Secondary).setDisabled(true);
+
+              try {
+                return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
+              } catch (error) {
+                return;
+              }
+            }
+
+            await new Promise((resolve, reject) => {
+              client.database.run(
+                "UPDATE Event SET treeLevel = 3, twigs = twigs - 150, leaves = leaves - 200 WHERE serverId = ? AND userId = ?",
+                [message.guild.id, message.author.id],
+                (err) => {
+                  if (err) reject(err);
+                  else resolve();
+                }
+              );
+            });
+
+            embed
+              .setColor(0x339999)
+              .setTitle("🎄 " + user.username + "'s tree got upgraded!")
+              .setDescription(
+                `⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛🟫🟫🟫⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛🟫🟫🟫🟫🟫🟫🟫⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛`
+              )
+              .setFooter({ text: "Christmas tree level 3/5" });
+
+            break;
+          case 3:
+            if (row.twigs < 200 || row.leaves < 300) {
+              embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need at least **200 twigs** and **300 leaves** to upgrade your tree");
+
+              btnUpgrade.setStyle(ButtonStyle.Secondary).setDisabled(true);
+
+              try {
+                return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
+              } catch (error) {
+                return;
+              }
+            }
+
+            await new Promise((resolve, reject) => {
+              client.database.run(
+                "UPDATE Event SET treeLevel = 4, twigs = twigs - 200, leaves = leaves - 300 WHERE serverId = ? AND userId = ?",
+                [message.guild.id, message.author.id],
+                (err) => {
+                  if (err) reject(err);
+                  else resolve();
+                }
+              );
+            });
+
+            embed
+              .setColor(0x339999)
+              .setTitle("🎄 " + user.username + "'s tree got upgraded!")
+              .setDescription(
+                `⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛🟩⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛🟩🟫🟩⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛🟩🟫🟫🟫🟩⬛⬛⬛⬛
+                ⬛⬛⬛🟩🟩🟩🟫🟩🟩🟩⬛⬛⬛
+                ⬛⬛⬛🟩🟫🟫🟫🟫🟫🟩⬛⬛⬛
+                ⬛⬛🟩🟩🟩🟩🟫🟩🟩🟩🟩⬛⬛
+                ⬛⬛🟩🟫🟫🟫🟫🟫🟫🟫🟩⬛⬛
+                ⬛🟩🟩🟩🟩🟩🟫🟩🟩🟩🟩🟩⬛
+                ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛`
+              )
+              .setFooter({ text: "Christmas tree level 4/5" });
+
+            break;
+          case 4:
+            if (row.twigs < 300 || row.leaves < 500) {
+              embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need at least **300 twigs** and **500 leaves** to upgrade your tree");
+
+              btnUpgrade.setStyle(ButtonStyle.Secondary).setDisabled(true);
+
+              try {
+                return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
+              } catch (error) {
+                return;
+              }
+            }
+
+            await new Promise((resolve, reject) => {
+              client.database.run(
+                "UPDATE Event SET treeLevel = 5, twigs = twigs - 300, leaves = leaves - 500 WHERE serverId = ? AND userId = ?",
+                [message.guild.id, message.author.id],
+                (err) => {
+                  if (err) reject(err);
+                  else resolve();
+                }
+              );
+            });
+
+            embed
+              .setColor(0x339999)
+              .setTitle("🎄🎄🎄 " + user.username + "'s tree got MAXED!")
+              .setDescription(
+                `⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛⬛🟩⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛⬛🟩🟩🟩⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛🟩🟩🟩🟩🟩⬛⬛⬛⬛
+                ⬛⬛⬛🟩🟩🟩🟩🟩🟩🟩⬛⬛⬛
+                ⬛⬛⬛🟩🟩🟩🟩🟩🟩🟩⬛⬛⬛
+                ⬛⬛🟩🟩🟩🟩🟩🟩🟩🟩🟩⬛⬛
+                ⬛⬛🟩🟩🟩🟩🟩🟩🟩🟩🟩⬛⬛
+                ⬛🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩⬛
+                ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
+                ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛`
+              )
+              .setFooter({ text: "Christmas has been completed!" });
+
+            break;
+        }
+
+        btnUpgrade.setStyle(ButtonStyle.Secondary).setDisabled(true);
+
+        try {
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
+        } catch (error) {
+          return;
+        }
+      }
+    });
+
+    collector.on("end", async () => {
+      btnUpgrade.setStyle(ButtonStyle.Secondary).setDisabled(true);
+
+      try {
+        return await sentMessage.edit({ embeds: [embed], components: [actionRow] });
+      } catch (error) {
+        return;
+      }
+    });
   },
 };
