@@ -173,7 +173,7 @@ module.exports = {
         embed
           .setColor(0xff0000)
           .setTitle("❌ Error")
-          .setDescription("Unknown decoration, chose between: **Christmas star**, **Candles**, **Christmas balls**, **Tree decorations**");
+          .setDescription("Unknown decoration, choose between: **Christmas star**, **Candles**, **Christmas balls**, **Tree decorations**");
 
         try {
           return await message.reply({ embeds: [embed] });

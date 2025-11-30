@@ -65,9 +65,9 @@ module.exports = {
         embed.setColor(0x33ff33).setTitle("✅ Configuration updated");
 
         if (row.modCmd) {
-          embed.setDescription("🔨 Moderation commands are now: **ON**");
+          embed.setDescription("🔨 Moderation commands are now **ACTIVE**");
         } else {
-          embed.setDescription("🔨 Moderation commands are now: **OFF**");
+          embed.setDescription("🔨 Moderation commands are now **NOT ACTIVE**");
         }
 
         try {
@@ -108,9 +108,9 @@ module.exports = {
         embed.setColor(0x33ff33).setTitle("✅ Configuration updated");
 
         if (row.musiCmd) {
-          embed.setDescription("🎵 Music commands are now: **ON**");
+          embed.setDescription("🎵 Music commands are now **ACTIVE**");
         } else {
-          embed.setDescription("🎵 Music commands are now: **OFF**");
+          embed.setDescription("🎵 Music commands are now **NOT ACTIVE**");
         }
 
         try {
@@ -151,9 +151,9 @@ module.exports = {
         embed.setColor(0x33ff33).setTitle("✅ Configuration updated");
 
         if (row.eventCmd) {
-          embed.setDescription("🎉 Events commands are now: **ON**");
+          embed.setDescription("🎉 Events commands are now **ACTIVE**");
         } else {
-          embed.setDescription("🎉 Events commands are now: **OFF**");
+          embed.setDescription("🎉 Events commands are now **NOT ACTIVE**");
         }
 
         try {
@@ -194,9 +194,9 @@ module.exports = {
         embed.setColor(0x33ff33).setTitle("✅ Configuration updated");
 
         if (row.communityCmd) {
-          embed.setDescription("🌍 Community commands are now: **ON**");
+          embed.setDescription("🌍 Community commands are now **ACTIVE**");
         } else {
-          embed.setDescription("🌍 Community commands are now: **OFF**");
+          embed.setDescription("🌍 Community commands are now **NOT ACTIVE**");
         }
 
         try {
@@ -237,9 +237,9 @@ module.exports = {
         embed.setColor(0x33ff33).setTitle("✅ Configuration updated");
 
         if (row.levelingCmd) {
-          embed.setDescription("🏆 Leveling commands are now: **ON**");
+          embed.setDescription("🏆 Leveling commands are now **ACTIVE**");
         } else {
-          embed.setDescription("🏆 Leveling commands are now: **OFF**");
+          embed.setDescription("🏆 Leveling commands are now **NOT ACTIVE**");
         }
 
         try {

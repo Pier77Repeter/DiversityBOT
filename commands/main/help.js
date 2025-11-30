@@ -85,7 +85,7 @@ module.exports = {
         },
         {
           name: "🎉 Ongoing event: Christmas Season 🎅",
-          value: "More info about events in the Discord server!",
+          value: "Type d!event or /event to see more details!",
           inline: false,
         }
       )
@@ -367,7 +367,7 @@ module.exports = {
               .setDescription(
                 [
                   "**This section will often change due to new commands being, added, changed or removed**",
-                  "You can suggest your own command at: https://discord.gg/KxadTdz",
+                  "You can suggest your own command at https://discord.gg/KxadTdz",
                   "",
                   "**d!hm** - Hausemaster moment",
                   "**d!jm** - Java moment",

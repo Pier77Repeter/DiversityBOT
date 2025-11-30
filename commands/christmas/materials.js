@@ -45,7 +45,7 @@ module.exports = {
 
     embed
       .setColor(0x33ccff)
-      .setTitle("🛠️" + user.username + "'smaterials")
+      .setTitle("🛠️ " + user.username + "'smaterials")
       .setDescription("You have nothing, go in the forest or help Santa to collect some");
 
     // in case the user has at least 1 item, remove the description that says "you have nothing"

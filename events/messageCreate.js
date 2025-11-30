@@ -18,7 +18,7 @@ module.exports = (client) => {
     if (!message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.SendMessages)) return;
 
     // check if bot gets pinged, not when you use a command like 'd!stats @DiversityBOT'
-    if (message.mentions.has(client.user) && !message.content.toLowerCase().startsWith(botPrefix)) {
+    if (!message.content.toLowerCase().startsWith(botPrefix) && message.content.includes("<@918089727117242409>")) {
       try {
         await message.reply({
           content: listsGetRandomItem(

@@ -37,6 +37,15 @@ module.exports = {
       }
     }
 
+    // some subs are privated
+    if (memeData.code == 403) {
+      try {
+        return await message.reply("Subreddit is set to private, i can't get anything from there");
+      } catch (error) {
+        return;
+      }
+    }
+
     if (memeData.nsfw) {
       imageFile.setFile("./media/arnoldSchwarzeneggerStopMeme.jpg");
 

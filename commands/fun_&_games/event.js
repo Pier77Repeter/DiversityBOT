@@ -6,7 +6,7 @@ module.exports = {
   async execute(client, message, args) {
     const embed = new EmbedBuilder()
       .setColor(0x339999)
-      .setTitle("🪩 Ongoing event: None")
+      .setTitle("🪩 Ongoing event: Christmas season 🎄🎅")
       .setDescription(
         [
           "⛄Event commands",

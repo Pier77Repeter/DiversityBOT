@@ -27,7 +27,7 @@ module.exports = {
       if (member) {
         embed.setFooter({ text: "Sent by " + member.username, iconURL: member.displayAvatarURL() });
       } else {
-        embed.setFooter({ text: "Waiting to catch..." });
+        embed.setFooter({ text: "Waiting to catch a member..." });
       }
 
       try {

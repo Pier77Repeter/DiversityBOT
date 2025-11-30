@@ -122,7 +122,7 @@ client.once(Events.ClientReady, (readyClient) => {
     { name: "DiversityCraft", type: ActivityType.Playing },
     { name: client.guilds.cache.size + " servers!", type: ActivityType.Watching },
     { name: "Version 2.0??? WOW!!!", type: ActivityType.Playing },
-    // { name: "It's Christmas season boyz 🎅🎄", type: ActivityType.Playing },
+    { name: "It's Christmas season boyz 🎅🎄", type: ActivityType.Playing },
     {
       name: listsGetRandomItem(
         [

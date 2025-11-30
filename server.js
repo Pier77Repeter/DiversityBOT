@@ -2,7 +2,7 @@ const logger = require("./logger")("Server");
 const express = require("express");
 const server = express();
 
-const REDIRECT_URL = "https://diversitycraft.onrender.com/";
+const REDIRECT_URL = "https://www.diversitycraft.org/";
 
 function keepAlive() {
   server.all("/", (req, res) => {
