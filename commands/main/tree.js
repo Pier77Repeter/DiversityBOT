@@ -34,7 +34,8 @@ module.exports = {
     });
 
     if (!row) {
-      embed.setColor(0xff0000).setTitle("😥 Very very sad").setDescription("It seems like the user dosen't know i exist and won't build his tree");
+      //embed.setColor(0xff0000).setTitle("😥 Very very sad").setDescription("It seems like the user dosen't know i exist and won't build his tree");
+      embed.setColor(0xff0000).setTitle("😥 Very very sad").setDescription("It seems like the user dosen't know i exist and didn't build his tree!");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -43,6 +44,193 @@ module.exports = {
       }
     }
 
+    switch (row.treeLevel) {
+      case 0:
+        embed
+          .setColor(0x339999)
+          .setTitle("🎄 " + user.username + "'s Christmas tree...")
+          .setDescription(
+            `⬜⬛⬛⬛⬜⬛⬛⬛⬛⬛⬜⬛⬛
+            ⬛⬛⬛⬛⬛⬛⬛⬜⬛⬛⬛⬛⬛
+            ⬛⬜⬛⬛⬜⬛⬛⬛⬛⬜⬛⬛⬛
+            ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+            ⬛⬛⬛⬛⬛⬛⬜⬛⬛⬛⬛⬛⬛
+            ⬛⬛⬛⬜⬛⬛⬛⬛⬛⬛⬛⬛⬛
+            ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬜⬛⬛⬛
+            ⬛⬛⬛⬛⬛⬛⬜⬛⬛⬛⬛⬛⬜
+            ⬜⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+            ⬛⬛⬜⬜⬜⬛⬛⬛⬛⬛⬜⬛⬛
+            ⬜⬛⬜⬜⬜⬜⬛⬛⬜⬜⬜⬜⬛`
+          )
+          .setFooter({ text: "Didn't even start building it >:(" });
+        break;
+
+      case 1:
+        embed
+          .setColor(0x339999)
+          .setTitle("🎄 " + user.username + "'s Christmas tree")
+          .setDescription(
+            `⬛⬛⬜⬛⬛⬛⬛⬛⬜⬛⬛⬛⬜
+            ⬜⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+            ⬛⬛⬛⬛⬛⬜⬛⬛⬛⬜⬛⬛⬛
+            ⬛⬜⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+            ⬛⬛⬛⬛⬛⬜⬛⬛⬛⬛⬜⬛⬛
+            ⬛⬛⬛⬛⬛⬛⬛⬛⬜⬛⬛⬛⬛
+            ⬛⬛⬜⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+            ⬛⬛⬛⬛⬛⬛⬜⬛⬛⬛⬛⬜⬛
+            ⬛⬜⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
+            ⬛⬛⬛⬛⬜⬛🟫⬜⬜⬛⬛⬛⬜
+            ⬜⬜⬛⬛🟫🟫🟫🟫🟫⬛⬜⬜⬜`
+          )
+          .setFooter({ text: "Didn't complete the tree in time" });
+        break;
+
+      case 2:
+        embed
+          .setColor(0x339999)
+          .setTitle("🎄 " + user.username + "'s Christmas tree")
+          .setDescription(
+            `⬜⬛⬛⬜⬛⬛⬛⬛⬛⬜⬛⬛⬛
+            ⬛⬛⬛⬛⬛⬜⬛⬛⬛⬛⬛⬜⬛
+            ⬛⬛⬜⬛⬛⬛⬛⬛⬛⬜⬛⬛⬛
+            ⬛⬛⬛⬛⬛⬛⬛⬜⬛⬛⬛⬛⬜
+            ⬛⬛⬛⬛⬜⬛⬛⬛⬛⬛⬛⬛⬛
+            ⬛⬜⬛⬛⬛⬛⬛⬛⬛⬜⬛⬛⬛
+            ⬛⬛⬛⬜⬛⬛🟫⬜⬜⬛⬛⬛⬛
+            ⬛⬛⬛🟫🟫🟫🟫🟫🟫🟫⬛⬜⬛
+            ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
+            ⬛⬛⬜⬛⬛⬛🟫⬛⬜⬛⬛⬛⬛
+            ⬛⬜⬜⬛🟫🟫🟫🟫🟫⬜⬛⬜⬜`
+          )
+          .setFooter({ text: "Didn't complete the tree in time" });
+        break;
+
+      case 3:
+        embed
+          .setColor(0x339999)
+          .setTitle("🎄 " + user.username + "'s Christmas tree")
+          .setDescription(
+            `⬜⬛⬛⬛⬛⬜⬛⬛⬜⬛⬛⬛⬛
+            ⬛⬛⬛⬜⬛⬛⬛⬛⬛⬛⬛⬜⬛
+            ⬜⬛⬛⬛⬛⬜🟫⬛⬛⬜⬛⬛⬛
+            ⬛⬛⬛⬛⬛🟫🟫🟫⬛⬛⬛⬛⬛
+            ⬛⬜⬛⬛⬛⬛🟫⬛⬜⬛⬛⬛⬛
+            ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬜⬛
+            ⬛⬛⬛⬜⬜⬛🟫⬛⬛⬛⬜⬛⬛
+            ⬛⬛⬛🟫🟫🟫🟫🟫🟫🟫⬛⬛⬜
+            ⬛⬜⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
+            ⬛⬛⬛⬜⬜⬛🟫⬛⬜⬜⬜⬛⬛
+            ⬜⬜⬜⬜🟫🟫🟫🟫🟫⬜⬜⬜⬛`
+          )
+          .setFooter({ text: "Didn't complete the tree in time" });
+        break;
+
+      case 4:
+        embed
+          .setColor(0x339999)
+          .setTitle("🎄 " + user.username + "'s Christmas tree")
+          .setDescription(
+            `⬛⬜⬛⬛⬛⬛⬛⬛⬛⬜⬛⬛⬛
+            ⬛⬛⬛⬛⬛⬜🟩⬛⬛⬛⬛⬛⬜
+            ⬜⬛⬛⬛⬜🟩🟫🟩⬛⬜⬛⬛⬛
+            ⬛⬜⬛⬛🟩🟫🟫🟫🟩⬛⬛⬜⬛
+            ⬛⬛⬛🟩🟩🟩🟫🟩🟩🟩⬜⬛⬛
+            ⬛⬛⬛🟩🟫🟫🟫🟫🟫🟩⬛⬛⬜
+            ⬛⬜🟩🟩🟩🟩🟫🟩🟩🟩🟩⬛⬛
+            ⬛⬛🟩🟫🟫🟫🟫🟫🟫🟫🟩⬜⬛
+            ⬛🟩🟩🟩🟩🟩🟫🟩🟩🟩🟩🟩⬛
+            ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬜
+            ⬜⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬜⬜`
+          )
+          .setFooter({ text: "Didn't complete the tree in time" });
+        break;
+
+      case 5:
+        const matrixForDecoratedTree = [
+          ["⬜", "⬛", "⬛", "⬜", "⬛", "⬛", "⬛", "⬛", "⬛", "⬜", "⬛", "⬜", "⬛"],
+          ["⬛", "⬛", "⬛", "⬛", "⬜", "⬛", "🟩", "⬛", "⬜", "⬛", "⬛", "⬛", "⬛"],
+          ["⬛", "⬛", "⬜", "⬛", "⬛", "🟩", "🟩", "🟩", "⬛", "⬛", "⬜", "⬛", "⬜"],
+          ["⬛", "⬛", "⬛", "⬛", "🟩", "🟩", "🟩", "🟩", "🟩", "⬛", "⬛", "⬛", "⬛"],
+          ["⬛", "⬛", "⬛", "🟩", "🟩", "🟩", "🟩", "🟩", "🟩", "🟩", "⬛", "⬜", "⬛"],
+          ["⬜", "⬛", "⬛", "🟩", "🟩", "🟩", "🟩", "🟩", "🟩", "🟩", "⬛", "⬛", "⬜"],
+          ["⬛", "⬜", "🟩", "🟩", "🟩", "🟩", "🟩", "🟩", "🟩", "🟩", "🟩", "⬛", "⬛"],
+          ["⬛", "⬛", "🟩", "🟩", "🟩", "🟩", "🟩", "🟩", "🟩", "🟩", "🟩", "⬛", "⬛"],
+          ["⬛", "🟩", "🟩", "🟩", "🟩", "🟩", "🟩", "🟩", "🟩", "🟩", "🟩", "🟩", "⬛"],
+          ["⬛", "⬛", "⬛", "⬛", "⬛", "⬛", "🟫", "⬛", "⬛", "⬛", "⬛", "⬛", "⬜"],
+          ["⬜", "⬜", "⬛", "⬛", "🟫", "🟫", "🟫", "🟫", "🟫", "⬛", "⬛", "⬜", "⬛"],
+        ];
+
+        if (row.decoId1) {
+          matrixForDecoratedTree[0][6] = "🌟";
+        }
+
+        if (row.decoId2) {
+          matrixForDecoratedTree[3][3] = "🕯️";
+          matrixForDecoratedTree[3][9] = "🕯️";
+          matrixForDecoratedTree[5][2] = "🕯️";
+          matrixForDecoratedTree[5][10] = "🕯️";
+          matrixForDecoratedTree[7][1] = "🕯️";
+          matrixForDecoratedTree[7][11] = "🕯️";
+        }
+
+        if (row.decoId3) {
+          matrixForDecoratedTree[3][7] = "🔴";
+          matrixForDecoratedTree[4][5] = "🟣";
+          matrixForDecoratedTree[4][8] = "🔵";
+          matrixForDecoratedTree[6][3] = "🔴";
+          matrixForDecoratedTree[7][2] = "🟡";
+          matrixForDecoratedTree[7][9] = "🟣";
+          matrixForDecoratedTree[8][4] = "🔵";
+          matrixForDecoratedTree[8][7] = "🟡";
+        }
+
+        if (row.decoId4) {
+          matrixForDecoratedTree[2][5] = "🟪";
+          matrixForDecoratedTree[2][6] = "🟪";
+          matrixForDecoratedTree[3][4] = "🟧";
+          matrixForDecoratedTree[3][5] = "🟧";
+          matrixForDecoratedTree[4][6] = "🟧";
+          matrixForDecoratedTree[4][7] = "🟧";
+          matrixForDecoratedTree[5][4] = "🟦";
+          matrixForDecoratedTree[5][3] = "🟦";
+          matrixForDecoratedTree[5][8] = "🟧";
+          matrixForDecoratedTree[5][9] = "🟧";
+          matrixForDecoratedTree[6][5] = "🟦";
+          matrixForDecoratedTree[6][6] = "🟦";
+          matrixForDecoratedTree[6][7] = "🟥";
+          matrixForDecoratedTree[6][8] = "🟥";
+          matrixForDecoratedTree[6][9] = "🟥";
+          matrixForDecoratedTree[7][4] = "🟥";
+          matrixForDecoratedTree[7][5] = "🟥";
+          matrixForDecoratedTree[7][6] = "🟥";
+          matrixForDecoratedTree[7][8] = "🟦";
+          matrixForDecoratedTree[7][7] = "🟦";
+          matrixForDecoratedTree[8][1] = "🟥";
+          matrixForDecoratedTree[8][2] = "🟥";
+          matrixForDecoratedTree[8][3] = "🟥";
+          matrixForDecoratedTree[8][9] = "🟦";
+          matrixForDecoratedTree[8][10] = "🟦";
+        }
+
+        const embedDescription = matrixForDecoratedTree.map((row) => row.join("")).join("\n");
+
+        embed
+          .setColor(0x339999)
+          .setTitle("🎄 " + user.username + "'s Christmas tree")
+          .setDescription(embedDescription);
+        break;
+
+      default:
+        break;
+    }
+
+    try {
+      return await message.reply({ embeds: [embed] });
+    } catch (error) {
+      return;
+    }
+
+    /*
     const btnUpgrade = new ButtonBuilder().setCustomId("btn-tree-btnUpgrade").setLabel("Upgrade tree").setStyle("Primary");
     const actionRow = new ActionRowBuilder().addComponents(btnUpgrade);
 
@@ -483,5 +671,6 @@ module.exports = {
         return;
       }
     });
+    */
   },
 };

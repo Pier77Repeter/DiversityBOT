@@ -2,7 +2,7 @@ const { EmbedBuilder } = require("discord.js");
 const logger = require("../logger")("ConfigChecker");
 
 // this is very useful since it's gonna save tons of lines and time when checking configs
-module.exports = async function configChecker(client, message, configName) {
+module.exports = async function configChecker(client, message, configName, logError = true) {
   // checking for valid config name in db
   const validConfigNames = ["modCmd", "musiCmd", "eventCmd", "communityCmd", "levelingCmd"]; // may add more
   if (!validConfigNames.includes(configName)) {
@@ -26,6 +26,8 @@ module.exports = async function configChecker(client, message, configName) {
   } catch (error) {
     // this is important, we must log it
     logger.error("Error getting config '" + configName + "': Server " + message.guild.id, error);
+
+    if (!logError) return null;
 
     const embed = new EmbedBuilder()
       .setColor(0xff0000)

@@ -18,7 +18,7 @@ module.exports = (client) => {
     if (!message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.SendMessages)) return;
 
     // check if bot gets pinged, not when you use a command like 'd!stats @DiversityBOT'
-    if (!message.content.toLowerCase().startsWith(botPrefix) && message.content.includes("<@918089727117242409>")) {
+    if (!message.content.toLowerCase().startsWith(botPrefix) && message.content.includes("<@878594739744673863>")) {
       try {
         await message.reply({
           content: listsGetRandomItem(
@@ -312,7 +312,7 @@ module.exports = (client) => {
       );
     });
 
-    const isLevelingEnabled = await configChecker(client, message, "levelingCmd");
+    const isLevelingEnabled = await configChecker(client, message, "levelingCmd", false); // we don't wanna log any error (spam prevention)
 
     const embed = new EmbedBuilder();
 
