@@ -64,6 +64,7 @@ module.exports = {
           }
         );
 
+        /*
         client.database.run(
           "CREATE TABLE IF NOT EXISTS Event (serverId VARCHAR(20) NOT NULL, userId VARCHAR(20) NOT NULL, treeLevel INT, twigs INT, leaves INT, goldenCoins INT, decoId1 BOOLEAN, decoId2 BOOLEAN, decoId3 BOOLEAN, decoId4 BOOLEAN, forestCooldown INT, helpsantaCooldown INT, PRIMARY KEY (serverId, userId), FOREIGN KEY(serverId) REFERENCES Server(serverId) ON DELETE CASCADE);",
           (err) => {
@@ -73,6 +74,7 @@ module.exports = {
             }
           }
         );
+        */
 
         resolve();
       });

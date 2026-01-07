@@ -4,8 +4,8 @@ module.exports = {
   name: "event",
   description: "Display the ongoing Bot event",
   async execute(client, message, args) {
-    const embed = new EmbedBuilder()
-      .setColor(0x339999)
+    const embed = new EmbedBuilder().setColor(0x339999).setTitle("🪩 Ongoing event: None").setDescription("There are currently no events going on");
+    /*
       .setTitle("🪩 Ongoing event: Christmas season 🎄🎅")
       .setDescription(
         [
@@ -22,6 +22,7 @@ module.exports = {
       .setFooter({
         text: "Christmas season event will end on the 25th of December",
       });
+      */
 
     try {
       return await message.reply({ embeds: [embed] });

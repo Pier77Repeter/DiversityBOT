@@ -4,9 +4,9 @@ module.exports = {
   data: new SlashCommandBuilder().setName("event").setDescription("Display the ongoing Bot event"),
 
   async execute(client, interaction) {
-    const embed = new EmbedBuilder()
-      .setColor(0x339999)
-      .setTitle("🎉 Ongoing event: Christmas season 🎄🎅")
+    const embed = new EmbedBuilder().setColor(0x339999).setTitle("🪩 Ongoing event: None").setDescription("There are currently no events going on");
+    /*
+      .setTitle("🪩 Ongoing event: Christmas season 🎄🎅")
       .setDescription(
         [
           "⛄Event commands",
@@ -22,6 +22,7 @@ module.exports = {
       .setFooter({
         text: "Christmas season event will end on the 25th of December",
       });
+      */
 
     try {
       return await interaction.reply({ embeds: [embed] });
