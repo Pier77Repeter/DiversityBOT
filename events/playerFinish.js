@@ -12,7 +12,7 @@ module.exports = (client) => {
 
     try {
       return await queue.metadata.channel.send({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   });

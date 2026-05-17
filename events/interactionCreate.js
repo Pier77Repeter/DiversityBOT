@@ -12,7 +12,7 @@ module.exports = (client) => {
     if (!interaction.guild) {
       try {
         return await interaction.reply("I can only be used in servers, i don't reply in DMs");
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -28,14 +28,12 @@ module.exports = (client) => {
       const embed = new EmbedBuilder()
         .setColor(0x990000)
         .setTitle("⚠️ Bot is restarting")
-        .setDescription(
-          "I'm currently restarting, in order to preserve the integrity of your data in my database, you won't be able to use me until restart is completed."
-        )
+        .setDescription("I'm currently restarting, to preserve the integrity of your data in my database, you won't be able to use me until restart is completed.")
         .setFooter({ text: "Estimated downtime is 5 minute" });
 
       try {
         return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -43,36 +41,67 @@ module.exports = (client) => {
     // re-naiming the logger, else it will keep the specific log of the command
     logger.setFileName("InteractionCreate");
 
-    await serverDataChecker(interaction).catch((err) => {
-      return logger.error("ServerDataChecker threw an error", err);
+    await serverDataChecker(interaction).catch((error) => {
+      logger.error("ServerDataChecker threw an error", error);
     });
 
     // even when you use / cmds user data should be created IF NEW
-    const row = await new Promise((resolve, reject) => {
-      client.database.get("SELECT 1 FROM User WHERE serverId = ? AND userId = ?", [interaction.guild.id, interaction.user.id], (err, row) => {
-        if (err) reject(err);
-        resolve(row);
+    const row = await client.database
+      .query("SELECT EXISTS (SELECT 1 FROM users WHERE server_id = $1 AND user_id = $2)", [interaction.guild.id, interaction.user.id])
+      .catch((error) => {
+        logger.error("Error verifying if user exist in database", error);
       });
-    });
 
     // if it's new user, insert the default data in db
-    if (!row) {
-      const itemsJsonData =
-        '{"itemId1": false, "itemId2": false, "itemId2Count": 0, "itemId3": false, "itemId3Count": 0, "itemId4": false, "itemId5": false, "itemId6": false, "itemId7": false, "itemId8": false, "itemId9": false, "itemId10": false, "itemId10Count": 0, "itemId11": false, "itemId11Count": 0}';
-      const fishesJsonData =
-        '{"fishId1": false, "fishId1Count": 0, "fishId2": false, "fishId2Count": 0, "fishId3": false, "fishId3Count": 0, "fishId4": false, "fishId4Count": 0, "fishId5": false, "fishId5Count": 0, "fishId6": false, "fishId6Count": 0, "fishId7": false, "fishId7Count": 0, "fishId8": false, "fishId8Count": 0, "fishId9": false, "fishId9Count": 0, "fishId10": false, "fishId10Count": 0}';
+    if (!row.rows[0].exists) {
+      // now you can S E E the json crap
+      const itemsJsonData = {
+        itemId1: false,
+        itemId2: false,
+        itemId2Count: 0,
+        itemId3: false,
+        itemId3Count: 0,
+        itemId4: false,
+        itemId5: false,
+        itemId6: false,
+        itemId7: false,
+        itemId8: false,
+        itemId9: false,
+        itemId10: false,
+        itemId10Count: 0,
+        itemId11: false,
+        itemId11Count: 0,
+      };
 
-      await new Promise((resolve, reject) => {
-        // so many values!
-        client.database.run(
-          "INSERT INTO User VALUES (?, ?, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, ?, ?, 'null', 0, 'null', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);",
-          [interaction.guild.id, interaction.user.id, itemsJsonData, fishesJsonData],
-          (err) => {
-            if (err) reject(err);
-            else resolve();
-          }
-        );
-      });
+      const fishesJsonData = {
+        fishId1: false,
+        fishId1Count: 0,
+        fishId2: false,
+        fishId2Count: 0,
+        fishId3: false,
+        fishId3Count: 0,
+        fishId4: false,
+        fishId4Count: 0,
+        fishId5: false,
+        fishId5Count: 0,
+        fishId6: false,
+        fishId6Count: 0,
+        fishId7: false,
+        fishId7Count: 0,
+        fishId8: false,
+        fishId8Count: 0,
+        fishId9: false,
+        fishId9Count: 0,
+        fishId10: false,
+        fishId10Count: 0,
+      };
+
+      // no more many values :(
+      await client.database
+        .query("INSERT INTO users(server_id, user_id, items, fishes) VALUES($1, $2, $3, $4)", [interaction.guild.id, interaction.user.id, itemsJsonData, fishesJsonData])
+        .catch((error) => {
+          logger.error("Error INSERTING a new user into the database", error);
+        });
     }
 
     // last but not least, event data, put this here for the same reason as this ^
@@ -120,11 +149,11 @@ module.exports = (client) => {
               "It's joever...",
               "Command execution got nuked, sorry",
             ],
-            false
+            false,
           ),
           flags: MessageFlags.Ephemeral,
         });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -132,21 +161,12 @@ module.exports = (client) => {
 
   // VERY RARELY, the bot may be invited in a server when db connection is off (bot is offline) and data isn't created, this is the fix
   async function serverDataChecker(interaction) {
-    const serverRow = await new Promise((resolve, reject) => {
-      client.database.get("SELECT 1 FROM Server WHERE serverId = ?", interaction.guild.id, (err, row) => {
-        if (err) reject(err);
-        resolve(row);
-      });
-    });
+    // same fast check for users but now for servers
+    const serverRow = await client.database.query("SELECT EXISTS (SELECT 1 FROM servers WHERE server_id = $1)", [interaction.guild.id]);
 
-    if (serverRow) return; // server already exist
+    if (serverRow.rows[0].exists) return; // server already exist
 
-    await new Promise((resolve, reject) => {
-      client.database.run("INSERT INTO Server VALUES (?, 1, 1, 1, 1, 1, 'null', 0, 0, 0, 0, 0, 0)", interaction.guild.id, (err) => {
-        if (err) reject(err);
-        resolve();
-      });
-    });
+    await client.database.query("INSERT INTO servers(server_id) VALUES($1)", [interaction.guild.id]);
   }
 
   // for bot events data

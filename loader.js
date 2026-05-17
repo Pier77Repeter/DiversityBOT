@@ -5,9 +5,9 @@ const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v10");
 const { Player } = require("discord-player");
 const { SoundCloudExtractor } = require("@discord-player/extractor");
-const sqlite3 = require("sqlite3").verbose();
+const { Pool } = require("pg");
 const logger = require("./logger")("Loader");
-const { botToken, botId } = require("./config.json");
+const { botToken, botId, dbUrl } = require("./config.json");
 const delay = require("./utils/delay");
 
 // needed in index.js and messageCreate.js,
@@ -15,6 +15,122 @@ var isBotRestarting = false;
 
 module.exports = {
   initLoader: async (client) => {
+    // loadig the database
+    logger.info("Loading the database...");
+
+    try {
+      const dbPool = new Pool({
+        connectionString: dbUrl,
+      });
+
+      const dbClient = await dbPool.connect();
+
+      try {
+        const setupQueries = `
+        CREATE TABLE IF NOT EXISTS servers (
+          server_id VARCHAR(20) NOT NULL PRIMARY KEY,
+          mod_cmd BOOLEAN DEFAULT false,
+          musi_cmd BOOLEAN DEFAULT false,
+          event_cmd BOOLEAN DEFAULT false,
+          community_cmd BOOLEAN DEFAULT false,
+          leveling_cmd BOOLEAN DEFAULT false,
+          mod_log_channel VARCHAR(20),
+          play_cooldown INT DEFAULT 0,
+          image_cooldown INT DEFAULT 0,
+          hm_cooldown INT DEFAULT 0,
+          jm_cooldown INT DEFAULT 0,
+          canny_cooldown INT DEFAULT 0,
+          uncanny_cooldown INT DEFAULT 0
+        );
+
+        CREATE TABLE IF NOT EXISTS channels (
+          channel_id VARCHAR(20) NOT NULL PRIMARY KEY,
+          sniped_message TEXT,
+          sniped_message_author_id VARCHAR(20) NOT NULL,
+          server_id VARCHAR(20) NOT NULL,
+          CONSTRAINT fk_server
+              FOREIGN KEY(server_id) 
+              REFERENCES servers(server_id) 
+              ON DELETE CASCADE
+        );
+
+        CREATE TABLE IF NOT EXISTS users (
+          server_id VARCHAR(20) NOT NULL,
+          user_id VARCHAR(20) NOT NULL,
+          level INT DEFAULT 0,
+          xp INT DEFAULT 0,
+          next_xp INT DEFAULT 0,
+          reputation INT DEFAULT 0,
+          social_credits INT DEFAULT 0,
+          warns INT DEFAULT 0,
+          money BIGINT DEFAULT 0,
+          bank_money BIGINT DEFAULT 0,
+          debts INT DEFAULT 0,
+          debts_cooldown INT DEFAULT 0,
+          items JSONB DEFAULT '[]'::jsonb,
+          fishes JSONB DEFAULT '[]'::jsonb,
+          job_type VARCHAR(20),
+          has_pet BOOLEAN DEFAULT false,
+          pet_id VARCHAR(20),
+          pet_stats_health INT DEFAULT 0,
+          pet_stats_fun INT DEFAULT 0,
+          pet_stats_hunger INT DEFAULT 0,
+          pet_stats_thirst INT DEFAULT 0,
+          pet_cooldown INT DEFAULT 0,
+          pet_vet_cooldown INT DEFAULT 0,
+          pet_play_cooldown INT DEFAULT 0,
+          pet_feed_cooldown INT DEFAULT 0,
+          pet_drink_cooldown INT DEFAULT 0,
+          battle_cooldown INT DEFAULT 0,
+          beg_cooldown INT DEFAULT 0,
+          crime_cooldown INT DEFAULT 0,
+          daily_cooldown INT DEFAULT 0,
+          dupe_cooldown INT DEFAULT 0,
+          fish_cooldown INT DEFAULT 0,
+          hack_cooldown INT DEFAULT 0,
+          high_low_cooldown INT DEFAULT 0,
+          hunt_cooldown INT DEFAULT 0,
+          meme_cooldown INT DEFAULT 0,
+          mine_cooldown INT DEFAULT 0,
+          nuke_cooldown INT DEFAULT 0,
+          post_meme_cooldown INT DEFAULT 0,
+          post_video_cooldown INT DEFAULT 0,
+          rob_cooldown INT DEFAULT 0,
+          roulette_cooldown INT DEFAULT 0,
+          sc_test_cooldown INT DEFAULT 0,
+          search_cooldown INT DEFAULT 0,
+          work_cooldown INT DEFAULT 0,
+          PRIMARY KEY (server_id, user_id),
+          CONSTRAINT fk_server_user
+              FOREIGN KEY(server_id) 
+              REFERENCES servers(server_id) 
+              ON DELETE CASCADE
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_users_user_id ON users(user_id);
+        CREATE INDEX IF NOT EXISTS idx_channels_server_id ON channels(server_id);
+        `;
+
+        await dbClient.query("BEGIN");
+        await dbClient.query(setupQueries);
+        await dbClient.query("COMMIT");
+      } catch (error) {
+        await dbClient.query("ROLLBACK");
+        logger.error("Failed to setup the database", error);
+        process.exit(1); // brute force exiting no DB, no bot.
+      } finally {
+        dbClient.release();
+      }
+
+      client.database = dbPool;
+      logger.info("Database connected and ready :D");
+    } catch (error) {
+      logger.error("Failed to connect to the database", error);
+      process.exit(1); // brute force exiting no DB, no bot.
+    }
+
+    // MOVING AWAY FROM SQLITE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    /*
     // loading the database
     logger.info("Loading the database...");
     const dbPath = path.join(__dirname, "database.db");
@@ -64,7 +180,6 @@ module.exports = {
           }
         );
 
-        /*
         client.database.run(
           "CREATE TABLE IF NOT EXISTS Event (serverId VARCHAR(20) NOT NULL, userId VARCHAR(20) NOT NULL, treeLevel INT, twigs INT, leaves INT, goldenCoins INT, decoId1 BOOLEAN, decoId2 BOOLEAN, decoId3 BOOLEAN, decoId4 BOOLEAN, forestCooldown INT, helpsantaCooldown INT, PRIMARY KEY (serverId, userId), FOREIGN KEY(serverId) REFERENCES Server(serverId) ON DELETE CASCADE);",
           (err) => {
@@ -74,17 +189,17 @@ module.exports = {
             }
           }
         );
-        */
 
         resolve();
       });
     });
+    */
 
     // creating discord player
     try {
       client.player = new Player(client);
       await client.player.extractors.register(SoundCloudExtractor); // we only use this because can't use YouTube, against ToS
-      logger.info("Music player operational");
+      logger.info("Music player operational :P");
     } catch (error) {
       logger.error("Error registring 'SoundCloudExtractor' as player extractor", error);
     }
@@ -185,17 +300,12 @@ module.exports = {
     client.destroy();
     logger.info("1/2 - Client now offline");
 
-    await new Promise((resolve, reject) => {
-      client.database.close((err) => {
-        if (err) {
-          logger.error("Error closing the database", err);
-          reject(err);
-        } else {
-          logger.info("2/2 - Ended database connection");
-          resolve();
-        }
-      });
-    });
+    try {
+      await client.database.end();
+      logger.info("2/2 - Ended database connection");
+    } catch (error) {
+      logger.error("Error closing the database nicely", error);
+    }
 
     logger.info("Shutdown completed, terminating process");
     process.exit(0);

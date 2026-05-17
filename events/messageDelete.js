@@ -3,47 +3,25 @@ const logger = require("../logger")("MessageDelete");
 
 module.exports = (client) => {
   client.on(Events.MessageDelete, async (message) => {
+    // if the message is old/uncached it won't have an author
+    if (message.partial || !message.author) return;
+
     try {
-      // db setting up channel
-      const row = await new Promise((resolve, reject) => {
-        client.database.get("SELECT * FROM Channel WHERE channelId = ?", message.channel.id, (err, row) => {
-          if (err) {
-            reject("Failed to SELECT 'Channel' from database\n" + err);
-          } else {
-            resolve(row);
-          }
-        });
-      });
+      const channelRow = await client.database.query("SELECT EXISTS (SELECT 1 FROM channels WHERE channel_id = $1)", [message.channel.id]);
 
       // if it dosen't exist then let's insert it
-      if (!row) {
-        await new Promise((resolve, reject) => {
-          client.database.run("INSERT INTO Channel VALUES (?, ?, ?, ?)", [message.channel.id, message.content, message.author.id, message.guild.id], (err) => {
-            if (err) {
-              reject("Failed to INSERT 'Channel' values in database\n" + err);
-            } else {
-              resolve();
-            }
-          });
-        });
-      } else {
-        // already exist, just update
-        await new Promise((resolve, reject) => {
-          client.database.run(
-            "UPDATE Channel SET snipedMessage = ?, snipedMessageAuthorId = ? WHERE channelId = ?",
-            [message.content, message.author.id, message.channel.id],
-            (err) => {
-              if (err) {
-                reject("Failed to UPDATE deleted message in database\n" + err);
-              } else {
-                resolve();
-              }
-            }
-          );
-        });
+      if (!channelRow.rows[0].exists) {
+        return await client.database.query("INSERT INTO channels VALUES ($1, $2, $3, $4)", [message.channel.id, message.content, message.author.id, message.guild.id]);
       }
+
+      // already exist, just update
+      await client.database.query("UPDATE channels SET sniped_message = $1, sniped_message_author_id = $2 WHERE channel_id = $3", [
+        message.content,
+        message.author.id,
+        message.channel.id,
+      ]);
     } catch (error) {
-      return logger.error(error);
+      logger.error("Failed to manage tables updates in database", error);
     }
   });
 };

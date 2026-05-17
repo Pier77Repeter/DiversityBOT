@@ -21,14 +21,14 @@ module.exports = (client) => {
           "Views: **" + track.views + "**",
           "Url: **" + track.url + "**",
           "Requested by: **" + track.requestedBy.username + "**",
-        ].join("\n")
+        ].join("\n"),
       )
       .setImage(track.thumbnail)
       .setFooter({ text: "If this song instantly stops, it's because of COPYRIGHT issues" });
 
     try {
       return await queue.metadata.channel.send({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   });

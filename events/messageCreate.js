@@ -92,10 +92,10 @@ module.exports = (client) => {
               "What's your emergency?",
               "I'm not a fucking therapist!!!",
             ],
-            false
+            false,
           ),
         });
-      } catch (error) {
+      } catch {
         // dont return, continue execution
       }
     }
@@ -104,26 +104,25 @@ module.exports = (client) => {
     logger.setFileName("MessageCreate");
 
     // can't do const, db operations needs to be done when bot isn't restarting
-    var row;
+    let row;
 
     // calling updaters when bot isn't restarting
     if (!loader.getRestartStatus()) {
-      await serverDataChecker(message).catch((err) => {
-        return logger.error("ServerDataChecker threw an error, look here", err);
+      await serverDataChecker(message).catch((error) => {
+        logger.error("ServerDataChecker threw an error, look here", error);
       });
 
-      // checking if user exists in db, very fast query, will return '{ '1': 1 }' if row is found
-      row = await new Promise((resolve, reject) => {
-        client.database.get("SELECT 1 FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
-          if (err) reject(err);
-          resolve(row);
+      // checking if user exists in db, very fast query, will return a boolean if row is found
+      row = await client.database
+        .query("SELECT EXISTS (SELECT 1 FROM users WHERE server_id = $1 AND user_id = $2)", [message.guild.id, message.author.id])
+        .catch((error) => {
+          logger.error("Error verifying if user exist in database", error);
         });
-      });
 
       // the user exists, so update his shit
-      if (row) {
-        await userDataUpdater(message).catch((err) => {
-          return logger.error("UserDataUpdater threw an error, look here", err);
+      if (row.rows[0].exists) {
+        await userDataUpdater(message).catch((error) => {
+          return logger.error("UserDataUpdater threw an error, look here", error);
         });
       }
     }
@@ -136,36 +135,65 @@ module.exports = (client) => {
       const embed = new EmbedBuilder()
         .setColor(0x990000)
         .setTitle("⚠️ Bot is restarting")
-        .setDescription(
-          "I'm currently restarting, in order to preserve the integrity of your data in my database, you won't be able to use me until restart is completed."
-        )
+        .setDescription("I'm currently restarting, to preserve the integrity of your data in my database, you won't be able to use me until restart is completed.")
         .setFooter({ text: "Estimated downtime is 5 minute" });
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
     // if it's new user, insert the default data in db, i put this here so that only people who actually use the bot gets stored in db (less junk)
-    if (!row) {
-      const itemsJsonData =
-        '{"itemId1": false, "itemId2": false, "itemId2Count": 0, "itemId3": false, "itemId3Count": 0, "itemId4": false, "itemId5": false, "itemId6": false, "itemId7": false, "itemId8": false, "itemId9": false, "itemId10": false, "itemId10Count": 0, "itemId11": false, "itemId11Count": 0}';
-      const fishesJsonData =
-        '{"fishId1": false, "fishId1Count": 0, "fishId2": false, "fishId2Count": 0, "fishId3": false, "fishId3Count": 0, "fishId4": false, "fishId4Count": 0, "fishId5": false, "fishId5Count": 0, "fishId6": false, "fishId6Count": 0, "fishId7": false, "fishId7Count": 0, "fishId8": false, "fishId8Count": 0, "fishId9": false, "fishId9Count": 0, "fishId10": false, "fishId10Count": 0}';
+    if (!row.rows[0].exists) {
+      // now you can S E E the json crap
+      const itemsJsonData = {
+        itemId1: false,
+        itemId2: false,
+        itemId2Count: 0,
+        itemId3: false,
+        itemId3Count: 0,
+        itemId4: false,
+        itemId5: false,
+        itemId6: false,
+        itemId7: false,
+        itemId8: false,
+        itemId9: false,
+        itemId10: false,
+        itemId10Count: 0,
+        itemId11: false,
+        itemId11Count: 0,
+      };
+      const fishesJsonData = {
+        fishId1: false,
+        fishId1Count: 0,
+        fishId2: false,
+        fishId2Count: 0,
+        fishId3: false,
+        fishId3Count: 0,
+        fishId4: false,
+        fishId4Count: 0,
+        fishId5: false,
+        fishId5Count: 0,
+        fishId6: false,
+        fishId6Count: 0,
+        fishId7: false,
+        fishId7Count: 0,
+        fishId8: false,
+        fishId8Count: 0,
+        fishId9: false,
+        fishId9Count: 0,
+        fishId10: false,
+        fishId10Count: 0,
+      };
 
-      await new Promise((resolve, reject) => {
-        // what the heeeeeeeeeeeeeeeeeeeeeeeeeeeeeeel, so many values!!
-        client.database.run(
-          "INSERT INTO User VALUES (?, ?, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, ?, ?, 'null', 0, 'null', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);",
-          [message.guild.id, message.author.id, itemsJsonData, fishesJsonData],
-          (err) => {
-            if (err) reject(err);
-            else resolve();
-          }
-        );
-      });
+      // no more many values :(
+      await client.database
+        .query("INSERT INTO users(server_id, user_id, items, fishes) VALUES($1, $2, $3, $4)", [message.guild.id, message.author.id, itemsJsonData, fishesJsonData])
+        .catch((error) => {
+          logger.error("Error INSERTING a new user into the database", error);
+        });
     }
 
     // last but not least, event data, put this here for the same reason as this ^
@@ -226,10 +254,10 @@ module.exports = (client) => {
               "That command is a mystery to me. And I know everything.",
               "My response to that command is: 'What?'",
             ],
-            false
-          )
+            false,
+          ),
         );
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -272,10 +300,10 @@ module.exports = (client) => {
               "It's joever...",
               "Command execution got nuked, sorry",
             ],
-            false
-          )
+            false,
+          ),
         );
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -283,77 +311,63 @@ module.exports = (client) => {
 
   // VERY RARELY, the bot may be invited in a server when db connection is off (bot is offline) and data isn't created, this is the fix
   async function serverDataChecker(message) {
-    const serverRow = await new Promise((resolve, reject) => {
-      client.database.get("SELECT 1 FROM Server WHERE serverId = ?", message.guild.id, (err, row) => {
-        if (err) reject(err);
-        resolve(row);
-      });
-    });
+    // same fast check for users but now for servers
+    const serverRow = await client.database.query("SELECT EXISTS (SELECT 1 FROM servers WHERE server_id = $1)", [message.guild.id]);
 
-    if (serverRow) return; // server already exist
+    if (serverRow.rows[0].exists) return; // server already exist
 
-    await new Promise((resolve, reject) => {
-      client.database.run("INSERT INTO Server VALUES (?, 1, 1, 1, 1, 1, 'null', 0, 0, 0, 0, 0, 0)", message.guild.id, (err) => {
-        if (err) reject(err);
-        resolve();
-      });
-    });
+    await client.database.query("INSERT INTO servers(server_id) VALUES($1)", [message.guild.id]);
   }
 
   // this functions contains all the shit for updating user data in db
   async function userDataUpdater(message) {
     // selecting the data that needs to be updated EVERYTIME THE USER SENDS A NEW MESSAGE
-    const userRow = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT xp, nextXp, level, reputation, debts, money, bankMoney, hasPet, petStatsHealth, petStatsFun, petStatsHunger, petStatsThirst, petCooldown FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, message.author.id],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
+    const userRow = await client.database.query(
+      "SELECT xp, next_xp, reputation, debts, money, bank_money, has_pet, pet_stats_health, pet_stats_fun, pet_stats_hunger, pet_stats_thirst, pet_cooldown FROM users WHERE server_id = $1 AND user_id = $2",
+      [message.guild.id, message.author.id],
+    );
+
+    /*
+    Example postgres output
+    {
+      command: 'SELECT',
+      rowCount: 1,
+      oid: null,
+      rows: [
+        {
+          xp: 0,
+          next_xp: 0,
+          reputation: 0,
+          money: 0,
+          ...
         }
-      );
-    });
+      ],
+      fields: [ ... ]
+    }
+    */
+    const userData = userRow.rows[0];
 
     const isLevelingEnabled = await configChecker(client, message, "levelingCmd", false); // we don't wanna log any error (spam prevention)
 
     const embed = new EmbedBuilder();
 
-    // XP UPDATING SECTION, working with data: xp, nextXp, level
+    // XP UPDATING SECTION, working with data: xp, next_xp, level
     if (isLevelingEnabled) {
-      await new Promise((resolve, reject) => {
-        client.database.run("UPDATE User SET xp = xp + 1 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
-          if (err) reject(err);
-          else resolve();
-        });
-      });
+      await client.database.query("UPDATE users SET xp = xp + 1 WHERE server_id = $1 AND user_id = $2", [message.guild.id, message.author.id]);
 
       // check if user can progress to the next level
-      if (userRow.xp >= userRow.nextXp) {
-        await new Promise((resolve, reject) => {
-          client.database.serialize(() => {
-            client.database.run("UPDATE User SET xp = 0 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
-              if (err) reject(err);
-              else resolve();
-            });
-
-            client.database.run("UPDATE User SET nextXp = nextXp + 100 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
-              if (err) reject(err);
-              else resolve();
-            });
-
-            client.database.run("UPDATE User SET level = level + 1 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
-              if (err) reject(err);
-              else resolve();
-            });
-          });
-        });
+      if (userData.xp >= userData.next_xp) {
+        await client.database.query("UPDATE users SET xp = 0, next_xp = next_xp + 100, level = level + 1 WHERE server_id = $1 AND user_id = $2", [
+          message.guild.id,
+          message.author.id,
+        ]);
 
         const imageFile = new AttachmentBuilder("./media/levelUp.png");
 
         embed
           .setColor(0xffcc00)
           .setTitle("⬆️ Level up")
-          .setDescription(["Your new level: **" + (userRow.level + 1) + "**", "XP for next level: **" + (userRow.nextXp + 100) + "**"].join("\n"))
+          .setDescription(["Your new level: **" + (userData.level + 1) + "**", "XP for next level: **" + (userData.next_xp + 100) + "**"].join("\n"))
           .setThumbnail("attachment://levelUp.png")
           .setFooter({
             text: message.author.username,
@@ -362,22 +376,17 @@ module.exports = (client) => {
 
         try {
           await message.reply({ embeds: [embed], files: [imageFile] });
-        } catch (error) {
-          // contiue to update the rest of the data
+        } catch {
+          // nothing to do, contiue to update the rest of the data
         }
       }
     }
 
     // REPUTATION UPDATING SECTION, only needed with when mentioned user and word "thank" is present in message, working with data: reputation
-    if (message.mentions.members.first() != null && message.content.toLowerCase().includes("thank")) {
+    if (message.mentions.members.first() && message.content.toLowerCase().includes("thank")) {
       const mentionedMember = message.mentions.members.first().user;
 
-      await new Promise((resolve, reject) => {
-        client.database.run("UPDATE User SET reputation = reputation + 1 WHERE serverId = ? AND userId = ?", [message.guild.id, mentionedMember.id], (err) => {
-          if (err) reject(err);
-          else resolve();
-        });
-      });
+      await client.database.query("UPDATE users SET reputation = reputation + 1 WHERE server_id = $1 AND user_id = $2", [message.guild.id, mentionedMember.id]);
 
       embed
         .setColor(0xffcc00)
@@ -387,66 +396,49 @@ module.exports = (client) => {
 
       try {
         await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         // contiue to update the rest of the data
       }
     }
 
-    // DEBTS UPDATING SECTION, only needed when user has debts, working with data: debts, money, bankMoney
-    if (userRow.debts > 0) {
+    // DEBTS UPDATING SECTION, only needed when user has debts, working with data: debts, money, bank_money
+    if (userData.debts > 0) {
       const debtsCooldown = await cooldownManager(client, message, "debtsCooldown", 86400, false); // we don't wanna log any error (spam prevention)
-      if (debtsCooldown == null) return;
+      if (debtsCooldown === null) return;
 
       // updating the debts
-      if (debtsCooldown == 0) {
-        const debts = Math.trunc((userRow.debts + userRow.money + userRow.bankMoney) * 0.05); // add 5% every day, and prevents floats
+      if (debtsCooldown === 0) {
+        const debts = Math.trunc((userData.debts + userData.money + userData.bank_money) * 0.05); // add 5% every day, and prevents floats
 
-        await new Promise((resolve, reject) => {
-          client.database.run("UPDATE User SET debts = ? WHERE serverId = ? AND userId = ?", [debts, message.guild.id, message.author.id], (err) => {
-            if (err) reject(err);
-            resolve();
-          });
-        });
+        await client.database.query("UPDATE users SET debts = $1 WHERE server_id = $2 AND user_id = $3", [debts, message.guild.id, message.author.id]);
       }
     }
 
     // PET STATS UPDATING SECTION, only needed when user has a pet, working with data: hasPet, petStatsHealth, petStatsFun, petStatsHunger, petStatsThirst, petCooldown
-    if (userRow.hasPet) {
+    if (userData.has_pet) {
       const petCooldown = await cooldownManager(client, message, "petCooldown", 10800, false);
-      if (petCooldown == null) return;
+      if (petCooldown === null) return;
 
       // updating the stats
-      if (petCooldown == 0) {
-        await new Promise((resolve, reject) => {
-          client.database.run(
-            "UPDATE User SET petStatsHealth = petStatsHealth - ?, petStatsFun = petStatsFun - ?, petStatsHunger = petStatsHunger - ?, petStatsThirst = petStatsThirst - ? WHERE serverId = ? AND userId = ?",
-            [mathRandomInt(5, 20), mathRandomInt(5, 20), mathRandomInt(5, 20), mathRandomInt(5, 20), message.guild.id, message.author.id],
-            (err) => {
-              if (err) reject(err);
-              resolve();
-            }
-          );
-        });
+      if (petCooldown === 0) {
+        await client.database.query(
+          "UPDATE users SET pet_stats_health = pet_stats_health - $1, pet_stats_fun = pet_stats_fun - $2, pet_stats_hunger = pet_stats_hunger - $3, pet_stats_thirst = pet_stats_thirst - $4 WHERE server_id = $5 AND user_id = $6",
+          [mathRandomInt(5, 20), mathRandomInt(5, 20), mathRandomInt(5, 20), mathRandomInt(5, 20), message.guild.id, message.author.id],
+        );
       }
 
       // check if pet is still alive
-      if (userRow.petStatsHealth <= 0 || userRow.petStatsHunger <= 0 || userRow.petStatsThirst <= 0) {
-        await new Promise((resolve, reject) => {
-          client.database.run(
-            "UPDATE User SET hasPet = 0, petId = 'null', petStatsHealth = 0, petStatsFun = 0, petStatsHunger = 0, petStatsThirst = 0 WHERE serverId = ? AND userId = ?",
-            [message.guild.id, message.author.id],
-            (err) => {
-              if (err) reject(err);
-              resolve();
-            }
-          );
-        });
+      if (userData.pet_stats_health <= 0 || userData.pet_stats_hunger <= 0 || userData.pet_stats_thirst <= 0) {
+        await client.database.query(
+          "UPDATE users SET has_pet = 0, pet_id = 'null', pet_stats_health = 0, pet_stats_fun = 0, pet_stats_hunger = 0, pet_stats_thirst = 0 WHERE server_id = $1 AND user_id = $2",
+          [message.guild.id, message.author.id],
+        );
 
         embed.setColor(0xff0000).setTitle("🪦 Oh no").setDescription("Your pet sadly died, you didn't care for it enough >:(");
 
         try {
           await message.reply({ embeds: [embed] });
-        } catch (error) {
+        } catch {
           // do nothing...
         }
       }

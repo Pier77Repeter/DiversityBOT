@@ -14,7 +14,7 @@ function keepAlive() {
   });
 
   server.listen(3000, () => {
-    logger.info("KeepAlive server is running");
+    logger.info("KeepAlive server is running :>");
   });
 }
 

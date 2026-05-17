@@ -26,6 +26,7 @@ const configFilePath = path.join(__dirname, "config.json");
 const defaultConfigs = {
   botToken: "YOUR_BOT_TOKEN_HERE",
   botId: "YOUR_BOT_ID_HERE",
+  dbUrl: "YOUR_POSTGRES_URL_HERE",
   itemPrices: {
     diversityGemPrice: 1000000,
     bitcoinPrice: 80000,
@@ -101,17 +102,13 @@ const client = new Client({
   ],
 });
 
-// bot logging in
-client
-  .login(botToken)
-  .then(async () => {
-    // AFTER the bot logged in THEN we can start load the whole thing
-    await loader.initLoader(client);
-  })
-  .catch((error) => {
+// AFTER the bot fully loaded THEN we can log in
+loader.initLoader(client).then(async () => {
+  await client.login(botToken).catch((error) => {
     logger.error("Failed to log into Discord", error);
     process.exit(1);
   });
+});
 
 // when the client is ready
 client.once(Events.ClientReady, (readyClient) => {
@@ -153,7 +150,7 @@ client.once(Events.ClientReady, (readyClient) => {
           "bottom text",
           "Flipping trains on your area (╯°□°)╯︵ ┻━┻",
         ],
-        false
+        false,
       ),
       type: ActivityType.Playing,
     },
