@@ -1,22 +1,23 @@
 const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
 const DIG = require("discord-image-generation");
+const logger = require("../logger")("DiscImgGen");
 const serverCooldownManager = require("../utils/serverCooldownManager");
 
 // mentionedUser is an optional parameter, look https://www.geeksforgeeks.org/javascript/how-to-declare-the-optional-function-parameters-in-javascript/
 module.exports = async function discImgGen(client, message, imageName, mentionedUser = null) {
   const cooldownInSecs = 10;
 
-  const cooldown = await serverCooldownManager(client, message, "imageCooldown", cooldownInSecs);
-  if (cooldown == null) return;
+  const cooldown = await serverCooldownManager(client, message, "image_cooldown", cooldownInSecs);
+  if (cooldown === null) return;
 
   const embed = new EmbedBuilder();
 
-  if (cooldown != 0) {
-    embed.setColor(0x000000).setDescription("⏰ You can create another image: **<t:" + cooldown[1] + ":R>**");
+  if (cooldown !== 0) {
+    embed.setColor(0x000000).setDescription("⏰ You can create another image **<t:" + cooldown[1] + ":R>**");
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   }
@@ -27,7 +28,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
 
   try {
     sentMessage = await message.reply({ embeds: [embed] });
-  } catch (error) {
+  } catch {
     return;
   }
 
@@ -350,15 +351,27 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
       return await sendMessage();
 
     default:
-      break;
+      logger.error("An invalid image name has been passed as parameter");
+
+      embed
+        .setColor(0xff0000)
+        .setTitle("⚠️ Error")
+        .setDescription("Apparently the image i'm trying to generate dosen't exist, this is a bug, this is not supposed to happen, i am sorry.")
+        .addFields({ name: "Submit Report Here", value: "https://discord.gg/KxadTdz" });
+
+      try {
+        return await message.reply({ embeds: [embed] });
+      } catch {
+        return;
+      }
   }
 
   // some commands require 2 avatars, better check for the 2nd mention
   async function checkMentionedUser() {
-    if (mentionedUser == null) {
+    if (mentionedUser === null) {
       try {
         return await message.reply(message.author.username + ", please mention an user, thanks");
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -370,7 +383,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
   async function sendMessage() {
     try {
       return await sentMessage.edit({ files: [attachment], embeds: [] });
-    } catch (error) {
+    } catch {
       return;
     }
   }

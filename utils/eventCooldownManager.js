@@ -8,17 +8,13 @@ module.exports = async function eventCooldownManager(client, message, cooldownNa
 
   try {
     // first we get the cooldown from the db (it should exist since user data gets INSERTED in messageCreate event, before this)
-    const row = await new Promise((resolve, reject) => {
-      client.database.get(`SELECT ${cooldownName} FROM Event WHERE serverId = ? AND userId = ?`, [message.guild.id, message.author.id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
+
+    const row = await client.database.query(`SELECT ${cooldownName} FROM events WHERE server_id = $1 AND user_id = $2`, [message.guild.id, message.author.id]);
 
     // return null if db operation failed, so we need to check in the commands if return is null too
-    if (!row) throw "Event user '" + message.author.id + "' was not found in database";
+    if (row.rowCount === 0) throw new Error("Event user '" + message.author.id + "' from Server '" + message.guild.id + "' was not found in database");
 
-    const lastCooldown = row[cooldownName];
+    const lastCooldown = row.rows[0][cooldownName];
     const expirationTime = lastCooldown + cooldownAmount;
 
     // if the unix time in db is bigger than the current unix time this means user is still in cooldown
@@ -31,30 +27,29 @@ module.exports = async function eventCooldownManager(client, message, cooldownNa
     }
 
     // update the cooldown immediatly
-    await new Promise((resolve, reject) => {
-      client.database.run(`UPDATE Event SET ${cooldownName} = ? WHERE serverId = ? AND userId = ?`, [unixNow, message.guild.id, message.author.id], (err) => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
+    await client.database.query(`UPDATE events SET ${cooldownName} = $1 WHERE server_id = $2 AND user_id = $3`, [unixNow, message.guild.id, message.author.id]);
 
     return 0; // cooldown is off and everything went good :thumbsup:
   } catch (error) {
     logger.error("Error handling event cooldown '" + cooldownName + "': Server '" + message.guild.id + "' - User '" + message.author.id + "'", error);
 
     // sometimes we dont want this
-    if (logError) {
-      const embed = new EmbedBuilder()
-        .setColor(0xff0000)
-        .setTitle("⚠️ Critical error")
-        .setDescription("Failed to update your cooldown, please **report this error with your server ID AND user ID**")
-        .addFields({ name: "Submit report here", value: "https://discord.gg/KxadTdz" });
+    if (!logError) return null;
 
-      try {
-        await message.reply({ embeds: [embed] });
-      } catch (error) {
-        // continue
-      }
+    const embed = new EmbedBuilder()
+      .setColor(0xff0000)
+      .setTitle("⚠️ Critical error")
+      .setDescription("Failed to update your cooldown, please **report this error with the server ID and your user ID**")
+      .addFields(
+        { name: "Server ID", value: `\`${message.guild.id}\``, inline: true },
+        { name: "User ID", value: `\`${message.author.id}\``, inline: true },
+        { name: "Submit Report Here", value: "https://discord.gg/KxadTdz" },
+      );
+
+    try {
+      await message.reply({ embeds: [embed] });
+    } catch {
+      // continue
     }
 
     return null; // in case of an error (check is in the command)

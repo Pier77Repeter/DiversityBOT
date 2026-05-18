@@ -8,17 +8,12 @@ module.exports = async function serverCooldownManager(client, message, cooldownN
 
   try {
     // first we get the cooldown from the db (it should exist since server data gets INSERTED in "guildCreate" event, before this)
-    const row = await new Promise((resolve, reject) => {
-      client.database.get(`SELECT ${cooldownName} FROM Server WHERE serverId = ?`, [message.guild.id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
+    const row = await client.database.query(`SELECT ${cooldownName} FROM servers WHERE server_id = $1`, [message.guild.id]);
 
     // return null if db operation failed, so we need to check in the commands if return is null too
-    if (!row) throw "Server '" + message.guild.id + "' wasn't found in database";
+    if (row.rowCount === 0) throw new Error("Server '" + message.guild.id + "' was not found in database");
 
-    const lastCooldown = row[cooldownName];
+    const lastCooldown = Number(row.rows[0][cooldownName]);
     const expirationTime = lastCooldown + cooldownAmount;
 
     // if the unix time in db is bigger than the current unix time this means user is still in cooldown
@@ -31,26 +26,21 @@ module.exports = async function serverCooldownManager(client, message, cooldownN
     }
 
     // update the cooldown immediatly
-    await new Promise((resolve, reject) => {
-      client.database.run(`UPDATE Server SET ${cooldownName} = ? WHERE serverId = ?`, [unixNow, message.guild.id], (err) => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
+    await client.database.query(`UPDATE servers SET ${cooldownName} = $1 WHERE server_id = $2`, [unixNow, message.guild.id]);
 
-    return 0; // cooldown is off and everything went good :thumbsup:
+    return 0; // cooldown was off and the update went good :thumbsup:
   } catch (error) {
     logger.error("Error handling cooldown '" + cooldownName + "': Server '" + message.guild.id + "'", error);
 
     const embed = new EmbedBuilder()
       .setColor(0xff0000)
       .setTitle("⚠️ Critical error")
-      .setDescription("Failed to update server cooldown, please **report this error with your server ID**")
-      .addFields({ name: "Submit report here", value: "https://discord.gg/KxadTdz" });
+      .setDescription("Failed to update the server cooldown, please **report this error with the server ID**")
+      .addFields({ name: "Server ID", value: `\`${message.guild.id}\``, inline: true }, { name: "Submit Report Here", value: "https://discord.gg/KxadTdz" });
 
     try {
       await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       // continue
     }
 

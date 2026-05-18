@@ -4,56 +4,57 @@ const logger = require("../logger")("ManageUserMoney");
 // easy thing to manage money, add, subtract ONLY for message author!!!
 module.exports = async function manageUserMoney(client, message, operation, amount) {
   // we gotta get money and debts in case '-' gets negative
-  const row = await new Promise((resolve, reject) => {
-    client.database.get("SELECT money, debts FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
-      if (err) reject(err);
-      else resolve(row);
-    });
-  });
+  const row = await client.database.query("SELECT money, bank_money, debts FROM users WHERE server_id = $1 AND user_id = $2", [message.guild.id, message.author.id]);
 
   // this shouldn't happen SINCE data is created in 'messageCreate' event
-  if (!row) throw "Server " + message.guild.id + " - User " + message.author.id + " wasn't found in database";
+  if (row.rowCount === 0) throw new Error("Server " + message.guild.id + " - User " + message.author.id + " wasn't found in database");
+
+  // INTSSSSSSSSSSSSSSSSS
+  const money = Number(row.rows[0].money);
+  const bank_money = Number(row.rows[0].bank_money);
 
   try {
     switch (operation) {
       case "+":
-        await new Promise((resolve, reject) => {
-          client.database.run("UPDATE User SET money = money + ? WHERE serverId = ? AND userId = ?", [amount, message.guild.id, message.author.id], (err) => {
-            if (err) reject(err);
-            else resolve();
-          });
-        });
+        // User has hit the maximum possible limit
+        if (money + bank_money >= 999999999999999999) {
+          const embed = new EmbedBuilder()
+            .setColor(0xff0000)
+            .setTitle("❌ You are too rich!")
+            .setDescription("You reached the maximum possible limit of **999999999999999999$**");
+
+          try {
+            return await message.reply({ embeds: [embed] });
+          } catch {
+            return;
+          }
+        }
+
+        await client.database.query("UPDATE users SET money = money + $1 WHERE server_id = $2 AND user_id = $3", [amount, message.guild.id, message.author.id]);
 
         return 0;
 
       case "-":
         // handling debts logic
-        if (amount > row.money) {
-          const debts = amount - row.money;
+        if (amount > money) {
+          const debts = amount - money;
 
-          await new Promise((resolve, reject) => {
-            client.database.run(
-              "UPDATE User SET money = 0, debts = debts + ? WHERE serverId = ? AND userId = ?",
-              [debts, message.guild.id, message.author.id],
-              (err) => {
-                if (err) reject(err);
-                else resolve();
-              }
-            );
-          });
+          // user has lots of debts... just do nothing
+          if (debts <= -999999999999999999) return 0;
+
+          await client.database.query("UPDATE users SET money = 0, debts = debts + $1 WHERE server_id = $2 AND user_id = $3", [
+            debts,
+            message.guild.id,
+            message.author.id,
+          ]);
         } else {
-          await new Promise((resolve, reject) => {
-            client.database.run("UPDATE User SET money = money - ? WHERE serverId = ? AND userId = ?", [amount, message.guild.id, message.author.id], (err) => {
-              if (err) reject(err);
-              else resolve();
-            });
-          });
+          await client.database.query("UPDATE users SET money = money - $1 WHERE server_id = $2 AND user_id = $3", [debts, message.guild.id, message.author.id]);
         }
 
         return 0;
 
       default:
-        throw "Invalid operation, manage user money with '+' or '-'";
+        throw new Error("Invalid operation, manage user money with '+' or '-'");
     }
   } catch (error) {
     logger.error("Error updating user money: Server '" + message.guild.id + "' - User '" + message.author.id + "'", error);
@@ -61,12 +62,16 @@ module.exports = async function manageUserMoney(client, message, operation, amou
     const embed = new EmbedBuilder()
       .setColor(0xff0000)
       .setTitle("❌ Error")
-      .setDescription("Failed to update your money, please **report this issue with your server ID AND user ID**")
-      .addFields({ name: "Submit report here", value: "https://discord.gg/KxadTdz" });
+      .setDescription("Failed to update your money, please **report this error with the server ID and your user ID**")
+      .addFields(
+        { name: "Server ID", value: `\`${message.guild.id}\``, inline: true },
+        { name: "User ID", value: `\`${message.author.id}\``, inline: true },
+        { name: "Submit Report Here", value: "https://discord.gg/KxadTdz" },
+      );
 
     try {
       await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       // continue
     }
 

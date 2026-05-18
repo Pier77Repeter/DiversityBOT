@@ -347,7 +347,7 @@ module.exports = (client) => {
     */
     const userData = userRow.rows[0];
 
-    const isLevelingEnabled = await configChecker(client, message, "levelingCmd", false); // we don't wanna log any error (spam prevention)
+    const isLevelingEnabled = await configChecker(client, message, "leveling_cmd", false); // we don't wanna log any error (spam prevention)
 
     const embed = new EmbedBuilder();
 
@@ -403,7 +403,7 @@ module.exports = (client) => {
 
     // DEBTS UPDATING SECTION, only needed when user has debts, working with data: debts, money, bank_money
     if (userData.debts > 0) {
-      const debtsCooldown = await cooldownManager(client, message, "debtsCooldown", 86400, false); // we don't wanna log any error (spam prevention)
+      const debtsCooldown = await cooldownManager(client, message, "debts_cooldown", 86400, false); // we don't wanna log any error (spam prevention)
       if (debtsCooldown === null) return;
 
       // updating the debts
@@ -416,7 +416,7 @@ module.exports = (client) => {
 
     // PET STATS UPDATING SECTION, only needed when user has a pet, working with data: hasPet, petStatsHealth, petStatsFun, petStatsHunger, petStatsThirst, petCooldown
     if (userData.has_pet) {
-      const petCooldown = await cooldownManager(client, message, "petCooldown", 10800, false);
+      const petCooldown = await cooldownManager(client, message, "pet_cooldown", 10800, false);
       if (petCooldown === null) return;
 
       // updating the stats
