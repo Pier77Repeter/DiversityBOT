@@ -165,6 +165,7 @@ module.exports = (client) => {
         itemId11: false,
         itemId11Count: 0,
       };
+
       const fishesJsonData = {
         fishId1: false,
         fishId1Count: 0,

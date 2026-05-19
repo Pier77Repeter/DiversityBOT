@@ -6,17 +6,15 @@ module.exports = async function configChecker(client, message, configName, logEr
   try {
     const row = await client.database.query(`SELECT ${configName} FROM servers WHERE server_id = $1`, [message.guild.id]);
 
-    // row.rows[0].exists IS ONLY FOR SELECT EXISTS()
-    if (row.rowCount === 0) throw new Error("Server '" + message.guild.id + "' was not found in database");
+    // row.rows[0].exists IS ONLY FOR SELECT EXISTS(), if server isn't found go to catch block
+    if (row.rowCount === 0) throw new Error("Failed to find in database: Server '" + message.guild.id + "'");
 
-    const configValue = row.rows[0][configName];
-
-    return configValue;
+    return row.rows[0][configName];
   } catch (error) {
     // this is important, we must log it
     logger.error("Error getting config '" + configName + "': Server '" + message.guild.id + "'", error);
 
-    if (!logError) return null; // do not log since it's set to false
+    if (!logError) return null; // do not log if set to false
 
     const embed = new EmbedBuilder()
       .setColor(0xff0000)

@@ -59,7 +59,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
 
     case "batslap":
       // mentionedUser MUST be valid
-      if ((await checkMentionedUser()) != 0) return;
+      if ((await checkMentionedUser()) !== 0) return;
 
       editedImage = await new DIG.Batslap().getImage(msgAuthAvatar, avatar2);
 
@@ -75,7 +75,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
       return await sendMessage();
 
     case "bed":
-      if ((await checkMentionedUser()) != 0) return;
+      if ((await checkMentionedUser()) !== 0) return;
 
       editedImage = await new DIG.Bed().getImage(msgAuthAvatar, avatar2);
 
@@ -84,7 +84,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
       return await sendMessage();
 
     case "blink":
-      if ((await checkMentionedUser()) != 0) return;
+      if ((await checkMentionedUser()) !== 0) return;
 
       editedImage = await new DIG.Blink().getImage(10, ...avatars);
 
@@ -163,7 +163,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
       return await sendMessage();
 
     case "doublestonk":
-      if ((await checkMentionedUser()) != 0) return;
+      if ((await checkMentionedUser()) !== 0) return;
 
       editedImage = await new DIG.DoubleStonk().getImage(msgAuthAvatar, avatar2);
 
@@ -228,7 +228,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
       return await sendMessage();
 
     case "kiss":
-      if ((await checkMentionedUser()) != 0) return;
+      if ((await checkMentionedUser()) !== 0) return;
 
       editedImage = await new DIG.Kiss().getImage(msgAuthAvatar, avatar2);
 
@@ -300,7 +300,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
       return await sendMessage();
 
     case "spank":
-      if ((await checkMentionedUser()) != 0) return;
+      if ((await checkMentionedUser()) !== 0) return;
 
       editedImage = await new DIG.Spank().getImage(msgAuthAvatar, avatar2);
 
@@ -351,7 +351,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
       return await sendMessage();
 
     default:
-      logger.error("An invalid image name has been passed as parameter");
+      logger.error("The image named '" + imageName + "' does NOT exist");
 
       embed
         .setColor(0xff0000)
@@ -372,7 +372,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
       try {
         return await message.reply(message.author.username + ", please mention an user, thanks");
       } catch {
-        return;
+        return 0; // bot failed to send above msg so we also must return in the switch statement
       }
     }
 

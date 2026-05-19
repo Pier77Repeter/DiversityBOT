@@ -21,7 +21,7 @@ module.exports = (client) => {
         message.channel.id,
       ]);
     } catch (error) {
-      logger.error("Failed to manage tables updates in database", error);
+      logger.error("Failed to manage channels table: Server '" + message.guild.id + "' - Channel '" + message.channel.id + "'", error);
     }
   });
 };

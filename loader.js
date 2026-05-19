@@ -10,12 +10,12 @@ const logger = require("./logger")("Loader");
 const { botToken, botId, dbUrl } = require("./config.json");
 const delay = require("./utils/delay");
 
-// needed in index.js and messageCreate.js,
+// needed in index.js, messageCreate.js and maybe somewhere else
 var isBotRestarting = false;
 
 module.exports = {
   initLoader: async (client) => {
-    // loadig the database
+    // loadig the postgres database
     logger.info("Loading the database...");
 
     try {
@@ -26,6 +26,7 @@ module.exports = {
       const dbClient = await dbPool.connect();
 
       try {
+        // that's a lot of colums
         const setupQueries = `
         CREATE TABLE IF NOT EXISTS servers (
           server_id VARCHAR(20) NOT NULL PRIMARY KEY,
@@ -195,13 +196,13 @@ module.exports = {
     });
     */
 
-    // creating discord player
+    // creating discord player (needs a bit of rework)
     try {
       client.player = new Player(client);
-      await client.player.extractors.register(SoundCloudExtractor); // we only use this because can't use YouTube, against ToS
+      await client.player.extractors.register(SoundCloudExtractor); // <-- this is actually shit, moving away from this
       logger.info("Music player operational :P");
     } catch (error) {
-      logger.error("Error registring 'SoundCloudExtractor' as player extractor", error);
+      logger.error("Error registring music player extractor", error);
     }
 
     // loading events
@@ -295,22 +296,22 @@ module.exports = {
   shutdownLoader: async (client) => {
     isBotRestarting = true;
     logger.info("Initiating Bot shutdown...");
-    await delay(5000); // a bit of delay for completing unfinished tasks
+    await delay(10000); // a bit of delay for completing unfinished tasks
 
-    client.destroy();
+    await client.destroy();
     logger.info("1/2 - Client now offline");
 
     try {
       await client.database.end();
       logger.info("2/2 - Ended database connection");
     } catch (error) {
-      logger.error("Error closing the database nicely", error);
+      logger.error("Error closing the database connection nicely", error);
     }
 
     logger.info("Shutdown completed, terminating process");
     process.exit(0);
   },
-  // needed for 'd!restart' and restart checking
+  // needed in 'd!restart' and restart checking
   getRestartStatus: () => isBotRestarting,
   setRestartStatus: (status) => (isBotRestarting = status),
 };

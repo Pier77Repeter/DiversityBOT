@@ -15,7 +15,7 @@ module.exports = async function dbJsonDataSet(client, message, dataName, jsonDat
     const embed = new EmbedBuilder()
       .setColor(0xff0000)
       .setTitle("⚠️ Critical error")
-      .setDescription("Failed to update your stuff in database, please **report this error with the server ID and your user ID**")
+      .setDescription("Failed to update your stuff in my database, please **report this error with the server ID and your user ID**")
       .addFields(
         { name: "Server ID", value: `\`${message.guild.id}\``, inline: true },
         { name: "User ID", value: `\`${message.author.id}\``, inline: true },

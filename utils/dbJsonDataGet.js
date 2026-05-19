@@ -6,11 +6,11 @@ module.exports = async function dbJsonDataGet(client, user, message, dataName) {
   try {
     const row = await client.database.query(`SELECT ${dataName} FROM users WHERE server_id = $1 AND user_id = $2`, [message.guild.id, user.id]);
 
-    if (row.rowCount === 0) throw new Error("User '" + message.author.id + "' from Server '" + message.guild.id + "' was not found in database");
+    if (row.rowCount === 0) throw new Error("Failed to find in database: Server '" + message.guild.id + "' - User '" + message.author.id + "'");
 
     return row.rows[0][dataName]; // it's a json object!
   } catch (error) {
-    logger.error("Error getting JSON data '" + dataName + "': Server '" + message.guild.id + "' - User '" + message.author.id + "'", error);
+    logger.error("Error getting json data '" + dataName + "': Server '" + message.guild.id + "' - User '" + message.author.id + "'", error);
 
     const embed = new EmbedBuilder()
       .setColor(0xff0000)

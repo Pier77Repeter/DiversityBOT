@@ -6,9 +6,9 @@ Notes: DiversityBOT is the biggest project i've ever made!
 */
 
 // error handler to prevent crashes, top priority even tho position dosen't metter
-process.on("uncaughtException", (err) => {
+process.on("uncaughtException", (error) => {
   console.warn("\n[Error handler]: CRASH PREVENTED, PLEASE LOOK AT THE ERROR!!!\n=============================================================");
-  console.error(err);
+  console.error(error);
   console.warn("=============================================================\n[Error handler]: CRASH PREVENTED, PLEASE LOOK AT THE ERROR!!!\n");
 });
 
@@ -22,7 +22,7 @@ const path = require("path");
 
 const configFilePath = path.join(__dirname, "config.json");
 
-// you can make your own custom configurations, didn't want to put itemPrices in db
+// you can make your own custom configurations
 const defaultConfigs = {
   botToken: "YOUR_BOT_TOKEN_HERE",
   botId: "YOUR_BOT_ID_HERE",
@@ -130,13 +130,19 @@ client.once(Events.ClientReady, (readyClient) => {
           "Hey look, this is my status",
           "*randomly joins the chat*",
           "HHEEEEELLLLLLLLLLOOOOOOOOOOOOO",
-          "Still debugging!",
+          "Every day is a great day!",
           "Daily lag :i",
           "Now with slash commands!",
           "Now with daily crashes!",
+          "Still debugging!",
+          "Is JavaScript real?",
           "The perfect code dosen't exist",
+          "It's a string! No...it's a json object!",
+          "I am free and open-source!",
           "V2.0 took ages bruh",
+          "V6.9 has been released",
           "Not a normal bot",
+          "A paranormal Discord Bot",
           "d!help",
           "/help",
           "Do you want some music? d!play!",
@@ -144,9 +150,11 @@ client.once(Events.ClientReady, (readyClient) => {
           "Pier77Repeter is Bob's best friend",
           ">DiversityCraft on top",
           "Did you join DiversityCraft yet? :/",
+          "DiversityCraft is the coolest community!",
           "Since 2014!",
-          "Every day is a great day!",
+          "Online since 2021!",
           "default text",
+          "top text",
           "bottom text",
           "Flipping trains on your area (╯°□°)╯︵ ┻━┻",
         ],

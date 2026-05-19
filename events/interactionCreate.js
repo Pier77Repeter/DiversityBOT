@@ -9,13 +9,7 @@ module.exports = (client) => {
     if (!interaction.isChatInputCommand()) return;
 
     // check if the command is being sent in bot DMs
-    if (!interaction.guild) {
-      try {
-        return await interaction.reply("I can only be used in servers, i don't reply in DMs");
-      } catch {
-        return;
-      }
-    }
+    if (!interaction.guild) return; // ghosting
 
     // get the command
     const command = client.slashCommands.get(interaction.commandName);
@@ -116,7 +110,7 @@ module.exports = (client) => {
 
     // if slash commands get an error log it and tell the user
     try {
-      await command.execute(client, interaction);
+      return await command.execute(client, interaction);
     } catch (error) {
       logger.error("Error while executing a slash command", error);
 

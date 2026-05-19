@@ -11,35 +11,30 @@ module.exports = {
     if (message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.ManageMessages)) {
       try {
         await message.delete();
-      } catch (error) {
-        // continue the restart
+      } catch {
+        // continue the restart, and for the rest of the catches
       }
     }
 
     loader.setRestartStatus(true);
 
     const embed = new EmbedBuilder().setColor(0xffff00).setDescription("**[CONSOLE] Bot restarting in 2 minutes...**");
+
     try {
       await message.author.send({ embeds: [embed] });
-    } catch (error) {
-      return;
-    }
+    } catch {}
 
     await delay(105 * 1000);
     embed.setDescription("**[CONSOLE] Bot restarting in 15 seconds...**");
     try {
       await message.author.send({ embeds: [embed] });
-    } catch (error) {
-      return;
-    }
+    } catch {}
 
     await delay(15 * 1000);
     embed.setDescription("**[CONSOLE] Bot is restarting...**");
     try {
       await message.author.send({ embeds: [embed] });
-    } catch (error) {
-      return;
-    }
+    } catch {}
 
     await delay(1000);
     loader.shutdownLoader(client);

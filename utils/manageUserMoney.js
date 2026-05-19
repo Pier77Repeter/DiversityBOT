@@ -7,7 +7,7 @@ module.exports = async function manageUserMoney(client, message, operation, amou
   const row = await client.database.query("SELECT money, bank_money, debts FROM users WHERE server_id = $1 AND user_id = $2", [message.guild.id, message.author.id]);
 
   // this shouldn't happen SINCE data is created in 'messageCreate' event
-  if (row.rowCount === 0) throw new Error("Server " + message.guild.id + " - User " + message.author.id + " wasn't found in database");
+  if (row.rowCount === 0) throw new Error("Failed to find in database: Server '" + message.guild.id + "' - User '" + message.author.id + "'");
 
   // INTSSSSSSSSSSSSSSSSS
   const money = Number(row.rows[0].money);

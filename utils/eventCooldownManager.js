@@ -1,39 +1,33 @@
 const { EmbedBuilder } = require("discord.js");
 const logger = require("../logger")("EventCooldownManager");
 
-// this is very useful since it's gonna save tons of lines and time when implementing cooldowns for the commands
+// no need to say everything again, just look at 'cooldownManager().js'
 module.exports = async function eventCooldownManager(client, message, cooldownName, cooldownInSeconds, logError = true) {
-  const cooldownAmount = cooldownInSeconds * 1000; // cooldown to milliseconds
-  const unixNow = Date.now(); // this is needed since we work with unix time
+  const cooldownAmount = cooldownInSeconds * 1000;
+  const unixNow = Date.now();
 
   try {
-    // first we get the cooldown from the db (it should exist since user data gets INSERTED in messageCreate event, before this)
-
     const row = await client.database.query(`SELECT ${cooldownName} FROM events WHERE server_id = $1 AND user_id = $2`, [message.guild.id, message.author.id]);
 
-    // return null if db operation failed, so we need to check in the commands if return is null too
     if (row.rowCount === 0) throw new Error("Event user '" + message.author.id + "' from Server '" + message.guild.id + "' was not found in database");
 
-    const lastCooldown = row.rows[0][cooldownName];
+    const lastCooldown = Number(row.rows[0][cooldownName]);
     const expirationTime = lastCooldown + cooldownAmount;
 
-    // if the unix time in db is bigger than the current unix time this means user is still in cooldown
     if (unixNow < expirationTime) {
-      const timeLeft = Math.floor(expirationTime / 1000); // convert back for Discord timestamp output
-      const statusCode = 1; // 1 means it's active so we need to check if cooldown == 0 in the commands
+      const timeLeft = Math.floor(expirationTime / 1000);
+      const statusCode = 1;
       const cooldownData = [statusCode, timeLeft];
 
       return cooldownData;
     }
 
-    // update the cooldown immediatly
     await client.database.query(`UPDATE events SET ${cooldownName} = $1 WHERE server_id = $2 AND user_id = $3`, [unixNow, message.guild.id, message.author.id]);
 
-    return 0; // cooldown is off and everything went good :thumbsup:
+    return 0;
   } catch (error) {
     logger.error("Error handling event cooldown '" + cooldownName + "': Server '" + message.guild.id + "' - User '" + message.author.id + "'", error);
 
-    // sometimes we dont want this
     if (!logError) return null;
 
     const embed = new EmbedBuilder()
@@ -48,10 +42,8 @@ module.exports = async function eventCooldownManager(client, message, cooldownNa
 
     try {
       await message.reply({ embeds: [embed] });
-    } catch {
-      // continue
-    }
+    } catch {}
 
-    return null; // in case of an error (check is in the command)
+    return null;
   }
 };

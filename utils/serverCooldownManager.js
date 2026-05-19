@@ -10,10 +10,10 @@ module.exports = async function serverCooldownManager(client, message, cooldownN
     // first we get the cooldown from the db (it should exist since server data gets INSERTED in "guildCreate" event, before this)
     const row = await client.database.query(`SELECT ${cooldownName} FROM servers WHERE server_id = $1`, [message.guild.id]);
 
-    // return null if db operation failed, so we need to check in the commands if return is null too
-    if (row.rowCount === 0) throw new Error("Server '" + message.guild.id + "' was not found in database");
+    // if server isn't found go to catch block
+    if (row.rowCount === 0) throw new Error("Failed to find in database: Server '" + message.guild.id + "'");
 
-    const lastCooldown = Number(row.rows[0][cooldownName]);
+    const lastCooldown = Number(row.rows[0][cooldownName]); // do not forget 'Number()'
     const expirationTime = lastCooldown + cooldownAmount;
 
     // if the unix time in db is bigger than the current unix time this means user is still in cooldown

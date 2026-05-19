@@ -10,16 +10,16 @@ module.exports = async function cooldownManager(client, message, cooldownName, c
     // first we get the cooldown from the db (it should exist since user data gets INSERTED in messageCreate event, before this)
     const row = await client.database.query(`SELECT ${cooldownName} FROM users WHERE server_id = $1 AND user_id = $2`, [message.guild.id, message.author.id]);
 
-    // return null if db operation failed, so we need to check in the commands if return is null too
-    if (row.rowCount === 0) throw new Error("User '" + message.author.id + "' from Server '" + message.guild.id + "' was not found in database");
+    // row.rows[0].exists IS ONLY FOR SELECT EXISTS(), if user of server isn't found go to catch block
+    if (row.rowCount === 0) throw new Error("Failed to find in database: Server '" + message.guild.id + "' - User '" + message.author.id + "'");
 
-    const lastCooldown = Number(row.rows[0][cooldownName]); // use Number() to convert the BIGINT string to an int
+    const lastCooldown = Number(row.rows[0][cooldownName]); // MUST USE 'Number()' to convert the BIGINT string
     const expirationTime = lastCooldown + cooldownAmount;
 
     // if the unix time in db is bigger than the current unix time this means user is still in cooldown
     if (unixNow < expirationTime) {
       const timeLeft = Math.floor(expirationTime / 1000); // convert back for Discord timestamp output
-      const statusCode = 1; // 1 means it's active so we need to check if cooldown == 0 in the commands
+      const statusCode = 1; // 1 means it's active so we need to check if cooldown === 0 in the commands
       const cooldownData = [statusCode, timeLeft];
 
       return cooldownData;
