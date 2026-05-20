@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, PermissionsBitField, MessageFlags } = require("discord.js");
 const configChecker = require("../utils/configChecker");
+const modActionLogger = require("../utils/modActionLogger");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -10,15 +11,15 @@ module.exports = {
   async execute(client, interaction) {
     const embed = new EmbedBuilder();
 
-    const isModEnabled = await configChecker(client, interaction, "modCmd");
-    if (isModEnabled == null) return;
+    const isModEnabled = await configChecker(client, interaction, "mod_cmd");
+    if (isModEnabled === null) return;
 
-    if (isModEnabled == 0) {
+    if (isModEnabled === 0) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **/setup** to enable them");
 
       try {
         return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -26,13 +27,9 @@ module.exports = {
     const channel = interaction.options.getChannel("channel") || "null";
 
     // turn this crap off
-    if (channel == "null") {
-      await new Promise((resolve, reject) => {
-        client.database.run("UPDATE Server SET modLogChannel = ? WHERE serverId = ?", [channel, interaction.guild.id], (err) => {
-          if (err) reject(err);
-          else resolve();
-        });
-      });
+    if (channel === "null") {
+      // do not worry about any error, it gets catched in interactionCreate.js
+      await client.database.query("UPDATE servers SET mod_log_channel = $1 WHERE server_id = $2", [channel, interaction.guild.id]);
 
       embed
         .setColor(0x33ff33)
@@ -40,12 +37,12 @@ module.exports = {
         .setDescription(
           "You haven't mentioned any channel, this means that logging is now **NOT ACTIVE**" +
             "\n" +
-            "You can mention a channel to active logging, make sure i have the permission to `Send messages` in that channel"
+            "You can mention a channel to active logging, make sure i have the permission to `Send messages` in that channel",
         );
 
       try {
         return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -55,17 +52,12 @@ module.exports = {
 
       try {
         return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    await new Promise((resolve, reject) => {
-      client.database.run("UPDATE Server SET modLogChannel = ? WHERE serverId = ?", [channel.id, interaction.guild.id], (err) => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
+    await client.database.query("UPDATE servers SET mod_log_channel = $1 WHERE server_id = $2", [channel.id, interaction.guild.id]);
 
     embed
       .setColor(0x33ff33)
@@ -74,7 +66,7 @@ module.exports = {
 
     try {
       await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-    } catch (error) {
+    } catch {
       // continue
     }
 
@@ -82,19 +74,13 @@ module.exports = {
     embed
       .setColor(0x33ff33)
       .setTitle("📝 Mod actions logger")
-      .setDescription(
-        "Moderation actions (bans, kicks, mutes, etc.) will be logged in this channel, make sure i keep the permission to `Send messages` in this channel"
-      )
+      .setDescription("Moderation actions (bans, kicks, mutes, etc.) will be logged in this channel, make sure i keep the permission to `Send messages` in this channel")
       .setFooter({
         text: "Configured by " + interaction.user.tag,
         iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
       })
       .setTimestamp();
 
-    try {
-      return await channel.send({ embeds: [embed] });
-    } catch (error) {
-      return;
-    }
+    await modActionLogger(client, interaction, embed);
   },
 };

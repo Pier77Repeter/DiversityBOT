@@ -113,11 +113,9 @@ module.exports = (client) => {
       });
 
       // checking if user exists in db, very fast query, will return a boolean if row is found
-      row = await client.database
-        .query("SELECT EXISTS (SELECT 1 FROM users WHERE server_id = $1 AND user_id = $2)", [message.guild.id, message.author.id])
-        .catch((error) => {
-          logger.error("Error verifying if user exist in database", error);
-        });
+      row = await client.database.query("SELECT EXISTS (SELECT 1 FROM users WHERE server_id = $1 AND user_id = $2)", [message.guild.id, message.author.id]).catch((error) => {
+        logger.error("Error verifying if user exist in database", error);
+      });
 
       // the user exists, so update his shit
       if (row.rows[0].exists) {
@@ -146,6 +144,7 @@ module.exports = (client) => {
     }
 
     // if it's new user, insert the default data in db, i put this here so that only people who actually use the bot gets stored in db (less junk)
+    // 'row.rows[0].exists' is used for 'SELECT EXISTS()', use 'row.rowCount === 0' for the rest
     if (!row.rows[0].exists) {
       // now you can S E E the json crap
       const itemsJsonData = {
@@ -324,7 +323,7 @@ module.exports = (client) => {
   async function userDataUpdater(message) {
     // selecting the data that needs to be updated EVERYTIME THE USER SENDS A NEW MESSAGE
     const userRow = await client.database.query(
-      "SELECT xp, next_xp, reputation, debts, money, bank_money, has_pet, pet_stats_health, pet_stats_fun, pet_stats_hunger, pet_stats_thirst, pet_cooldown FROM users WHERE server_id = $1 AND user_id = $2",
+      "SELECT level, xp, next_xp, reputation, debts, money, bank_money, has_pet, pet_stats_health, pet_stats_fun, pet_stats_hunger, pet_stats_thirst, pet_cooldown FROM users WHERE server_id = $1 AND user_id = $2",
       [message.guild.id, message.author.id],
     );
 

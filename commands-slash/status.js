@@ -8,7 +8,7 @@ module.exports = {
     const embed = new EmbedBuilder().setColor(0x990000).setTitle("💻 Gathering all the needed data...");
     try {
       await interaction.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -66,11 +66,7 @@ module.exports = {
         .setDescription(["Here you can see all of my hardware and Discord's stats"].join(""))
         .addFields({
           name: "**Discord stats:**",
-          value: [
-            "Total servers: `" + client.guilds.cache.size + "`",
-            "Total users: `" + totalMembers + "`",
-            "Latency to Discord: `" + client.ws.ping + "ms`",
-          ].join("\n"),
+          value: ["Total servers: `" + client.guilds.cache.size + "`", "Total users: `" + totalMembers + "`", "Latency to Discord: `" + client.ws.ping + "ms`"].join("\n"),
           inline: false,
         })
         .addFields({
@@ -88,7 +84,7 @@ module.exports = {
 
       try {
         return await interaction.editReply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }, 2000);

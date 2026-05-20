@@ -26,7 +26,7 @@ module.exports = {
 
     try {
       return await interaction.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

@@ -1,14 +1,6 @@
-const {
-  SlashCommandBuilder,
-  EmbedBuilder,
-  PermissionFlagsBits,
-  MessageFlags,
-  ButtonStyle,
-  ComponentType,
-  ButtonBuilder,
-  ActionRowBuilder,
-} = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, MessageFlags, ButtonStyle, ComponentType, ButtonBuilder, ActionRowBuilder } = require("discord.js");
 const configChecker = require("../utils/configChecker");
+const modActionLogger = require("../utils/modActionLogger");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -19,15 +11,15 @@ module.exports = {
   async execute(client, interaction) {
     const embed = new EmbedBuilder();
 
-    const isModEnabled = await configChecker(client, interaction, "modCmd");
-    if (isModEnabled == null) return;
+    const isModEnabled = await configChecker(client, interaction, "mod_cmd");
+    if (isModEnabled === null) return;
 
-    if (isModEnabled == 0) {
+    if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **/setup** to enable them");
 
       try {
         return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -39,35 +31,27 @@ module.exports = {
 
       try {
         return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    const checkRow = await new Promise((resolve, reject) => {
-      client.database.get("SELECT warns FROM User WHERE serverId = ? AND userId = ?", [interaction.guild.id, member.user.id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
+    const checkRow = await client.database.query("SELECT warns FROM users WHERE server_id = $1 AND user_id = $2", [interaction.guildId, member.user.id]);
 
-    if (!checkRow || checkRow.warns == 0) {
-      embed
-        .setColor(0x33ff33)
-        .setTitle("🚨" + member.user.tag + "'s warns")
-        .setDescription("The user **" + member.user.tag + "** has a total of **0** warns");
+    if (checkRow.rowCount === 0) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Couldn't warn the user because...they need to use at least **1** of my commands");
 
       try {
-        return await interaction.reply({ embeds: [embed] });
-      } catch (error) {
+        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+      } catch {
         return;
       }
     }
 
     embed
       .setColor(0x33ff33)
-      .setTitle("🚨" + member.user.tag + "'s warns")
-      .setDescription("The user **" + member.user.tag + "** has a total of **" + checkRow.warns + "** warns");
+      .setTitle("🚨 " + member.user.tag + "'s warns")
+      .setDescription("The user **" + member.user.tag + "** has a total of **" + checkRow.rows[0].warns + "** warns");
 
     // first time we get something like this, format is "s<name>-btn-<btnName>" the 's' stands for slash so it sounds slashwarns-btn-...
     const btnClearWarns = new ButtonBuilder().setCustomId("swarns-btn-btnClearWarns").setLabel("Clear warns").setStyle(ButtonStyle.Primary);
@@ -77,7 +61,7 @@ module.exports = {
 
     try {
       sentMessage = await interaction.reply({ embeds: [embed], components: [actionRow] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -90,18 +74,13 @@ module.exports = {
       if (btnInteraction.user.id !== interaction.user.id) {
         try {
           return await btnInteraction.reply({ content: "You can't use this button, it is not for you", flags: [MessageFlags.Ephemeral] });
-        } catch (error) {
+        } catch {
           return;
         }
       }
 
       if (btnInteraction.customId === "swarns-btn-btnClearWarns") {
-        await new Promise((resolve, reject) => {
-          client.database.run("UPDATE User SET warns = 0 WHERE serverId = ? AND userId = ?", [interaction.guild.id, member.user.id], (err) => {
-            if (err) reject(err);
-            else resolve();
-          });
-        });
+        await client.database.query("UPDATE users SET warns = 0 WHERE server_id = $1 AND user_id = $2", [interaction.guildId, member.user.id]);
 
         embed
           .setColor(0x33ff33)
@@ -112,35 +91,19 @@ module.exports = {
 
         try {
           await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-        } catch (error) {
+        } catch {
           return;
         }
 
         // MOD LOGGING HERE
-        const row = await new Promise((resolve, reject) => {
-          client.database.get("SELECT modLogChannel FROM Server WHERE serverId = ?", [interaction.guild.id], (err, row) => {
-            if (err) reject(err);
-            else resolve(row);
-          });
-        });
+        embed
+          .setColor(0x33ff33)
+          .setTitle("🛂 Cleared member warns")
+          .setDescription("**" + member.user.tag + "**'s warns have been cleared")
+          .setFooter({ text: "Action by " + interaction.user.tag, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
+          .setTimestamp();
 
-        if (row && row.modLogChannel && row.modLogChannel !== "null") {
-          const channel = interaction.guild.channels.cache.get(row.modLogChannel);
-          if (channel) {
-            embed
-              .setColor(0x33ff33)
-              .setTitle("🛂 Cleared member warns")
-              .setDescription("**" + member.user.tag + "**'s warns have been cleared")
-              .setFooter({ text: "Action by " + interaction.user.tag, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
-              .setTimestamp();
-
-            try {
-              return await channel.send({ embeds: [embed] });
-            } catch (error) {
-              return;
-            }
-          }
-        }
+        await modActionLogger(client, interaction, embed);
       }
     });
 
@@ -149,7 +112,7 @@ module.exports = {
 
       try {
         return await sentMessage.edit({ components: [actionRow] });
-      } catch (error) {
+      } catch {
         return;
       }
     });

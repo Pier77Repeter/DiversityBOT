@@ -30,11 +30,11 @@ module.exports = {
         const setupQueries = `
         CREATE TABLE IF NOT EXISTS servers (
           server_id VARCHAR(20) NOT NULL PRIMARY KEY,
-          mod_cmd BOOLEAN DEFAULT false,
-          music_cmd BOOLEAN DEFAULT false,
-          event_cmd BOOLEAN DEFAULT false,
-          community_cmd BOOLEAN DEFAULT false,
-          leveling_cmd BOOLEAN DEFAULT false,
+          mod_cmd BOOLEAN DEFAULT true,
+          music_cmd BOOLEAN DEFAULT true,
+          event_cmd BOOLEAN DEFAULT true,
+          community_cmd BOOLEAN DEFAULT true,
+          leveling_cmd BOOLEAN DEFAULT true,
           mod_log_channel VARCHAR(20),
           play_cooldown BIGINT DEFAULT 0,
           image_cooldown BIGINT DEFAULT 0,
@@ -58,7 +58,7 @@ module.exports = {
         CREATE TABLE IF NOT EXISTS users (
           server_id VARCHAR(20) NOT NULL,
           user_id VARCHAR(20) NOT NULL,
-          level BIGINT DEFAULT 0,
+          level INT DEFAULT 0,
           xp INT DEFAULT 0,
           next_xp INT DEFAULT 0,
           reputation INT DEFAULT 0,

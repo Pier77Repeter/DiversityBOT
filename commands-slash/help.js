@@ -30,12 +30,12 @@ module.exports = {
           "**/status** - Check my stats",
           "**/link** - See Bot's links, website, discord, invite link",
           "**/ping** - Display the bot's ping",
-        ].join("\n")
+        ].join("\n"),
       );
 
     try {
       return await interaction.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

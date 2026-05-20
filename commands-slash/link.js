@@ -13,12 +13,12 @@ module.exports = {
         inline: false,
       })
       .addFields({ name: "Discord link", value: "https://discord.gg/KxadTdz", inline: false })
-      .addFields({ name: "Website link", value: "https://diversitybot.onrender.com/", inline: false })
+      .addFields({ name: "Website link", value: "https://bot.diversitycraft.org/", inline: false })
       .setFooter({ text: "Make sure the give me all the needed permissions" });
 
     try {
       return await interaction.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

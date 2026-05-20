@@ -17,7 +17,7 @@ module.exports = {
       .setTitle([interaction.guild.name + "'s informations"].join(""))
       .setDescription(
         [
-          "Server ID: **" + interaction.guild.id + "**",
+          "Server ID: **" + interaction.guildId + "**",
           "",
           "Server owner: <@" + interaction.guild.ownerId + ">",
           "",
@@ -40,14 +40,14 @@ module.exports = {
           "Role slots: `" + interaction.guild.roles.cache.size + "/250`",
           "",
           "**Server icon:**",
-        ].join("\n")
+        ].join("\n"),
       )
       .setImage(interaction.guild.iconURL({ dynamic: true }))
       .setFooter({ text: "View the server's configs with /config" });
 
     try {
       return await interaction.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

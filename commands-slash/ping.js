@@ -11,7 +11,7 @@ module.exports = {
 
     try {
       await interaction.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -33,7 +33,7 @@ module.exports = {
 
     try {
       return await interaction.editReply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },
