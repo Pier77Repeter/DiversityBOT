@@ -9,28 +9,28 @@ module.exports = {
   async execute(client, message, args) {
     const embed = new EmbedBuilder();
 
-    const isCommunityEnabled = await configChecker(client, message, "communityCmd");
-    if (isCommunityEnabled == null) return;
+    const isCommunityEnabled = await configChecker(client, message, "community_cmd");
+    if (isCommunityEnabled === null) return;
 
-    if (isCommunityEnabled == 0) {
+    if (!isCommunityEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Community commands are off! Type **d!setup community** to enable them");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    const cooldown = await serverCooldownManager(client, message, "cannyCooldown", this.cooldown);
-    if (cooldown == null) return;
+    const cooldown = await serverCooldownManager(client, message, "canny_cooldown", this.cooldown);
+    if (cooldown === null) return;
 
-    if (cooldown != 0) {
+    if (cooldown !== 0) {
       embed.setColor(0x000000).setDescription("⏰ You can play another canny game **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -41,7 +41,7 @@ module.exports = {
 
     try {
       await message.reply({ embeds: [embed], files: [imageFile] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -50,7 +50,7 @@ module.exports = {
     const collector = message.channel.createMessageCollector({ filter: filter, time: 30_000 });
 
     // this is needed to know at which phase are we
-    var counter = 1;
+    let counter = 1;
 
     collector.on("collect", async (receivedMessage) => {
       counter++;
@@ -58,7 +58,7 @@ module.exports = {
       if (receivedMessage.content.length > 256) {
         try {
           return await receivedMessage.reply({ content: "Message is too long, keep it under 2000 characters" });
-        } catch (error) {
+        } catch {
           return;
         }
       }
@@ -75,16 +75,16 @@ module.exports = {
 
       try {
         await receivedMessage.reply({ embeds: [embed], files: [imageFile] });
-      } catch (error) {
+      } catch {
         return;
       }
     });
 
     collector.on("end", async () => {
-      if (counter == 1) {
+      if (counter === 1) {
         try {
           return await message.reply("You didn't want to continue the game :(");
-        } catch (error) {
+        } catch {
           return;
         }
       }

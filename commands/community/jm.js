@@ -12,28 +12,28 @@ module.exports = {
   async execute(client, message, args) {
     const embed = new EmbedBuilder();
 
-    const isCommunityEnabled = await configChecker(client, message, "communityCmd");
-    if (isCommunityEnabled == null) return;
+    const isCommunityEnabled = await configChecker(client, message, "community_cmd");
+    if (isCommunityEnabled === null) return;
 
-    if (isCommunityEnabled == 0) {
+    if (!isCommunityEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Community commands are off! Type **d!setup community** to enable them");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    const cooldown = await serverCooldownManager(client, message, "jmCooldown", this.cooldown);
-    if (cooldown == null) return;
+    const cooldown = await serverCooldownManager(client, message, "jm_cooldown", this.cooldown);
+    if (cooldown === null) return;
 
-    if (cooldown != 0) {
+    if (cooldown !== 0) {
       embed.setColor(0x000000).setDescription("⏰ You can do another Java moment **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -42,7 +42,7 @@ module.exports = {
 
     try {
       await message.reply({ files: [imageFile] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -51,7 +51,7 @@ module.exports = {
     imageFile.setFile("./media/javaLogo.png");
     try {
       await message.channel.send({ files: [imageFile] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -60,7 +60,7 @@ module.exports = {
     imageFile.setFile("./media/javaLogo2.png");
     try {
       await message.channel.send({ files: [imageFile] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -68,7 +68,7 @@ module.exports = {
 
     try {
       await message.channel.send("Java moment!");
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -76,7 +76,7 @@ module.exports = {
 
     try {
       await message.channel.send("https://c.tenor.com/PZSmpxGQHfoAAAAd/tenor.gif");
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -95,10 +95,10 @@ module.exports = {
             "https://c.tenor.com/2o2btC2kLXoAAAAd/tenor.gif",
             "https://c.tenor.com/rh87gPA5SfUAAAAd/tenor.gif",
           ],
-          false
-        )
+          false,
+        ),
       );
-    } catch (error) {
+    } catch {
       return;
     }
   },

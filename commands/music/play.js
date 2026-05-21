@@ -11,15 +11,15 @@ module.exports = {
   async execute(client, message, args) {
     const embed = new EmbedBuilder();
 
-    const isMusicEnabled = await configChecker(client, message, "musiCmd");
-    if (isMusicEnabled == null) return;
+    const isMusicEnabled = await configChecker(client, message, "music_cmd");
+    if (isMusicEnabled === null) return;
 
-    if (isMusicEnabled == 0) {
+    if (!isMusicEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -32,22 +32,22 @@ module.exports = {
         .setImage("https://c.tenor.com/W_aA0wh5C4gAAAAd/tenor.gif");
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    const cooldown = await serverCooldownManager(client, message, "playCooldown", this.cooldown);
-    if (cooldown == null) return;
+    const cooldown = await serverCooldownManager(client, message, "play_cooldown", this.cooldown);
+    if (cooldown === null) return;
 
-    if (cooldown[0] == 1) {
+    if (cooldown[0] === 1) {
       embed
         .setColor(0x000000)
         .setTitle(null)
         .setDescription("⏰ Listen some music before using **d!play** again in: **<t:" + cooldown[1] + ":R>**");
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -60,7 +60,7 @@ module.exports = {
     if (!voiceChannel) {
       try {
         return await message.reply("You need to be in a voice channel to play music!");
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -68,7 +68,7 @@ module.exports = {
     if (message.guild.members.me.voice.channel && message.guild.members.me.voice.channel !== voiceChannel) {
       try {
         return await message.reply("I am already playing in a different voice channel!");
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -76,7 +76,7 @@ module.exports = {
     if (!message.guild.members.me.permissions.has(PermissionsBitField.Flags.Connect)) {
       try {
         return await message.reply("I do not have permission to join your voice channel!");
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -84,24 +84,24 @@ module.exports = {
     if (!message.guild.members.me.permissionsIn(voiceChannel).has(PermissionsBitField.Flags.Speak)) {
       try {
         return await message.reply("I do not have permission to speak in your voice channel!");
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    var isFirstSong; // this is needed to make the fancy "Music API is connected" msg
+    let isFirstSong; // this is needed to make the fancy "Music API is connected" msg
 
     embed
       .setColor(0x666666)
       .setTitle("🔍 Searching the song...")
       .setDescription(
-        "Hopefully i'm able to find the song you asked on **SoundCloud**, if it's not what you wanted try adding the song author BEFORE the song name, else just go on **https://soundcloud.com/** and see if your song is there"
+        "Hopefully i'm able to find the song you asked on **SoundCloud**, if it's not what you wanted try adding the song author BEFORE the song name, else just go on **https://soundcloud.com/** and see if your song is there",
       );
 
-    var sentMessage;
+    let sentMessage;
     try {
       sentMessage = await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -116,7 +116,7 @@ module.exports = {
       embed.setColor(0xff0000).setTitle("❌ Not Found").setDescription("No track was found for your query.");
       try {
         return await sentMessage.edit({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -141,13 +141,13 @@ module.exports = {
     if (!queue.connection) {
       try {
         await queue.connect(message.member.voice?.channelId);
-      } catch (error) {
+      } catch {
         // rip, couldnt connect to vc
         embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Failed to connect to your voice channel, check if i have the permission to connect");
 
         try {
           return await sentMessage.edit({ embeds: [embed] });
-        } catch (error) {
+        } catch {
           return;
         }
       }
@@ -161,7 +161,7 @@ module.exports = {
 
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -180,12 +180,12 @@ module.exports = {
           },
         },
       });
-    } catch (error) {
+    } catch {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Something went wrong while playing the song");
 
       try {
         return await sentMessage.edit({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -196,7 +196,7 @@ module.exports = {
 
       try {
         return await sentMessage.edit({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }

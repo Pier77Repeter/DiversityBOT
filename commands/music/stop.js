@@ -8,15 +8,15 @@ module.exports = {
   async execute(client, message, args) {
     const embed = new EmbedBuilder();
 
-    const isMusicEnabled = await configChecker(client, message, "musiCmd");
-    if (isMusicEnabled == null) return;
+    const isMusicEnabled = await configChecker(client, message, "music_cmd");
+    if (isMusicEnabled === null) return;
 
-    if (isMusicEnabled == 0) {
+    if (!isMusicEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -28,7 +28,7 @@ module.exports = {
     if (!voiceChannel) {
       try {
         return await message.reply("You need to be in a voice channel to stop the music!");
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -37,7 +37,7 @@ module.exports = {
     if (message.guild.members.me.voice.channel && message.guild.members.me.voice.channel !== voiceChannel) {
       try {
         return await message.reply("I am already playing in a different voice channel!");
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -50,7 +50,7 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

@@ -9,15 +9,15 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     // take a look into configChecker to know what's going on
-    const isMusicEnabled = await configChecker(client, message, "musiCmd");
-    if (isMusicEnabled == null) return; // put return so that commands execution stops when there's an error
+    const isMusicEnabled = await configChecker(client, message, "music_cmd");
+    if (isMusicEnabled === null) return; // put return so that commands execution stops when there's an error
 
-    if (isMusicEnabled == 0) {
+    if (!isMusicEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -25,7 +25,7 @@ module.exports = {
     if (!message.member.voice.channel) {
       try {
         return await message.reply("You need to be in a voice channel to use this command!");
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -37,7 +37,7 @@ module.exports = {
     if (!queue || !queue.isPlaying()) {
       try {
         return await message.reply("There is nothing to loop right now, play some songs first");
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -48,7 +48,7 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },
