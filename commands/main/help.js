@@ -1,12 +1,4 @@
-const {
-  StringSelectMenuBuilder,
-  ActionRowBuilder,
-  StringSelectMenuOptionBuilder,
-  AttachmentBuilder,
-  EmbedBuilder,
-  ComponentType,
-  MessageFlags,
-} = require("discord.js");
+const { StringSelectMenuBuilder, ActionRowBuilder, StringSelectMenuOptionBuilder, AttachmentBuilder, EmbedBuilder, ComponentType, MessageFlags } = require("discord.js");
 
 module.exports = {
   name: "help",
@@ -26,36 +18,16 @@ module.exports = {
           .setEmoji("🎮")
           .setDescription("Fun commands")
           .setDefault(false),
-        new StringSelectMenuOptionBuilder()
-          .setValue("menuOption-help-menuHelp-music")
-          .setLabel("Music")
-          .setEmoji("🎵")
-          .setDescription("Music commands")
-          .setDefault(false),
-        new StringSelectMenuOptionBuilder()
-          .setValue("menuOption-help-menuHelp-economy")
-          .setLabel("Economy")
-          .setEmoji("⚖️")
-          .setDescription("Economy commands")
-          .setDefault(false),
-        new StringSelectMenuOptionBuilder()
-          .setValue("menuOption-help-menuHelp-img")
-          .setLabel("Image")
-          .setEmoji("📸")
-          .setDescription("Image commands")
-          .setDefault(false),
-        new StringSelectMenuOptionBuilder()
-          .setValue("menuOption-help-menuHelp-utility")
-          .setLabel("Utility")
-          .setEmoji("🧰")
-          .setDescription("Utility commands")
-          .setDefault(false),
+        new StringSelectMenuOptionBuilder().setValue("menuOption-help-menuHelp-music").setLabel("Music").setEmoji("🎵").setDescription("Music commands").setDefault(false),
+        new StringSelectMenuOptionBuilder().setValue("menuOption-help-menuHelp-economy").setLabel("Economy").setEmoji("⚖️").setDescription("Economy commands").setDefault(false),
+        new StringSelectMenuOptionBuilder().setValue("menuOption-help-menuHelp-img").setLabel("Image").setEmoji("📸").setDescription("Image commands").setDefault(false),
+        new StringSelectMenuOptionBuilder().setValue("menuOption-help-menuHelp-utility").setLabel("Utility").setEmoji("🧰").setDescription("Utility commands").setDefault(false),
         new StringSelectMenuOptionBuilder()
           .setValue("menuOption-help-menuHelp-community")
           .setLabel("Community")
           .setEmoji("🌍")
           .setDescription("Community commands")
-          .setDefault(false)
+          .setDefault(false),
       );
     const actionRow = new ActionRowBuilder().addComponents(menuHelp);
 
@@ -72,15 +44,15 @@ module.exports = {
           "Important commands: **d!help**, **/help**",
           "More commands will come soon. Please, be patient ;)",
           "", // for jumping down 2 times
-          "Bot current version: **2.0.5**",
+          "Bot current version: **2.1.0**",
           "Support me by **joining in here: https://discord.gg/KxadTdz**",
-        ].join("\n")
+        ].join("\n"),
       )
       .setThumbnail("attachment://DVC_highquality.jpg")
       .setFields(
         {
           name: "📰 New updates:",
-          value: "Release 2.0, type **d!news** for more!",
+          value: "Release 2.1, type **d!news** for more!",
           inline: false,
         },
         {
@@ -88,7 +60,7 @@ module.exports = {
           value: "More info in the Discord server!",
           //value: "Type d!event or /event to see more details!",
           inline: false,
-        }
+        },
       )
       .setFooter({ text: "DiversityBOT© 2021-2026", iconURL: "attachment://DVC_highquality.jpg" });
 
@@ -96,7 +68,7 @@ module.exports = {
 
     try {
       sentMessage = await message.reply({ embeds: [embed], files: [imageFile], components: [actionRow] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -112,7 +84,7 @@ module.exports = {
             content: "This menu isn't for you, just type d!help",
             flags: MessageFlags.Ephemeral,
           });
-        } catch (error) {
+        } catch {
           return;
         }
       }
@@ -174,7 +146,7 @@ module.exports = {
                   "**d!petplay** - Play with your pet",
                   "**d!petfeed** - Feed your pet",
                   "**d!petdrink** - Give water to your pet",
-                ].join("\n")
+                ].join("\n"),
               );
 
             try {
@@ -182,7 +154,7 @@ module.exports = {
                 embeds: [embed, menuOptionEmbed],
                 components: [actionRow],
               });
-            } catch (error) {
+            } catch {
               return;
             }
             break;
@@ -205,7 +177,7 @@ module.exports = {
                   "**d!back** - Play the previous song",
                   "**d!loop** - Loops the current song",
                   "**d!loopqueue** - Loops the whole queue",
-                ].join("\n")
+                ].join("\n"),
               );
 
             try {
@@ -213,7 +185,7 @@ module.exports = {
                 embeds: [embed, menuOptionEmbed],
                 components: [actionRow],
               });
-            } catch (error) {
+            } catch {
               return;
             }
             break;
@@ -252,7 +224,7 @@ module.exports = {
                   "**d!hunt** - Hunt in the forest for preys",
                   "**d!rob <@user>** - Rob the mentioned user",
                   "**d!roulette <amount>** - Play the roulette",
-                ].join("\n")
+                ].join("\n"),
               );
 
             try {
@@ -260,7 +232,7 @@ module.exports = {
                 embeds: [embed, menuOptionEmbed],
                 components: [actionRow],
               });
-            } catch (error) {
+            } catch {
               return;
             }
             break;
@@ -312,7 +284,7 @@ module.exports = {
                   "**d!trash** or **d!trash <@user>**",
                   "**d!triggered** or **d!triggered <@user>**",
                   "**d!wanted** or **d!wanted <@user>**",
-                ].join("\n")
+                ].join("\n"),
               );
 
             try {
@@ -320,7 +292,7 @@ module.exports = {
                 embeds: [embed, menuOptionEmbed],
                 components: [actionRow],
               });
-            } catch (error) {
+            } catch {
               return;
             }
             break;
@@ -348,7 +320,7 @@ module.exports = {
                   "**d!unmute <@user> <reason>** - Unmute a member (Only admin)",
                   "**d!warn <@user> <reason>** - Warn a member (Only admin)",
                   "**d!warns <@user>** - Check or clear member's warns (Only admin)",
-                ].join("\n")
+                ].join("\n"),
               );
 
             try {
@@ -356,7 +328,7 @@ module.exports = {
                 embeds: [embed, menuOptionEmbed],
                 components: [actionRow],
               });
-            } catch (error) {
+            } catch {
               return;
             }
             break;
@@ -374,7 +346,7 @@ module.exports = {
                   "**d!jm** - Java moment",
                   "**d!canny** - Play canny the game",
                   "**d!uncanny** - Same game but uncanny version",
-                ].join("\n")
+                ].join("\n"),
               );
 
             try {
@@ -382,7 +354,7 @@ module.exports = {
                 embeds: [embed, menuOptionEmbed],
                 components: [actionRow],
               });
-            } catch (error) {
+            } catch {
               return;
             }
             break;
@@ -399,7 +371,7 @@ module.exports = {
           embeds: [embed],
           components: [actionRow],
         });
-      } catch (error) {
+      } catch {
         return;
       }
     });

@@ -15,7 +15,7 @@ module.exports = {
     const isModEnabled = await configChecker(client, interaction, "mod_cmd");
     if (isModEnabled === null) return;
 
-    if (isModEnabled === 0) {
+    if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **/setup** to enable them");
 
       try {
@@ -68,17 +68,7 @@ module.exports = {
       }
     }
 
-    try {
-      await memberToUnmute.timeout(null, unmuteReason);
-    } catch {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Something bad happened while trying to unmute this user");
-
-      try {
-        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch {
-        return;
-      }
-    }
+    await memberToUnmute.timeout(null, unmuteReason);
 
     embed
       .setColor(0x33ff33)

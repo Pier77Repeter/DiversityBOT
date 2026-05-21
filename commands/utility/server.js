@@ -40,14 +40,14 @@ module.exports = {
           "Role slots: `" + message.guild.roles.cache.size + "/250`",
           "",
           "**Server icon:**",
-        ].join("\n")
+        ].join("\n"),
       )
       .setImage(message.guild.iconURL({ dynamic: true }))
       .setFooter({ text: "View the server's configs with d!config" });
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

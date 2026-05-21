@@ -15,7 +15,7 @@ module.exports = {
     // CHECK THE CONFIG CHECKER FIRST!
     const isModEnabled = await configChecker(client, interaction, "mod_cmd");
 
-    // oh no, something went wrong!
+    // oh no, something went wrong, message is already sent, so we gotta HALT the command execution!
     if (isModEnabled === null) return;
 
     // configChecker() returns either true or false
@@ -72,19 +72,10 @@ module.exports = {
       }
     }
 
-    try {
-      await memberToBan.ban({
-        reason: banReason,
-      });
-    } catch {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Something bad happened while trying to ban this user");
-
-      try {
-        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch {
-        return;
-      }
-    }
+    // if we fail to ban the user, the error will be logged and catched in 'messageCreate.js'
+    await memberToBan.ban({
+      reason: banReason,
+    });
 
     embed
       .setColor(0x33ff33)

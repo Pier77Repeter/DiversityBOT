@@ -68,19 +68,9 @@ module.exports = {
       }
     }
 
-    try {
-      await memberToKick.kick({
-        reason: kickReason,
-      });
-    } catch {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Something bad happened while trying to kick this user");
-
-      try {
-        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch {
-        return;
-      }
-    }
+    await memberToKick.kick({
+      reason: kickReason,
+    });
 
     embed
       .setColor(0x33ff33)

@@ -11,7 +11,7 @@ module.exports = {
       .addOptions(
         new StringSelectMenuOptionBuilder().setLabel("Get the Biden blast").setDescription("Very OP weapon").setValue("bidenBlast"),
         new StringSelectMenuOptionBuilder().setLabel("Curse of RA").setDescription("Old but effective weapon").setValue("curseOfRA"),
-        new StringSelectMenuOptionBuilder().setLabel("Bob").setDescription("justBob").setValue("bob")
+        new StringSelectMenuOptionBuilder().setLabel("Bob").setDescription("justBob").setValue("bob"),
       );
 
     // creating the menu row
@@ -22,7 +22,7 @@ module.exports = {
 
     try {
       sentMessage = await message.reply({ content: "Choose your weapon", components: [actionRow] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -40,7 +40,7 @@ module.exports = {
             content: "This menu isn't for you!",
             flags: MessageFlags.Ephemeral,
           });
-        } catch (error) {
+        } catch {
           return;
         }
 
@@ -54,21 +54,21 @@ module.exports = {
             try {
               // update the interaction, we can only do that 1 time, after this we need to do: sentMessage.edit()
               await menuInteraction.update({ content: "Biden blast selected", components: [actionRow] });
-            } catch (error) {
+            } catch {
               return;
             }
             break;
           case "curseOfRA":
             try {
               await menuInteraction.update({ content: "Curse of RA selected", components: [actionRow] });
-            } catch (error) {
+            } catch {
               return;
             }
             break;
           case "bob":
             try {
               await menuInteraction.update({ content: "Bob selected", components: [actionRow] });
-            } catch (error) {
+            } catch {
               return;
             }
             break;
@@ -82,7 +82,7 @@ module.exports = {
       // update the menu when disabled
       try {
         await sentMessage.edit({ content: "Bob selected", components: [actionRow] });
-      } catch (error) {
+      } catch {
         return;
       }
       return;

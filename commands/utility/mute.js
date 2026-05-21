@@ -1,5 +1,6 @@
 const { EmbedBuilder, PermissionsBitField } = require("discord.js");
 const configChecker = require("../../utils/configChecker");
+const modActionLogger = require("../../utils/modActionLogger");
 
 module.exports = {
   name: "mute",
@@ -7,15 +8,15 @@ module.exports = {
   async execute(client, message, args) {
     const embed = new EmbedBuilder();
 
-    const isModEnabled = await configChecker(client, message, "modCmd");
-    if (isModEnabled == null) return;
+    const isModEnabled = await configChecker(client, message, "mod_cmd");
+    if (isModEnabled === null) return;
 
-    if (isModEnabled == 0) {
+    if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -25,7 +26,7 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -35,17 +36,17 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    if (message.mentions.members.first() == null) {
+    if (!message.mentions.members.first()) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need to mention the member you want to mute");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -55,7 +56,7 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -65,7 +66,7 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -75,7 +76,7 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -84,17 +85,7 @@ module.exports = {
     const muteTime = args[1];
     const muteReason = args.slice(2).join(" ") || "No reason provided";
 
-    try {
-      await userToMute.timeout(muteTime * 60 * 1000, muteReason);
-    } catch (error) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Something bad happened while trying to mute this user");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return;
-      }
-    }
+    await userToMute.timeout(muteTime * 60 * 1000, muteReason);
 
     embed
       .setColor(0x33ff33)
@@ -103,34 +94,18 @@ module.exports = {
 
     try {
       await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       // continue
     }
 
     // MOD LOGGING HERE
-    const row = await new Promise((resolve, reject) => {
-      client.database.get("SELECT modLogChannel FROM Server WHERE serverId = ?", [message.guild.id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
+    embed
+      .setColor(0x33ff33)
+      .setTitle("🔇 Muted member")
+      .setDescription("**" + userToMute.user.tag + "** has been muted for " + muteTime + " minutes" + "\n" + "Reason: " + muteReason)
+      .setFooter({ text: "Action by " + message.author.tag, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+      .setTimestamp();
 
-    if (row && row.modLogChannel && row.modLogChannel !== "null") {
-      const channel = message.guild.channels.cache.get(row.modLogChannel);
-      if (channel) {
-        embed
-          .setColor(0x33ff33)
-          .setTitle("🔇 Muted member")
-          .setDescription("**" + userToMute.user.tag + "** has been muted for " + muteTime + " minutes" + "\n" + "Reason: " + muteReason)
-          .setFooter({ text: "Action by " + message.author.tag, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
-          .setTimestamp();
-
-        try {
-          return await channel.send({ embeds: [embed] });
-        } catch (error) {
-          return;
-        }
-      }
-    }
+    await modActionLogger(client, message, embed);
   },
 };

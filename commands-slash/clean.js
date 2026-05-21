@@ -42,6 +42,7 @@ module.exports = {
 
     var deletedCount = 0;
 
+    // in this chunk many things could go wrong while deleting the messages, dont wanna vomit the useless error, i trust this thing to delete the needed messages
     try {
       const deleted = await interaction.channel.bulkDelete(messagesToProcess, true);
       deletedCount = deleted.size;

@@ -24,7 +24,7 @@ module.exports = {
     try {
       // to put embeds and images inside message.reply() you do this '{ embeds: [embed1, embed2], files: [file1, file2] }'
       return await message.reply({ embeds: [embed], files: [imageFile] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

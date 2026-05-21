@@ -1,6 +1,7 @@
 const { PermissionsBitField, EmbedBuilder } = require("discord.js");
 const delay = require("../../utils/delay");
 const configChecker = require("../../utils/configChecker");
+const modActionLogger = require("../../utils/modActionLogger");
 
 module.exports = {
   name: "clean",
@@ -9,15 +10,15 @@ module.exports = {
   async execute(client, message, args) {
     const embed = new EmbedBuilder();
 
-    const isModEnabled = await configChecker(client, message, "modCmd");
-    if (isModEnabled == null) return;
+    const isModEnabled = await configChecker(client, message, "mod_cmd");
+    if (isModEnabled === null) return;
 
-    if (isModEnabled == 0) {
+    if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -27,7 +28,7 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -37,7 +38,7 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -49,7 +50,7 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -59,7 +60,7 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -71,10 +72,11 @@ module.exports = {
 
     var deletedCount = 0;
 
+    // in this chunk many things could go wrong while deleting the messages, dont wanna vomit the useless error, i trust this thing to delete the needed messages
     try {
       const deleted = await message.channel.bulkDelete(messagesToProcess, true);
       deletedCount = deleted.size;
-    } catch (error) {
+    } catch {
       embed
         .setColor(0xff0000)
         .setTitle("❌ Error")
@@ -82,7 +84,7 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -94,34 +96,18 @@ module.exports = {
         await delay(5000);
         await sentMessage.delete();
       });
-    } catch (error) {
+    } catch {
       // continue, no need to stop
     }
 
     // MOD LOGGING HERE
-    const row = await new Promise((resolve, reject) => {
-      client.database.get("SELECT modLogChannel FROM Server WHERE serverId = ?", [message.guild.id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
+    embed
+      .setColor(0x33ff33)
+      .setTitle("🧹 Cleaned Messages")
+      .setDescription("Cleaned **" + deletedCount + "** messages from channel <#" + message.channel.id + ">")
+      .setFooter({ text: "Action by " + message.author.tag, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+      .setTimestamp();
 
-    if (row && row.modLogChannel && row.modLogChannel !== "null") {
-      const channel = message.guild.channels.cache.get(row.modLogChannel);
-      if (channel) {
-        embed
-          .setColor(0x33ff33)
-          .setTitle("🧹 Cleaned Messages")
-          .setDescription("Cleaned **" + deletedCount + "** messages from channel <#" + message.channel.id + ">")
-          .setFooter({ text: "Action by " + message.author.tag, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
-          .setTimestamp();
-
-        try {
-          return await channel.send({ embeds: [embed] });
-        } catch (error) {
-          return;
-        }
-      }
-    }
+    await modActionLogger(client, message, embed);
   },
 };

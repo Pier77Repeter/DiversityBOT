@@ -1,5 +1,6 @@
 const { EmbedBuilder, PermissionsBitField } = require("discord.js");
 const configChecker = require("../../utils/configChecker");
+const modActionLogger = require("../../utils/modActionLogger");
 
 module.exports = {
   name: "warn",
@@ -7,15 +8,15 @@ module.exports = {
   async execute(client, message, args) {
     const embed = new EmbedBuilder();
 
-    const isModEnabled = await configChecker(client, message, "modCmd");
-    if (isModEnabled == null) return;
+    const isModEnabled = await configChecker(client, message, "mod_cmd");
+    if (isModEnabled === null) return;
 
-    if (isModEnabled == 0) {
+    if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -25,17 +26,17 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    if (message.mentions.members.first() == null) {
+    if (!message.mentions.members.first()) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need to mention the member you want to warn");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -45,7 +46,7 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -54,29 +55,71 @@ module.exports = {
     const warnReason = args.slice(1).join(" ") || "No reason provided";
 
     // if user dosen't exist in database we gotta let them know
-    const checkRow = await new Promise((resolve, reject) => {
-      client.database.get("SELECT userId FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, userToWarn.user.id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
+    const checkRow = await client.database.query("SELECT EXISTS (SELECT 1 FROM users WHERE server_id = $1 AND user_id = $2)", [message.guildId, userToWarn.user.id]);
 
-    if (!checkRow) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Couldn't warn the user because...they need to use at least **1** of my commands");
+    if (!checkRow.rows[0].exists) {
+      // an user MUST be warned even if he never used the bot, must create his data NOW
+      // no bots in my db
+      if (userToWarn.user.bot) {
+        embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You can't warn a Discord Bot");
 
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return;
+        try {
+          return await message.reply({ embeds: [embed] });
+        } catch {
+          return;
+        }
       }
+
+      const itemsJsonData = {
+        itemId1: false,
+        itemId2: false,
+        itemId2Count: 0,
+        itemId3: false,
+        itemId3Count: 0,
+        itemId4: false,
+        itemId5: false,
+        itemId6: false,
+        itemId7: false,
+        itemId8: false,
+        itemId9: false,
+        itemId10: false,
+        itemId10Count: 0,
+        itemId11: false,
+        itemId11Count: 0,
+      };
+
+      const fishesJsonData = {
+        fishId1: false,
+        fishId1Count: 0,
+        fishId2: false,
+        fishId2Count: 0,
+        fishId3: false,
+        fishId3Count: 0,
+        fishId4: false,
+        fishId4Count: 0,
+        fishId5: false,
+        fishId5Count: 0,
+        fishId6: false,
+        fishId6Count: 0,
+        fishId7: false,
+        fishId7Count: 0,
+        fishId8: false,
+        fishId8Count: 0,
+        fishId9: false,
+        fishId9Count: 0,
+        fishId10: false,
+        fishId10Count: 0,
+      };
+
+      await client.database.query("INSERT INTO users(server_id, user_id, items, fishes) VALUES($1, $2, $3, $4)", [
+        message.guildId,
+        userToWarn.user.id,
+        itemsJsonData,
+        fishesJsonData,
+      ]);
     }
 
-    await new Promise((resolve, reject) => {
-      client.database.run("UPDATE User SET warns = warns + 1 WHERE serverId = ? AND userId = ?", [message.guild.id, userToWarn.user.id], (err) => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
+    await client.database.query("UPDATE users SET warns = warns + 1 WHERE server_id = $1 AND user_id = $2", [message.guildId, userToWarn.user.id]);
 
     embed
       .setColor(0x33ff33)
@@ -85,34 +128,18 @@ module.exports = {
 
     try {
       await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       // continue
     }
 
     // MOD LOGGING HERE
-    const row = await new Promise((resolve, reject) => {
-      client.database.get("SELECT modLogChannel FROM Server WHERE serverId = ?", [message.guild.id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
+    embed
+      .setColor(0x33ff33)
+      .setTitle("🛂 Warned member")
+      .setDescription("**" + userToWarn.user.tag + "** has been warned" + "\n" + "Reason: " + warnReason)
+      .setFooter({ text: "Action by " + message.author.tag, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+      .setTimestamp();
 
-    if (row && row.modLogChannel && row.modLogChannel !== "null") {
-      const channel = message.guild.channels.cache.get(row.modLogChannel);
-      if (channel) {
-        embed
-          .setColor(0x33ff33)
-          .setTitle("🛂 Warned member")
-          .setDescription("**" + userToWarn.user.tag + "** has been warned" + "\n" + "Reason: " + warnReason)
-          .setFooter({ text: "Action by " + message.author.tag, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
-          .setTimestamp();
-
-        try {
-          return await channel.send({ embeds: [embed] });
-        } catch (error) {
-          return;
-        }
-      }
-    }
+    await modActionLogger(client, message, embed);
   },
 };

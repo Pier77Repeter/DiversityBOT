@@ -25,13 +25,13 @@ module.exports = {
           "**Roles:** " + member.roles.cache.map((role) => role.toString()).join(", "),
           "",
           "**Profile picture:**",
-        ].join("\n")
+        ].join("\n"),
       )
       .setImage(memberPfp);
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

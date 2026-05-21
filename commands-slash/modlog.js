@@ -14,7 +14,7 @@ module.exports = {
     const isModEnabled = await configChecker(client, interaction, "mod_cmd");
     if (isModEnabled === null) return;
 
-    if (isModEnabled === 0) {
+    if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **/setup** to enable them");
 
       try {

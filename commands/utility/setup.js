@@ -11,60 +11,27 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
     if (!args[0]) {
-      embed
-        .setColor(0xff0000)
-        .setTitle("❌ Error")
-        .setDescription("Specify one of the following names: **mod**, **music**, **event**, **community**, **leveling**");
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Specify one of the following names: **mod**, **music**, **event**, **community**, **leveling**");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    var row;
+    let row;
 
     switch (args[0].toLowerCase()) {
       case "mod":
-        await new Promise((resolve, reject) => {
-          // using NOT is a big brain move: if modCmd is 1, NOT modCmd evaluates to 0, while if modCmd is 0, NOT modCmd evaluates to 1 (It's an SQL operator)
-          client.database.run("UPDATE Server SET modCmd = NOT modCmd WHERE serverId = ?", message.guild.id, (err) => {
-            if (err) reject(err);
-            else resolve();
-          });
-        });
-
-        row = await new Promise((resolve, reject) => {
-          client.database.get("SELECT modCmd FROM Server WHERE serverId = ?", message.guild.id, (err, row) => {
-            if (err) reject(err);
-            else resolve(row);
-          });
-        });
-
-        if (!row) {
-          embed
-            .setColor(0xff0000)
-            .setTitle("❌ Error")
-            .setDescription("Failed to update server config, please **report this error with your server ID**")
-            .addFields({ name: "Submit here", value: "https://discord.gg/KxadTdz" });
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        embed.setColor(0x33ff33).setTitle("✅ Configuration updated");
-
-        if (row.modCmd) {
+        // returns the value of the config in db, either true or false
+        if (await updateConfig("mod_cmd")) {
           embed.setDescription("🔨 Moderation commands are now **ACTIVE**");
         } else {
           embed.setDescription("🔨 Moderation commands are now **NOT ACTIVE**");
@@ -72,42 +39,13 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch (error) {
+        } catch {
           return;
         }
+        break;
 
       case "music":
-        await new Promise((resolve, reject) => {
-          client.database.run("UPDATE Server SET musiCmd = NOT musiCmd WHERE serverId = ?", message.guild.id, (err) => {
-            if (err) reject(err);
-            else resolve();
-          });
-        });
-
-        row = await new Promise((resolve, reject) => {
-          client.database.get("SELECT musiCmd FROM Server WHERE serverId = ?", message.guild.id, (err, row) => {
-            if (err) reject(err);
-            else resolve(row);
-          });
-        });
-
-        if (!row) {
-          embed
-            .setColor(0xff0000)
-            .setTitle("❌ Error")
-            .setDescription("Failed to update server config, please **report this error with your server ID**")
-            .addFields({ name: "Submit here", value: "https://discord.gg/KxadTdz" });
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        embed.setColor(0x33ff33).setTitle("✅ Configuration updated");
-
-        if (row.musiCmd) {
+        if (await updateConfig("music_cmd")) {
           embed.setDescription("🎵 Music commands are now **ACTIVE**");
         } else {
           embed.setDescription("🎵 Music commands are now **NOT ACTIVE**");
@@ -115,42 +53,12 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch (error) {
+        } catch {
           return;
         }
 
       case "event":
-        await new Promise((resolve, reject) => {
-          client.database.run("UPDATE Server SET eventCmd = NOT eventCmd WHERE serverId = ?", message.guild.id, (err) => {
-            if (err) reject(err);
-            else resolve();
-          });
-        });
-
-        row = await new Promise((resolve, reject) => {
-          client.database.get("SELECT eventCmd FROM Server WHERE serverId = ?", message.guild.id, (err, row) => {
-            if (err) reject(err);
-            else resolve(row);
-          });
-        });
-
-        if (!row) {
-          embed
-            .setColor(0xff0000)
-            .setTitle("❌ Error")
-            .setDescription("Failed to update server config, please **report this error with your server ID**")
-            .addFields({ name: "Submit here", value: "https://discord.gg/KxadTdz" });
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        embed.setColor(0x33ff33).setTitle("✅ Configuration updated");
-
-        if (row.eventCmd) {
+        if (await updateConfig("event_cmd")) {
           embed.setDescription("🎉 Events commands are now **ACTIVE**");
         } else {
           embed.setDescription("🎉 Events commands are now **NOT ACTIVE**");
@@ -158,42 +66,12 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch (error) {
+        } catch {
           return;
         }
 
       case "community":
-        await new Promise((resolve, reject) => {
-          client.database.run("UPDATE Server SET communityCmd = NOT communityCmd WHERE serverId = ?", message.guild.id, (err) => {
-            if (err) reject(err);
-            else resolve();
-          });
-        });
-
-        row = await new Promise((resolve, reject) => {
-          client.database.get("SELECT communityCmd FROM Server WHERE serverId = ?", message.guild.id, (err, row) => {
-            if (err) reject(err);
-            else resolve(row);
-          });
-        });
-
-        if (!row) {
-          embed
-            .setColor(0xff0000)
-            .setTitle("❌ Error")
-            .setDescription("Failed to update server config, please **report this error with your server ID**")
-            .addFields({ name: "Submit here", value: "https://discord.gg/KxadTdz" });
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        embed.setColor(0x33ff33).setTitle("✅ Configuration updated");
-
-        if (row.communityCmd) {
+        if (await updateConfig("community_cmd")) {
           embed.setDescription("🌍 Community commands are now **ACTIVE**");
         } else {
           embed.setDescription("🌍 Community commands are now **NOT ACTIVE**");
@@ -201,42 +79,12 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch (error) {
+        } catch {
           return;
         }
 
       case "leveling":
-        await new Promise((resolve, reject) => {
-          client.database.run("UPDATE Server SET levelingCmd = NOT levelingCmd WHERE serverId = ?", message.guild.id, (err) => {
-            if (err) reject(err);
-            else resolve();
-          });
-        });
-
-        row = await new Promise((resolve, reject) => {
-          client.database.get("SELECT levelingCmd FROM Server WHERE serverId = ?", message.guild.id, (err, row) => {
-            if (err) reject(err);
-            else resolve(row);
-          });
-        });
-
-        if (!row) {
-          embed
-            .setColor(0xff0000)
-            .setTitle("❌ Error")
-            .setDescription("Failed to update server config, please **report this error with your server ID**")
-            .addFields({ name: "Submit here", value: "https://discord.gg/KxadTdz" });
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        embed.setColor(0x33ff33).setTitle("✅ Configuration updated");
-
-        if (row.levelingCmd) {
+        if (await updateConfig("leveling_cmd")) {
           embed.setDescription("🏆 Leveling commands are now **ACTIVE**");
         } else {
           embed.setDescription("🏆 Leveling commands are now **NOT ACTIVE**");
@@ -244,21 +92,45 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch (error) {
+        } catch {
           return;
         }
 
       default:
-        embed
-          .setColor(0xff0000)
-          .setTitle("❌ Error")
-          .setDescription("That config dosen't exist, choose between: **mod**, **music**, **event**, **community**, **leveling**");
+        embed.setColor(0xff0000).setTitle("❌ Error").setDescription("That config dosen't exist, choose between: **mod**, **music**, **event**, **community**, **leveling**");
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch (error) {
+        } catch {
           return;
         }
+        break;
+    }
+
+    // bro, honestly it was time we write a function for this crap
+    async function updateConfig(configName) {
+      // using NOT is a big brain move: if modCmd is 1, NOT modCmd evaluates to 0, while if modCmd is 0, NOT modCmd evaluates to 1 (It's an SQL operator)
+      await client.database.query(`UPDATE servers SET ${configName} = NOT ${configName} WHERE server_id = $1`, [message.guildId]);
+
+      row = await client.database.query(`SELECT ${configName} FROM servers WHERE server_id = $1`, [message.guildId]);
+
+      if (row.rowCount === 0) {
+        embed
+          .setColor(0xff0000)
+          .setTitle("⚠️ Critical error")
+          .setDescription("Failed to update server configs, please **report this error with the server ID**")
+          .addFields({ name: "Server ID", value: `\`${message.guildId}\``, inline: true }, { name: "Submit Report Here", value: "https://discord.gg/KxadTdz" });
+
+        try {
+          return await message.reply({ embeds: [embed] });
+        } catch {
+          return;
+        }
+      }
+
+      embed.setColor(0x33ff33).setTitle("✅ Configuration updated");
+
+      return row.rows[0][configName];
     }
   },
 };

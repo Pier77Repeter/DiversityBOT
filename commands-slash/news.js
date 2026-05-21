@@ -7,7 +7,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setColor(0x339999)
       .setTitle("📜 Changelogs/news")
-      .setDescription(["**Big Release 2.1!**", "", "The Bot has now a professional dedicated Database!"].join("\n"))
+      .setDescription(["**Release 2.1!**", "", "The Bot has now a professional dedicated Database!"].join("\n"))
       .addFields({
         name: "More info, suggestions and bug report here:",
         value: "https://discord.gg/KxadTdz",

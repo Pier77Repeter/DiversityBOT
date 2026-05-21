@@ -7,15 +7,15 @@ module.exports = {
   async execute(client, message, args) {
     const embed = new EmbedBuilder();
 
-    const isModEnabled = await configChecker(client, message, "modCmd");
-    if (isModEnabled == null) return;
+    const isModEnabled = await configChecker(client, message, "mod_cmd");
+    if (isModEnabled === null) return;
 
-    if (isModEnabled == 0) {
+    if (isModEnabled === 0) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -25,7 +25,7 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -33,13 +33,8 @@ module.exports = {
     const channel = message.mentions.channels.first() || "null";
 
     // to turn it off
-    if (channel == "null") {
-      await new Promise((resolve, reject) => {
-        client.database.run("UPDATE Server SET modLogChannel = ? WHERE serverId = ?", [channel, message.guild.id], (err) => {
-          if (err) reject(err);
-          else resolve();
-        });
-      });
+    if (channel === "null") {
+      await client.database.query("UPDATE servers SET mod_log_channel = $1 WHERE server_id = $2", [channel, message.guildId]);
 
       embed
         .setColor(0x33ff33)
@@ -47,12 +42,12 @@ module.exports = {
         .setDescription(
           "You haven't mentioned any channel, this means that logging is now **NOT ACTIVE**" +
             "\n" +
-            "You can mention a channel to active logging, make sure i have the permission to `Send messages` in that channel"
+            "You can mention a channel to active logging, make sure i have the permission to `Send messages` in that channel",
         );
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -62,17 +57,12 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    await new Promise((resolve, reject) => {
-      client.database.run("UPDATE Server SET modLogChannel = ? WHERE serverId = ?", [channel.id, message.guild.id], (err) => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
+    await client.database.query("UPDATE servers SET mod_log_channel = $1 WHERE server_id = $2", [channel.id, message.guildId]);
 
     embed
       .setColor(0x33ff33)
@@ -81,7 +71,7 @@ module.exports = {
 
     try {
       await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       // continue
     }
 
@@ -89,9 +79,7 @@ module.exports = {
     embed
       .setColor(0x33ff33)
       .setTitle("📝 Mod actions logger")
-      .setDescription(
-        "Moderation actions (bans, kicks, mutes, etc.) will be logged in this channel, make sure i keep the permission to `Send messages` in this channel"
-      )
+      .setDescription("Moderation actions (bans, kicks, mutes, etc.) will be logged in this channel, make sure i keep the permission to `Send messages` in this channel")
       .setFooter({
         text: "Configured by " + message.author.tag,
         iconURL: message.author.displayAvatarURL({ dynamic: true }),
@@ -100,7 +88,7 @@ module.exports = {
 
     try {
       return await channel.send({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

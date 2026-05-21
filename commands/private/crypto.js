@@ -17,7 +17,7 @@ module.exports = {
         await delay(10000);
 
         return await sentMessage.delete();
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -29,7 +29,7 @@ module.exports = {
         await delay(10000);
 
         return await sentMessage.delete();
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -47,7 +47,7 @@ module.exports = {
           await delay(10000);
 
           await sentMessage.delete();
-        } catch (error) {
+        } catch {
           // continue
         }
         break;
@@ -61,7 +61,7 @@ module.exports = {
           await delay(10000);
 
           await sentMessage.delete();
-        } catch (error) {
+        } catch {
           // continue
         }
         break;
@@ -75,7 +75,7 @@ module.exports = {
           await delay(10000);
 
           await sentMessage.delete();
-        } catch (error) {
+        } catch {
           // continue
         }
         break;
@@ -89,7 +89,7 @@ module.exports = {
           await delay(10000);
 
           await sentMessage.delete();
-        } catch (error) {
+        } catch {
           // continue
         }
         break;
@@ -101,7 +101,7 @@ module.exports = {
           await delay(10000);
 
           await sentMessage.delete();
-        } catch (error) {
+        } catch {
           // continue
         }
         break;
@@ -111,7 +111,7 @@ module.exports = {
     if (message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.ManageMessages)) {
       try {
         return await message.delete();
-      } catch (error) {
+      } catch {
         return;
       }
     }

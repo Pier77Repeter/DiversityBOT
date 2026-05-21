@@ -1,5 +1,6 @@
 const { EmbedBuilder, PermissionsBitField } = require("discord.js");
 const configChecker = require("../../utils/configChecker");
+const modActionLogger = require("../../utils/modActionLogger");
 
 module.exports = {
   name: "ban",
@@ -7,15 +8,19 @@ module.exports = {
   async execute(client, message, args) {
     const embed = new EmbedBuilder();
 
-    const isModEnabled = await configChecker(client, message, "modCmd");
-    if (isModEnabled == null) return;
+    // CHECK THE CONFIG CHECKER FIRST!
+    const isModEnabled = await configChecker(client, message, "mod_cmd");
 
-    if (isModEnabled == 0) {
+    // oh no, something went wrong, message is already sent, so we gotta HALT the command execution!
+    if (isModEnabled === null) return;
+
+    // 'configChecker()' returns either true or false read that first
+    if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -25,7 +30,7 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -35,17 +40,17 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    if (message.mentions.members.first() == null) {
+    if (!message.mentions.members.first()) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need to mention the member you want to ban");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -55,7 +60,7 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -68,25 +73,16 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    try {
-      await userToBan.ban({
-        deleteMessageSeconds: 60 * 60 * 24 * 7, // will delete all the messages sent in the last 7 days
-        reason: banReason,
-      });
-    } catch (error) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Something bad happened while trying to ban this user");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return;
-      }
-    }
+    // if we fail to ban the user, the error will be logged and catched in 'messageCreate.js'
+    await userToBan.ban({
+      deleteMessageSeconds: 60 * 60 * 24 * 7, // will delete all the messages sent in the last 7 days
+      reason: banReason,
+    });
 
     embed
       .setColor(0x33ff33)
@@ -95,34 +91,18 @@ module.exports = {
 
     try {
       await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       // continue
     }
 
     // MOD LOGGING HERE
-    const row = await new Promise((resolve, reject) => {
-      client.database.get("SELECT modLogChannel FROM Server WHERE serverId = ?", [message.guild.id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
+    embed
+      .setColor(0x33ff33)
+      .setTitle("🔨 Banned member")
+      .setDescription("**" + userToBan.user.tag + "** has been banned from the server" + "\n" + "Reason: " + banReason)
+      .setFooter({ text: "Action by " + message.author.tag, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+      .setTimestamp();
 
-    if (row && row.modLogChannel && row.modLogChannel !== "null") {
-      const channel = message.guild.channels.cache.get(row.modLogChannel);
-      if (channel) {
-        embed
-          .setColor(0x33ff33)
-          .setTitle("🔨 Banned member")
-          .setDescription("**" + userToBan.user.tag + "** has been banned from the server" + "\n" + "Reason: " + banReason)
-          .setFooter({ text: "Action by " + message.author.tag, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
-          .setTimestamp();
-
-        try {
-          return await channel.send({ embeds: [embed] });
-        } catch (error) {
-          return;
-        }
-      }
-    }
+    await modActionLogger(client, message, embed);
   },
 };

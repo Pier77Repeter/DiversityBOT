@@ -22,7 +22,7 @@ module.exports = {
     try {
       // to send the button row we gotta do '{ components: [actionRow] }'
       sentMessage = await message.reply({ embeds: [embed], components: [actionRow] });
-    } catch (error) {
+    } catch {
       return; // stop the command execution, no longer needed since we couldn't reply
     }
 
@@ -40,7 +40,7 @@ module.exports = {
         try {
           // answering the dude who generated the button interaction, to make this visible obly to the dude who clicked, we put the 'flags:' option, and set that this message is ephermeral by 'MessageFlags.Ephemeral'
           return await btnInteraction.reply({ content: "This button isn't for you!", flags: MessageFlags.Ephemeral });
-        } catch (error) {
+        } catch {
           return;
         }
       }
@@ -59,7 +59,7 @@ module.exports = {
           try {
             // updating the message sent by the bot with the updated embed AND actionRow (so that the changes we made are visible), we can only do that 1 time, after this we need to do: sentMessage.edit()
             return await btnInteraction.update({ content: "Updated the embed color to **RED**", embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
         case "btn-buttons-btnTwo":
@@ -69,7 +69,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ content: "Updated the embed color to **GREEN**", embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
         case "btn-buttons-btnThree":
@@ -78,7 +78,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ content: "Updated the embed color to **BLUE**", embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
       }
@@ -94,7 +94,7 @@ module.exports = {
       try {
         // updating the message sent by the bot with the updated actionRow with all the buttons disabled
         return await sentMessage.edit({ content: "Buttons has veen disabled! Time out", components: [actionRow] });
-      } catch (error) {
+      } catch {
         return;
       }
     });
