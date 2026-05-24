@@ -7,7 +7,7 @@ module.exports = {
 
   async execute(client, message, args) {
     const embed = new EmbedBuilder().setColor(0x990000).setTitle("💻 Gathering all the needed data...");
-    var sentMessage;
+    let sentMessage;
 
     try {
       sentMessage = await message.reply({ embeds: [embed] });

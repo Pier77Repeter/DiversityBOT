@@ -18,7 +18,7 @@ module.exports = {
     const actionRow = new ActionRowBuilder().addComponents(menu);
 
     // reply message with the menu
-    var sentMessage;
+    let sentMessage;
 
     try {
       sentMessage = await message.reply({ content: "Choose your weapon", components: [actionRow] });

@@ -9,7 +9,7 @@ module.exports = {
     const user = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
 
     const items = await dbJsonDataGet(client, user, message, "items");
-    if (items == null) return;
+    if (items === null) return;
 
     const embed = new EmbedBuilder()
       .setColor(0x33ccff)
@@ -68,7 +68,7 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

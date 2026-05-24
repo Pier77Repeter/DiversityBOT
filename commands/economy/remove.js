@@ -13,7 +13,7 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -26,7 +26,7 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -36,7 +36,7 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -46,19 +46,14 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    const row = await new Promise((resolve, reject) => {
-      client.database.get("SELECT money FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, user.id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
+    const row = await client.database.query("SELECT money FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, user.id]);
 
-    if (!row) {
+    if (row.rowCount === 0) {
       embed
         .setColor(0xff0000)
         .setTitle("❌ Error")
@@ -66,30 +61,21 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
     const money = Math.trunc(args[1]);
+    const rowMoney = Number(row.rows[0].money);
 
     // handling debts logic
-    if (money > row.money) {
-      const debts = money - row.money;
+    if (money > rowMoney) {
+      const debts = money - rowMoney;
 
-      await new Promise((resolve, reject) => {
-        client.database.run("UPDATE User SET money = 0, debts = debts + ? WHERE serverId = ? AND userId = ?", [debts, message.guild.id, user.id], (err) => {
-          if (err) reject(err);
-          else resolve();
-        });
-      });
+      await client.database.query("UPDATE users SET money = 0, debts = debts + $1 WHERE server_id = $2 AND user_id = $3", [debts, message.guildId, user.id]);
     } else {
-      await new Promise((resolve, reject) => {
-        client.database.run("UPDATE User SET money = money - ? WHERE serverId = ? AND userId = ?", [money, message.guild.id, user.id], (err) => {
-          if (err) reject(err);
-          else resolve();
-        });
-      });
+      await client.database.query("UPDATE users SET money = money - $1 WHERE server_id = $2 AND user_id = $3", [money, message.guildId, user.id]);
     }
 
     embed
@@ -99,7 +85,7 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

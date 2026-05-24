@@ -12,15 +12,15 @@ module.exports = {
   async execute(client, message, args) {
     const embed = new EmbedBuilder();
 
-    const cooldown = await cooldownManager(client, message, "postVideoCooldown", this.cooldown);
-    if (cooldown == null) return;
+    const cooldown = await cooldownManager(client, message, "post_video_cooldown", this.cooldown);
+    if (cooldown === null) return;
 
-    if (cooldown != 0) {
+    if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ You can publish another video **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -40,11 +40,11 @@ module.exports = {
 
     const actionRow = new ActionRowBuilder().addComponents(btnGaming, btnDocumentary, btnFunny, btnTutorial);
 
-    var sentMessage;
+    let sentMessage;
 
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [actionRow], files: [imageFile] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -53,14 +53,14 @@ module.exports = {
       time: 15_000,
     });
 
-    var money,
+    let money,
       hasClickedBtn = false;
 
     collector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
         try {
           return await btnInteraction.reply({ content: "Don't steal his YT content!", flags: MessageFlags.Ephemeral });
-        } catch (error) {
+        } catch {
           return;
         }
       }
@@ -74,7 +74,7 @@ module.exports = {
           btnFunny.setStyle(ButtonStyle.Secondary).setDisabled(true);
           btnTutorial.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-          if (mathRandomInt(1, 5) == 1) {
+          if (mathRandomInt(1, 5) === 1) {
             imageFile.setFile("./media/not_stonks.jpg");
 
             embed
@@ -85,14 +85,14 @@ module.exports = {
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch (error) {
+            } catch {
               return;
             }
           }
 
           money = mathRandomInt(50, 100);
 
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           imageFile.setFile("./media/stonks.jpg");
 
@@ -104,13 +104,13 @@ module.exports = {
                 listsGetRandomItem(["Minecraft", "Garry's Mod", "Roblox", "Sex with Stalin", "TF2", "GTA V", "Gen*shit* Impact"], false) +
                 "** and you got **" +
                 money +
-                "$** for the content!"
+                "$** for the content!",
             )
             .setThumbnail("attachment://stonks.jpg");
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -120,7 +120,7 @@ module.exports = {
           btnFunny.setStyle(ButtonStyle.Secondary).setDisabled(true);
           btnTutorial.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-          if (mathRandomInt(1, 5) == 1) {
+          if (mathRandomInt(1, 5) === 1) {
             imageFile.setFile("./media/not_stonks.jpg");
 
             embed
@@ -131,14 +131,14 @@ module.exports = {
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch (error) {
+            } catch {
               return;
             }
           }
 
           money = mathRandomInt(50, 100);
 
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           imageFile.setFile("./media/stonks.jpg");
 
@@ -150,13 +150,13 @@ module.exports = {
                 listsGetRandomItem(["History", "Science", "Geography", "Physics", "Psychology", "2b2t history", "Mechanics"], false) +
                 "** and you got **" +
                 money +
-                "$** for the content!"
+                "$** for the content!",
             )
             .setThumbnail("attachment://stonks.jpg");
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -166,27 +166,27 @@ module.exports = {
           btnFunny.setStyle(ButtonStyle.Success).setDisabled(true);
           btnTutorial.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-          if (mathRandomInt(1, 5) == 1) {
+          if (mathRandomInt(1, 5) === 1) {
             imageFile.setFile("./media/not_stonks.jpg");
 
             embed
               .setColor(0xff0000)
               .setTitle("👎 You posted a funny video")
               .setDescription(
-                "Brooo do you see what I see? No, this can't be real... Omg dude... Bro I think you just posted cringe bro. Smh. This is going to have consequences my friend. No, I'm not going to rape, torture or kill you and your family, even if i could do it. You gonna lose subscriber!!!! Bro you gonna lose subscriber. Don't you realize? You gonna lose subscriber! Go back to your cringe subscriber on cringe.com and cry like a cringe baby. Even your cringe subscriber are going to lose subscriber. That's how cringe you are. Have fun losing your fucking subscriber."
+                "Brooo do you see what I see? No, this can't be real... Omg dude... Bro I think you just posted cringe bro. Smh. This is going to have consequences my friend. No, I'm not going to rape, torture or kill you and your family, even if i could do it. You gonna lose subscriber!!!! Bro you gonna lose subscriber. Don't you realize? You gonna lose subscriber! Go back to your cringe subscriber on cringe.com and cry like a cringe baby. Even your cringe subscriber are going to lose subscriber. That's how cringe you are. Have fun losing your fucking subscriber.",
               )
               .setThumbnail("attachment://not_stonks.jpg");
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch (error) {
+            } catch {
               return;
             }
           }
 
           money = mathRandomInt(50, 100);
 
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           imageFile.setFile("./media/stonks.jpg");
 
@@ -198,13 +198,13 @@ module.exports = {
                 listsGetRandomItem(["Memes", "Funny Cats", "Funny Dogs", "Funny images", "Funny moments", "Trolls", "Funny people"], false) +
                 "** and you got **" +
                 money +
-                "$** for the content!"
+                "$** for the content!",
             )
             .setThumbnail("attachment://stonks.jpg");
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -214,7 +214,7 @@ module.exports = {
           btnFunny.setStyle(ButtonStyle.Secondary).setDisabled(true);
           btnTutorial.setStyle(ButtonStyle.Success).setDisabled(true);
 
-          if (mathRandomInt(1, 5) == 1) {
+          if (mathRandomInt(1, 5) === 1) {
             imageFile.setFile("./media/not_stonks.jpg");
 
             embed
@@ -225,14 +225,14 @@ module.exports = {
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch (error) {
+            } catch {
               return;
             }
           }
 
           money = mathRandomInt(50, 100);
 
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           imageFile.setFile("./media/stonks.jpg");
 
@@ -251,17 +251,17 @@ module.exports = {
                     "How to copy homeworks",
                     "How to teleport in real life",
                   ],
-                  false
+                  false,
                 ) +
                 "** and you got **" +
                 money +
-                "$** for the content!"
+                "$** for the content!",
             )
             .setThumbnail("attachment://stonks.jpg");
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch (error) {
+          } catch {
             return;
           }
       }
@@ -271,10 +271,7 @@ module.exports = {
       if (!hasClickedBtn) {
         imageFile.setFile("./media/YouTube.png");
 
-        embed
-          .setTitle("🤷 Nothing to post")
-          .setDescription("Out of ideas? Can happen, take your time to think for an original video")
-          .setThumbnail("attachment://YouTube.png");
+        embed.setTitle("🤷 Nothing to post").setDescription("Out of ideas? Can happen, take your time to think for an original video").setThumbnail("attachment://YouTube.png");
 
         btnGaming.setStyle(ButtonStyle.Secondary).setDisabled(true);
         btnDocumentary.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -283,7 +280,7 @@ module.exports = {
 
         try {
           return await sentMessage.edit({ embeds: [embed], components: [actionRow], files: [imageFile] });
-        } catch (error) {
+        } catch {
           return;
         }
       }

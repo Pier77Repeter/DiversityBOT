@@ -9,27 +9,27 @@ module.exports = {
   description: "Beg for money",
   cooldown: 3600,
   async execute(client, message, args) {
-    const cooldown = await cooldownManager(client, message, "begCooldown", this.cooldown);
-    if (cooldown == null) return;
+    const cooldown = await cooldownManager(client, message, "beg_cooldown", this.cooldown);
+    if (cooldown === null) return;
 
     const embed = new EmbedBuilder();
 
-    if (cooldown != 0) {
+    if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ Beg again **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    if (mathRandomInt(1, 4) == 1) {
+    if (mathRandomInt(1, 4) === 1) {
       embed.setColor(0xff0000).setTitle("💸 Ignored").setDescription("You begged but nobody gave you money, try again later");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -37,7 +37,7 @@ module.exports = {
     const money = mathRandomInt(20, 70);
 
     // take a look into utils/manageUserMoney.js
-    if ((await manageUserMoney(client, message, "+", money)) == null) return;
+    if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
     embed
       .setColor(0xffcc33)
@@ -94,8 +94,8 @@ module.exports = {
             "Gargoil",
             "Mexican guy",
           ],
-          false
-        )
+          false,
+        ),
       )
       .setDescription(
         listsGetRandomItem(
@@ -128,13 +128,13 @@ module.exports = {
             "You won, so, here **" + money + "$**!",
             "Pssss, here **" + money + "$**!",
           ],
-          false
-        )
+          false,
+        ),
       );
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

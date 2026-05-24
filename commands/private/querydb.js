@@ -1,5 +1,7 @@
 const { EmbedBuilder } = require("discord.js");
-
+/*
+THIS COMMAND IS VIBE CODED, WILL BE RE-WRITTEN BEFORE 2.1 UPDATE
+*/
 module.exports = {
   name: "querydb",
   description: "Execute a SQL query against the database",

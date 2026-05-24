@@ -9,11 +9,11 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     // giving money to yourself? whats the point
-    if (user.id == message.author.id) {
+    if (user.id === message.author.id) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You can't give money to yourself");
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -27,7 +27,7 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -35,29 +35,18 @@ module.exports = {
     const moneyToGive = args[1];
 
     // first check message author's money
-    const row = await new Promise((resolve, reject) => {
-      client.database.get("SELECT money FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
+    const row = await client.database.query("SELECT money FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
     if (!row) {
-      throw [
-        "The record 'money' was NOT found in the database, CHECK THE QUERY",
-        "Requested from Server: '" + message.guild.id + "' - User: '" + message.author.id + "'",
-      ].join("\n");
+      throw ["The record 'money' was NOT found in the database, CHECK THE QUERY", "Requested from Server: '" + message.guildId + "' - User: '" + message.author.id + "'"].join(
+        "\n",
+      );
     }
 
     // second check mentioned member's money
-    const mUserRow = await new Promise((resolve, reject) => {
-      client.database.get("SELECT money FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, user.id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
+    const mUserRow = await client.database.query("SELECT money FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, user.id]);
 
-    if (!mUserRow) {
+    if (mUserRow.rowCount === 0) {
       embed
         .setColor(0xff0000)
         .setTitle("❌ Error")
@@ -65,42 +54,31 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
+    const money = Number(row.rows[0].money);
+
     switch (moneyToGive) {
       case "all":
-        if (row.money == 0) {
+        if (money === 0) {
           embed.setColor(0xff0000).setTitle("❌ Transaction failed").setDescription("You don't have any money to give");
 
           try {
             return await message.reply({ embeds: [embed] });
-          } catch (error) {
+          } catch {
             return;
           }
         }
 
-        await new Promise((resolve, reject) => {
-          client.database.serialize(() => {
-            // message author
-            client.database.run("UPDATE User SET money = 0 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
-              if (err) reject(err);
-              else resolve();
-            });
-
-            // mentioned user
-            client.database.run("UPDATE User SET money = money + ? WHERE serverId = ? AND userId = ?", [row.money, message.guild.id, user.id], (err) => {
-              if (err) reject(err);
-              else resolve();
-            });
-          });
-        });
+        await client.database.query("UPDATE users SET money = 0 WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
+        await client.database.query("UPDATE users SET money = money + $1 WHERE server_id = $2 AND user_id = $3", [money, message.guildId, user.id]);
 
         embed
           .setColor(0x33ff33)
-          .setDescription("✅ You successfully gave **" + row.money + "$** to **" + user.username + "**")
+          .setDescription("✅ You successfully gave **" + money + "$** to **" + user.username + "**")
           .setFields({
             name: "Transaction ended!",
             value: "💰 Now you have: **0$** in your wallet",
@@ -108,7 +86,7 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch (error) {
+        } catch {
           return;
         }
 
@@ -118,50 +96,37 @@ module.exports = {
 
           try {
             return await message.reply({ embeds: [embed] });
-          } catch (error) {
+          } catch {
             return;
           }
         }
 
-        if (moneyToGive > row.money) {
+        if (moneyToGive > money) {
           embed.setColor(0xff0000).setTitle("❌ Transaction failed").setDescription("You don't have that amount of money in your wallet to give");
 
           try {
             return await message.reply({ embeds: [embed] });
-          } catch (error) {
+          } catch {
             return;
           }
         }
 
-        const money = Math.trunc(moneyToGive);
+        const moneyToActuallyGive = Math.trunc(moneyToGive);
 
-        await new Promise((resolve, reject) => {
-          client.database.serialize(() => {
-            // message author
-            client.database.run("UPDATE User SET money = money - ? WHERE serverId = ? AND userId = ?", [money, message.guild.id, message.author.id], (err) => {
-              if (err) reject(err);
-              else resolve();
-            });
-
-            // mentioned user
-            client.database.run("UPDATE User SET money = money + ? WHERE serverId = ? AND userId = ?", [money, message.guild.id, user.id], (err) => {
-              if (err) reject(err);
-              else resolve();
-            });
-          });
-        });
+        await client.database.query("UPDATE users SET money = money - $1 WHERE server_id = $2 AND user_id = $3", [moneyToActuallyGive, message.guildId, message.author.id]);
+        await client.database.query("UPDATE users SET money = money + $1 WHERE server_id = $2 AND user_id = $3", [moneyToActuallyGive, message.guildId, user.id]);
 
         embed
           .setColor(0x33ff33)
-          .setDescription("✅ You successfully gave **" + money + "$** to **" + user.username + "**")
+          .setDescription("✅ You successfully gave **" + moneyToActuallyGive + "$** to **" + user.username + "**")
           .setFields({
             name: "Transaction ended!",
-            value: "💰 Now you have: **" + (row.money - parseInt(money)) + "$** in your wallet",
+            value: "💰 Now you have: **" + (money - parseInt(moneyToActuallyGive)) + "$** in your wallet",
           });
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch (error) {
+        } catch {
           return;
         }
     }

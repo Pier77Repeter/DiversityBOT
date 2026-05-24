@@ -43,7 +43,7 @@ module.exports = {
       }
     }
 
-    var amount = parseInt(args[0]);
+    let amount = parseInt(args[0]);
 
     if (isNaN(amount)) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You must provide a valid number of messages");
@@ -70,7 +70,7 @@ module.exports = {
 
     const messagesToProcess = fetchedMessages.toJSON().slice(0, amount);
 
-    var deletedCount = 0;
+    let deletedCount = 0;
 
     // in this chunk many things could go wrong while deleting the messages, dont wanna vomit the useless error, i trust this thing to delete the needed messages
     try {

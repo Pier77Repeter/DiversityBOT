@@ -10,17 +10,17 @@ module.exports = {
   description: "Search around the Minecraft world for money",
   cooldown: 10800,
   async execute(client, message, args) {
-    const cooldown = await cooldownManager(client, message, "searchCooldown", this.cooldown);
-    if (cooldown == null) return;
+    const cooldown = await cooldownManager(client, message, "search_cooldown", this.cooldown);
+    if (cooldown === null) return;
 
     const embed = new EmbedBuilder();
 
-    if (cooldown != 0) {
+    if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ Take a break from searching, come back **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -33,7 +33,7 @@ module.exports = {
 
     const btnRow = new ActionRowBuilder().addComponents(btnOverworld, btnNether, btnEnd);
 
-    var sentMessage,
+    let sentMessage,
       money,
       searchProbs,
       hasClickedBtn = false;
@@ -42,7 +42,7 @@ module.exports = {
 
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [btnRow] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -55,7 +55,7 @@ module.exports = {
       if (btnInteraction.user.id !== message.author.id) {
         try {
           return await btnInteraction.reply({ content: "This isn't your dooping button", flags: MessageFlags.Ephemeral });
-        } catch (error) {
+        } catch {
           return;
         }
       }
@@ -72,7 +72,7 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -86,7 +86,7 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch (error) {
+              } catch {
                 return;
               }
 
@@ -95,7 +95,7 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch (error) {
+              } catch {
                 return;
               }
 
@@ -104,13 +104,13 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch (error) {
+              } catch {
                 return;
               }
 
             case 4:
               money = mathRandomInt(150, 250);
-              if ((await manageUserMoney(client, message, "+", money)) == null) return;
+              if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
               embed
                 .setColor(0xcc6600)
@@ -120,13 +120,13 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed], files: [imageFile] });
-              } catch (error) {
+              } catch {
                 return;
               }
 
             case 5:
               money = mathRandomInt(70, 120);
-              if ((await manageUserMoney(client, message, "+", money)) == null) return;
+              if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
               embed
                 .setColor(0xcc6600)
@@ -135,13 +135,13 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch (error) {
+              } catch {
                 return;
               }
 
             case 6:
               money = mathRandomInt(100, 150);
-              if ((await manageUserMoney(client, message, "+", money)) == null) return;
+              if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
               embed
                 .setColor(0xcc6600)
@@ -150,13 +150,13 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch (error) {
+              } catch {
                 return;
               }
 
             case 7:
               money = mathRandomInt(200, 300);
-              if ((await manageUserMoney(client, message, "+", money)) == null) return;
+              if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
               embed
                 .setColor(0xcc6600)
@@ -166,7 +166,7 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed], files: [imageFile] });
-              } catch (error) {
+              } catch {
                 return;
               }
 
@@ -175,7 +175,7 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch (error) {
+              } catch {
                 return;
               }
           }
@@ -189,7 +189,7 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -203,7 +203,7 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch (error) {
+              } catch {
                 return;
               }
 
@@ -212,7 +212,7 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch (error) {
+              } catch {
                 return;
               }
 
@@ -221,13 +221,13 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch (error) {
+              } catch {
                 return;
               }
 
             case 4:
               money = mathRandomInt(150, 250);
-              if ((await manageUserMoney(client, message, "+", money)) == null) return;
+              if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
               embed
                 .setColor(0xcc6600)
@@ -237,13 +237,13 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed], files: [imageFile] });
-              } catch (error) {
+              } catch {
                 return;
               }
 
             case 5:
               money = mathRandomInt(70, 120);
-              if ((await manageUserMoney(client, message, "+", money)) == null) return;
+              if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
               embed
                 .setColor(0xcc6600)
@@ -252,13 +252,13 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch (error) {
+              } catch {
                 return;
               }
 
             case 6:
               money = mathRandomInt(100, 150);
-              if ((await manageUserMoney(client, message, "+", money)) == null) return;
+              if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
               embed
                 .setColor(0xcc6600)
@@ -267,13 +267,13 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch (error) {
+              } catch {
                 return;
               }
 
             case 7:
               money = mathRandomInt(200, 300);
-              if ((await manageUserMoney(client, message, "+", money)) == null) return;
+              if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
               embed
                 .setColor(0xcc6600)
@@ -283,7 +283,7 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed], files: [imageFile] });
-              } catch (error) {
+              } catch {
                 return;
               }
 
@@ -292,7 +292,7 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch (error) {
+              } catch {
                 return;
               }
           }
@@ -306,7 +306,7 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -320,7 +320,7 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch (error) {
+              } catch {
                 return;
               }
 
@@ -329,7 +329,7 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch (error) {
+              } catch {
                 return;
               }
 
@@ -338,13 +338,13 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch (error) {
+              } catch {
                 return;
               }
 
             case 4:
               money = mathRandomInt(150, 250);
-              if ((await manageUserMoney(client, message, "+", money)) == null) return;
+              if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
               embed
                 .setColor(0xcc6600)
@@ -354,13 +354,13 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed], files: [imageFile] });
-              } catch (error) {
+              } catch {
                 return;
               }
 
             case 5:
               money = mathRandomInt(70, 120);
-              if ((await manageUserMoney(client, message, "+", money)) == null) return;
+              if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
               embed
                 .setColor(0xcc6600)
@@ -369,13 +369,13 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch (error) {
+              } catch {
                 return;
               }
 
             case 6:
               money = mathRandomInt(100, 150);
-              if ((await manageUserMoney(client, message, "+", money)) == null) return;
+              if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
               embed
                 .setColor(0xcc6600)
@@ -384,13 +384,13 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch (error) {
+              } catch {
                 return;
               }
 
             case 7:
               money = mathRandomInt(200, 300);
-              if ((await manageUserMoney(client, message, "+", money)) == null) return;
+              if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
               embed
                 .setColor(0xcc6600)
@@ -400,7 +400,7 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed], files: [imageFile] });
-              } catch (error) {
+              } catch {
                 return;
               }
 
@@ -409,7 +409,7 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch (error) {
+              } catch {
                 return;
               }
           }
@@ -426,7 +426,7 @@ module.exports = {
 
         try {
           return await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-        } catch (error) {
+        } catch {
           return;
         }
       }

@@ -64,7 +64,7 @@ module.exports = {
       )
       .setFooter({ text: "DiversityBOT© 2021-2026", iconURL: "attachment://DVC_highquality.jpg" });
 
-    var sentMessage;
+    let sentMessage;
 
     try {
       sentMessage = await message.reply({ embeds: [embed], files: [imageFile], components: [actionRow] });

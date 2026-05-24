@@ -19,7 +19,7 @@ module.exports = async function serverCooldownManager(client, message, cooldownN
     // if the unix time in db is bigger than the current unix time this means user is still in cooldown
     if (unixNow < expirationTime) {
       const timeLeft = Math.floor(expirationTime / 1000); // convert back for Discord timestamp output
-      const statusCode = 1; // 1 means it's active so we need to check if cooldown == 0 in the commands
+      const statusCode = true; // true means it's active so we need to check if cooldown == 0 in the commands
       const cooldownData = [statusCode, timeLeft];
 
       return cooldownData;
@@ -28,7 +28,7 @@ module.exports = async function serverCooldownManager(client, message, cooldownN
     // update the cooldown immediatly
     await client.database.query(`UPDATE servers SET ${cooldownName} = $1 WHERE server_id = $2`, [unixNow, message.guild.id]);
 
-    return 0; // cooldown was off and the update went good :thumbsup:
+    return false; // cooldown was off and the update went good :thumbsup:
   } catch (error) {
     logger.error("Error handling cooldown '" + cooldownName + "': Server '" + message.guild.id + "'", error);
 

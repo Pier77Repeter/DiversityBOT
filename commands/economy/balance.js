@@ -7,45 +7,43 @@ module.exports = {
   async execute(client, message, args) {
     const user = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
 
-    const row = await new Promise((resolve, reject) => {
-      client.database.get("SELECT money, bankMoney, debts FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, user.id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
+    const row = await client.database.query("SELECT money, bank_money, debts FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, user.id]);
 
     const embed = new EmbedBuilder();
 
-    if (!row) {
+    if (row.rowCount === 0) {
       embed
         .setColor(0x808080)
         .setTitle(user.username + " dosen't have any money")
-        .setDescription("Exactly **0**, use some commands to get moneys, you ain't getting those for free");
+        .setDescription("Exactly **0$**, because he didn't use even **1** of my commands >:(")
+        .setFooter({ text: "you ain't getting money for free" });
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    const totalMoney = row.money + row.bankMoney - row.debts;
+    const rowData = row.rows[0];
+    // REMEBER, these values are BIGINT in db, they need to be converted BEFORE using them for operations, for outputting it's fine
+    const totalMoney = Number(rowData.money) + Number(rowData.bank_money) - Number(rowData.debts);
 
     embed
       .setTitle(user.username + "'s balance")
       .setDescription(
         [
-          "**💰 Wallet money: +** `" + row.money + "$`",
-          "**🏦 Bank money: +** `" + row.bankMoney + "$`",
-          "**⚖️ Debts to pay: -** `" + row.debts + "$`",
+          "**💰 Wallet money: +** `" + rowData.money + "$`",
+          "**🏦 Bank money: +** `" + rowData.bank_money + "$`",
+          "**⚖️ Debts to pay: -** `" + rowData.debts + "$`",
           "------------------",
           "**📊 Total money: =** `" + totalMoney + "$`",
-        ].join("\n")
+        ].join("\n"),
       );
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

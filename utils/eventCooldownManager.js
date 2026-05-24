@@ -16,7 +16,7 @@ module.exports = async function eventCooldownManager(client, message, cooldownNa
 
     if (unixNow < expirationTime) {
       const timeLeft = Math.floor(expirationTime / 1000);
-      const statusCode = 1;
+      const statusCode = true;
       const cooldownData = [statusCode, timeLeft];
 
       return cooldownData;
@@ -24,7 +24,7 @@ module.exports = async function eventCooldownManager(client, message, cooldownNa
 
     await client.database.query(`UPDATE events SET ${cooldownName} = $1 WHERE server_id = $2 AND user_id = $3`, [unixNow, message.guild.id, message.author.id]);
 
-    return 0;
+    return false;
   } catch (error) {
     logger.error("Error handling event cooldown '" + cooldownName + "': Server '" + message.guild.id + "' - User '" + message.author.id + "'", error);
 

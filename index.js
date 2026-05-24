@@ -93,13 +93,7 @@ keepAlive();
 
 // creating Discord client
 const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.GuildVoiceStates,
-  ],
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildVoiceStates],
 });
 
 // AFTER the bot fully loaded THEN we can log in
@@ -164,7 +158,7 @@ client.once(Events.ClientReady, (readyClient) => {
     },
   ];
 
-  var botStatusIndex = 0;
+  let botStatusIndex = 0;
 
   // bot status
   setInterval(() => {

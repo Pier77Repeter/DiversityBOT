@@ -12,7 +12,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
 
   const embed = new EmbedBuilder();
 
-  if (cooldown !== 0) {
+  if (cooldown) {
     embed.setColor(0x000000).setDescription("⏰ You can create another image **<t:" + cooldown[1] + ":R>**");
 
     try {
@@ -24,7 +24,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
 
   embed.setColor(0xffcc66).setTitle("👨‍🍳 Cooking the image, please wait...");
 
-  var sentMessage;
+  let sentMessage;
 
   try {
     sentMessage = await message.reply({ embeds: [embed] });
@@ -40,7 +40,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
   const msgAuthAvatar = message.author.displayAvatarURL({ extension: "png" });
   const avatar2 = mentionedUser ? mentionedUser.displayAvatarURL({ extension: "png" }) : null;
   const avatars = [msgAuthAvatar, avatar2];
-  var editedImage;
+  let editedImage;
 
   switch (imageName.toLowerCase()) {
     case "ad":
@@ -372,7 +372,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
       try {
         return await message.reply(message.author.username + ", please mention an user, thanks");
       } catch {
-        return 0; // bot failed to send above msg so we also must return in the switch statement
+        return 0; // bot failed to send above msg but we must return 0 for the switch statement
       }
     }
 

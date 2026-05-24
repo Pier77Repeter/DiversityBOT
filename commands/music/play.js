@@ -40,7 +40,7 @@ module.exports = {
     const cooldown = await serverCooldownManager(client, message, "play_cooldown", this.cooldown);
     if (cooldown === null) return;
 
-    if (cooldown[0] === 1) {
+    if (cooldown) {
       embed
         .setColor(0x000000)
         .setTitle(null)

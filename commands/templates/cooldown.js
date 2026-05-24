@@ -11,7 +11,7 @@ module.exports = {
     if (cooldown === null) return; // check cooldownManager.js PLEASE, if cooldown is null than shit happened, so command execution must be stopped
 
     // if everything went gut, the return value is this: cooldownData = [statusCode, timeLeft]
-    if (cooldown !== 0) {
+    if (cooldown) {
       const embed = new EmbedBuilder().setColor(0x000000).setDescription("⏰ WAIT: **<t:" + cooldown[1] + ":R>** to use this again");
 
       try {

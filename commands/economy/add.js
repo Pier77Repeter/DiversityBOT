@@ -14,7 +14,7 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -27,7 +27,7 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -37,7 +37,7 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -47,19 +47,14 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    const row = await new Promise((resolve, reject) => {
-      client.database.get("SELECT money FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, user.id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
+    const row = await client.database.query("SELECT money FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, user.id]);
 
-    if (!row) {
+    if (row.rowCount === 0) {
       embed
         .setColor(0xff0000)
         .setTitle("❌ Error")
@@ -67,7 +62,7 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -75,12 +70,7 @@ module.exports = {
     // prevent users from adding decimals
     const money = Math.trunc(args[1]);
 
-    await new Promise((resolve, reject) => {
-      client.database.run("UPDATE User SET money = money + ? WHERE serverId = ? AND userId = ?", [money, message.guild.id, user.id], (err) => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
+    await client.database.query("UPDATE users SET money = money + $1 WHERE server_id = $2 AND user_id = $3", [money, message.guildId, user.id]);
 
     embed
       .setColor(0x33ff33)
@@ -89,7 +79,7 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

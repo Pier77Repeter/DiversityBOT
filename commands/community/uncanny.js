@@ -25,7 +25,7 @@ module.exports = {
     const cooldown = await serverCooldownManager(client, message, "uncanny_cooldown", this.cooldown);
     if (cooldown === null) return;
 
-    if (cooldown !== 0) {
+    if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ You can play another uncanny game **<t:" + cooldown[1] + ":R>**");
 
       try {

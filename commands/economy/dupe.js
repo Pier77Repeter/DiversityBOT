@@ -10,17 +10,17 @@ module.exports = {
   description: "Dupe some money without being catch by Hausemaster",
   cooldown: 21600,
   async execute(client, message, args) {
-    const cooldown = await cooldownManager(client, message, "dupeCooldown", this.cooldown);
-    if (cooldown == null) return;
+    const cooldown = await cooldownManager(client, message, "dupe_cooldown", this.cooldown);
+    if (cooldown === null) return;
 
     const embed = new EmbedBuilder();
 
-    if (cooldown != 0) {
+    if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ Don't doop too fast, do it later **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -35,17 +35,17 @@ module.exports = {
     const btnRow = new ActionRowBuilder().addComponents(btnDupeDonkey, btnDupeChunk, btnDupeAlt);
 
     // popbob secret dupe chance to appear in the dupe menu
-    if (mathRandomInt(1, 5) == 5) {
+    if (mathRandomInt(1, 5) === 5) {
       btnRow.addComponents(btnDupePopbob);
     }
 
-    var sentMessage,
+    let sentMessage,
       money,
       hasClickedBtn = false;
 
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [btnRow] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -61,7 +61,7 @@ module.exports = {
             content: "This isn't your dooping button",
             flags: MessageFlags.Ephemeral,
           });
-        } catch (error) {
+        } catch {
           return;
         }
       }
@@ -79,16 +79,16 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
           await delay(3000);
 
           // the chance to fail to doop
-          if (mathRandomInt(1, 6) == 1) {
+          if (mathRandomInt(1, 6) === 1) {
             money = mathRandomInt(2000, 3000);
-            if ((await manageUserMoney(client, message, "-", money)) == null) return;
+            if ((await manageUserMoney(client, message, "-", money)) === null) return;
 
             embed
               .setColor(0xff0000)
@@ -97,13 +97,13 @@ module.exports = {
 
             try {
               return await sentMessage.edit({ embeds: [embed] });
-            } catch (error) {
+            } catch {
               return;
             }
           }
 
           money = mathRandomInt(200, 300);
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33ff33)
@@ -112,7 +112,7 @@ module.exports = {
 
           try {
             return await sentMessage.edit({ embeds: [embed] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -126,15 +126,15 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
           await delay(3000);
 
-          if (mathRandomInt(1, 6) == 1) {
+          if (mathRandomInt(1, 6) === 1) {
             money = mathRandomInt(2000, 3000);
-            if ((await manageUserMoney(client, message, "-", money)) == null) return;
+            if ((await manageUserMoney(client, message, "-", money)) === null) return;
 
             embed
               .setColor(0xff0000)
@@ -143,13 +143,13 @@ module.exports = {
 
             try {
               return await sentMessage.edit({ embeds: [embed] });
-            } catch (error) {
+            } catch {
               return;
             }
           }
 
           money = mathRandomInt(200, 300);
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33ff33)
@@ -158,7 +158,7 @@ module.exports = {
 
           try {
             return await sentMessage.edit({ embeds: [embed] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -172,15 +172,15 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
           await delay(3000);
 
-          if (mathRandomInt(1, 6) == 1) {
+          if (mathRandomInt(1, 6) === 1) {
             money = mathRandomInt(2000, 3000);
-            if ((await manageUserMoney(client, message, "-", money)) == null) return;
+            if ((await manageUserMoney(client, message, "-", money)) === null) return;
 
             embed
               .setColor(0xff0000)
@@ -189,13 +189,13 @@ module.exports = {
 
             try {
               return await sentMessage.edit({ embeds: [embed] });
-            } catch (error) {
+            } catch {
               return;
             }
           }
 
           money = mathRandomInt(200, 300);
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33ff33)
@@ -204,7 +204,7 @@ module.exports = {
 
           try {
             return await sentMessage.edit({ embeds: [embed] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -218,14 +218,14 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
           await delay(3000);
 
           money = mathRandomInt(300, 500);
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33ff33)
@@ -234,7 +234,7 @@ module.exports = {
 
           try {
             return await sentMessage.edit({ embeds: [embed] });
-          } catch (error) {
+          } catch {
             return;
           }
       }
@@ -242,10 +242,7 @@ module.exports = {
 
     btnCollector.on("end", async () => {
       if (!hasClickedBtn) {
-        embed
-          .setColor(0x000000)
-          .setTitle("No response")
-          .setDescription("Soooo...no dupe? You missed the opportunity to get free money, well, you gotta wait now");
+        embed.setColor(0x000000).setTitle("No response").setDescription("Soooo...no dupe? You missed the opportunity to get free money, well, you gotta wait now");
 
         btnDupeDonkey.setStyle(ButtonStyle.Secondary).setDisabled(true);
         btnDupeChunk.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -254,7 +251,7 @@ module.exports = {
 
         try {
           return await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-        } catch (error) {
+        } catch {
           return;
         }
       }

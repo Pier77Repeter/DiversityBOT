@@ -16,7 +16,7 @@ module.exports = {
     const embed = new EmbedBuilder().setColor(0x00ff00).setTitle("Choose one of the buttons");
 
     // saving the message the bot sent into a variable for later
-    var sentMessage;
+    let sentMessage;
 
     // as always putting the message.reply() in try-catch
     try {

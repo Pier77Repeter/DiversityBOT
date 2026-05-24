@@ -15,13 +15,13 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
     const items = await dbJsonDataGet(client, message.author, message, "items");
-    if (items == null) return;
+    if (items === null) return;
 
     switch (itemToUse.toLowerCase()) {
       case "banana":
@@ -30,20 +30,20 @@ module.exports = {
 
           try {
             return await message.reply({ embeds: [embed] });
-          } catch (error) {
+          } catch {
             return;
           }
         }
 
         items.itemId7 = false;
 
-        await dbJsonDataSet(client, message, "items", items);
+        if ((await dbJsonDataSet(client, message, "items", items)) === null) return;
 
         embed.setColor(0xffcc00).setTitle("Delicious").setDescription("You ate the banana! 🍌🍌🍌");
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch (error) {
+        } catch {
           return;
         }
 
@@ -53,21 +53,21 @@ module.exports = {
 
           try {
             return await message.reply({ embeds: [embed] });
-          } catch (error) {
+          } catch {
             return;
           }
         }
 
         items.itemId8 = false;
 
-        await dbJsonDataSet(client, message, "items", items);
+        if ((await dbJsonDataSet(client, message, "items", items)) === null) return;
 
         embed.setColor(0xffcc00).setTitle("Delicious").setDescription("You ate the beans! 🥫🥫🥫");
 
-        var sentMessage;
+        let sentMessage;
         try {
           sentMessage = await message.reply({ embeds: [embed] });
-        } catch (error) {
+        } catch {
           return;
         }
 
@@ -76,7 +76,7 @@ module.exports = {
         embed.setColor(0x000000).setTitle("And...").setDescription(null);
         try {
           await sentMessage.edit({ embeds: [embed] });
-        } catch (error) {
+        } catch {
           return;
         }
 
@@ -85,7 +85,7 @@ module.exports = {
         embed.setColor(0x33ff33).setTitle("💨💨💨 You farted!");
         try {
           return await sentMessage.edit({ embeds: [embed] });
-        } catch (error) {
+        } catch {
           return;
         }
 
@@ -95,7 +95,7 @@ module.exports = {
 
           try {
             return await message.reply({ embeds: [embed] });
-          } catch (error) {
+          } catch {
             return;
           }
         }
@@ -103,14 +103,14 @@ module.exports = {
         if (!message.mentions.members.first()) {
           try {
             return await message.reply("Mention your victim before using the poo");
-          } catch (error) {
+          } catch {
             return;
           }
         }
 
         items.itemId9 = false;
 
-        await dbJsonDataSet(client, message, "items", items);
+        if ((await dbJsonDataSet(client, message, "items", items)) === null) return;
 
         embed
           .setColor(0x0ffcc00)
@@ -119,7 +119,7 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch (error) {
+        } catch {
           return;
         }
 
@@ -128,7 +128,7 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch (error) {
+        } catch {
           return;
         }
     }

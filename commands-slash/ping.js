@@ -7,7 +7,7 @@ module.exports = {
   async execute(client, interaction) {
     const embed = new EmbedBuilder().setColor(0xff0000).setTitle("📡 Pinging, please wait...");
 
-    var sentMessage;
+    let sentMessage;
 
     try {
       await interaction.reply({ embeds: [embed] });

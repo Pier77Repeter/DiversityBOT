@@ -15,495 +15,107 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
     const items = await dbJsonDataGet(client, message.author, message, "items");
-    if (items == null) return;
+    if (items === null) return;
 
-    const row = await new Promise((resolve, reject) => {
-      client.database.get("SELECT money FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
+    const row = await client.database.query("SELECT money FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
     // this shouldn't happen since data is created before command gets executed, still wise to have this
-    if (!row) {
-      throw [
-        "The record 'money' was NOT found in the database, CHECK THE QUERY",
-        "Requested from Server: '" + message.guild.id + "' - User: '" + message.author.id + "'",
-      ].join("\n");
+    if (row.rowCount === 0) {
+      throw new Error(
+        ["The record 'money' was NOT found in the database, CHECK THE QUERY", "Requested from Server: '" + message.guildId + "' - User: '" + message.author.id + "'"].join("\n"),
+      );
     }
 
     switch (args.join(" ").toLowerCase()) {
       case "diversitygem":
-        if (items.itemId1) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You already own this item");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        if (row.money < itemPrices.diversityGemPrice) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have enough money to buy this item");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        items.itemId1 = true;
-
-        if ((await dbJsonDataSet(client, message, "items", items)) == null) return;
-
-        if ((await manageUserMoney(client, message, "-", itemPrices.diversityGemPrice)) == null) return;
-
-        embed
-          .setColor(0x00ff00)
-          .setTitle("✅ Purchase successful")
-          .setDescription("You bought a **DiversityGem** for **" + itemPrices.diversityGemPrice + "$**");
-
-        try {
-          return await message.reply({ embeds: [embed] });
-        } catch (error) {
-          return;
-        }
+        // magnificent function
+        return await buyItem(itemPrices.diversityGemPrice, "itemId1", "DiversityGem", false);
 
       case "bitcoin":
-        if (row.money < itemPrices.bitcoinPrice) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have enough money to buy this item");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        if (!items.itemId2) {
-          items.itemId2 = true;
-        }
-
-        items.itemId2Count++;
-
-        if ((await dbJsonDataSet(client, message, "items", items)) == null) return;
-        if ((await manageUserMoney(client, message, "-", itemPrices.bitcoinPrice)) == null) return;
-
-        embed
-          .setColor(0x00ff00)
-          .setTitle("✅ Purchase successful")
-          .setDescription("You bought a **bitcoin** for **" + itemPrices.bitcoinPrice + "$**");
-
-        try {
-          return await message.reply({ embeds: [embed] });
-        } catch (error) {
-          return;
-        }
+        return await buyItem(itemPrices.bitcoinPrice, "itemId2", "Bitcoin", true);
 
       case "dogecoin":
-        if (row.money < itemPrices.dogecoinPrice) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have enough money to buy this item");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        if (!items.itemId3) {
-          items.itemId3 = true;
-        }
-
-        items.itemId3Count++;
-
-        if ((await dbJsonDataSet(client, message, "items", items)) == null) return;
-        if ((await manageUserMoney(client, message, "-", itemPrices.dogecoinPrice)) == null) return;
-
-        embed
-          .setColor(0x00ff00)
-          .setTitle("✅ Purchase successful")
-          .setDescription("You bought a **dogecoin** for **" + itemPrices.dogecoinPrice + "$**");
-
-        try {
-          return await message.reply({ embeds: [embed] });
-        } catch (error) {
-          return;
-        }
+        return await buyItem(itemPrices.dogecoinPrice, "itemId3", "Dogecoin", true);
 
       case "gun":
-        if (items.itemId4) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You already own this item");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        if (row.money < itemPrices.gunPrice) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have enough money to buy this item");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        items.itemId4 = true;
-
-        if ((await dbJsonDataSet(client, message, "items", items)) == null) return;
-        if ((await manageUserMoney(client, message, "-", itemPrices.gunPrice)) == null) return;
-
-        embed
-          .setColor(0x00ff00)
-          .setTitle("✅ Purchase successful")
-          .setDescription("You bought a **gun** for **" + itemPrices.gunPrice + "$**");
-
-        try {
-          return await message.reply({ embeds: [embed] });
-        } catch (error) {
-          return;
-        }
+        return await buyItem(itemPrices.gunPrice, "itemId4", "Gun", false);
 
       case "ak-47":
-        if (items.itemId5) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You already own this item");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        if (row.money < itemPrices.ak47Price) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have enough money to buy this item");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        items.itemId5 = true;
-
-        if ((await dbJsonDataSet(client, message, "items", items)) == null) return;
-        if ((await manageUserMoney(client, message, "-", itemPrices.ak47Price)) == null) return;
-
-        embed
-          .setColor(0x00ff00)
-          .setTitle("✅ Purchase successful")
-          .setDescription("You bought an **AK-47** for **" + itemPrices.ak47Price + "$**");
-
-        try {
-          return await message.reply({ embeds: [embed] });
-        } catch (error) {
-          return;
-        }
+        return await buyItem(itemPrices.ak47Price, "itemId5", "AK-47", false);
 
       case "fishing rod":
-        if (items.itemId6) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You already own this item");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        if (row.money < itemPrices.fishingRodPrice) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have enough money to buy this item");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        items.itemId6 = true;
-
-        if ((await dbJsonDataSet(client, message, "items", items)) == null) return;
-        if ((await manageUserMoney(client, message, "-", itemPrices.fishingRodPrice)) == null) return;
-
-        embed
-          .setColor(0x00ff00)
-          .setTitle("✅ Purchase successful")
-          .setDescription("You bought a **fishing rod** for **" + itemPrices.fishingRodPrice + "$**");
-
-        try {
-          return await message.reply({ embeds: [embed] });
-        } catch (error) {
-          return;
-        }
+        return await buyItem(itemPrices.fishingRodPrice, "itemId6", "Fishing Rod", false);
 
       case "banana":
-        if (items.itemId7) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You already own this item");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        if (row.money < itemPrices.bananaPrice) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have enough money to buy this item");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        items.itemId7 = true;
-
-        if ((await dbJsonDataSet(client, message, "items", items)) == null) return;
-        if ((await manageUserMoney(client, message, "-", itemPrices.bananaPrice)) == null) return;
-
-        embed
-          .setColor(0x00ff00)
-          .setTitle("✅ Purchase successful")
-          .setDescription("You bought a **banana** for **" + itemPrices.bananaPrice + "$**");
-
-        try {
-          return await message.reply({ embeds: [embed] });
-        } catch (error) {
-          return;
-        }
+        return await buyItem(itemPrices.bananaPrice, "itemId7", "Banana", false);
 
       case "beans":
-        if (items.itemId8) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You already own this item");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        if (row.money < itemPrices.beansPrice) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have enough money to buy this item");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        items.itemId8 = true;
-
-        if ((await dbJsonDataSet(client, message, "items", items)) == null) return;
-        if ((await manageUserMoney(client, message, "-", itemPrices.beansPrice)) == null) return;
-
-        embed
-          .setColor(0x00ff00)
-          .setTitle("✅ Purchase successful")
-          .setDescription("You bought **beans** for **" + itemPrices.beansPrice + "$**");
-
-        try {
-          return await message.reply({ embeds: [embed] });
-        } catch (error) {
-          return;
-        }
+        return await buyItem(itemPrices.beansPrice, "itemId8", "Beans", false);
 
       case "holy poo":
-        if (items.itemId9) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You already own this item");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        if (row.money < itemPrices.holyPooPrice) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have enough money to buy this item");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        items.itemId9 = true;
-
-        if ((await dbJsonDataSet(client, message, "items", items)) == null) return;
-        if ((await manageUserMoney(client, message, "-", itemPrices.holyPooPrice)) == null) return;
-
-        embed
-          .setColor(0x00ff00)
-          .setTitle("✅ Purchase successful")
-          .setDescription("You bought the **holy poo** for **" + itemPrices.holyPooPrice + "$**");
-
-        try {
-          return await message.reply({ embeds: [embed] });
-        } catch (error) {
-          return;
-        }
+        return await buyItem(itemPrices.holyPooPrice, "itemId9", "Holy Poo", false);
 
       case "moacoin":
-        if (row.money < itemPrices.moacoinPrice) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have enough money to buy this item");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        if (!items.itemId10) {
-          items.itemId10 = true;
-        }
-
-        items.itemId10Count++;
-
-        if ((await dbJsonDataSet(client, message, "items", items)) == null) return;
-        if ((await manageUserMoney(client, message, "-", itemPrices.moacoinPrice)) == null) return;
-
-        embed
-          .setColor(0x00ff00)
-          .setTitle("✅ Purchase successful")
-          .setDescription("You bought a **moacoin** for **" + itemPrices.moacoinPrice + "$**");
-
-        try {
-          return await message.reply({ embeds: [embed] });
-        } catch (error) {
-          return;
-        }
+        return await buyItem(itemPrices.moacoinPrice, "itemId10", "Moacoin", true);
 
       case "divcoin":
-        if (row.money < itemPrices.divcoinPrice) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have enough money to buy this item");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        if (!items.itemId11) {
-          items.itemId11 = true;
-        }
-
-        items.itemId11Count++;
-
-        if ((await dbJsonDataSet(client, message, "items", items)) == null) return;
-        if ((await manageUserMoney(client, message, "-", itemPrices.divcoinPrice)) == null) return;
-
-        embed
-          .setColor(0x00ff00)
-          .setTitle("✅ Purchase successful")
-          .setDescription("You bought a **divcoin** for **" + itemPrices.divcoinPrice + "$**");
-
-        try {
-          return await message.reply({ embeds: [embed] });
-        } catch (error) {
-          return;
-        }
+        return await buyItem(itemPrices.divcoinPrice, "itemId11", "Divcoin", true);
 
       case "kar98k scoped":
-        if (items.itemId12) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You already own this item");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        if (row.money < itemPrices.kar98kPrice) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have enough money to buy this item");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        items.itemId12 = true;
-
-        if ((await dbJsonDataSet(client, message, "items", items)) == null) return;
-        if ((await manageUserMoney(client, message, "-", itemPrices.kar98kPrice)) == null) return;
-
-        embed
-          .setColor(0x00ff00)
-          .setTitle("✅ Purchase successful")
-          .setDescription("You bought a **kar98k scoped** for **" + itemPrices.kar98kPrice + "$**");
-
-        try {
-          return await message.reply({ embeds: [embed] });
-        } catch (error) {
-          return;
-        }
+        return await buyItem(itemPrices.kar98kPrice, "itemId12", "Kar98k Scoped", false);
 
       case "pickaxe":
-        if (items.itemId13) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You already own this item");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        if (row.money < itemPrices.pickaxePrice) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have enough money to buy this item");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return;
-          }
-        }
-
-        items.itemId13 = true;
-
-        if ((await dbJsonDataSet(client, message, "items", items)) == null) return;
-        if ((await manageUserMoney(client, message, "-", itemPrices.pickaxePrice)) == null) return;
-
-        embed
-          .setColor(0x00ff00)
-          .setTitle("✅ Purchase successful")
-          .setDescription("You bought **pickaxe** for **" + itemPrices.pickaxePrice + "$**");
-
-        try {
-          return await message.reply({ embeds: [embed] });
-        } catch (error) {
-          return;
-        }
+        return await buyItem(itemPrices.pickaxePrice, "itemId13", "Pickaxe", false);
 
       default:
         embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Item dosen't exist! You can only buy items by name like **d!buy fishing rod**");
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch (error) {
+        } catch {
           return;
+        }
+
+        async function buyItem(itemCost, itemId, itemName, canBuyMultiple) {
+          if (items[itemId] && canBuyMultiple) {
+            embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You already own this item");
+
+            try {
+              return await message.reply({ embeds: [embed] });
+            } catch {
+              return;
+            }
+          }
+
+          if (row.rows[0].money < itemPrices[itemId]) {
+            embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have enough money to buy this item");
+
+            try {
+              return await message.reply({ embeds: [embed] });
+            } catch {
+              return;
+            }
+          }
+
+          items[itemId] = true;
+          if (canBuyMultiple) items[itemId + "Count"]++;
+
+          if ((await dbJsonDataSet(client, message, "items", items)) === null) return;
+          if ((await manageUserMoney(client, message, "-", itemCost)) === null) return;
+
+          embed.setColor(0x00ff00).setTitle("✅ Purchase successful").setDescription(`You bought a **${itemName}** for **${itemCost}$**`);
+
+          try {
+            return await message.reply({ embeds: [embed] });
+          } catch {
+            return;
+          }
         }
     }
   },

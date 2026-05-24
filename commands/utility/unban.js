@@ -61,7 +61,7 @@ module.exports = {
       }
     }
 
-    var bannedUser;
+    let bannedUser;
 
     try {
       bannedUser = await message.guild.bans.fetch(userId);

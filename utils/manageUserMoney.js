@@ -40,7 +40,7 @@ module.exports = async function manageUserMoney(client, message, operation, amou
           const debts = amount - money;
 
           // user has lots of debts... just do nothing
-          if (debts <= -999999999999999999) return 0;
+          if (debts >= -999999999999999999) return 0;
 
           await client.database.query("UPDATE users SET money = 0, debts = debts + $1 WHERE server_id = $2 AND user_id = $3", [
             debts,
@@ -48,7 +48,7 @@ module.exports = async function manageUserMoney(client, message, operation, amou
             message.author.id,
           ]);
         } else {
-          await client.database.query("UPDATE users SET money = money - $1 WHERE server_id = $2 AND user_id = $3", [debts, message.guild.id, message.author.id]);
+          await client.database.query("UPDATE users SET money = money - $1 WHERE server_id = $2 AND user_id = $3", [amount, message.guild.id, message.author.id]);
         }
 
         return 0;

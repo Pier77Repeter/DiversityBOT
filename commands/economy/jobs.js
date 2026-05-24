@@ -4,23 +4,16 @@ module.exports = {
   name: "jobs",
   description: "View jobs list",
   async execute(client, message, args) {
-    const row = await new Promise((resolve, reject) => {
-      client.database.get("SELECT jobType FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
+    const row = await client.database.query("SELECT job_type FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
-    const embed = new EmbedBuilder()
-      .setColor(0xff0000)
-      .setTitle("❌ Error")
-      .setDescription("You already have a job, come back when you will eventually get fired");
+    const embed = new EmbedBuilder();
 
     // null is a string in db
-    if (row.jobType != "null") {
+    if (row.rows[0].job_type) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You already have a job, come back when you will eventually get fired");
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -43,11 +36,11 @@ module.exports = {
     // hmmmm, maybe this is better
     const actionRow = new ActionRowBuilder().setComponents(btnNext, btnFireFighter, btnTeacher, btnDiscordMod);
 
-    var sentMessage;
+    let sentMessage;
 
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [actionRow] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -73,7 +66,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
         case "btn-jobs-btnPrevious":
@@ -81,7 +74,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
         case "btn-jobs-btnFireFighter":
@@ -96,16 +89,11 @@ module.exports = {
           btnChef.setStyle(ButtonStyle.Secondary).setDisabled(true);
           btnScientist.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-          await new Promise((resolve, reject) => {
-            client.database.run("UPDATE User SET jobType = 'fireFighter' WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
-              if (err) reject(err);
-              else resolve();
-            });
-          });
+          await client.database.query("UPDATE users SET job_type = 'fireFighter' WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -121,16 +109,11 @@ module.exports = {
           btnChef.setStyle(ButtonStyle.Secondary).setDisabled(true);
           btnScientist.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-          await new Promise((resolve, reject) => {
-            client.database.run("UPDATE User SET jobType = 'teacher' WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
-              if (err) reject(err);
-              else resolve();
-            });
-          });
+          await client.database.query("UPDATE users SET job_type = 'teacher' WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
         case "btn-jobs-btnDiscordMod":
@@ -145,16 +128,11 @@ module.exports = {
           btnChef.setStyle(ButtonStyle.Secondary).setDisabled(true);
           btnScientist.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-          await new Promise((resolve, reject) => {
-            client.database.run("UPDATE User SET jobType = 'discordMod' WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
-              if (err) reject(err);
-              else resolve();
-            });
-          });
+          await client.database.query("UPDATE users SET job_type = 'discordMod' WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
         case "btn-jobs-btnMechanic":
@@ -169,16 +147,11 @@ module.exports = {
           btnChef.setStyle(ButtonStyle.Secondary).setDisabled(true);
           btnScientist.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-          await new Promise((resolve, reject) => {
-            client.database.run("UPDATE User SET jobType = 'mechanic' WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
-              if (err) reject(err);
-              else resolve();
-            });
-          });
+          await client.database.query("UPDATE users SET job_type = 'mechanic' WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
         case "btn-jobs-btnChef":
@@ -193,16 +166,11 @@ module.exports = {
           btnChef.setStyle(ButtonStyle.Success).setDisabled(true);
           btnScientist.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-          await new Promise((resolve, reject) => {
-            client.database.run("UPDATE User SET jobType = 'chef' WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
-              if (err) reject(err);
-              else resolve();
-            });
-          });
+          await client.database.query("UPDATE users SET job_type = 'chef' WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
         case "btn-jobs-btnScientist":
@@ -217,16 +185,11 @@ module.exports = {
           btnChef.setStyle(ButtonStyle.Secondary).setDisabled(true);
           btnScientist.setStyle(ButtonStyle.Success).setDisabled(true);
 
-          await new Promise((resolve, reject) => {
-            client.database.run("UPDATE User SET jobType = 'scientist' WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
-              if (err) reject(err);
-              else resolve();
-            });
-          });
+          await client.database.query("UPDATE users SET job_type = 'scientist' WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
       }
@@ -244,7 +207,7 @@ module.exports = {
 
       try {
         return await sentMessage.edit({ embeds: [embed], components: [actionRow] });
-      } catch (error) {
+      } catch {
         return;
       }
     });

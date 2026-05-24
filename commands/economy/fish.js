@@ -10,7 +10,7 @@ module.exports = {
   cooldown: 900,
   async execute(client, message, args) {
     const items = await dbJsonDataGet(client, message.author, message, "items");
-    if (items == null) return;
+    if (items === null) return;
 
     const embed = new EmbedBuilder();
 
@@ -19,44 +19,44 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    const cooldown = await cooldownManager(client, message, "fishCooldown", this.cooldown);
-    if (cooldown == null) return;
+    const cooldown = await cooldownManager(client, message, "fish_cooldown", this.cooldown);
+    if (cooldown === null) return;
 
-    if (cooldown != 0) {
+    if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ Next fishing session **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    if (mathRandomInt(1, 10) == 1) {
+    if (mathRandomInt(1, 10) === 1) {
       items.itemId6 = false;
 
-      if ((await dbJsonDataSet(client, message, "items", items)) == null) return;
+      if ((await dbJsonDataSet(client, message, "items", items)) === null) return;
 
       embed.setColor(0xff0000).setTitle("😢 Oh no").setDescription("Your fishing rod broke, go buy a new one to start fishing again");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    if (mathRandomInt(1, 3) == 1) {
+    if (mathRandomInt(1, 3) === 1) {
       embed.setColor(0xff0000).setTitle("🌊 Nothing, just water").setDescription("You haven't caught any fish, try again later");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -77,18 +77,18 @@ module.exports = {
     const caughtFish = embedTexts[mathRandomInt(0, embedTexts.length - 1)];
 
     const fishes = await dbJsonDataGet(client, message.author, message, "fishes");
-    if (fishes == null) return;
+    if (fishes === null) return;
 
     fishes[caughtFish.id] = true;
     fishes[caughtFish.counter]++;
 
-    if ((await dbJsonDataSet(client, message, "fishes", fishes)) == null) return;
+    if ((await dbJsonDataSet(client, message, "fishes", fishes)) === null) return;
 
     embed.setColor(0x33ff33).setTitle(caughtFish.title).setDescription(caughtFish.desc);
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

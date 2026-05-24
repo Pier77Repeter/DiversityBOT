@@ -11,15 +11,15 @@ module.exports = {
   async execute(client, message, args) {
     const embed = new EmbedBuilder();
 
-    const cooldown = await cooldownManager(client, message, "postMemeCooldown", this.cooldown);
-    if (cooldown == null) return;
+    const cooldown = await cooldownManager(client, message, "post_meme_cooldown", this.cooldown);
+    if (cooldown === null) return;
 
-    if (cooldown != 0) {
+    if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ You can post another meme **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -40,11 +40,11 @@ module.exports = {
 
     const actionRow = new ActionRowBuilder().addComponents(btnFunny, btnMeIrl, btnClassic, btnCopyPasta, btnOld);
 
-    var sentMessage;
+    let sentMessage;
 
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [actionRow], files: [imageFile] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -53,14 +53,14 @@ module.exports = {
       time: 15_000,
     });
 
-    var money,
+    let money,
       hasClickedBtn = false;
 
     collector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
         try {
           return await btnInteraction.reply({ content: "Don't steal his meme", flags: MessageFlags.Ephemeral });
-        } catch (error) {
+        } catch {
           return;
         }
       }
@@ -75,7 +75,7 @@ module.exports = {
           btnCopyPasta.setStyle(ButtonStyle.Secondary).setDisabled(true);
           btnOld.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-          if (mathRandomInt(1, 5) == 1) {
+          if (mathRandomInt(1, 5) === 1) {
             imageFile.setFile("./media/Downvote.png");
 
             embed
@@ -86,14 +86,14 @@ module.exports = {
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch (error) {
+            } catch {
               return;
             }
           }
 
           money = mathRandomInt(50, 100);
 
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           imageFile.setFile("./media/Upvote.png");
 
@@ -105,7 +105,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -116,25 +116,21 @@ module.exports = {
           btnCopyPasta.setStyle(ButtonStyle.Secondary).setDisabled(true);
           btnOld.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-          if (mathRandomInt(1, 5) == 1) {
+          if (mathRandomInt(1, 5) === 1) {
             imageFile.setFile("./media/Downvote.png");
 
-            embed
-              .setColor(0xff0000)
-              .setTitle("👎 You posted a me_irl meme")
-              .setDescription("Nah! The meme wasn't realistic at all")
-              .setThumbnail("attachment://Downvote.png");
+            embed.setColor(0xff0000).setTitle("👎 You posted a me_irl meme").setDescription("Nah! The meme wasn't realistic at all").setThumbnail("attachment://Downvote.png");
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch (error) {
+            } catch {
               return;
             }
           }
 
           money = mathRandomInt(50, 100);
 
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           imageFile.setFile("./media/Upvote.png");
 
@@ -146,7 +142,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -157,7 +153,7 @@ module.exports = {
           btnCopyPasta.setStyle(ButtonStyle.Secondary).setDisabled(true);
           btnOld.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-          if (mathRandomInt(1, 5) == 1) {
+          if (mathRandomInt(1, 5) === 1) {
             imageFile.setFile("./media/Downvote.png");
 
             embed
@@ -168,14 +164,14 @@ module.exports = {
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch (error) {
+            } catch {
               return;
             }
           }
 
           money = mathRandomInt(50, 100);
 
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           imageFile.setFile("./media/Upvote.png");
 
@@ -187,7 +183,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -198,25 +194,21 @@ module.exports = {
           btnCopyPasta.setStyle(ButtonStyle.Success).setDisabled(true);
           btnOld.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-          if (mathRandomInt(1, 5) == 1) {
+          if (mathRandomInt(1, 5) === 1) {
             imageFile.setFile("./media/Downvote.png");
 
-            embed
-              .setColor(0xff0000)
-              .setTitle("👎 You posted a copy pasta")
-              .setDescription("Stop copying this meme! It's cringe")
-              .setThumbnail("attachment://Downvote.png");
+            embed.setColor(0xff0000).setTitle("👎 You posted a copy pasta").setDescription("Stop copying this meme! It's cringe").setThumbnail("attachment://Downvote.png");
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch (error) {
+            } catch {
               return;
             }
           }
 
           money = mathRandomInt(50, 100);
 
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           imageFile.setFile("./media/Upvote.png");
 
@@ -228,7 +220,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -239,7 +231,7 @@ module.exports = {
           btnCopyPasta.setStyle(ButtonStyle.Secondary).setDisabled(true);
           btnOld.setStyle(ButtonStyle.Success).setDisabled(true);
 
-          if (mathRandomInt(1, 5) == 1) {
+          if (mathRandomInt(1, 5) === 1) {
             imageFile.setFile("./media/Downvote.png");
 
             embed
@@ -250,14 +242,14 @@ module.exports = {
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch (error) {
+            } catch {
               return;
             }
           }
 
           money = mathRandomInt(50, 100);
 
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           imageFile.setFile("./media/Upvote.png");
 
@@ -269,7 +261,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch (error) {
+          } catch {
             return;
           }
       }
@@ -289,7 +281,7 @@ module.exports = {
 
         try {
           return await sentMessage.edit({ embeds: [embed], components: [actionRow], files: [imageFile] });
-        } catch (error) {
+        } catch {
           return;
         }
       }

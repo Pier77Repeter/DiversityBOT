@@ -402,13 +402,13 @@ module.exports = (client) => {
     }
 
     // DEBTS UPDATING SECTION, only needed when user has debts, working with data: debts, money, bank_money
-    if (userData.debts > 0) {
+    if (Number(userData.debts) > 0) {
       const debtsCooldown = await cooldownManager(client, message, "debts_cooldown", 86400, false); // we don't wanna log any error (spam prevention)
       if (debtsCooldown === null) return;
 
       // updating the debts
       if (debtsCooldown === 0) {
-        const debts = Math.trunc((userData.debts + userData.money + userData.bank_money) * 0.05); // add 5% every day, and prevents floats
+        const debts = Math.trunc((Number(userData.debts) + Number(userData.money) + Number(userData.bank_money)) * 0.03); // add 3% every day, and prevents floats
 
         await client.database.query("UPDATE users SET debts = $1 WHERE server_id = $2 AND user_id = $3", [debts, message.guild.id, message.author.id]);
       }

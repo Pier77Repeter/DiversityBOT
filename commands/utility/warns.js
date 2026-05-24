@@ -56,7 +56,7 @@ module.exports = {
     const btnClearWarns = new ButtonBuilder().setCustomId("warns-btn-btnClearWarns").setLabel("Clear warns").setStyle(ButtonStyle.Primary);
     const actionRow = new ActionRowBuilder().addComponents(btnClearWarns);
 
-    var sentMessage;
+    let sentMessage;
 
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [actionRow] });

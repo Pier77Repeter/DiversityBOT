@@ -46,7 +46,7 @@ module.exports = {
       }
     }
 
-    var bannedUser;
+    let bannedUser;
 
     try {
       bannedUser = await interaction.guild.bans.fetch(memberId);

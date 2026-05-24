@@ -4,8 +4,6 @@ const logger = require("../logger")("DbJsonDataSet");
 // thing to update json data in DB, at the moment it's only 'items' and 'fishes'
 module.exports = async function dbJsonDataSet(client, message, dataName, jsonData) {
   try {
-    JSON.parse(jsonData);
-
     await client.database.query(`UPDATE users SET ${dataName} = $1 WHERE server_id = $2 AND user_id = $3`, [jsonData, message.guild.id, message.author.id]);
 
     return 0; // everything went gut

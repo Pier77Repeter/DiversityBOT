@@ -8,34 +8,29 @@ module.exports = {
   description: "Work to get money",
   cooldown: 3600,
   async execute(client, message, args) {
-    const row = await new Promise((resolve, reject) => {
-      client.database.get("SELECT jobType FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
+    const row = await client.database.query("SELECT job_type FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
     const embed = new EmbedBuilder();
 
-    if (!row || row.jobType == "null") {
+    if (row.rowCount === 0 || !row.rows[0].job_type) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have a job right now, do **d!jobs** to get one");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    const cooldown = await cooldownManager(client, message, "workCooldown", this.cooldown);
-    if (cooldown == null) return;
+    const cooldown = await cooldownManager(client, message, "work_cooldown", this.cooldown);
+    if (cooldown === null) return;
 
-    if (cooldown != 0) {
+    if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ You've already worked, next turn **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -86,7 +81,7 @@ module.exports = {
     const actionRow = new ActionRowBuilder();
 
     // setting the apropiate embed content and buttons, depending wich job the user has
-    switch (row.jobType) {
+    switch (row.rows[0].job_type) {
       case "fireFighter":
         actionRow.setComponents(fireFighterOneBtn, fireFighterTwoBtn, fireFighterThreeBtn);
 
@@ -119,12 +114,12 @@ module.exports = {
         break;
     }
 
-    var sentMessage,
+    let sentMessage,
       hasClickedBtn = false;
 
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [actionRow] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -137,7 +132,7 @@ module.exports = {
       if (btnInteraction.user.id !== message.author.id) {
         try {
           return await btnInteraction.reply({ content: "You can't work for someone else", flags: MessageFlags.Ephemeral });
-        } catch (error) {
+        } catch {
           return;
         }
       }
@@ -145,13 +140,8 @@ module.exports = {
       hasClickedBtn = true;
 
       // probability to get fired, put this here so i dont copy and paste it every time
-      if (mathRandomInt(1, 7) == 1) {
-        await new Promise((resolve, reject) => {
-          client.database.run("UPDATE User SET jobType = 'null' WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
-            if (err) reject(err);
-            else resolve();
-          });
-        });
+      if (mathRandomInt(1, 7) === 1) {
+        await client.database.query("UPDATE users SET job_type = NULL WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
         fireFighterOneBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
         fireFighterTwoBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -181,12 +171,12 @@ module.exports = {
 
         try {
           return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-        } catch (error) {
+        } catch {
           return;
         }
       }
 
-      var money;
+      let money;
 
       switch (btnInteraction.customId) {
         case "btn-work-fireFighter-one":
@@ -195,7 +185,7 @@ module.exports = {
           fireFighterThreeBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
           money = mathRandomInt(100, 200);
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33cc00)
@@ -204,7 +194,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -214,7 +204,7 @@ module.exports = {
           fireFighterThreeBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
           money = mathRandomInt(100, 200);
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33cc00)
@@ -223,7 +213,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -233,7 +223,7 @@ module.exports = {
           fireFighterThreeBtn.setStyle(ButtonStyle.Success).setDisabled(true);
 
           money = mathRandomInt(100, 200);
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33cc00)
@@ -242,7 +232,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -252,7 +242,7 @@ module.exports = {
           teacherThreeBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
           money = mathRandomInt(100, 200);
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33cc00)
@@ -261,7 +251,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -271,7 +261,7 @@ module.exports = {
           teacherThreeBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
           money = mathRandomInt(100, 200);
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33cc00)
@@ -280,7 +270,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -290,7 +280,7 @@ module.exports = {
           teacherThreeBtn.setStyle(ButtonStyle.Success).setDisabled(true);
 
           money = mathRandomInt(100, 200);
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33cc00)
@@ -299,7 +289,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -309,7 +299,7 @@ module.exports = {
           discordModThreeBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
           money = mathRandomInt(100, 200);
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33cc00)
@@ -318,7 +308,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -328,7 +318,7 @@ module.exports = {
           discordModThreeBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
           money = mathRandomInt(100, 200);
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33cc00)
@@ -337,7 +327,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -347,7 +337,7 @@ module.exports = {
           discordModThreeBtn.setStyle(ButtonStyle.Success).setDisabled(true);
 
           money = mathRandomInt(100, 200);
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33cc00)
@@ -356,7 +346,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -366,7 +356,7 @@ module.exports = {
           mechanicThreeBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
           money = mathRandomInt(100, 200);
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33cc00)
@@ -375,7 +365,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -385,7 +375,7 @@ module.exports = {
           mechanicThreeBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
           money = mathRandomInt(100, 200);
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33cc00)
@@ -394,7 +384,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -404,7 +394,7 @@ module.exports = {
           mechanicThreeBtn.setStyle(ButtonStyle.Success).setDisabled(true);
 
           money = mathRandomInt(100, 200);
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33cc00)
@@ -413,7 +403,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -423,7 +413,7 @@ module.exports = {
           chefThreeBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
           money = mathRandomInt(100, 200);
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33cc00)
@@ -432,7 +422,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -442,7 +432,7 @@ module.exports = {
           chefThreeBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
           money = mathRandomInt(100, 200);
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33cc00)
@@ -451,7 +441,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -461,7 +451,7 @@ module.exports = {
           chefThreeBtn.setStyle(ButtonStyle.Success).setDisabled(true);
 
           money = mathRandomInt(100, 200);
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33cc00)
@@ -470,7 +460,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -480,7 +470,7 @@ module.exports = {
           scientistThreeBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
           money = mathRandomInt(100, 200);
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33cc00)
@@ -489,7 +479,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -499,7 +489,7 @@ module.exports = {
           scientistThreeBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
           money = mathRandomInt(100, 200);
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33cc00)
@@ -508,7 +498,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -518,7 +508,7 @@ module.exports = {
           scientistThreeBtn.setStyle(ButtonStyle.Success).setDisabled(true);
 
           money = mathRandomInt(100, 200);
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33cc00)
@@ -527,7 +517,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
       }
@@ -563,7 +553,7 @@ module.exports = {
 
         try {
           return await sentMessage.edit({ embeds: [embed], components: [actionRow] });
-        } catch (error) {
+        } catch {
           return;
         }
       }

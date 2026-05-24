@@ -11,20 +11,20 @@ module.exports = {
   async execute(client, message, args) {
     const embed = new EmbedBuilder();
 
-    const cooldown = await cooldownManager(client, message, "highLowCooldown", this.cooldown);
-    if (cooldown == null) return;
+    const cooldown = await cooldownManager(client, message, "high_low_cooldown", this.cooldown);
+    if (cooldown === null) return;
 
-    if (cooldown != 0) {
+    if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ You can play this game in **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    var highLowNumber = mathRandomInt(1, 100),
+    let highLowNumber = mathRandomInt(1, 100),
       highLowSelectedNumber = mathRandomInt(1, 100);
 
     embed
@@ -37,11 +37,11 @@ module.exports = {
 
     const actionRow = new ActionRowBuilder().addComponents(btnLow, btnHigh);
 
-    var sentMessage;
+    let sentMessage;
 
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [actionRow] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -50,7 +50,7 @@ module.exports = {
       time: 15_000,
     });
 
-    var money,
+    let money,
       hasClickedBtn = false;
 
     collector.on("collect", async (btnInteraction) => {
@@ -60,7 +60,7 @@ module.exports = {
             content: "It's not your game",
             flags: MessageFlags.Ephemeral,
           });
-        } catch (error) {
+        } catch {
           return;
         }
       }
@@ -80,14 +80,14 @@ module.exports = {
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-            } catch (error) {
+            } catch {
               return;
             }
           }
 
           money = mathRandomInt(30, 80);
 
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33cc00)
@@ -96,7 +96,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -112,14 +112,14 @@ module.exports = {
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-            } catch (error) {
+            } catch {
               return;
             }
           }
 
           money = mathRandomInt(30, 80);
 
-          if ((await manageUserMoney(client, message, "+", money)) == null) return;
+          if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed
             .setColor(0x33cc00)
@@ -128,7 +128,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
       }
@@ -143,7 +143,7 @@ module.exports = {
 
         try {
           return await sentMessage.edit({ embeds: [embed], components: [actionRow] });
-        } catch (error) {
+        } catch {
           return;
         }
       }

@@ -28,7 +28,7 @@ module.exports = {
     const cooldown = await serverCooldownManager(client, message, "jm_cooldown", this.cooldown);
     if (cooldown === null) return;
 
-    if (cooldown !== 0) {
+    if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ You can do another Java moment **<t:" + cooldown[1] + ":R>**");
 
       try {

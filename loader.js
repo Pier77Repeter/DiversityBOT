@@ -11,7 +11,7 @@ const { botToken, botId, dbUrl } = require("./config.json");
 const delay = require("./utils/delay");
 
 // needed in index.js, messageCreate.js and maybe somewhere else
-var isBotRestarting = false;
+let isBotRestarting = false;
 
 module.exports = {
   initLoader: async (client) => {

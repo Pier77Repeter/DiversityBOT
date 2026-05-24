@@ -12,7 +12,7 @@ module.exports = {
   cooldown: 3600,
   async execute(client, message, args) {
     const items = await dbJsonDataGet(client, message.author, message, "items");
-    if (items == null) return;
+    if (items === null) return;
 
     const embed = new EmbedBuilder();
 
@@ -21,31 +21,31 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    const cooldown = await cooldownManager(client, message, "huntCooldown", this.cooldown);
-    if (cooldown == null) return;
+    const cooldown = await cooldownManager(client, message, "hunt_cooldown", this.cooldown);
+    if (cooldown === null) return;
 
-    if (cooldown != 0) {
+    if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ Break time, you can hunt again **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    var sentMessage;
+    let sentMessage;
 
     embed.setColor(0x999999).setTitle("👓 You are waiting a prey...");
 
     try {
       sentMessage = await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -55,7 +55,7 @@ module.exports = {
 
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -84,7 +84,7 @@ module.exports = {
 
     try {
       await sentMessage.edit({ embeds: [embed], components: [actionRow] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -93,7 +93,7 @@ module.exports = {
       time: 15_000,
     });
 
-    var hasClicked = false;
+    let hasClicked = false;
 
     collector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
@@ -102,7 +102,7 @@ module.exports = {
             content: "You can't use his Kar98k scoped!",
             flags: MessageFlags.Ephemeral,
           });
-        } catch (error) {
+        } catch {
           return;
         }
       }
@@ -110,15 +110,15 @@ module.exports = {
       hasClicked = true;
 
       if (btnInteraction.customId == "btn-hunt-btnShoot") {
-        var money;
+        let money;
         btnShoot.setStyle(ButtonStyle.Success).setDisabled(true);
 
-        if (mathRandomInt(1, 7) == 1) {
+        if (mathRandomInt(1, 7) === 1) {
           money = mathRandomInt(1200, 1500);
           items.itemId12 = false;
 
-          if ((await dbJsonDataSet(client, message, "items", items)) == null) return;
-          if ((await manageUserMoney(client, message, "-", money)) == null) return;
+          if ((await dbJsonDataSet(client, message, "items", items)) === null) return;
+          if ((await manageUserMoney(client, message, "-", money)) === null) return;
 
           btnShoot.setStyle(ButtonStyle.Danger).setDisabled(true);
 
@@ -129,7 +129,7 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
         }
@@ -139,13 +139,13 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
+          } catch {
             return;
           }
         }
 
         money = mathRandomInt(70, 150);
-        if ((await manageUserMoney(client, message, "+", money)) == null) return;
+        if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
         embed
           .setColor(0x33cc00)
@@ -154,7 +154,7 @@ module.exports = {
 
         try {
           return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-        } catch (error) {
+        } catch {
           return;
         }
       }
@@ -168,7 +168,7 @@ module.exports = {
 
         try {
           return await sentMessage.edit({ embeds: [embed], components: [actionRow] });
-        } catch (error) {
+        } catch {
           return;
         }
       }

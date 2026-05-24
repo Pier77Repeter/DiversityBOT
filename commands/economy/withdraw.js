@@ -12,61 +12,54 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
     const moneyToWithdraw = args[0];
 
-    const row = await new Promise((resolve, reject) => {
-      client.database.get("SELECT bankMoney, money FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
+    const row = await client.database.query("SELECT bank_money, money FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
-    if (!row) {
+    if (row.rowCount === 0) {
       throw [
         "The records 'bankMoney', 'money' were NOT found in the database, CHECK THE QUERY",
-        "Requested from Server: '" + message.guild.id + "' - User: '" + message.author.id + "'",
+        "Requested from Server: '" + message.guildId + "' - User: '" + message.author.id + "'",
       ].join("\n");
     }
 
+    const money = Number(row.rows[0].money);
+    const bankMoney = Number(row.rows[0].bank_money);
+
     switch (moneyToWithdraw) {
       case "all":
-        if (row.bankMoney == 0) {
+        if (bankMoney === 0) {
           embed.setColor(0xff0000).setTitle("❌ Transaction failed").setDescription("Looks like you have no money in the bank");
 
           try {
             return await message.reply({ embeds: [embed] });
-          } catch (error) {
+          } catch {
             return;
           }
         }
 
-        await new Promise((resolve, reject) => {
-          client.database.run(
-            "UPDATE User SET bankMoney = 0, money = money + ? WHERE serverId = ? AND userId = ?",
-            [row.bankMoney, message.guild.id, message.author.id],
-            (err) => {
-              if (err) reject(err);
-              else resolve();
-            }
-          );
-        });
+        await client.database.query("UPDATE users SET bank_money = 0, money = money + $1 WHERE server_id = $2 AND user_id = $3", [
+          bankMoney,
+          message.guildId,
+          message.author.id,
+        ]);
 
         embed
           .setColor(0x33ff33)
-          .setDescription("✅ Successfully transfered **" + row.bankMoney + "**$ to your wallet")
+          .setDescription("✅ Successfully transfered **" + bankMoney + "**$ to your wallet")
           .setFields({
             name: "Transaction ended!",
-            value: ["💰 Now you have: **" + (row.money + row.bankMoney) + "$** in your wallet", "🏦 Now you have: **0$** in your bank"].join("\n"),
+            value: ["💰 Now you have: **" + (money + bankMoney) + "$** in your wallet", "🏦 Now you have: **0$** in your bank"].join("\n"),
           });
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch (error) {
+        } catch {
           return;
         }
 
@@ -76,48 +69,44 @@ module.exports = {
 
           try {
             return await message.reply({ embeds: [embed] });
-          } catch (error) {
+          } catch {
             return;
           }
         }
 
-        if (moneyToWithdraw > row.bankMoney) {
+        if (moneyToWithdraw > bankMoney) {
           embed.setColor(0xff0000).setTitle("❌ Transaction failed").setDescription("You don't have that money to deposit in bank");
 
           try {
             return await message.reply({ embeds: [embed] });
-          } catch (error) {
+          } catch {
             return;
           }
         }
 
-        const money = Math.trunc(moneyToWithdraw);
+        const actualMoneyToWith = Math.trunc(moneyToWithdraw);
 
-        await new Promise((resolve, reject) => {
-          client.database.run(
-            "UPDATE User SET bankMoney = bankMoney - ?, money = money + ? WHERE serverId = ? AND userId = ?",
-            [money, money, message.guild.id, message.author.id],
-            (err) => {
-              if (err) reject(err);
-              else resolve();
-            }
-          );
-        });
+        await client.database.query("UPDATE users SET bank_money = bank_money - $1, money = money + $2 WHERE server_id = $3 AND user_id = $4", [
+          actualMoneyToWith,
+          actualMoneyToWith,
+          message.guildId,
+          message.author.id,
+        ]);
 
         embed
           .setColor(0x33ff33)
-          .setDescription("✅ Successfully transfered **" + money + "**$ to your wallet")
+          .setDescription("✅ Successfully transfered **" + actualMoneyToWith + "**$ to your wallet")
           .setFields({
             name: "Transaction ended!",
             value: [
-              "💰 Now you have: **" + (row.money + parseInt(money)) + "$** in your wallet",
-              "🏦 Now you have: **" + (row.bankMoney - parseInt(money)) + "$** in your bank",
+              "💰 Now you have: **" + (money + parseInt(actualMoneyToWith)) + "$** in your wallet",
+              "🏦 Now you have: **" + (bankMoney - parseInt(actualMoneyToWith)) + "$** in your bank",
             ].join("\n"),
           });
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch (error) {
+        } catch {
           return;
         }
     }
