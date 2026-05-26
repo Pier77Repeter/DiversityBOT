@@ -29,7 +29,7 @@ module.exports = {
 
     try {
       return await snake.startGame();
-    } catch (error) {
+    } catch {
       return;
     }
   },

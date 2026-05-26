@@ -9,30 +9,30 @@ module.exports = {
     const embed = new EmbedBuilder();
     const imageFile = new AttachmentBuilder();
 
-    const cooldown = await cooldownManager(client, message, "memeCooldown", this.cooldown);
-    if (cooldown == null) return;
+    const cooldown = await cooldownManager(client, message, "meme_cooldown", this.cooldown);
+    if (cooldown === null) return;
 
-    if (cooldown != 0) {
+    if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ Memes out of stock, come back **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    var subReddit = "";
+    let subReddit = "";
     if (args.length > 0) {
       subReddit = args[0];
     }
 
-    var memeData = await getMeme();
+    let memeData = await getMeme();
 
     if (memeData.code == 404) {
       try {
         return await message.reply("Subreddit not found, try again, maybe with an actual subreddit");
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -41,7 +41,7 @@ module.exports = {
     if (memeData.code == 403) {
       try {
         return await message.reply("Subreddit is set to private, i can't get anything from there");
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -52,21 +52,19 @@ module.exports = {
       embed
         .setColor(0xcc0000)
         .setTitle("STOP RIGHT THERE!")
-        .setDescription(
-          "The post i was about to send is NSFW, luckily i've blocked it for your safety, if you are trying to get posts from NSFW subs, well, you can't!"
-        )
+        .setDescription("The post i was about to send is NSFW, luckily i've blocked it for your safety, if you are trying to get posts from NSFW subs, well, you can't!")
         .setImage("attachment://arnoldSchwarzeneggerStopMeme.jpg");
 
       try {
         return await message.reply({ embeds: [embed], files: [imageFile] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
     embed
       .setColor(0xffcc00)
-      .setTitle(memeData.title)
+      .setTitle(memeData.title.substring(0, 256))
       .setDescription("From **r/" + memeData.subreddit + "** | " + memeData.postLink)
       .setImage(memeData.url)
       .setFooter({ text: "⬆️ Upvotes " + memeData.ups });
@@ -75,10 +73,10 @@ module.exports = {
     const btnStop = new ButtonBuilder().setCustomId("btn-meme-btnStop").setEmoji("🛑").setLabel("Stop").setStyle(ButtonStyle.Danger);
     const btnRow = new ActionRowBuilder().addComponents(btnNextMeme, btnStop);
 
-    var sentMessage;
+    let sentMessage;
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [btnRow] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -91,7 +89,7 @@ module.exports = {
       if (btnInteraction.user.id !== message.author.id) {
         try {
           return await btnInteraction.reply({ content: "You gotta type d!meme for yourself", flags: MessageFlags.Ephemeral });
-        } catch (error) {
+        } catch {
           return;
         }
       }
@@ -105,7 +103,7 @@ module.exports = {
 
             try {
               return await btnInteraction.update({ content: "Opsy, i couldn't get the meme, try typing the command again", components: [] });
-            } catch (error) {
+            } catch {
               return;
             }
           }
@@ -116,9 +114,7 @@ module.exports = {
             embed
               .setColor(0xcc0000)
               .setTitle("STOP RIGHT THERE!")
-              .setDescription(
-                "The post i was about to send is NSFW, luckily i've blocked it for your safety, if you are trying to get posts from NSFW subs, well, you can't!"
-              )
+              .setDescription("The post i was about to send is NSFW, luckily i've blocked it for your safety, if you are trying to get posts from NSFW subs, well, you can't!")
               .setImage("attachment://arnoldSchwarzeneggerStopMeme.jpg")
               .setFooter(null); // so that it dosen't keep the 'Upvotes' footer
 
@@ -126,14 +122,14 @@ module.exports = {
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [], files: [imageFile] });
-            } catch (error) {
+            } catch {
               return;
             }
           }
 
           embed
             .setColor(0xffcc00)
-            .setTitle(memeData.title)
+            .setTitle(memeData.title.substring(0, 256))
             .setDescription("From **r/" + memeData.subreddit + "** | " + memeData.postLink)
             .setImage(memeData.url)
             .setFooter({ text: "⬆️ Upvotes " + memeData.ups });
@@ -142,7 +138,7 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -154,7 +150,7 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -168,7 +164,7 @@ module.exports = {
 
       try {
         return await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-      } catch (error) {
+      } catch {
         return;
       }
     });
@@ -179,7 +175,7 @@ module.exports = {
         const memeData = await response.json();
 
         return memeData;
-      } catch (err) {
+      } catch {
         return;
       }
     }

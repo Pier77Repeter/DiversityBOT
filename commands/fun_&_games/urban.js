@@ -9,17 +9,17 @@ module.exports = {
 
     try {
       if (!searchTerm) return await message.reply("Please provide a search term");
-    } catch (error) {
+    } catch {
       return;
     }
 
-    var response;
+    let response;
     try {
       response = await axios.get("https://api.urbandictionary.com/v0/define?term=" + encodeURIComponent(searchTerm));
-    } catch (error) {
+    } catch {
       try {
         return await message.reply("O_o, something went wrong while searching in the dictionary");
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -27,25 +27,25 @@ module.exports = {
     if (!response.data.list || response.data.list.length === 0) {
       try {
         return await message.reply(`No definitions found for "${searchTerm}"`);
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
     const definitions = response.data.list;
-    var currentIndex = 0;
+    let currentIndex = 0;
 
     // create an embed for a specific definition
     const createDefinitionEmbed = (definition, index, total) => {
       const MAX_DESCRIPTION_LENGTH = 1024;
-      var description = definition.definition.replace(/[\[\]]/g, ""); // remove brackets, see the API response
+      let description = definition.definition.replace(/[\[\]]/g, ""); // remove brackets, see the API response
 
       if (description.length > MAX_DESCRIPTION_LENGTH) {
         description = description.substring(0, MAX_DESCRIPTION_LENGTH - 3) + "...";
       }
 
       const MAX_EXAMPLE_LENGTH = 1024;
-      var example = definition.example.replace(/[\[\]]/g, "");
+      let example = definition.example.replace(/[\[\]]/g, "");
 
       if (example.length > MAX_EXAMPLE_LENGTH) {
         example = example.substring(0, MAX_EXAMPLE_LENGTH - 3) + "...";
@@ -61,7 +61,7 @@ module.exports = {
           {
             name: "Votes",
             value: "👍 " + definition.thumbs_up.toString() + " - 👎 " + definition.thumbs_down.toString(),
-          }
+          },
         )
         .setFooter({ text: `Pages ${index + 1} of ${total}` });
     };
@@ -83,10 +83,10 @@ module.exports = {
 
     const btnRow = new ActionRowBuilder().addComponents(prevBtn, nextBtn);
 
-    var sentMessage;
+    let sentMessage;
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [btnRow] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -101,7 +101,7 @@ module.exports = {
             content: "Don't bother this user's command, type d!urban to search for yourself",
             flags: MessageFlags.Ephemeral,
           });
-        } catch (error) {
+        } catch {
           return;
         }
       }
@@ -125,7 +125,7 @@ module.exports = {
       const updatedUrbanMessageEmbed = createDefinitionEmbed(definitions[currentIndex], currentIndex, definitions.length);
       try {
         await btnInteraction.update({ embeds: [updatedUrbanMessageEmbed], components: [btnRow] });
-      } catch (error) {
+      } catch {
         return;
       }
     });
@@ -136,7 +136,7 @@ module.exports = {
 
       try {
         return await sentMessage.edit({ components: [btnRow] });
-      } catch (error) {
+      } catch {
         return;
       }
     });

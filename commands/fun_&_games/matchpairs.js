@@ -21,7 +21,7 @@ module.exports = {
 
     try {
       return await matchPairs.startGame();
-    } catch (error) {
+    } catch {
       return;
     }
   },

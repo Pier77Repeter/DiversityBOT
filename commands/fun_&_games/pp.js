@@ -8,21 +8,18 @@ module.exports = {
   async execute(client, message, args) {
     const user = message.mentions.members.first() ? message.mentions.members.first().user.username : message.author.username;
 
-    const embed = new EmbedBuilder()
-      .setColor(0x999999)
-      .setTitle("🔍 Cheking user pp...")
-      .setImage("https://media1.tenor.com/m/WS6B3HWtGC8AAAAd/cock-inspection.gif");
+    const embed = new EmbedBuilder().setColor(0x999999).setTitle("🔍 Cheking user pp...").setImage("https://media1.tenor.com/m/WS6B3HWtGC8AAAAd/cock-inspection.gif");
 
-    var sentMessage;
+    let sentMessage;
     try {
       sentMessage = await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
 
     await delay(3000);
 
-    var embedDesc = "";
+    let embedDesc = "";
 
     for (let i = 0; i < mathRandomInt(1, 100); i++) {
       embedDesc += "=";
@@ -34,7 +31,7 @@ module.exports = {
       .setFooter({ text: "This is for science" })
       .setImage();
 
-    if (mathRandomInt(1, 10) == 1) {
+    if (mathRandomInt(1, 10) === 1) {
       embed.setDescription("BD").setFooter({ text: "No pp here" });
     } else {
       embed.setDescription("B" + embedDesc + "D");
@@ -42,7 +39,7 @@ module.exports = {
 
     try {
       return await sentMessage.edit({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

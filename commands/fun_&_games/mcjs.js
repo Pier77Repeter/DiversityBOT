@@ -8,17 +8,17 @@ module.exports = {
 
     try {
       if (!ip) return await message.reply("Give the server IP to ping like **diversitycraft.xyz**");
-    } catch (error) {
+    } catch {
       return;
     }
 
-    var getServerData = await fetch("https://mcapi.us/server/status?ip=" + ip);
-    var serverData = await getServerData.json();
+    let getServerData = await fetch("https://mcapi.us/server/status?ip=" + ip);
+    let serverData = await getServerData.json();
 
     if (serverData.status == "error") {
       try {
         return await message.reply("Server is unreachable, or you just sent an invalid IP");
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -31,12 +31,12 @@ module.exports = {
           "Version: " + "`" + serverData.server.name + "`",
           "MOTD: " + "`" + serverData.motd + "`",
           "Players: " + "`" + serverData.players.now + "/" + serverData.players.max + "`",
-        ].join("\n")
+        ].join("\n"),
       );
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

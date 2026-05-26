@@ -11,7 +11,7 @@ module.exports = {
     if (content.length > maxLength) {
       try {
         return await message.reply(`Message too long! Maximum length is ${maxLength} characters.`);
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -20,7 +20,7 @@ module.exports = {
 
     try {
       await message.channel.send({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -28,7 +28,7 @@ module.exports = {
     if (!message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.ManageMessages)) return;
     try {
       return await message.delete();
-    } catch (error) {
+    } catch {
       return;
     }
   },

@@ -11,21 +11,21 @@ module.exports = {
   async execute(client, message, args) {
     try {
       if (!args[0]) return await message.reply("You need to specify a location to nuke");
-    } catch (error) {
+    } catch {
       return;
     }
 
     const embed = new EmbedBuilder();
 
-    const cooldown = await cooldownManager(client, message, "nukeCooldown", this.cooldown);
-    if (cooldown == null) return;
+    const cooldown = await cooldownManager(client, message, "nuke_cooldown", this.cooldown);
+    if (cooldown === null) return;
 
-    if (cooldown != 0) {
+    if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ No need to nuke this fast, another nuke will be ready **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -46,10 +46,10 @@ module.exports = {
     const btnCancelLaunch = new ButtonBuilder().setCustomId("btn-nuke-cancelLaunch").setLabel("❌ Cancel launch").setStyle(ButtonStyle.Success);
     const btnRow = new ActionRowBuilder().addComponents(btnConfirmLaunch, btnCancelLaunch);
 
-    var sentMessage;
+    let sentMessage;
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [btnRow] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -58,7 +58,7 @@ module.exports = {
       time: 15_000,
     });
 
-    var hasUserClickedBtn = false;
+    let hasUserClickedBtn = false;
 
     btnCollector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
@@ -67,7 +67,7 @@ module.exports = {
             content: "You can't launch this nuke, it's for someone else",
             flags: MessageFlags.Ephemeral,
           });
-        } catch (error) {
+        } catch {
           return;
         }
       }
@@ -89,7 +89,7 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -99,7 +99,7 @@ module.exports = {
 
           try {
             await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -109,7 +109,7 @@ module.exports = {
 
           try {
             await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -119,7 +119,7 @@ module.exports = {
 
           try {
             await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -129,7 +129,7 @@ module.exports = {
 
           try {
             await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -139,7 +139,7 @@ module.exports = {
 
           try {
             await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -150,7 +150,7 @@ module.exports = {
 
           try {
             await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -167,7 +167,7 @@ module.exports = {
 
           try {
             await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -191,7 +191,7 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], files: [imageFile], components: [btnRow] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -209,7 +209,7 @@ module.exports = {
 
         try {
           return await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-        } catch (error) {
+        } catch {
           return;
         }
       }

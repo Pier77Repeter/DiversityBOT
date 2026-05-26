@@ -5,8 +5,8 @@ module.exports = {
   description: "Rock Paper Scissors game",
   async execute(client, message, args) {
     try {
-      if (message.mentions.members.first() == null) return await message.reply("You need to mention an user to play rock paper scissors");
-    } catch (error) {
+      if (!message.mentions.members.first()) return await message.reply("You need to mention an user to play rock paper scissors");
+    } catch {
       return;
     }
 
@@ -15,7 +15,7 @@ module.exports = {
     if (mentionedMember.id === message.author.id) {
       try {
         return await message.reply("You can't play rock paper scissors with yourself.");
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -23,7 +23,7 @@ module.exports = {
     if (mentionedMember.user.bot) {
       try {
         return await message.reply("You can't play rock paper scissors with a bot (they wouldn't play with you)");
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -45,10 +45,10 @@ module.exports = {
       .setDescription(`${mentionedMember.user.username} is choosing..`)
       .setFooter({ text: "Click one of the buttons to choose!" });
 
-    var sentMessage;
+    let sentMessage;
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [btnsRow] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -68,14 +68,14 @@ module.exports = {
               content: `You choose ${mentionedUserChoice.name} ${mentionedUserChoice.emoji}`,
               flags: MessageFlags.Ephemeral,
             });
-          } catch (error) {
+          } catch {
             return;
           }
 
           embed.setDescription(`${message.author.username}'s turn...`);
           try {
             await btnInteraction.update({ embeds: [embed] });
-          } catch (error) {
+          } catch {
             return;
           }
 
@@ -85,7 +85,7 @@ module.exports = {
         } else {
           try {
             await btnInteraction.reply({ content: "You are not in the game!", flags: MessageFlags.Ephemeral });
-          } catch (error) {
+          } catch {
             return;
           }
         }
@@ -96,7 +96,7 @@ module.exports = {
       } else {
         try {
           await btnInteraction.reply({ content: "It's not your turn yet.", flags: MessageFlags.Ephemeral });
-        } catch (error) {
+        } catch {
           return;
         }
       }
@@ -111,7 +111,7 @@ module.exports = {
 
         try {
           await sentMessage.edit({ embeds: [embed], components: [btnsRow] });
-        } catch (error) {
+        } catch {
           return;
         }
       } else if (mentionedUserChoice && authorChoice) {
@@ -129,13 +129,7 @@ module.exports = {
         }
 
         embed.setDescription(
-          [
-            `${message.author.username} picked ${authorChoice.emoji}`,
-            "\n",
-            `${mentionedMember.user.username} picked ${mentionedUserChoice.emoji}`,
-            "\n",
-            result,
-          ].join(" ")
+          [`${message.author.username} picked ${authorChoice.emoji}`, "\n", `${mentionedMember.user.username} picked ${mentionedUserChoice.emoji}`, "\n", result].join(" "),
         );
 
         btnRpsRock.setDisabled(true);
@@ -144,7 +138,7 @@ module.exports = {
 
         try {
           await sentMessage.edit({ embeds: [embed], components: [btnsRow] });
-        } catch (error) {
+        } catch {
           return;
         }
       }

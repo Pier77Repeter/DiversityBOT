@@ -22,7 +22,7 @@ module.exports = {
 
     try {
       return await flood.startGame();
-    } catch (error) {
+    } catch {
       return;
     }
   },

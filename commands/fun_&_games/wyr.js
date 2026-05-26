@@ -22,7 +22,7 @@ module.exports = {
 
     try {
       return await wouldYouRather.startGame();
-    } catch (error) {
+    } catch {
       return;
     }
   },

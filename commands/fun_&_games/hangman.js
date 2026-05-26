@@ -587,7 +587,7 @@ module.exports = {
           "yield",
           "zounds",
         ],
-        false
+        false,
       ),
       timeoutTime: 60_000,
       theme: "nature",
@@ -598,7 +598,7 @@ module.exports = {
 
     try {
       return await hangman.startGame();
-    } catch (error) {
+    } catch {
       return;
     }
   },

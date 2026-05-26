@@ -20,7 +20,7 @@ module.exports = {
 
     try {
       return await pokeGuess.startGame();
-    } catch (error) {
+    } catch {
       return;
     }
   },

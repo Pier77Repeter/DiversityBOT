@@ -7,17 +7,17 @@ module.exports = {
   description: "Starts the social credits test",
   cooldown: 120,
   async execute(client, message, args) {
-    const cooldown = await cooldownManager(client, message, "scTestCooldown", this.cooldown);
-    if (cooldown == null) return;
+    const cooldown = await cooldownManager(client, message, "sc_test_cooldown", this.cooldown);
+    if (cooldown === null) return;
 
     const embed = new EmbedBuilder();
 
-    if (cooldown != 0) {
+    if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ You you can do this test again: **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -31,15 +31,15 @@ module.exports = {
 
     const btnRow = new ActionRowBuilder().addComponents(btnStartTestOne, btnStartTestTwo);
 
-    var sentMessage;
+    let sentMessage;
     try {
       sentMessage = await message.reply({ embeds: [embed], files: [scThumbnailFile], components: [btnRow] });
-    } catch (error) {
+    } catch {
       return;
     }
 
-    var questionProgressCounter = 0;
-    var testFinished = false;
+    let questionProgressCounter = 0;
+    let testFinished = false;
 
     // This is where AI comes handy
     // Images
@@ -151,7 +151,7 @@ module.exports = {
             content: "Someone else is doing this test, try it with **d!sctest**",
             flags: MessageFlags.Ephemeral,
           });
-        } catch (error) {
+        } catch {
           return;
         }
       }
@@ -169,7 +169,7 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], files: [scThumbnailFile], components: [btnRowQuestionOne] });
-          } catch (error) {
+          } catch {
             return;
           }
           break;
@@ -183,7 +183,7 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], files: [scThumbnailFile], components: [btnRowQuestionOne] });
-          } catch (error) {
+          } catch {
             return;
           }
           break;
@@ -204,7 +204,7 @@ module.exports = {
             btnQuestionOneD,
             "Question 2: How many hours do you play Games?",
             ["A) 4 hours", "\n", "B) 1 hour", "\n", "C) 5 min every weekend", "\n", "D) 1/3 hours"].join(""),
-            btnRowQuestionTwo
+            btnRowQuestionTwo,
           );
           break;
 
@@ -218,7 +218,7 @@ module.exports = {
             btnQuestionTwoB,
             "Question 3: Which is better?",
             ["A) China", "\n", "B) USA", "\n", "C) France", "\n", "D) Russia"].join(""),
-            btnRowQuestionThree
+            btnRowQuestionThree,
           );
           break;
         case "btn-sctest-qTwo-ansC":
@@ -235,7 +235,7 @@ module.exports = {
             btnQuestionThreeA,
             "Question 3: What happened on Tiananmen Square in 1989?",
             ["A) I don't remember", "\n", "B) Something", "\n", "C) Nothing", "\n", "D) A bad event"].join(""),
-            btnRowQuestionFour
+            btnRowQuestionFour,
           );
           break;
         case "btn-sctest-qThree-ansB":
@@ -261,7 +261,7 @@ module.exports = {
             btnQuestionFourC,
             "Question 5: Is Taiwan a country?",
             ["A) No", "\n", "B) Well said", "\n", "C) Probably", "\n", "D) Yes"].join(""),
-            btnRowQuestionFive
+            btnRowQuestionFive,
           );
           break;
         case "btn-sctest-qFour-ansD":
@@ -276,7 +276,7 @@ module.exports = {
             btnQuestionFiveA,
             "Question 6: Who is this guy?",
             ["A) Winnie the Pooh", "\n", "B) I don't know", "\n", "C) Some random Chinese polician", "\n", "D) Xi Jinping"].join(""),
-            btnRowQuestionSix
+            btnRowQuestionSix,
           );
           break;
         case "btn-sctest-qFive-ansB":
@@ -314,7 +314,7 @@ module.exports = {
               "\n",
               "D) They should apologize and say Taiwan is a part of China/Not a country",
             ].join(""),
-            btnRowQuestionSeven
+            btnRowQuestionSeven,
           );
           break;
 
@@ -334,7 +334,7 @@ module.exports = {
             btnQuestionSevenD,
             "Question 8: Best goverment system?",
             ["A) West democracy", "\n", "B) Socialism", "\n", "C) Communism", "\n", "D) Monarchy"].join(""),
-            btnRowQuestionEight
+            btnRowQuestionEight,
           );
           break;
 
@@ -359,7 +359,7 @@ module.exports = {
               "\n",
               "D) They are doing really bad things to people",
             ].join(""),
-            btnRowQuestionNine
+            btnRowQuestionNine,
           );
           break;
         case "btn-sctest-qEight-ansD":
@@ -373,7 +373,7 @@ module.exports = {
             btnQuestionNineA,
             "Question 10: Xi Jinping looks like Winnie the Pooh?",
             ["A) Yes", "\n", "B) Not at all", "\n", "C) They are similar", "\n", "D) Totally"].join(""),
-            btnRowQuestionTen
+            btnRowQuestionTen,
           );
           break;
         case "btn-sctest-qNine-ansB":
@@ -413,7 +413,7 @@ module.exports = {
 
       try {
         return await sentMessage.edit({ embeds: [embed], files: [scThumbnailFile], components: [] });
-      } catch (error) {
+      } catch {
         return;
       }
     });
@@ -438,7 +438,7 @@ module.exports = {
           files: [rightAnswerImage],
           components: [btnRowToDisable],
         });
-      } catch (error) {
+      } catch {
         return;
       }
 
@@ -450,14 +450,14 @@ module.exports = {
       if (correctBtn.data.custom_id === "btn-sctest-qFive-ansA") {
         try {
           return await sentMessage.edit({ embeds: [embed], files: [scThumbnailFile, xiPortraitImage], components: [nextQuestionBtnRow] });
-        } catch (error) {
+        } catch {
           return;
         }
       }
 
       try {
         await sentMessage.edit({ embeds: [embed], files: [scThumbnailFile], components: [nextQuestionBtnRow] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -469,22 +469,13 @@ module.exports = {
       try {
         // last thing we gonna do
         return await btnInteraction.update({ embeds: [scTestWrongAnswerMessageEmbed], files: [wrongAnswerImage], components: [] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
     async function updateScCredits(num) {
-      await new Promise((resolve, reject) => {
-        client.database.run(
-          "UPDATE User SET socialCredits = socialCredits + ? WHERE serverId = ? AND userId = ?",
-          [num, message.guild.id, message.author.id],
-          (err) => {
-            if (err) reject(err);
-            else resolve();
-          }
-        );
-      });
+      await client.database.query("UPDATE users SET social_credits = social_credits + $1 WHERE server_id = $2 AND user_id = $3", [num, message.guildId, message.author.id]);
     }
   },
 };

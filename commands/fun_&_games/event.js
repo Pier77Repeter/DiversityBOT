@@ -26,7 +26,7 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

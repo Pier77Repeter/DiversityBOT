@@ -9,7 +9,7 @@ module.exports = {
 
     try {
       if (!emoji) return await message.reply("Provide an emoji, thanks");
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -23,10 +23,10 @@ module.exports = {
 
       try {
         await axios.get(`https://cdn.discordapp.com/emojis/${emojiId}`);
-      } catch (err) {
+      } catch {
         try {
           return await message.reply("Invalid emoji, gib a real one");
-        } catch (error) {
+        } catch {
           return;
         }
       }
@@ -46,13 +46,13 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     } else {
       try {
         return await message.reply("that is not an emoji bruh");
-      } catch (error) {
+      } catch {
         return;
       }
     }

@@ -6,50 +6,46 @@ module.exports = {
   async execute(client, message, args) {
     const user = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
 
-    const row = await new Promise((resolve, reject) => {
-      client.database.get(
-        "SELECT hasPet, petId, petStatsHealth, petStatsFun, petStatsHunger, petStatsThirst FROM User WHERE serverId = ? AND userId = ?",
-        [message.guild.id, user.id],
-        (err, row) => {
-          if (err) reject(err);
-          else resolve(row);
-        }
-      );
-    });
+    const row = await client.database.query(
+      "SELECT has_pet, pet_id, pet_stats_health, pet_stats_fun, pet_stats_hunger, pet_stats_thirst FROM users WHERE server_id = $1 AND user_id $2",
+      [message.guildId, user.id],
+    );
 
     const embed = new EmbedBuilder();
 
-    if (!row || !row.hasPet) {
+    if (row.rowCount === 0 || !row.rows[0].has_pet) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("No pet here, type **d!adopt <@user>** to adopt one");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
+    const rowData = row.rows[0];
+
     embed
       .setColor(0x00cccc)
-      .setTitle("🐱 Your fluffy " + client.users.cache.get(row.petId).username)
+      .setTitle("🐱 Your fluffy " + client.users.cache.get(rowData.pet_id).username)
       .setDescription(
         [
           "These are all the pet stats, don't make them reach 0%",
           "Otherwise you will lose your pet",
           "Your pet name and image gets updated everytime the user you...",
           '..."adopted" (sounds kinda sussy) change them',
-        ].join("\n")
+        ].join("\n"),
       )
-      .setThumbnail(client.users.cache.get(row.petId).displayAvatarURL())
+      .setThumbnail(client.users.cache.get(rowData.pet_id).displayAvatarURL())
       .setFields(
         {
           name: "💟 Health",
-          value: "**" + row.petStatsHealth + "%**",
+          value: "**" + rowData.pet_stats_health + "%**",
           inline: true,
         },
         {
           name: "🎾 Fun",
-          value: "**" + row.petStatsFun + "%**",
+          value: "**" + rowData.pet_stats_fun + "%**",
           inline: true,
         },
         {
@@ -59,20 +55,20 @@ module.exports = {
         },
         {
           name: "🍗 Hunger",
-          value: "**" + row.petStatsHunger + "%**",
+          value: "**" + rowData.pet_stats_hunger + "%**",
           inline: true,
         },
         {
           name: "💧 Thirst",
-          value: "**" + row.petStatsThirst + "%**",
+          value: "**" + rowData.pet_stats_thirst + "%**",
           inline: true,
-        }
+        },
       )
       .setFooter({ text: "Remember to check them often, stats go down" });
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

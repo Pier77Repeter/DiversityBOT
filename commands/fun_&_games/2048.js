@@ -24,7 +24,7 @@ module.exports = {
 
     try {
       return await twoZeroFourEight.startGame();
-    } catch (error) {
+    } catch {
       return;
     }
   },

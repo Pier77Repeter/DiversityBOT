@@ -6,8 +6,8 @@ module.exports = {
   description: "Kill an user with funny image and msg",
   async execute(client, message, args) {
     try {
-      if (message.mentions.members.first() == null) return await message.reply(message.author.username + ", can you mention an user?");
-    } catch (error) {
+      if (!message.mentions.members.first()) return await message.reply(message.author.username + ", can you mention an user?");
+    } catch {
       return;
     }
 
@@ -54,14 +54,14 @@ module.exports = {
             "**" + mentionedMember + " was MANZH by Foxy**",
             "**" + mentionedMember + " tried to do a speedrun...**",
           ],
-          false
-        )
+          false,
+        ),
       )
       .setImage("attachment://funnyKillImage.jpg");
 
     try {
       return await message.reply({ embeds: [embed], files: [imageFile] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

@@ -5,8 +5,8 @@ module.exports = {
   description: "Play connect4 with mentioned user",
   async execute(client, message, args) {
     try {
-      if (message.mentions.members.first() == null) return await message.reply(message.author.username + ", you need someone to play with!");
-    } catch (error) {
+      if (!message.mentions.members.first()) return await message.reply(message.author.username + ", you need someone to play with!");
+    } catch {
       return;
     }
 
@@ -36,7 +36,7 @@ module.exports = {
 
     try {
       return await connectFour.startGame();
-    } catch (error) {
+    } catch {
       return;
     }
   },

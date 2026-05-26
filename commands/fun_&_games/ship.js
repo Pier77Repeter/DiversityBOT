@@ -6,8 +6,8 @@ module.exports = {
   description: "See the love power with mentioned user",
   async execute(client, message, args) {
     try {
-      if (message.mentions.members.first() == null) return await message.reply(message.author.username + ", mention your crush <3");
-    } catch (error) {
+      if (!message.mentions.members.first()) return await message.reply(message.author.username + ", mention your crush <3");
+    } catch {
       return;
     }
 
@@ -15,7 +15,7 @@ module.exports = {
 
     const lovePower = mathRandomInt(0, 101);
 
-    if (lovePower == 0) {
+    if (lovePower === 0) {
       embed
         .setColor(0xcc33cc)
         .setTitle("💘 Love machine 9000(TM)")
@@ -125,7 +125,7 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

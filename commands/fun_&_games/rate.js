@@ -9,21 +9,21 @@ module.exports = {
 
     const randomChoiceNumber = mathRandomInt(0, 10);
 
-    if (randomChoiceNumber == 0) {
+    if (randomChoiceNumber === 0) {
       embed.setDescription([message.author.username, ", EEEEWWW, i rate that a 0/10, BAD! very bad 👎👎👎"].join(""));
     } else if (randomChoiceNumber > 0 && randomChoiceNumber < 5) {
       embed.setDescription([message.author.username, ", ugly, i give a " + randomChoiceNumber + "/10 👎"].join(""));
-    } else if (randomChoiceNumber == 5) {
+    } else if (randomChoiceNumber === 5) {
       embed.setDescription([message.author.username, ", meh, i'd say a 5/10 🤔"].join(""));
     } else if (randomChoiceNumber > 5 && randomChoiceNumber < 10) {
       embed.setDescription([message.author.username, ", looks good, i say " + randomChoiceNumber + "/10 👍"].join(""));
-    } else if (randomChoiceNumber == 10) {
+    } else if (randomChoiceNumber === 10) {
       embed.setDescription([message.author.username, ", no doubts it's a **10/10** 👍👍👍"].join(""));
     }
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

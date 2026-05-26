@@ -25,7 +25,7 @@ module.exports = {
 
     try {
       return await findEmoji.startGame();
-    } catch (error) {
+    } catch {
       return;
     }
   },

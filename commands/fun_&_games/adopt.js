@@ -5,41 +5,30 @@ module.exports = {
   description: "Adopt a new pet, the mentioned user...",
   async execute(client, message, args) {
     try {
-      if (message.mentions.members.first() == null) return await message.reply(message.author.username + ", mention the user you want to adopt");
-    } catch (error) {
+      if (!message.mentions.members.first()) return await message.reply(message.author.username + ", mention the user you want to adopt");
+    } catch {
       return;
     }
 
     const adoptedMember = message.mentions.members.first().user;
 
-    const row = await new Promise((resolve, reject) => {
-      client.database.get("SELECT hasPet FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
+    const row = await client.database.query("SELECT has_pet FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
     const embed = new EmbedBuilder().setColor(0xff0000).setTitle("❌ Error").setDescription("You already have a pet, type **d!pet** to check it!");
 
-    if (row.hasPet) {
+    if (row.rows[0].has_pet) {
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
     const petStatsCooldown = Date.now() + 10800000; // start imediatly at 3h
-    await new Promise((resolve, reject) => {
-      client.database.run(
-        "UPDATE User SET hasPet = 1, petId = ?, petStatsHealth = 100, petStatsFun = 100, petStatsHunger = 100, petStatsThirst = 100, petCooldown = ? WHERE serverId = ? AND userId = ?",
-        [adoptedMember.id, petStatsCooldown, message.guild.id, message.author.id],
-        (err) => {
-          if (err) reject(err);
-          else resolve();
-        }
-      );
-    });
+    await client.database.query(
+      "UPDATE users SET has_pet = 1, pet_id = $1, pet_stats_health = 100, pet_stats_fun = 100, pet_stats_hunger = 100, pet_stats_thirst = 100, pet_cooldown = $2 WHERE server_id = $3 AND user_id = $4",
+      [adoptedMember.id, petStatsCooldown, message.guildId, message.author.id],
+    );
 
     embed
       .setColor(0x33cc00)
@@ -50,7 +39,7 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

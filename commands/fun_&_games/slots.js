@@ -16,7 +16,7 @@ module.exports = {
 
     try {
       return await slots.startGame();
-    } catch (error) {
+    } catch {
       return;
     }
   },

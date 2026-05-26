@@ -26,7 +26,7 @@ module.exports = {
 
     try {
       return await trivia.startGame();
-    } catch (error) {
+    } catch {
       return;
     }
   },

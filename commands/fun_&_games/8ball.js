@@ -7,7 +7,7 @@ module.exports = {
     // compact way to check and reply
     try {
       if (args.length < 1) return await message.reply(message.author.username + " what is your beautiful question?");
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -52,11 +52,11 @@ module.exports = {
               "Probably",
               "soon",
             ],
-            false
+            false,
           ),
-        ].join("")
+        ].join(""),
       );
-    } catch (error) {
+    } catch {
       return;
     }
   },

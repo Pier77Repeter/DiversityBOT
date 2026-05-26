@@ -7,29 +7,24 @@ module.exports = {
   description: "Give water to your pet",
   cooldown: 3600,
   async execute(client, message, args) {
-    const row = await new Promise((resolve, reject) => {
-      client.database.get("SELECT hasPet, petStatsThirst FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
+    const row = await client.database.query("SELECT has_pet, pet_stats_thirst FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
     const embed = new EmbedBuilder();
 
-    if (!row || !row.hasPet) {
+    if (row.rowCount === 0 || !row.rows[0].has_pet) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have a pet, adopt it with **d!adopt <@user>**");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    const cooldown = await cooldownManager(client, message, "petDrinkCooldown", this.cooldown);
-    if (cooldown == null) return;
+    const cooldown = await cooldownManager(client, message, "pet_drink_cooldown", this.cooldown);
+    if (cooldown === null) return;
 
-    if (cooldown != 0) {
+    if (cooldown) {
       embed
         .setColor(0x000000)
         .setTitle(null)
@@ -37,34 +32,30 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    var petThirstToAdd = mathRandomInt(15, 30);
+    const petThirst = row.rows[0].pet_stats_thirst;
+    let petThirstToAdd = mathRandomInt(15, 30);
 
-    if (row.petStatsThirst + petThirstToAdd > 100) {
-      petThirstToAdd = 100 - row.petStatsThirst;
+    if (petThirst + petThirstToAdd > 100) {
+      petThirstToAdd = 100 - petThirst;
     }
 
-    await new Promise((resolve, reject) => {
-      client.database.run(
-        "UPDATE User SET petStatsThirst = petStatsThirst + ? WHERE serverId = ? AND userId = ?",
-        [petThirstToAdd, message.guild.id, message.author.id],
-        (err) => {
-          if (err) reject(err);
-          else resolve();
-        }
-      );
-    });
+    await client.database.query("UPDATE users SET pet_stats_thirst = pet_stats_thirst + $1 WHERE server_id = $2 AND user_id = $3", [
+      petThirstToAdd,
+      message.guildId,
+      message.author.id,
+    ]);
 
-    if (row.petStatsThirst + petThirstToAdd >= 100) {
+    if (petThirst + petThirstToAdd >= 100) {
       embed.setColor(0xff0000).setTitle("Water").setDescription("Your pet is not thirsty");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -77,7 +68,7 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

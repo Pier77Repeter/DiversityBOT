@@ -6,8 +6,8 @@ module.exports = {
   description: "Troll the mentioned user",
   async execute(client, message, args) {
     try {
-      if (message.mentions.members.first() == null) return await message.reply(message.author.username + ", insert troll target");
-    } catch (error) {
+      if (!message.mentions.members.first()) return await message.reply(message.author.username + ", insert troll target");
+    } catch {
       return;
     }
 
@@ -41,7 +41,7 @@ module.exports = {
         "troll-26.jpg",
         "troll-27.jpg",
       ],
-      false
+      false,
     );
     const imageFile = new AttachmentBuilder("./media/" + trollImageName);
     const embed = new EmbedBuilder()
@@ -51,7 +51,7 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed], files: [imageFile] });
-    } catch (error) {
+    } catch {
       return;
     }
   },

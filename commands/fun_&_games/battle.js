@@ -10,8 +10,8 @@ module.exports = {
   cooldown: 60,
   async execute(client, message, args) {
     try {
-      if (message.mentions.members.first() == null) return await message.reply("Herr " + message.author.username + ", you need to mention an opponent!");
-    } catch (error) {
+      if (!message.mentions.members.first()) return await message.reply("Herr " + message.author.username + ", you need to mention an opponent!");
+    } catch {
       return;
     }
 
@@ -20,15 +20,15 @@ module.exports = {
     const mentionedUser = message.mentions.members.first().user;
     const messageAuthor = message.author;
 
-    const cooldown = await cooldownManager(client, message, "battleCooldown", this.cooldown);
-    if (cooldown == null) return;
+    const cooldown = await cooldownManager(client, message, "battle_cooldown", this.cooldown);
+    if (cooldown === null) return;
 
-    if (cooldown != 0) {
+    if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ Herr user, you can do another battle **<t:" + cooldown[1] + ":R>**");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
@@ -40,26 +40,26 @@ module.exports = {
       .setDescription(messageAuthor.username + " ⚔️ vs ⚔️ " + mentionedUser.username)
       .setImage("attachment://letBattleBegin.jpg");
 
-    var sentMessage;
+    let sentMessage;
     try {
       sentMessage = await message.reply({ embeds: [embed], files: [imageFile] });
-    } catch (error) {
+    } catch {
       return;
     }
 
     await delay(3000);
 
-    var authorHp = 100;
-    var opponentHp = 100;
-    var battleDamage = 0;
-    var preventInfiniteLoop = 0; // i dont trust my own code O_O
+    let authorHp = 100;
+    let opponentHp = 100;
+    let battleDamage = 0;
+    let preventInfiniteLoop = 0; // i dont trust my own code O_O
 
     imageFile.setFile("./media/battleBegins.jpg");
     embed.setImage("attachment://battleBegins.jpg");
 
     try {
       await sentMessage.edit({ embeds: [embed], files: [imageFile] });
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -81,7 +81,7 @@ module.exports = {
 
         try {
           await sentMessage.edit({ embeds: [embed] });
-        } catch (error) {
+        } catch {
           return;
         }
 
@@ -96,7 +96,7 @@ module.exports = {
 
         try {
           return await sentMessage.edit({ embeds: [embed], files: [] });
-        } catch (error) {
+        } catch {
           return;
         }
       }
@@ -146,7 +146,7 @@ module.exports = {
             ]) +
             " for **-" +
             battleDamage +
-            "HP**"
+            "HP**",
         )
         .setFields({
           name: "❤️ HP stats:",
@@ -155,7 +155,7 @@ module.exports = {
 
       try {
         await sentMessage.edit({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
 
@@ -176,7 +176,7 @@ module.exports = {
 
         try {
           await sentMessage.edit({ embeds: [embed] });
-        } catch (error) {
+        } catch {
           return;
         }
 
@@ -191,7 +191,7 @@ module.exports = {
 
         try {
           return await sentMessage.edit({ embeds: [embed], files: [] });
-        } catch (error) {
+        } catch {
           return;
         }
       }
@@ -241,7 +241,7 @@ module.exports = {
             ]) +
             " for **-" +
             battleDamage +
-            "HP**"
+            "HP**",
         )
         .setFields({
           name: "❤️ HP stats:",
@@ -250,7 +250,7 @@ module.exports = {
 
       try {
         await sentMessage.edit({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
 

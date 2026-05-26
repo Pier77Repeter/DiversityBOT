@@ -7,14 +7,14 @@ module.exports = {
     // bruh, akinator isn't working rn, those devs must fix their npm package
     try {
       return await message.reply("I'm sorry but at the moment this command isn't working, it will be re-enable asap");
-    } catch (error) {
+    } catch {
       return;
     }
 
     // this also works when checking if there are or there aren't args
     try {
       if (!args[0]) return await message.reply("Akinator what? Specify a category: **character**, **animal** or **object**");
-    } catch (error) {
+    } catch {
       return;
     }
 
@@ -27,7 +27,7 @@ module.exports = {
             gameType: "character",
             useButtons: true,
           });
-        } catch (error) {
+        } catch {
           return;
         }
         break;
@@ -39,7 +39,7 @@ module.exports = {
             gameType: "animal",
             useButtons: true,
           });
-        } catch (error) {
+        } catch {
           return;
         }
         break;
@@ -51,7 +51,7 @@ module.exports = {
             gameType: "object",
             useButtons: true,
           });
-        } catch (error) {
+        } catch {
           return;
         }
         break;
@@ -59,7 +59,7 @@ module.exports = {
       default:
         try {
           return await message.reply("What? These are the only available options: **character**, **animal** or **object**");
-        } catch (error) {
+        } catch {
           return;
         }
     }

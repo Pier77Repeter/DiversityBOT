@@ -22,7 +22,7 @@ module.exports = {
 
     try {
       return await minesweeper.startGame();
-    } catch (error) {
+    } catch {
       return;
     }
   },

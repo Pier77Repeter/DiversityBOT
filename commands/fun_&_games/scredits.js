@@ -6,16 +6,11 @@ module.exports = {
   async execute(client, message, args) {
     const user = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
 
-    const row = await new Promise((resolve, reject) => {
-      client.database.get("SELECT socialCredits FROM User WHERE serverId = ? AND userId = ?", [message.guild.id, user.id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
+    const row = await client.database.query("SELECT social_credits FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, user.id]);
 
     const embed = new EmbedBuilder();
 
-    if (!row) {
+    if (row.rowCount === 0) {
       embed
         .setColor(0x33cc00)
         .setTitle(user.username + "'s social credits")
@@ -24,12 +19,12 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch (error) {
+      } catch {
         return;
       }
     }
 
-    const socialCredits = row.socialCredits;
+    const socialCredits = row.rows[0].social_credits;
 
     embed
       .setColor(0x33cc00)
@@ -43,7 +38,7 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch (error) {
+    } catch {
       return;
     }
   },
