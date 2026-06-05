@@ -309,6 +309,7 @@ module.exports = {
                   "**d!link** - Get the link to invite me",
                   "**d!credits** - Get all the credits",
                   "**d!ping** - Example command (see on GitHub)",
+                  "**d!avatar** or **d!avatar <@user>** - Display user's avatar",
                   "**d!stats** or **d!stats <@user>** - See your stats",
                   "**d!server** - Get information about the server",
                   "**d!modlog <#channel>** - Set the channel for logging mod actions (Only admin)",

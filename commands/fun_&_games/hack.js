@@ -131,7 +131,7 @@ module.exports = {
         "\n",
         "\n",
         "\n",
-        "> [▘] Stolen data: " +
+        "> [▗] Stolen data: " +
           listsGetRandomItem([
             "his project source code",
             "maths book",
