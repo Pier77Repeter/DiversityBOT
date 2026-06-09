@@ -24,19 +24,6 @@ module.exports = {
       }
     }
 
-    if (!args.length > 0) {
-      embed
-        .setColor(0xff0000)
-        .setTitle("❌ Error")
-        .setDescription("Correct usage is: **d!play <song author> <song name>**")
-        .setImage("https://c.tenor.com/W_aA0wh5C4gAAAAd/tenor.gif");
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
-      }
-    }
-
     const cooldown = await serverCooldownManager(client, message, "play_cooldown", this.cooldown);
     if (cooldown === null) return;
 
@@ -44,7 +31,16 @@ module.exports = {
       embed
         .setColor(0x000000)
         .setTitle(null)
-        .setDescription("⏰ Listen some music before using **d!play** again in: **<t:" + cooldown[1] + ":R>**");
+        .setDescription("⏰ Listen some music before using **d!play** again in **<t:" + cooldown[1] + ":R>**");
+      try {
+        return await message.reply({ embeds: [embed] });
+      } catch {
+        return;
+      }
+    }
+
+    if (!args.length > 0) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Correct usage is: **d!play <song name>**").setImage("https://c.tenor.com/W_aA0wh5C4gAAAAd/tenor.gif");
       try {
         return await message.reply({ embeds: [embed] });
       } catch {
@@ -95,7 +91,7 @@ module.exports = {
       .setColor(0x666666)
       .setTitle("🔍 Searching the song...")
       .setDescription(
-        "Hopefully i'm able to find the song you asked on **SoundCloud**, if it's not what you wanted try adding the song author BEFORE the song name, else just go on **https://soundcloud.com/** and see if your song is there",
+        "Hopefully i'm able to find the song on **SoundCloud**, if it's not what you wanted try adding the song author BEFORE the song name, else just go on **https://soundcloud.com/** and see if your song is there",
       );
 
     let sentMessage;
@@ -121,43 +117,16 @@ module.exports = {
       }
     }
 
-    const queue =
-      player.nodes.get(message.guild.id) ||
-      player.nodes.create(message.guild.id, {
-        metadata: {
-          channel: message.channel,
-          client: message.guild.members.me,
-        },
-        selfDeaf: true,
-        leaveOnStop: true,
-        leaveOnStopCooldown: 5000,
-        leaveOnEnd: true,
-        leaveOnEndCooldown: 15000,
-        leaveOnEmpty: true,
-        leaveOnEmptyCooldown: 300000,
-      });
+    // showing the list of found tracks
+    embed.setColor("Green").setTitle("Found tracks for '" + query + "'");
 
-    // connect to vc if not connected
-    if (!queue.connection) {
-      try {
-        await queue.connect(message.member.voice?.channelId);
-      } catch {
-        // rip, couldnt connect to vc
-        embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Failed to connect to your voice channel, check if i have the permission to connect");
+    let tracksListText = "";
 
-        try {
-          return await sentMessage.edit({ embeds: [embed] });
-        } catch {
-          return;
-        }
-      }
+    search.tracks.forEach((element, i) => {
+      tracksListText += i + 1 + ") **" + element.title + "** | By **" + element.author + "**\n\n";
+    });
 
-      isFirstSong = true; // connecting to VC
-      embed.setColor(0x666666).setTitle("⚙️ Connecting, please wait...");
-    } else {
-      // already connected to vc
-      embed.setColor(0x33cc00).setTitle("✅ Done").setDescription("Music has been added to the queue");
-    }
+    embed.setDescription(tracksListText).setFooter({ text: "Choose the song (just say the number)" });
 
     try {
       await sentMessage.edit({ embeds: [embed] });
@@ -165,40 +134,59 @@ module.exports = {
       return;
     }
 
-    // add only the first result
-    const track = search.tracks[0];
+    // must wait for the message author to answer the number
+    const filter = (collectedMessage) => collectedMessage.author.id === message.author.id;
+    const collector = message.channel.createMessageCollector({ filter: filter, time: 30_000 });
 
-    try {
-      // await queue.node.play(track);
-      // play the current playing track, so that it won't immediatly start playing another one when added
-      await player.play(voiceChannel, track, {
+    collector.on("collect", async (receivedMessage) => {
+      const songIndex = Number(receivedMessage.content) - 1;
+
+      if (isNaN(songIndex) || !search.tracks[songIndex]) {
+        embed.setColor("DarkRed").setTitle("❌ Error").setDescription("The number you just sent was not present in the track list");
+        try {
+          return await receivedMessage.reply({ embeds: [embed] });
+        } catch {
+          return;
+        }
+      }
+
+      // stop listening to messages so they can't trigger this twice!
+      collector.stop();
+
+      const track = search.tracks[songIndex];
+
+      embed.setColor(0x666666).setTitle("⚙️ Loading track...").setDescription(null).setFooter(null);
+
+      try {
+        sentMessage = await message.reply({ embeds: [embed] });
+      } catch {
+        return;
+      }
+
+      const { queue } = await player.play(voiceChannel, track, {
         nodeOptions: {
           metadata: {
             channel: message.channel,
             client: message.guild.members.me,
-            requestedBy: message.user,
+            requestedBy: message.author,
           },
+          selfDeaf: true,
+          leaveOnStop: true,
+          leaveOnStopCooldown: 5000,
+          leaveOnEnd: true,
+          leaveOnEndCooldown: 15000,
+          leaveOnEmpty: true,
+          leaveOnEmptyCooldown: 600000,
         },
       });
-    } catch {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Something went wrong while playing the song");
+
+      embed.setColor(0x33cc00).setTitle("✅ Added to Queue").setDescription(`**${track.title}** has been added!`).setFooter(null);
 
       try {
         return await sentMessage.edit({ embeds: [embed] });
       } catch {
         return;
       }
-    }
-
-    if (isFirstSong) {
-      isFirstSong = false; // not anymore, bot is connected to VC
-      embed.setColor(0x33cc00).setTitle("✅ Music API is connected").setDescription("The music will now start in a few seconds!");
-
-      try {
-        return await sentMessage.edit({ embeds: [embed] });
-      } catch {
-        return;
-      }
-    }
+    });
   },
 };

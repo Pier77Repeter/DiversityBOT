@@ -30,6 +30,7 @@ module.exports = {
       }
     }
 
+    // discord-player documentation is scheiße
     const player = useMainPlayer();
     const queue = player.nodes.get(message.guild.id);
     const history = useHistory(message.guild.id);

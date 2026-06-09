@@ -6,8 +6,8 @@ const logger = require("../logger")("PlayerError");
 module.exports = (client) => {
   const player = useMainPlayer();
 
-  player.events.on(GuildQueueEvent.PlayerError, async (queue, error) => {
-    logger.error("Error while playing a track", error);
+  player.events.on("error", async (queue, error) => {
+    logger.error("Error while trying to play a track", error);
 
     const embed = new EmbedBuilder();
 

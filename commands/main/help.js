@@ -177,6 +177,7 @@ module.exports = {
                   "**d!back** - Play the previous song",
                   "**d!loop** - Loops the current song",
                   "**d!loopqueue** - Loops the whole queue",
+                  "**d!lyric <song name>** - Get the lyrics of a given song",
                 ].join("\n"),
               );
 
