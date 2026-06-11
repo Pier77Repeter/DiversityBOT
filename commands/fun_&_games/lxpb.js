@@ -51,7 +51,7 @@ module.exports = {
       }
     }
 
-    embed.setTitle("📊 Top 10 highest levels in the server:").setDescription(leaderBoardText).setFooter({ text: message.guild.name, iconURL: message.guild.iconURL() });
+    embed.setTitle("📊 Top 10 highest levels in the server").setDescription(leaderBoardText).setFooter({ text: message.guild.name, iconURL: message.guild.iconURL() });
 
     try {
       return await message.reply({ embeds: [embed] });

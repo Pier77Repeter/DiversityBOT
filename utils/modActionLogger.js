@@ -13,7 +13,7 @@ module.exports = async function modActionLogger(client, actionSource, embed) {
     }
 
     // if mod log channel is null just do nothin
-    if (row.rows[0].mod_log_channel === "null") return;
+    if (row.rows[0].mod_log_channel === null) return;
 
     // we are 100% sure channel is in database, let's try and find it
     const channel = actionSource.guild.channels.cache.get(row.rows[0].mod_log_channel);

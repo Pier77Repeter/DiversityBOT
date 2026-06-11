@@ -125,7 +125,7 @@ client.once(Events.ClientReady, (readyClient) => {
           "*randomly joins the chat*",
           "HHEEEEELLLLLLLLLLOOOOOOOOOOOOO",
           "Every day is a great day!",
-          "Daily lag :i",
+          "Daily lag :I",
           "Now with slash commands!",
           "Now with daily crashes!",
           "Still debugging!",

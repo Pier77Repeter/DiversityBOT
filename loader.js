@@ -108,6 +108,27 @@ module.exports = {
               ON DELETE CASCADE
         );
 
+        CREATE TABLE IF NOT EXISTS events (
+          server_id VARCHAR(20) NOT NULL,
+          user_id VARCHAR(20) NOT NULL,
+          tree_level INT DEFAULT 0,
+          twigs INT DEFAULT 0,
+          leaves INT DEFAULT 0,
+          golden_coins INT DEFAULT 0,
+          deco_id1 BOOLEAN DEFAULT false,
+          deco_id2 BOOLEAN DEFAULT false,
+          deco_id3 BOOLEAN DEFAULT false,
+          deco_id4 BOOLEAN DEFAULT false,
+          forest_cooldown BIGINT DEFAULT 0,
+          helpsanta_cooldown BIGINT DEFAULT 0,
+          PRIMARY KEY (server_id, user_id),
+          CONSTRAINT fk_server_event
+              FOREIGN KEY(server_id) 
+              REFERENCES servers(server_id) 
+              ON DELETE CASCADE
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_events_user_id ON events(user_id);
         CREATE INDEX IF NOT EXISTS idx_users_user_id ON users(user_id);
         CREATE INDEX IF NOT EXISTS idx_channels_server_id ON channels(server_id);
         `;

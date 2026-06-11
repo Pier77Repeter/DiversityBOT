@@ -92,7 +92,7 @@ module.exports = {
       });
     }
 
-    if (configType.mod_log_channel !== "null") {
+    if (configType.mod_log_channel !== null) {
       embed.addFields({
         name: "📝 Mod logging",
         value: "✅ Moderator actions are being logged in <#" + configType.mod_log_channel + ">",

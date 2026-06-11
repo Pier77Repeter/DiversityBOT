@@ -103,26 +103,11 @@ module.exports = (client) => {
     // re-naiming the logger, else it will keep the specific log of the command, below
     logger.setFileName("MessageCreate");
 
-    // can't do const, db operations needs to be done when bot isn't restarting
-    let row;
-
-    // calling updaters when bot isn't restarting
+    // only updates when not restarting, even if user isn't using the bot
     if (!loader.getRestartStatus()) {
-      await serverDataChecker(message).catch((error) => {
-        logger.error("ServerDataChecker threw an error, look here", error);
+      await userDataUpdater(message).catch((error) => {
+        return logger.error("UserDataUpdater threw an error, look here", error);
       });
-
-      // checking if user exists in db, very fast query, will return a boolean if row is found
-      row = await client.database.query("SELECT EXISTS (SELECT 1 FROM users WHERE server_id = $1 AND user_id = $2)", [message.guild.id, message.author.id]).catch((error) => {
-        logger.error("Error verifying if user exist in database", error);
-      });
-
-      // the user exists, so update his shit
-      if (row.rows[0].exists) {
-        await userDataUpdater(message).catch((error) => {
-          return logger.error("UserDataUpdater threw an error, look here", error);
-        });
-      }
     }
 
     // check if message starts with the bot prefix
@@ -142,66 +127,6 @@ module.exports = (client) => {
         return;
       }
     }
-
-    // if it's new user, insert the default data in db, i put this here so that only people who actually use the bot gets stored in db (less junk)
-    // 'row.rows[0].exists' is used for 'SELECT EXISTS()', use 'row.rowCount === 0' for the rest
-    if (!row.rows[0].exists) {
-      // now you can S E E the json crap
-      const itemsJsonData = {
-        itemId1: false,
-        itemId2: false,
-        itemId2Count: 0,
-        itemId3: false,
-        itemId3Count: 0,
-        itemId4: false,
-        itemId5: false,
-        itemId6: false,
-        itemId7: false,
-        itemId8: false,
-        itemId9: false,
-        itemId10: false,
-        itemId10Count: 0,
-        itemId11: false,
-        itemId11Count: 0,
-      };
-
-      const fishesJsonData = {
-        fishId1: false,
-        fishId1Count: 0,
-        fishId2: false,
-        fishId2Count: 0,
-        fishId3: false,
-        fishId3Count: 0,
-        fishId4: false,
-        fishId4Count: 0,
-        fishId5: false,
-        fishId5Count: 0,
-        fishId6: false,
-        fishId6Count: 0,
-        fishId7: false,
-        fishId7Count: 0,
-        fishId8: false,
-        fishId8Count: 0,
-        fishId9: false,
-        fishId9Count: 0,
-        fishId10: false,
-        fishId10Count: 0,
-      };
-
-      // no more many values :(
-      await client.database
-        .query("INSERT INTO users(server_id, user_id, items, fishes) VALUES($1, $2, $3, $4)", [message.guild.id, message.author.id, itemsJsonData, fishesJsonData])
-        .catch((error) => {
-          logger.error("Error INSERTING a new user into the database", error);
-        });
-    }
-
-    // last but not least, event data, put this here for the same reason as this ^
-    /*
-    await userEventDataChecker(message).catch((err) => {
-      return logger.error("UserEventDataChecker threw an error, look here", err);
-    });
-    */
 
     // split the message into command and arguments
     const args = message.content.slice(botPrefix.length).trim().split(/ +/);
@@ -262,6 +187,72 @@ module.exports = (client) => {
       }
     }
 
+    // HERE WE ARE INSERTING NEW USER DATA (now that the user has typed an actual command)
+    // now you can S E E the json crap
+    const itemsJsonData = {
+      itemId1: false,
+      itemId2: false,
+      itemId2Count: 0,
+      itemId3: false,
+      itemId3Count: 0,
+      itemId4: false,
+      itemId5: false,
+      itemId6: false,
+      itemId7: false,
+      itemId8: false,
+      itemId9: false,
+      itemId10: false,
+      itemId10Count: 0,
+      itemId11: false,
+      itemId11Count: 0,
+    };
+
+    const fishesJsonData = {
+      fishId1: false,
+      fishId1Count: 0,
+      fishId2: false,
+      fishId2Count: 0,
+      fishId3: false,
+      fishId3Count: 0,
+      fishId4: false,
+      fishId4Count: 0,
+      fishId5: false,
+      fishId5Count: 0,
+      fishId6: false,
+      fishId6Count: 0,
+      fishId7: false,
+      fishId7Count: 0,
+      fishId8: false,
+      fishId8Count: 0,
+      fishId9: false,
+      fishId9Count: 0,
+      fishId10: false,
+      fishId10Count: 0,
+    };
+
+    // try to insert this row, if the primary key already exists, just ignore it and move on, only inserting users who actually use the bot
+    // LOOK AT https://www.geeksforgeeks.org/sql/cte-in-sql/
+    const query = `
+      WITH server_insert AS (
+        INSERT INTO servers(server_id) 
+        VALUES($1) 
+        ON CONFLICT (server_id) DO NOTHING
+      )
+      INSERT INTO users(server_id, user_id, items, fishes) 
+      VALUES($1, $2, $3, $4) 
+      ON CONFLICT (server_id, user_id) DO NOTHING;
+    `;
+
+    // REMEBER TO ADD THIS TEXT FOR EVENTS!!!!
+    /*
+    INSERT INTO events(server_id, user_id) 
+    VALUES($1, $2) ON CONFLICT (server_id, user_id) DO NOTHING;
+    */
+
+    const values = [message.guildId, message.author.id, itemsJsonData, fishesJsonData];
+
+    await client.database.query(query, values); // we inserted new data!
+
     // ready to log for the specific command
     logger.setFileName("MessageCreate/" + command.name + ".js");
 
@@ -309,160 +300,144 @@ module.exports = (client) => {
     }
   });
 
-  // VERY RARELY, the bot may be invited in a server when db connection is off (bot is offline) and data isn't created, this is the fix
-  async function serverDataChecker(message) {
-    // same fast check for users but now for servers
-    const serverRow = await client.database.query("SELECT EXISTS (SELECT 1 FROM servers WHERE server_id = $1)", [message.guild.id]);
-
-    if (serverRow.rows[0].exists) return; // server already exist
-
-    await client.database.query("INSERT INTO servers(server_id) VALUES($1)", [message.guild.id]);
-  }
-
   // this functions contains all the shit for updating user data in db
   async function userDataUpdater(message) {
-    // selecting the data that needs to be updated EVERYTIME THE USER SENDS A NEW MESSAGE
-    const userRow = await client.database.query(
-      "SELECT level, xp, next_xp, reputation, debts, money, bank_money, has_pet, pet_stats_health, pet_stats_fun, pet_stats_hunger, pet_stats_thirst, pet_cooldown FROM users WHERE server_id = $1 AND user_id = $2",
-      [message.guild.id, message.author.id],
-    );
+    // just need to check if user exists, it is not possible that the server table dosen't exist as it gets created when the user uses the bot
+    const userCheck = await client.database.query("SELECT 1 FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
-    /*
-    Example postgres output
-    {
-      command: 'SELECT',
-      rowCount: 1,
-      oid: null,
-      rows: [
-        {
-          xp: 0,
-          next_xp: 0,
-          reputation: 0,
-          money: 0,
-          ...
-        }
-      ],
-      fields: [ ... ]
-    }
-    */
-    const userData = userRow.rows[0];
+    // user dosen't exist, bye
+    if (userCheck.rowCount === 0) return;
 
-    const isLevelingEnabled = await configChecker(client, message, "leveling_cmd", false); // we don't wanna log any error (spam prevention)
+    const isLevelingEnabled = await configChecker(client, message, "leveling_cmd", false);
 
-    const embed = new EmbedBuilder();
+    let updatedUser = null;
 
-    // XP UPDATING SECTION, working with data: xp, next_xp, level
+    // XP UPDATING SECTION
     if (isLevelingEnabled) {
-      await client.database.query("UPDATE users SET xp = xp + 1 WHERE server_id = $1 AND user_id = $2", [message.guild.id, message.author.id]);
+      // RETURNING allows you to UPDATE a row and instantly return the new, updated data back to JavaScript in exactly one step
+      const res = await client.database.query(
+        `
+        UPDATE users 
+        SET xp = xp + 1 
+        WHERE server_id = $1 AND user_id = $2 
+        RETURNING xp, next_xp, level, debts, money, bank_money, has_pet, pet_stats_health, pet_stats_fun, pet_stats_hunger, pet_stats_thirst
+        `,
+        [message.guildId, message.author.id],
+      );
 
-      // check if user can progress to the next level
-      if (userData.xp >= userData.next_xp) {
-        await client.database.query("UPDATE users SET xp = 0, next_xp = next_xp + 100, level = level + 1 WHERE server_id = $1 AND user_id = $2", [
-          message.guild.id,
-          message.author.id,
-        ]);
+      updatedUser = res.rows[0];
 
+      // check level up against the newly returned data
+      if (updatedUser.xp >= updatedUser.next_xp) {
+        const levelRes = await client.database.query(
+          `
+          UPDATE users 
+          SET xp = 0, next_xp = next_xp + 100, level = level + 1 
+          WHERE server_id = $1 AND user_id = $2
+          RETURNING level, next_xp
+          `,
+          [message.guildId, message.author.id],
+        );
+
+        const newStats = levelRes.rows[0];
         const imageFile = new AttachmentBuilder("./media/levelUp.png");
 
-        embed
+        const embed = new EmbedBuilder()
           .setColor(0xffcc00)
           .setTitle("⬆️ Level up")
-          .setDescription(["Your new level: **" + (userData.level + 1) + "**", "XP for next level: **" + (userData.next_xp + 100) + "**"].join("\n"))
+          .setDescription(`Your new level: **${newStats.level}**\nXP for next level: **${newStats.next_xp}**`)
           .setThumbnail("attachment://levelUp.png")
-          .setFooter({
-            text: message.author.username,
-            iconURL: message.author.displayAvatarURL(),
-          });
+          .setFooter({ text: message.author.username, iconURL: message.author.displayAvatarURL() });
 
         try {
           await message.reply({ embeds: [embed], files: [imageFile] });
         } catch {
-          // nothing to do, contiue to update the rest of the data
+          // continueeeeeeeee
         }
       }
+    } else {
+      // if leveling is disabled, we still need the user data for pets/debts
+      const res = await client.database.query(
+        "SELECT debts, money, bank_money, has_pet, pet_stats_health, pet_stats_fun, pet_stats_hunger, pet_stats_thirst FROM users WHERE server_id = $1 AND user_id = $2",
+        [message.guildId, message.author.id],
+      );
+      updatedUser = res.rows[0];
     }
 
-    // REPUTATION UPDATING SECTION, only needed with when mentioned user and word "thank" is present in message, working with data: reputation
+    if (!updatedUser) return; // <-- just in case, impossible but idk
+
+    // REPUTATION UPDATE SECTION
     if (message.mentions.members.first() && message.content.toLowerCase().includes("thank")) {
       const mentionedMember = message.mentions.members.first().user;
 
-      await client.database.query("UPDATE users SET reputation = reputation + 1 WHERE server_id = $1 AND user_id = $2", [message.guild.id, mentionedMember.id]);
+      // preventing giving reputation to yourself or a bot
+      if (mentionedMember.id === message.author.id || mentionedMember.bot) return;
 
-      embed
+      await client.database.query("UPDATE users SET reputation = reputation + 1 WHERE server_id = $1 AND user_id = $2", [message.guildId, mentionedMember.id]);
+
+      const embed = new EmbedBuilder()
         .setColor(0xffcc00)
         .setTitle("🤝 So kind of you")
-        .setDescription("Gave **+1** reputation to " + mentionedMember.username)
-        .setFooter({ text: "Check you rep with d!rep" });
+        .setDescription(`Gave **+1** reputation to ${mentionedMember.username}`)
+        .setFooter({ text: "Check your rep with d!rep" });
 
       try {
         await message.reply({ embeds: [embed] });
       } catch {
-        // contiue to update the rest of the data
+        // continue!
       }
     }
 
-    // DEBTS UPDATING SECTION, only needed when user has debts, working with data: debts, money, bank_money
-    if (Number(userData.debts) > 0) {
-      const debtsCooldown = await cooldownManager(client, message, "debts_cooldown", 86400, false); // we don't wanna log any error (spam prevention)
-      if (debtsCooldown === null) return;
+    // DEBTS UPDATE SECTION
+    if (Number(updatedUser.debts) > 0) {
+      const debtsCooldown = await cooldownManager(client, message, "debts_cooldown", 86400, false);
 
-      // updating the debts
       if (debtsCooldown === 0) {
-        const debts = Math.trunc((Number(userData.debts) + Number(userData.money) + Number(userData.bank_money)) * 0.03); // add 3% every day, and prevents floats
+        // quick maths, add 3$ of their current debts
+        const newDebts = Math.trunc((Number(updatedUser.debts) + Number(updatedUser.money) + Number(updatedUser.bank_money)) * 0.03);
 
-        await client.database.query("UPDATE users SET debts = $1 WHERE server_id = $2 AND user_id = $3", [debts, message.guild.id, message.author.id]);
+        await client.database.query("UPDATE users SET debts = debts + $1 WHERE server_id = $2 AND user_id = $3", [newDebts, message.guildId, message.author.id]);
       }
     }
 
-    // PET STATS UPDATING SECTION, only needed when user has a pet, working with data: hasPet, petStatsHealth, petStatsFun, petStatsHunger, petStatsThirst, petCooldown
-    if (userData.has_pet) {
+    // PET STATS UPDATE SECTION
+    if (updatedUser.has_pet) {
       const petCooldown = await cooldownManager(client, message, "pet_cooldown", 10800, false);
-      if (petCooldown === null) return;
 
-      // updating the stats
       if (petCooldown === 0) {
-        await client.database.query(
-          "UPDATE users SET pet_stats_health = pet_stats_health - $1, pet_stats_fun = pet_stats_fun - $2, pet_stats_hunger = pet_stats_hunger - $3, pet_stats_thirst = pet_stats_thirst - $4 WHERE server_id = $5 AND user_id = $6",
-          [mathRandomInt(5, 20), mathRandomInt(5, 20), mathRandomInt(5, 20), mathRandomInt(5, 20), message.guild.id, message.author.id],
-        );
-      }
-
-      // check if pet is still alive
-      if (userData.pet_stats_health <= 0 || userData.pet_stats_hunger <= 0 || userData.pet_stats_thirst <= 0) {
-        await client.database.query(
-          "UPDATE users SET has_pet = 0, pet_id = 'null', pet_stats_health = 0, pet_stats_fun = 0, pet_stats_hunger = 0, pet_stats_thirst = 0 WHERE server_id = $1 AND user_id = $2",
-          [message.guild.id, message.author.id],
+        // UPDATED AND RETURN the new health to see if it died on this exact tick
+        const petRes = await client.database.query(
+          `
+          UPDATE users 
+          SET pet_stats_health = pet_stats_health - $1, pet_stats_fun = pet_stats_fun - $2, pet_stats_hunger = pet_stats_hunger - $3, pet_stats_thirst = pet_stats_thirst - $4 
+          WHERE server_id = $5 AND user_id = $6
+          RETURNING pet_stats_health, pet_stats_hunger, pet_stats_thirst
+          `,
+          [mathRandomInt(5, 20), mathRandomInt(5, 20), mathRandomInt(5, 20), mathRandomInt(5, 20), message.guildId, message.author.id],
         );
 
-        embed.setColor(0xff0000).setTitle("🪦 Oh no").setDescription("Your pet sadly died, you didn't care for it enough >:(");
+        const livePet = petRes.rows[0];
 
-        try {
-          await message.reply({ embeds: [embed] });
-        } catch {
-          // do nothing...
+        // check the newly returned health right now
+        if (livePet.pet_stats_health <= 0 || livePet.pet_stats_hunger <= 0 || livePet.pet_stats_thirst <= 0) {
+          await client.database.query(
+            `
+            UPDATE users 
+            SET has_pet = false, pet_id = NULL, pet_stats_health = 0, pet_stats_fun = 0, pet_stats_hunger = 0, pet_stats_thirst = 0 
+            WHERE server_id = $1 AND user_id = $2
+            `,
+            [message.guildId, message.author.id],
+          );
+
+          const embed = new EmbedBuilder().setColor(0xff0000).setTitle("🪦 Oh no").setDescription("Your pet sadly died, you didn't care for it enough >:(");
+
+          try {
+            await message.reply({ embeds: [embed] });
+          } catch {
+            // do nothing...
+          }
         }
       }
     }
   }
-
-  // for bot events data
-  /*
-  async function userEventDataChecker(message) {
-    row = await new Promise((resolve, reject) => {
-      client.database.get("SELECT 1 FROM Event WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
-
-    if (!row) {
-      await new Promise((resolve, reject) => {
-        client.database.run("INSERT INTO Event VALUES (?, ?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);", [message.guild.id, message.author.id], (err) => {
-          if (err) reject(err);
-          else resolve();
-        });
-      });
-    }
-  }
-  */
 };

@@ -24,10 +24,10 @@ module.exports = {
       }
     }
 
-    const channel = interaction.options.getChannel("channel") || "null";
+    const channel = interaction.options.getChannel("channel") || null;
 
     // turn this crap off
-    if (channel === "null") {
+    if (channel === null) {
       // do not worry about any error, it gets catched in interactionCreate.js
       await client.database.query("UPDATE servers SET mod_log_channel = $1 WHERE server_id = $2", [channel, interaction.guild.id]);
 

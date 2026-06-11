@@ -30,10 +30,10 @@ module.exports = {
       }
     }
 
-    const channel = message.mentions.channels.first() || "null";
+    const channel = message.mentions.channels.first() || null;
 
     // to turn it off
-    if (channel === "null") {
+    if (channel === null) {
       await client.database.query("UPDATE servers SET mod_log_channel = $1 WHERE server_id = $2", [channel, message.guildId]);
 
       embed

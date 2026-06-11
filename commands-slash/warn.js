@@ -48,22 +48,22 @@ module.exports = {
       }
     }
 
+    // can't warn bots
+    if (memberToWarn.user.bot) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You can't warn a Discord Bot");
+
+      try {
+        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+      } catch {
+        return;
+      }
+    }
+
     // if user dosen't exist in database we gotta let them know
     const checkRow = await client.database.query("SELECT EXISTS (SELECT 1 FROM users WHERE server_id = $1 AND user_id = $2)", [interaction.guildId, memberToWarn.user.id]);
 
     if (!checkRow.rows[0].exists) {
       // an user MUST be warned even if he never used the bot, must create his data NOW
-      // no bots in my db
-      if (memberToWarn.user.bot) {
-        embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You can't warn a Discord Bot");
-
-        try {
-          return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-        } catch {
-          return;
-        }
-      }
-
       const itemsJsonData = {
         itemId1: false,
         itemId2: false,

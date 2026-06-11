@@ -35,75 +35,71 @@ module.exports = (client) => {
     // re-naiming the logger, else it will keep the specific log of the command
     logger.setFileName("InteractionCreate");
 
-    await serverDataChecker(interaction).catch((error) => {
-      logger.error("ServerDataChecker threw an error", error);
-    });
+    // HERE WE ARE INSERTING NEW USER DATA
+    // now you can S E E the json crap
+    const itemsJsonData = {
+      itemId1: false,
+      itemId2: false,
+      itemId2Count: 0,
+      itemId3: false,
+      itemId3Count: 0,
+      itemId4: false,
+      itemId5: false,
+      itemId6: false,
+      itemId7: false,
+      itemId8: false,
+      itemId9: false,
+      itemId10: false,
+      itemId10Count: 0,
+      itemId11: false,
+      itemId11Count: 0,
+    };
 
-    // even when you use / cmds user data should be created IF NEW
-    const row = await client.database
-      .query("SELECT EXISTS (SELECT 1 FROM users WHERE server_id = $1 AND user_id = $2)", [interaction.guild.id, interaction.user.id])
-      .catch((error) => {
-        logger.error("Error verifying if user exist in database", error);
-      });
+    const fishesJsonData = {
+      fishId1: false,
+      fishId1Count: 0,
+      fishId2: false,
+      fishId2Count: 0,
+      fishId3: false,
+      fishId3Count: 0,
+      fishId4: false,
+      fishId4Count: 0,
+      fishId5: false,
+      fishId5Count: 0,
+      fishId6: false,
+      fishId6Count: 0,
+      fishId7: false,
+      fishId7Count: 0,
+      fishId8: false,
+      fishId8Count: 0,
+      fishId9: false,
+      fishId9Count: 0,
+      fishId10: false,
+      fishId10Count: 0,
+    };
 
-    // if it's new user, insert the default data in db
-    if (!row.rows[0].exists) {
-      // now you can S E E the json crap
-      const itemsJsonData = {
-        itemId1: false,
-        itemId2: false,
-        itemId2Count: 0,
-        itemId3: false,
-        itemId3Count: 0,
-        itemId4: false,
-        itemId5: false,
-        itemId6: false,
-        itemId7: false,
-        itemId8: false,
-        itemId9: false,
-        itemId10: false,
-        itemId10Count: 0,
-        itemId11: false,
-        itemId11Count: 0,
-      };
+    // try to insert this row, if the primary key already exists, just ignore it and move on, only inserting users who actually use the bot
+    // LOOK AT https://www.geeksforgeeks.org/sql/cte-in-sql/
+    const query = `
+      WITH server_insert AS (
+        INSERT INTO servers(server_id) 
+        VALUES($1) 
+        ON CONFLICT (server_id) DO NOTHING
+      )
+      INSERT INTO users(server_id, user_id, items, fishes) 
+      VALUES($1, $2, $3, $4) 
+      ON CONFLICT (server_id, user_id) DO NOTHING;
+    `;
 
-      const fishesJsonData = {
-        fishId1: false,
-        fishId1Count: 0,
-        fishId2: false,
-        fishId2Count: 0,
-        fishId3: false,
-        fishId3Count: 0,
-        fishId4: false,
-        fishId4Count: 0,
-        fishId5: false,
-        fishId5Count: 0,
-        fishId6: false,
-        fishId6Count: 0,
-        fishId7: false,
-        fishId7Count: 0,
-        fishId8: false,
-        fishId8Count: 0,
-        fishId9: false,
-        fishId9Count: 0,
-        fishId10: false,
-        fishId10Count: 0,
-      };
-
-      // no more many values :(
-      await client.database
-        .query("INSERT INTO users(server_id, user_id, items, fishes) VALUES($1, $2, $3, $4)", [interaction.guild.id, interaction.user.id, itemsJsonData, fishesJsonData])
-        .catch((error) => {
-          logger.error("Error INSERTING a new user into the database", error);
-        });
-    }
-
-    // last but not least, event data, put this here for the same reason as this ^
+    // REMEBER TO ADD THIS TEXT FOR EVENTS!!!!
     /*
-    await userEventDataChecker(interaction).catch((err) => {
-      return logger.error("UserEventDataChecker threw an error, look here", err);
-    });
+    INSERT INTO events(server_id, user_id) 
+    VALUES($1, $2) ON CONFLICT (server_id, user_id) DO NOTHING;
     */
+
+    const values = [interaction.guildId, interaction.user.id, itemsJsonData, fishesJsonData];
+
+    await client.database.query(query, values); // we inserted new data!
 
     // ready to log for the specific slash command
     logger.setFileName("InteractionCreate/" + interaction.commandName + ".js");
@@ -152,35 +148,4 @@ module.exports = (client) => {
       }
     }
   });
-
-  // VERY RARELY, the bot may be invited in a server when db connection is off (bot is offline) and data isn't created, this is the fix
-  async function serverDataChecker(interaction) {
-    // same fast check for users but now for servers
-    const serverRow = await client.database.query("SELECT EXISTS (SELECT 1 FROM servers WHERE server_id = $1)", [interaction.guild.id]);
-
-    if (serverRow.rows[0].exists) return; // server already exist
-
-    await client.database.query("INSERT INTO servers(server_id) VALUES($1)", [interaction.guild.id]);
-  }
-
-  // for bot events data
-  /*
-  async function userEventDataChecker(interaction) {
-    row = await new Promise((resolve, reject) => {
-      client.database.get("SELECT 1 FROM Event WHERE serverId = ? AND userId = ?", [interaction.guild.id, interaction.user.id], (err, row) => {
-        if (err) reject(err);
-        else resolve(row);
-      });
-    });
-
-    if (!row) {
-      await new Promise((resolve, reject) => {
-        client.database.run("INSERT INTO Event VALUES (?, ?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);", [interaction.guild.id, interaction.user.id], (err) => {
-          if (err) reject(err);
-          else resolve();
-        });
-      });
-    }
-  }
-  */
 };

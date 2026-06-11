@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
 const configChecker = require("../../utils/configChecker");
 
 module.exports = {
@@ -41,11 +41,15 @@ module.exports = {
 
     const level = row.rows[0].level;
     const nextXp = row.rows[0].next_xp;
+    const imageFile = new AttachmentBuilder("./media/level.png");
 
-    embed.setTitle(user.username + " current level").setDescription(["💈 Level: **" + level + "**", "", "⏭️ XP requiered for next level: **" + nextXp + "**"].join("\n"));
+    embed
+      .setTitle(user.username + " current level")
+      .setDescription(["💈 Level: **" + level + "**", "", "⏭️ XP requiered for next level: **" + nextXp + "**"].join("\n"))
+      .setThumbnail("attachment://level.png");
 
     try {
-      return await message.reply({ embeds: [embed] });
+      return await message.reply({ embeds: [embed], files: [imageFile] });
     } catch {
       return;
     }
