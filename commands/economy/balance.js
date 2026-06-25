@@ -30,15 +30,14 @@ module.exports = {
     const totalMoney = Number(rowData.money) + Number(rowData.bank_money) - Number(rowData.debts);
 
     embed
-      .setTitle(user.username + "'s balance")
-      .setDescription(
-        [
-          "**💰 Wallet money: +** `" + rowData.money + "$`",
-          "**🏦 Bank money: +** `" + rowData.bank_money + "$`",
-          "**⚖️ Debts to pay: -** `" + rowData.debts + "$`",
-          "------------------",
-          "**📊 Total money: =** `" + totalMoney + "$`",
-        ].join("\n"),
+      .setAuthor({
+        name: user.username,
+        iconURL: user.displayAvatarURL(),
+      })
+      .setDescription("**📊 Total money: ** `" + totalMoney + "$`")
+      .addFields(
+        { name: "Names", value: "\n💰 Wallet money\n🏦 Bank money\n⚖️ Debts to pay", inline: true },
+        { name: "Values", value: "\n`" + rowData.money + "$`\n`" + rowData.bank_money + "$`\n`" + rowData.debts + "$`", inline: true },
       );
 
     try {

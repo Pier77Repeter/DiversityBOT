@@ -26,7 +26,7 @@ module.exports = {
 
     const petStatsCooldown = Date.now() + 10800000; // start imediatly at 3h
     await client.database.query(
-      "UPDATE users SET has_pet = 1, pet_id = $1, pet_stats_health = 100, pet_stats_fun = 100, pet_stats_hunger = 100, pet_stats_thirst = 100, pet_cooldown = $2 WHERE server_id = $3 AND user_id = $4",
+      "UPDATE users SET has_pet = true, pet_id = $1, pet_stats_health = 100, pet_stats_fun = 100, pet_stats_hunger = 100, pet_stats_thirst = 100, pet_cooldown = $2 WHERE server_id = $3 AND user_id = $4",
       [adoptedMember.id, petStatsCooldown, message.guildId, message.author.id],
     );
 

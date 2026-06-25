@@ -27,6 +27,11 @@ const defaultConfigs = {
   botToken: "YOUR_BOT_TOKEN_HERE",
   botId: "YOUR_BOT_ID_HERE",
   dbUrl: "YOUR_POSTGRES_URL_HERE",
+  economySettings: {
+    maxTaxRate: 0.85, // 1 is 100%
+    halfwayConstant: 1000000, // 1M seems fair
+    dailyEarnings: 5300, // this is from using all the economy commands once a day, circa
+  },
   itemPrices: {
     diversityGemPrice: 1000000,
     bitcoinPrice: 80000,

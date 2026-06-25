@@ -5,29 +5,20 @@ module.exports = {
   description: "Displays the help message including all commands",
   async execute(client, message, args) {
     const menuHelp = new StringSelectMenuBuilder()
+      // format is menu-<commandName>-<menuName>
       .setCustomId("menu-help-menuHelp")
       .setPlaceholder("Click to navigate through the menu!")
       .setMaxValues(1)
       .setMinValues(1)
       .setDisabled(false)
       .addOptions(
-        new StringSelectMenuOptionBuilder()
-          // format is menuOption-<commandName>-<menuName>-<optionName>
-          .setValue("menuOption-help-menuHelp-fun_&_games")
-          .setLabel("Fun & Games")
-          .setEmoji("🎮")
-          .setDescription("Fun commands")
-          .setDefault(false),
+        // format is menuOption-<commandName>-<menuName>-<optionName>
+        new StringSelectMenuOptionBuilder().setValue("menuOption-help-menuHelp-fun").setLabel("Fun & Games").setEmoji("🎮").setDescription("Fun commands").setDefault(false),
         new StringSelectMenuOptionBuilder().setValue("menuOption-help-menuHelp-music").setLabel("Music").setEmoji("🎵").setDescription("Music commands").setDefault(false),
         new StringSelectMenuOptionBuilder().setValue("menuOption-help-menuHelp-economy").setLabel("Economy").setEmoji("⚖️").setDescription("Economy commands").setDefault(false),
         new StringSelectMenuOptionBuilder().setValue("menuOption-help-menuHelp-img").setLabel("Image").setEmoji("📸").setDescription("Image commands").setDefault(false),
         new StringSelectMenuOptionBuilder().setValue("menuOption-help-menuHelp-utility").setLabel("Utility").setEmoji("🧰").setDescription("Utility commands").setDefault(false),
-        new StringSelectMenuOptionBuilder()
-          .setValue("menuOption-help-menuHelp-community")
-          .setLabel("Community")
-          .setEmoji("🌍")
-          .setDescription("Community commands")
-          .setDefault(false),
+        new StringSelectMenuOptionBuilder().setValue("menuOption-help-menuHelp-comm").setLabel("Community").setEmoji("🌍").setDescription("Community commands").setDefault(false),
       );
     const actionRow = new ActionRowBuilder().addComponents(menuHelp);
 
@@ -94,7 +85,7 @@ module.exports = {
 
       if (menuInteraction.customId === "menu-help-menuHelp") {
         switch (menuInteraction.values[0]) {
-          case "menuOption-help-menuHelp-fun_&_games":
+          case "menuOption-help-menuHelp-fun":
             menuOptionEmbed
               .setColor(0x00cccc)
               .setTitle("🎮 Fun & Games section:")
@@ -206,6 +197,7 @@ module.exports = {
                   "**d!withdraw <amount>** - Withdraw your money from the bank",
                   "**d!give <@user> <amount>** - Give money to mentioned user",
                   "**d!debts** - Check user debts",
+                  "**d!taxes** - Check user tax amount",
                   "**d!buy <item name>** - Buy an item from the shop",
                   "**d!sell <item name>** - Sell an item from your inventory",
                   "**d!add <@user> <amount>** - Add money to an user (Only admin)",
@@ -334,8 +326,8 @@ module.exports = {
               return;
             }
             break;
-
-          case "menuOption-help-menuHelp-community":
+          // name was too long for Prettier so i had to trunk it
+          case "menuOption-help-menuHelp-comm":
             menuOptionEmbed
               .setColor(0x00cccc)
               .setTitle("🌍 Community section:")

@@ -4,7 +4,7 @@ module.exports = {
   name: "unadopt",
   description: "Unadopt a new pet",
   async execute(client, message, args) {
-    const row = await client.database.query("SELECT has_pet, pet_id FROM users WHERE server_id = $2 AND user_id = $3", [message.guildId, message.author.id]);
+    const row = await client.database.query("SELECT has_pet, pet_id FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
     const embed = new EmbedBuilder();
 
@@ -19,7 +19,8 @@ module.exports = {
     }
 
     await client.database.query(
-      "UPDATE users SET has_pet = 0, pet_id = NULL, pet_stats_health = 0, pet_stats_hunger = 0, pet_stats_thirst = 0, pet_cooldown = 0 WHERE server_id = $1 AND user_id = $2",
+      "UPDATE users SET has_pet = false, pet_id = NULL, pet_stats_health = 0, pet_stats_hunger = 0, pet_stats_thirst = 0, pet_cooldown = 0 WHERE server_id = $1 AND user_id = $2",
+      [message.guildId, message.author.id],
     );
 
     embed

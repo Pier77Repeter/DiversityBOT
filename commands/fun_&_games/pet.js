@@ -7,7 +7,7 @@ module.exports = {
     const user = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
 
     const row = await client.database.query(
-      "SELECT has_pet, pet_id, pet_stats_health, pet_stats_fun, pet_stats_hunger, pet_stats_thirst FROM users WHERE server_id = $1 AND user_id $2",
+      "SELECT has_pet, pet_id, pet_stats_health, pet_stats_fun, pet_stats_hunger, pet_stats_thirst FROM users WHERE server_id = $1 AND user_id = $2",
       [message.guildId, user.id],
     );
 

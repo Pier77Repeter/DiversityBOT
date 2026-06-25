@@ -2,47 +2,58 @@ const { EmbedBuilder } = require("discord.js");
 const logger = require("../logger")("EventCooldownManager");
 
 // no need to say everything again, just look at 'cooldownManager().js'
-module.exports = async function eventCooldownManager(client, message, cooldownName, cooldownInSeconds, logError = true) {
+module.exports = async function cooldownManager(client, message, cooldownName, cooldownInSeconds, logError = true) {
   const cooldownAmount = cooldownInSeconds * 1000;
   const unixNow = Date.now();
 
   try {
-    const row = await client.database.query(`SELECT ${cooldownName} FROM events WHERE server_id = $1 AND user_id = $2`, [message.guild.id, message.author.id]);
+    const query = `
+      UPDATE events 
+      SET ${cooldownName} = CASE 
+        WHEN ${cooldownName} + $1::bigint <= $2::bigint THEN $2::bigint
+        ELSE ${cooldownName}
+      END
+      WHERE server_id = $3 AND user_id = $4
+      RETURNING ${cooldownName};
+    `;
 
-    if (row.rowCount === 0) throw new Error("Event user '" + message.author.id + "' from Server '" + message.guild.id + "' was not found in database");
+    const res = await client.database.query(query, [cooldownAmount, unixNow, message.guildId, message.author.id]);
 
-    const lastCooldown = Number(row.rows[0][cooldownName]);
-    const expirationTime = lastCooldown + cooldownAmount;
-
-    if (unixNow < expirationTime) {
-      const timeLeft = Math.floor(expirationTime / 1000);
-      const statusCode = true;
-      const cooldownData = [statusCode, timeLeft];
-
-      return cooldownData;
+    if (res.rowCount === 0) {
+      throw new Error(`Failed to find user in database: Server '${message.guildId}' - User '${message.author.id}'`);
     }
 
-    await client.database.query(`UPDATE events SET ${cooldownName} = $1 WHERE server_id = $2 AND user_id = $3`, [unixNow, message.guild.id, message.author.id]);
+    const dbTimestamp = Number(res.rows[0][cooldownName]);
+
+    if (dbTimestamp !== unixNow) {
+      const expirationTime = dbTimestamp + cooldownAmount;
+      const timeLeft = Math.floor(expirationTime / 1000);
+      const statusCode = true;
+
+      return [statusCode, timeLeft];
+    }
 
     return false;
   } catch (error) {
-    logger.error("Error handling event cooldown '" + cooldownName + "': Server '" + message.guild.id + "' - User '" + message.author.id + "'", error);
+    logger.error(`Error handling cooldown '${cooldownName}': Server '${message.guildId}' - User '${message.author.id}'`, error);
 
     if (!logError) return null;
 
     const embed = new EmbedBuilder()
       .setColor(0xff0000)
-      .setTitle("⚠️ Critical error")
-      .setDescription("Failed to update your cooldown, please **report this error with the server ID and your user ID**")
+      .setTitle("⚠️ Critical Error")
+      .setDescription("Failed to update your cooldown, please **report this error with the server id and your user id**")
       .addFields(
-        { name: "Server ID", value: `\`${message.guild.id}\``, inline: true },
+        { name: "Server ID", value: `\`${message.guildId}\``, inline: true },
         { name: "User ID", value: `\`${message.author.id}\``, inline: true },
         { name: "Submit Report Here", value: "https://discord.gg/KxadTdz" },
       );
 
     try {
       await message.reply({ embeds: [embed] });
-    } catch {}
+    } catch {
+      // DO NOT VOMIT
+    }
 
     return null;
   }

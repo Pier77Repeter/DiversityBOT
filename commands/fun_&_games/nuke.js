@@ -30,7 +30,7 @@ module.exports = {
       }
     }
 
-    const target = message.mentions.members.first() ? message.mentions.members.first().user.username : args;
+    const target = message.mentions.members.first() ? message.mentions.members.first().user.username : args.join(" ");
 
     embed
       .setColor(0x14141f)

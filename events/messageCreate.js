@@ -1,6 +1,6 @@
 const { PermissionsBitField, Events, EmbedBuilder, AttachmentBuilder } = require("discord.js");
+const { economySettings } = require("../config.json");
 const listsGetRandomItem = require("../utils/listsGetRandomItem");
-const cooldownManager = require("../utils/cooldownManager");
 const mathRandomInt = require("../utils/mathRandomInt");
 const configChecker = require("../utils/configChecker");
 const logger = require("../logger")("MessageCreate");
@@ -302,140 +302,124 @@ module.exports = (client) => {
 
   // this functions contains all the shit for updating user data in db
   async function userDataUpdater(message) {
-    // just need to check if user exists, it is not possible that the server table dosen't exist as it gets created when the user uses the bot
-    const userCheck = await client.database.query("SELECT 1 FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
-
-    // user dosen't exist, bye
-    if (userCheck.rowCount === 0) return;
-
     const isLevelingEnabled = await configChecker(client, message, "leveling_cmd", false);
 
-    let updatedUser = null;
+    // instead of using cooldownManager, we are gonna make our new one here to reduce db calls
+    const unixNow = Date.now();
+    const xpToAdd = isLevelingEnabled ? 1 : 0;
 
-    // XP UPDATING SECTION
-    if (isLevelingEnabled) {
-      // RETURNING allows you to UPDATE a row and instantly return the new, updated data back to JavaScript in exactly one step
-      const res = await client.database.query(
-        `
-        UPDATE users 
-        SET xp = xp + 1 
-        WHERE server_id = $1 AND user_id = $2 
-        RETURNING xp, next_xp, level, debts, money, bank_money, has_pet, pet_stats_health, pet_stats_fun, pet_stats_hunger, pet_stats_thirst
-        `,
+    // this query replaces 5 separate queries! It updates xp, checks/updates all 3 passive cooldowns, and returns the data ONLY if the user exists
+    const query = `
+      UPDATE users 
+      SET 
+        xp = xp + $1::int,
+        tax_cooldown = CASE WHEN tax_cooldown + 86400000 <= $2::bigint THEN $2::bigint ELSE tax_cooldown END,
+        debts_cooldown = CASE WHEN debts_cooldown + 86400000 <= $2::bigint THEN $2::bigint ELSE debts_cooldown END,
+        pet_cooldown = CASE WHEN pet_cooldown + 10800000 <= $2::bigint THEN $2::bigint ELSE pet_cooldown END
+      WHERE server_id = $3 AND user_id = $4
+      RETURNING *;
+    `;
+
+    const res = await client.database.query(query, [xpToAdd, unixNow, message.guildId, message.author.id]);
+
+    // user is NOT in the database, we can stop
+    if (res.rowCount === 0) return;
+
+    const user = res.rows[0];
+
+    // LEVEL UP CHECK
+    if (isLevelingEnabled && user.xp >= user.next_xp) {
+      const levelRes = await client.database.query(
+        "UPDATE users SET xp = 0, next_xp = next_xp + 100, level = level + 1 WHERE server_id = $1 AND user_id = $2 RETURNING level, next_xp",
         [message.guildId, message.author.id],
       );
 
-      updatedUser = res.rows[0];
+      const newStats = levelRes.rows[0];
 
-      // check level up against the newly returned data
-      if (updatedUser.xp >= updatedUser.next_xp) {
-        const levelRes = await client.database.query(
-          `
-          UPDATE users 
-          SET xp = 0, next_xp = next_xp + 100, level = level + 1 
-          WHERE server_id = $1 AND user_id = $2
-          RETURNING level, next_xp
-          `,
-          [message.guildId, message.author.id],
-        );
+      const imageFile = new AttachmentBuilder("./media/levelUp.png");
+      const embed = new EmbedBuilder()
+        .setColor(0xffcc00)
+        .setTitle("⬆️ Level up")
+        .setDescription(`Your new level: **${newStats.level}**\nXP for next level: **${newStats.next_xp}**`)
+        .setThumbnail("attachment://levelUp.png")
+        .setFooter({ text: message.author.username, iconURL: message.author.displayAvatarURL() });
 
-        const newStats = levelRes.rows[0];
-        const imageFile = new AttachmentBuilder("./media/levelUp.png");
+      try {
+        await message.reply({ embeds: [embed], files: [imageFile] });
+      } catch {
+        // do nothing, continue
+      }
+    }
+
+    // REPUTATION CHECK
+    if (message.mentions.members.first() && message.content.toLowerCase().includes("thank")) {
+      const mentionedMember = message.mentions.members.first().user;
+      if (mentionedMember.id !== message.author.id && !mentionedMember.bot) {
+        await client.database.query("UPDATE users SET reputation = reputation + 1 WHERE server_id = $1 AND user_id = $2", [message.guildId, mentionedMember.id]);
 
         const embed = new EmbedBuilder()
           .setColor(0xffcc00)
-          .setTitle("⬆️ Level up")
-          .setDescription(`Your new level: **${newStats.level}**\nXP for next level: **${newStats.next_xp}**`)
-          .setThumbnail("attachment://levelUp.png")
-          .setFooter({ text: message.author.username, iconURL: message.author.displayAvatarURL() });
+          .setTitle("🤝 So kind of you")
+          .setDescription(`Gave **+1** reputation to ${mentionedMember.username}`)
+          .setFooter({ text: "Check your rep with d!rep" });
 
         try {
-          await message.reply({ embeds: [embed], files: [imageFile] });
+          await message.reply({ embeds: [embed] });
         } catch {
-          // continueeeeeeeee
+          // do nothing, continue
         }
       }
-    } else {
-      // if leveling is disabled, we still need the user data for pets/debts
-      const res = await client.database.query(
-        "SELECT debts, money, bank_money, has_pet, pet_stats_health, pet_stats_fun, pet_stats_hunger, pet_stats_thirst FROM users WHERE server_id = $1 AND user_id = $2",
-        [message.guildId, message.author.id],
+    }
+
+    // TAXES CHECK (Daily), if the db timestamp exactly matches the unixNow we generated above, it means the CASE statement triggered!
+    const wealth = Number(user.money) + Number(user.bank_money);
+    if (wealth > 0 && Number(user.tax_cooldown) === unixNow) {
+      const taxRate = economySettings.maxTaxRate * (wealth / (wealth + economySettings.halfwayConstant));
+      const taxAmount = Math.floor(economySettings.dailyEarnings * taxRate);
+
+      await client.database.query(
+        `
+        UPDATE users SET 
+          money = GREATEST(0::bigint, money - $1::bigint),
+          bank_money = GREATEST(0::bigint, bank_money - GREATEST(0::bigint, $1::bigint - money))
+        WHERE server_id = $2 AND user_id = $3;
+      `,
+        [taxAmount, message.guildId, message.author.id],
       );
-      updatedUser = res.rows[0];
     }
 
-    if (!updatedUser) return; // <-- just in case, impossible but idk
-
-    // REPUTATION UPDATE SECTION
-    if (message.mentions.members.first() && message.content.toLowerCase().includes("thank")) {
-      const mentionedMember = message.mentions.members.first().user;
-
-      // preventing giving reputation to yourself or a bot
-      if (mentionedMember.id === message.author.id || mentionedMember.bot) return;
-
-      await client.database.query("UPDATE users SET reputation = reputation + 1 WHERE server_id = $1 AND user_id = $2", [message.guildId, mentionedMember.id]);
-
-      const embed = new EmbedBuilder()
-        .setColor(0xffcc00)
-        .setTitle("🤝 So kind of you")
-        .setDescription(`Gave **+1** reputation to ${mentionedMember.username}`)
-        .setFooter({ text: "Check your rep with d!rep" });
-
-      try {
-        await message.reply({ embeds: [embed] });
-      } catch {
-        // continue!
-      }
+    // DEBTS CHECK (Daily)
+    if (Number(user.debts) > 0 && Number(user.debts_cooldown) === unixNow) {
+      const newDebts = Math.trunc((Number(user.debts) + Number(user.money) + Number(user.bank_money)) * 0.03);
+      await client.database.query("UPDATE users SET debts = debts + $1 WHERE server_id = $2 AND user_id = $3", [newDebts, message.guildId, message.author.id]);
     }
 
-    // DEBTS UPDATE SECTION
-    if (Number(updatedUser.debts) > 0) {
-      const debtsCooldown = await cooldownManager(client, message, "debts_cooldown", 86400, false);
+    // PET CHECK (Every 3 hours)
+    if (user.has_pet && Number(user.pet_cooldown) === unixNow) {
+      const petRes = await client.database.query(
+        `
+        UPDATE users 
+        SET pet_stats_health = pet_stats_health - $1, pet_stats_fun = pet_stats_fun - $2, pet_stats_hunger = pet_stats_hunger - $3, pet_stats_thirst = pet_stats_thirst - $4 
+        WHERE server_id = $5 AND user_id = $6
+        RETURNING pet_stats_health, pet_stats_hunger, pet_stats_thirst
+      `,
+        [mathRandomInt(5, 20), mathRandomInt(5, 20), mathRandomInt(5, 20), mathRandomInt(5, 20), message.guildId, message.author.id],
+      );
 
-      if (debtsCooldown === 0) {
-        // quick maths, add 3$ of their current debts
-        const newDebts = Math.trunc((Number(updatedUser.debts) + Number(updatedUser.money) + Number(updatedUser.bank_money)) * 0.03);
+      const livePet = petRes.rows[0];
 
-        await client.database.query("UPDATE users SET debts = debts + $1 WHERE server_id = $2 AND user_id = $3", [newDebts, message.guildId, message.author.id]);
-      }
-    }
-
-    // PET STATS UPDATE SECTION
-    if (updatedUser.has_pet) {
-      const petCooldown = await cooldownManager(client, message, "pet_cooldown", 10800, false);
-
-      if (petCooldown === 0) {
-        // UPDATED AND RETURN the new health to see if it died on this exact tick
-        const petRes = await client.database.query(
-          `
-          UPDATE users 
-          SET pet_stats_health = pet_stats_health - $1, pet_stats_fun = pet_stats_fun - $2, pet_stats_hunger = pet_stats_hunger - $3, pet_stats_thirst = pet_stats_thirst - $4 
-          WHERE server_id = $5 AND user_id = $6
-          RETURNING pet_stats_health, pet_stats_hunger, pet_stats_thirst
-          `,
-          [mathRandomInt(5, 20), mathRandomInt(5, 20), mathRandomInt(5, 20), mathRandomInt(5, 20), message.guildId, message.author.id],
+      if (livePet.pet_stats_health <= 0 || livePet.pet_stats_hunger <= 0 || livePet.pet_stats_thirst <= 0) {
+        await client.database.query(
+          "UPDATE users SET has_pet = false, pet_id = NULL, pet_stats_health = 0, pet_stats_fun = 0, pet_stats_hunger = 0, pet_stats_thirst = 0 WHERE server_id = $1 AND user_id = $2",
+          [message.guildId, message.author.id],
         );
 
-        const livePet = petRes.rows[0];
+        const embed = new EmbedBuilder().setColor(0xff0000).setTitle("🪦 Oh no").setDescription("Your pet sadly died, you didn't care for it enough >:(");
 
-        // check the newly returned health right now
-        if (livePet.pet_stats_health <= 0 || livePet.pet_stats_hunger <= 0 || livePet.pet_stats_thirst <= 0) {
-          await client.database.query(
-            `
-            UPDATE users 
-            SET has_pet = false, pet_id = NULL, pet_stats_health = 0, pet_stats_fun = 0, pet_stats_hunger = 0, pet_stats_thirst = 0 
-            WHERE server_id = $1 AND user_id = $2
-            `,
-            [message.guildId, message.author.id],
-          );
-
-          const embed = new EmbedBuilder().setColor(0xff0000).setTitle("🪦 Oh no").setDescription("Your pet sadly died, you didn't care for it enough >:(");
-
-          try {
-            await message.reply({ embeds: [embed] });
-          } catch {
-            // do nothing...
-          }
+        try {
+          await message.reply({ embeds: [embed] });
+        } catch {
+          // do nothing, continue with the rest
         }
       }
     }

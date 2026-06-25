@@ -100,6 +100,7 @@ module.exports = {
           roulette_cooldown BIGINT DEFAULT 0,
           sc_test_cooldown BIGINT DEFAULT 0,
           search_cooldown BIGINT DEFAULT 0,
+          tax_cooldown BIGINT DEFAULT 0,
           work_cooldown BIGINT DEFAULT 0,
           PRIMARY KEY (server_id, user_id),
           CONSTRAINT fk_server_user
@@ -147,75 +148,9 @@ module.exports = {
       client.database = dbPool;
       logger.info("Database connected and ready :D");
     } catch (error) {
-      logger.error("Failed to connect to the database", error);
+      logger.error("Failed to connect to the database, check 'config.json", error);
       process.exit(1); // brute force exiting no DB, no bot.
     }
-
-    // MOVING AWAY FROM SQLITE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    /*
-    // loading the database
-    logger.info("Loading the database...");
-    const dbPath = path.join(__dirname, "database.db");
-
-    // using SQLite3, take a look here: https://github.com/TryGhost/node-sqlite3/wiki
-    client.database = await new Promise((resolve, reject) => {
-      const db = new sqlite3.Database(dbPath, (err) => {
-        if (err) {
-          logger.error("Error opening the database", err);
-          process.exit(1); // brute force exiting, bc if no db no bot
-        } else {
-          resolve(db);
-        }
-      });
-    });
-
-    // valid only for the first time or when Channel/Event table gets dropped
-    await new Promise((resolve, reject) => {
-      client.database.serialize(() => {
-        client.database.run(
-          "CREATE TABLE IF NOT EXISTS Server (serverId VARCHAR(20) NOT NULL PRIMARY KEY, modCmd BOOLEAN, musiCmd BOOLEAN, eventCmd BOOLEAN, communityCmd BOOLEAN, levelingCmd BOOLEAN, modLogChannel VARCHAR(20), playCooldown INT, imageCooldown INT, hmCooldown INT, jmCooldown INT, cannyCooldown INT, uncannyCooldown INT);",
-          (err) => {
-            if (err) {
-              logger.error("Error building database in 'Server' table", err);
-              process.exit(1); // of course, we can't continue
-            }
-          }
-        );
-
-        client.database.run(
-          "CREATE TABLE IF NOT EXISTS Channel (channelId VARCHAR(20) NOT NULL PRIMARY KEY, snipedMessage TEXT, snipedMessageAuthorId VARCHAR(20) NOT NULL, serverId VARCHAR(20) NOT NULL, FOREIGN KEY(serverId) REFERENCES Server(serverId) ON DELETE CASCADE);",
-          (err) => {
-            if (err) {
-              logger.error("Error building database in 'Channel' table", err);
-              process.exit(1);
-            }
-          }
-        );
-
-        client.database.run(
-          "CREATE TABLE IF NOT EXISTS User (serverId VARCHAR(20) NOT NULL, userId VARCHAR(20) NOT NULL, level INT, xp INT, nextXp INT, reputation INT, socialCredits INT, warns INT, money BIGINT, bankMoney BIGINT, debts INT, debtsCooldown INT, items TEXT, fishes TEXT, jobType VARCHAR(20), hasPet BOOLEAN, petId VARCHAR(20), petStatsHealth INT, petStatsFun INT, petStatsHunger INT, petStatsThirst INT, petCooldown INT, petVetCooldown INT, petPlayCooldown INT, petFeedCooldown INT, petDrinkCooldown INT, battleCooldown INT, begCooldown INT, crimeCooldown INT, dailyCooldown INT, dupeCooldown INT, fishCooldown INT, hackCooldown INT, highLowCooldown INT, huntCooldown INT, memeCooldown INT, mineCooldown INT, nukeCooldown INT, postMemeCooldown INT, postVideoCooldown INT, robCooldown INT, rouletteCooldown INT, scTestCooldown INT, searchCooldown INT, workCooldown INT, PRIMARY KEY (serverId, userId), FOREIGN KEY(serverId) REFERENCES Server(serverId) ON DELETE CASCADE);",
-          (err) => {
-            if (err) {
-              logger.error("Error building database in 'User' table", err);
-              process.exit(1);
-            }
-          }
-        );
-
-        client.database.run(
-          "CREATE TABLE IF NOT EXISTS Event (serverId VARCHAR(20) NOT NULL, userId VARCHAR(20) NOT NULL, treeLevel INT, twigs INT, leaves INT, goldenCoins INT, decoId1 BOOLEAN, decoId2 BOOLEAN, decoId3 BOOLEAN, decoId4 BOOLEAN, forestCooldown INT, helpsantaCooldown INT, PRIMARY KEY (serverId, userId), FOREIGN KEY(serverId) REFERENCES Server(serverId) ON DELETE CASCADE);",
-          (err) => {
-            if (err) {
-              logger.error("Error building database in 'Event' table", err);
-              process.exit(1);
-            }
-          }
-        );
-
-        resolve();
-      });
-    });
-    */
 
     // creating discord player (needs a bit of rework)
     try {
