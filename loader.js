@@ -148,7 +148,7 @@ module.exports = {
       client.database = dbPool;
       logger.info("Database connected and ready :D");
     } catch (error) {
-      logger.error("Failed to connect to the database, check 'config.json", error);
+      logger.error("Failed to connect to the database, check 'config.json'", error);
       process.exit(1); // brute force exiting no DB, no bot.
     }
 

@@ -23,8 +23,11 @@ module.exports = (client) => {
           "Requested by: **" + track.requestedBy.username + "**",
         ].join("\n"),
       )
-      .setImage(track.thumbnail)
       .setFooter({ text: "If this song instantly stops, it's because of COPYRIGHT issues" });
+
+    if (track.thumbnail) {
+      embed.setImage(track.thumbnail);
+    }
 
     try {
       return await queue.metadata.channel.send({ embeds: [embed] });

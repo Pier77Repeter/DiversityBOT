@@ -5,7 +5,9 @@ module.exports = {
   name: "stealemoji",
   description: "Returns the emoji has PNG or GIF",
   async execute(client, message, args) {
-    const emoji = args[0];
+    const replyedMessage = message.reference || null;
+
+    const emoji = await getMsgArgs(replyedMessage);
 
     try {
       if (!emoji) return await message.reply("Provide an emoji, thanks");
@@ -13,7 +15,7 @@ module.exports = {
       return;
     }
 
-    const emojiName = args[0].split(":")[1];
+    const emojiName = emoji[0].split(":")[1];
     let emojiId = null;
     let animated = false;
 
@@ -51,9 +53,18 @@ module.exports = {
       }
     } else {
       try {
-        return await message.reply("that is not an emoji bruh");
+        return await message.reply("You need to provide a message with ONLY the emoji to steal");
       } catch {
         return;
+      }
+    }
+
+    async function getMsgArgs(replyedMessage) {
+      if (replyedMessage) {
+        const emojiMessage = await message.channel.messages.fetch(message.reference.messageId);
+        return emojiMessage.content;
+      } else {
+        return args[0];
       }
     }
   },
