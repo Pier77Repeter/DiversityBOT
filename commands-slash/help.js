@@ -28,6 +28,7 @@ module.exports = {
           "**/server** - Check server stats",
           "**/member** - Check a member stats",
           "**/status** - Check my stats",
+          "**/timezone** - Convert a given hour to a specific timezone",
           "**/link** - See Bot's links, website, discord, invite link",
           "**/ping** - Display the bot's ping",
         ].join("\n"),

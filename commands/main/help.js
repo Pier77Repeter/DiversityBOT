@@ -302,6 +302,7 @@ module.exports = {
                   "**d!news** - See Bot news and changelogs",
                   "**d!link** - Get the link to invite me",
                   "**d!credits** - Get all the credits",
+                  "**d!timezone <zone> <hour> <to_zone>** - Convert time based on timezones",
                   "**d!ping** - Example command (see on GitHub)",
                   "**d!avatar** or **d!avatar <@user>** - Display user's avatar",
                   "**d!stats** or **d!stats <@user>** - See your stats",

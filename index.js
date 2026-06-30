@@ -27,6 +27,7 @@ const defaultConfigs = {
   botToken: "YOUR_BOT_TOKEN_HERE",
   botId: "YOUR_BOT_ID_HERE",
   dbUrl: "YOUR_POSTGRES_URL_HERE",
+  topggToken: "YOUR_TOPGG_TOKEN", // feel free to remove it, my bot is on top.gg so i added this
   economySettings: {
     maxTaxRate: 0.85, // 1 is 100%
     halfwayConstant: 1000000, // 1M seems fair
@@ -88,7 +89,8 @@ if (fs.existsSync(configFilePath)) {
 
 // imports for necessary discord.js classes
 const { Client, Events, GatewayIntentBits, ActivityType } = require("discord.js");
-const { botToken } = require("./config.json");
+const { AutoPoster } = require("topgg-autoposter");
+const { botToken, topggToken } = require("./config.json"); // feel free to remove 'topggToken' if you don't use top.gg
 const loader = require("./loader");
 const listsGetRandomItem = require("./utils/listsGetRandomItem");
 
@@ -100,6 +102,9 @@ keepAlive();
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildVoiceStates],
 });
+
+// updating Top.gg stats, at least for my bot, dont want to log it
+const ap = AutoPoster(topggToken, client);
 
 // AFTER the bot fully loaded THEN we can log in
 loader.initLoader(client).then(async () => {
