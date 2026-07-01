@@ -30,7 +30,7 @@ module.exports = {
       .setDescription(
         [
           '👋 Hello there! I\'m DiversityBOT, a totally "normal" Discord Bot!',
-          "Feel free to look at aalllll of my commands by using the menu below",
+          "Feel free to look at aaaalll of my commands by using the menu below",
           "Remember to give me all the needed permissions, else some features may not work properly",
           "Important commands: **d!help**, **/help**",
           "More commands will come soon. Please, be patient ;)",
