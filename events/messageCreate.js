@@ -302,9 +302,14 @@ module.exports = (client) => {
 
   // this functions contains all the shit for updating user data in db
   async function userDataUpdater(message) {
+    // check if user is in db
+    const checkUser = await client.database.query(`SELECT 1 FROM users WHERE server_id = $1 AND user_id = $2`, [message.guildId, message.author.id]);
+
+    // stop here so configChecker doesn't spam errors
+    if (checkUser.rowCount === 0) return;
+
     const isLevelingEnabled = await configChecker(client, message, "leveling_cmd", false);
 
-    // instead of using cooldownManager, we are gonna make our new one here to reduce db calls
     const unixNow = Date.now();
     const xpToAdd = isLevelingEnabled ? 1 : 0;
 
@@ -321,10 +326,6 @@ module.exports = (client) => {
     `;
 
     const res = await client.database.query(query, [xpToAdd, unixNow, message.guildId, message.author.id]);
-
-    // user is NOT in the database, we can stop
-    if (res.rowCount === 0) return;
-
     const user = res.rows[0];
 
     // LEVEL UP CHECK
