@@ -118,7 +118,7 @@ module.exports = {
     }
 
     // showing the list of found tracks
-    embed.setColor("Green").setTitle("Found tracks for '" + query + "'");
+    embed.setColor("Green").setTitle("📃 Found tracks for '" + query + "'");
 
     let tracksListText = "";
 
@@ -126,7 +126,7 @@ module.exports = {
       tracksListText += i + 1 + ") **" + element.title + "** | By **" + element.author + "**\n\n";
     });
 
-    embed.setDescription(tracksListText).setFooter({ text: "Choose the song (just say the number)" });
+    embed.setDescription(tracksListText).setFooter({ text: 'Choose the song (just say the number), say "no" or "exit" to cancel' });
 
     try {
       await sentMessage.edit({ embeds: [embed] });
@@ -139,6 +139,22 @@ module.exports = {
     const collector = message.channel.createMessageCollector({ filter: filter, time: 30_000 });
 
     collector.on("collect", async (receivedMessage) => {
+      if (receivedMessage.content.toLowerCase() === "no" || receivedMessage.content.toLowerCase() === "exit") {
+        embed
+          .setColor("LightGrey")
+          .setTitle("No song selected")
+          .setDescription("If you did not find the song you wanted, try **d!play <song name> - <song author>**, else search on **https://soundcloud.com/**")
+          .setFooter({ text: "Not all the songs are present on SoundCloud" });
+
+        collector.stop();
+
+        try {
+          return await sentMessage.edit({ embeds: [embed] });
+        } catch {
+          return;
+        }
+      }
+
       const songIndex = Number(receivedMessage.content) - 1;
 
       if (isNaN(songIndex) || !search.tracks[songIndex]) {
@@ -181,6 +197,16 @@ module.exports = {
       });
 
       embed.setColor(0x33cc00).setTitle("✅ Added to Queue").setDescription(`**${track.title}** has been added!`).setFooter(null);
+
+      try {
+        return await sentMessage.edit({ embeds: [embed] });
+      } catch {
+        return;
+      }
+    });
+
+    collector.on("end", async () => {
+      embed.setColor("LightGrey");
 
       try {
         return await sentMessage.edit({ embeds: [embed] });

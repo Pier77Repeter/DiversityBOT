@@ -44,6 +44,16 @@ module.exports = {
 
     const queue = useQueue(message.guild.id);
 
+    if (!queue) {
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("There's no music queue to stop here!");
+
+      try {
+        return await message.reply({ embeds: [embed] });
+      } catch {
+        return;
+      }
+    }
+
     queue.delete();
 
     embed.setColor(0x33cc00).setTitle("✅ Ok stopped, thanks for listening!").setDescription(null);
