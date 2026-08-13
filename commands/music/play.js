@@ -139,7 +139,8 @@ module.exports = {
     const collector = message.channel.createMessageCollector({ filter: filter, time: 30_000 });
 
     collector.on("collect", async (receivedMessage) => {
-      if (receivedMessage.content.toLowerCase() === "no" || receivedMessage.content.toLowerCase() === "exit") {
+      // sometimes people just want to send another d!play instead of typing no
+      if (receivedMessage.content.toLowerCase().startsWith("d!play") || receivedMessage.content.toLowerCase() === "no" || receivedMessage.content.toLowerCase() === "exit") {
         embed
           .setColor("LightGrey")
           .setTitle("No song selected")
@@ -158,9 +159,11 @@ module.exports = {
       const songIndex = Number(receivedMessage.content) - 1;
 
       if (isNaN(songIndex) || !search.tracks[songIndex]) {
-        embed.setColor("DarkRed").setTitle("❌ Error").setDescription("The number you just sent was not present in the track list");
+        // so we do not touch the original embed when the collector stops and we dont show double error
+        const errorEmbed = new EmbedBuilder().setColor("DarkRed").setTitle("❌ Error").setDescription("The number you just sent was not present in the track list");
+
         try {
-          return await receivedMessage.reply({ embeds: [embed] });
+          return await receivedMessage.reply({ embeds: [errorEmbed] });
         } catch {
           return;
         }
