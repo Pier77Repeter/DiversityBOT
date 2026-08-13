@@ -45,10 +45,8 @@ module.exports = {
     const queue = useQueue(message.guild.id);
 
     if (!queue) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("There's no music queue to stop here!");
-
       try {
-        return await message.reply({ embeds: [embed] });
+        return await message.reply("There's no music queue to stop here!");
       } catch {
         return;
       }

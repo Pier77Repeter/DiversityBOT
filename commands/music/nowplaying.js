@@ -48,8 +48,11 @@ module.exports = {
       .setTitle("🎶 Now Playing")
       .setDescription(`**${currentTrack.title}** by ${currentTrack.author}\n${progressBar}`)
       .setURL(currentTrack.url)
-      .setThumbnail(currentTrack.thumbnail)
       .setFooter({ text: `Requested by ${currentTrack.requestedBy.tag}` });
+
+    if (currentTrack.thumbnail) {
+      embed.setThumbnail(currentTrack.thumbnail);
+    }
 
     try {
       return await message.reply({ embeds: [embed] });
