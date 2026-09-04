@@ -1,10 +1,12 @@
 const { PermissionsBitField, Events, EmbedBuilder, AttachmentBuilder } = require("discord.js");
+const path = require("path");
 const { economySettings } = require("../config.json");
 const listsGetRandomItem = require("../utils/listsGetRandomItem");
 const mathRandomInt = require("../utils/mathRandomInt");
 const configChecker = require("../utils/configChecker");
 const logger = require("../logger")("MessageCreate");
 const loader = require("../loader");
+const msgErrorHandler = require("../utils/msgErrorHandler");
 
 module.exports = (client) => {
   // bot prefix is d!
@@ -95,8 +97,9 @@ module.exports = (client) => {
             false,
           ),
         });
-      } catch {
+      } catch (error) {
         // dont return, continue execution
+        msgErrorHandler(error);
       }
     }
 
@@ -123,8 +126,8 @@ module.exports = (client) => {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -182,8 +185,8 @@ module.exports = (client) => {
             false,
           ),
         );
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -294,8 +297,8 @@ module.exports = (client) => {
             false,
           ),
         );
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
   });
@@ -337,7 +340,8 @@ module.exports = (client) => {
 
       const newStats = levelRes.rows[0];
 
-      const imageFile = new AttachmentBuilder("./media/levelUp.png");
+      const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "levelUp.png"), { name: "levelUp.png" });
+
       const embed = new EmbedBuilder()
         .setColor(0xffcc00)
         .setTitle("⬆️ Level up")
@@ -347,8 +351,8 @@ module.exports = (client) => {
 
       try {
         await message.reply({ embeds: [embed], files: [imageFile] });
-      } catch {
-        // do nothing, continue
+      } catch (error) {
+        msgErrorHandler(error); // log and continue
       }
     }
 
@@ -366,8 +370,8 @@ module.exports = (client) => {
 
         try {
           await message.reply({ embeds: [embed] });
-        } catch {
-          // do nothing, continue
+        } catch (error) {
+          msgErrorHandler(error); // log and continue x2
         }
       }
     }
@@ -419,8 +423,8 @@ module.exports = (client) => {
 
         try {
           await message.reply({ embeds: [embed] });
-        } catch {
-          // do nothing, continue with the rest
+        } catch (error) {
+          msgErrorHandler(error); // log and continue and end
         }
       }
     }

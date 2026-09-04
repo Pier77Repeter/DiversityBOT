@@ -2,6 +2,7 @@ const { Events, MessageFlags, EmbedBuilder } = require("discord.js");
 const listsGetRandomItem = require("../utils/listsGetRandomItem");
 const logger = require("../logger")("InteractionCreate");
 const loader = require("../loader");
+const msgErrorHandler = require("../utils/msgErrorHandler");
 
 module.exports = (client) => {
   client.on(Events.InteractionCreate, async (interaction) => {
@@ -27,8 +28,8 @@ module.exports = (client) => {
 
       try {
         return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -143,8 +144,8 @@ module.exports = (client) => {
           ),
           flags: MessageFlags.Ephemeral,
         });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
   });

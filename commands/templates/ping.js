@@ -1,3 +1,5 @@
+const msgErrorHandler = require("../../utils/msgErrorHandler");
+
 // first command, each command has it's own file and it is inside this module.exports
 module.exports = {
   // this is the name of the command, for example, in this case d!ping
@@ -14,8 +16,9 @@ module.exports = {
     try {
       // sending the reply, since it's the last thing it's gonna do, we returns with an 'await' because message.reply() is async
       return await message.reply("🏓 Pong!");
-    } catch {
-      return; // in case of error, simply return, i don't want the console filled with shit because the bot couldn't reply
+    } catch (error) {
+      // in case of error we are gonna check if the error is related to Discord API (not logged) or our code (logged)
+      return msgErrorHandler(error);
     }
   },
 };

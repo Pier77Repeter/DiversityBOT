@@ -3,6 +3,7 @@ const serverCooldownManager = require("../../utils/serverCooldownManager");
 const delay = require("../../utils/delay");
 const listsGetRandomItem = require("../../utils/listsGetRandomItem");
 const configChecker = require("../../utils/configChecker");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "jm",
@@ -20,8 +21,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -33,8 +34,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -42,8 +43,8 @@ module.exports = {
 
     try {
       await message.reply({ files: [imageFile] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
@@ -51,8 +52,8 @@ module.exports = {
     imageFile.setFile("./media/javaLogo.png");
     try {
       await message.channel.send({ files: [imageFile] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
@@ -60,24 +61,24 @@ module.exports = {
     imageFile.setFile("./media/javaLogo2.png");
     try {
       await message.channel.send({ files: [imageFile] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(1000);
 
     try {
       await message.channel.send("Java moment!");
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(3000);
 
     try {
       await message.channel.send("https://c.tenor.com/PZSmpxGQHfoAAAAd/tenor.gif");
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(3000);
@@ -98,8 +99,8 @@ module.exports = {
           false,
         ),
       );
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

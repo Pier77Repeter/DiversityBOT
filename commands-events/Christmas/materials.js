@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
 const configChecker = require("../../utils/configChecker");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "materials",
@@ -16,7 +17,7 @@ module.exports = {
       try {
         return await message.reply({ embeds: [embed] });
       } catch (error) {
-        return;
+        return msgErrorHandler(error);
       }
     }
 
@@ -29,7 +30,7 @@ module.exports = {
         (err, row) => {
           if (err) reject(err);
           else resolve(row);
-        }
+        },
       );
     });
 
@@ -39,7 +40,7 @@ module.exports = {
       try {
         return await message.reply({ embeds: [embed] });
       } catch (error) {
-        return;
+        return msgErrorHandler(error);
       }
     }
 
@@ -52,13 +53,7 @@ module.exports = {
     for (const key in row) {
       if (row[key] != 0) {
         embed.setDescription(
-          [
-            "🪙 Golden coins: **" + row.goldenCoins + "**",
-            "🪵 Twigs: **" + row.twigs + "**",
-            "🌿 Leaves: **" + row.leaves + "**",
-            "",
-            "**Owned decorations list**",
-          ].join("\n")
+          ["🪙 Golden coins: **" + row.goldenCoins + "**", "🪵 Twigs: **" + row.twigs + "**", "🌿 Leaves: **" + row.leaves + "**", "", "**Owned decorations list**"].join("\n"),
         );
         break;
       }
@@ -73,7 +68,7 @@ module.exports = {
           "",
           "**Owned decorations list**",
           "You don't own any decorations yet, go buy them in the shop",
-        ].join("\n")
+        ].join("\n"),
       );
     }
 
@@ -96,7 +91,7 @@ module.exports = {
     try {
       return await message.reply({ embeds: [embed] });
     } catch (error) {
-      return;
+      return msgErrorHandler(error);
     }
   },
 };

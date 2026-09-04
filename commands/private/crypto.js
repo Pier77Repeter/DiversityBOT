@@ -1,6 +1,7 @@
 const { PermissionsBitField } = require("discord.js");
 const { itemPrices } = require("../../config.json");
 const delay = require("../../utils/delay.js");
+const msgErrorHandler = require("../../utils/msgErrorHandler.js");
 
 module.exports = {
   name: "crypto",
@@ -17,8 +18,8 @@ module.exports = {
         await delay(10000);
 
         return await sentMessage.delete();
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -29,8 +30,8 @@ module.exports = {
         await delay(10000);
 
         return await sentMessage.delete();
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -47,8 +48,8 @@ module.exports = {
           await delay(10000);
 
           await sentMessage.delete();
-        } catch {
-          // continue
+        } catch (error) {
+          msgErrorHandler(error);
         }
         break;
 
@@ -61,8 +62,8 @@ module.exports = {
           await delay(10000);
 
           await sentMessage.delete();
-        } catch {
-          // continue
+        } catch (error) {
+          msgErrorHandler(error);
         }
         break;
 
@@ -75,8 +76,8 @@ module.exports = {
           await delay(10000);
 
           await sentMessage.delete();
-        } catch {
-          // continue
+        } catch (error) {
+          msgErrorHandler(error);
         }
         break;
 
@@ -89,8 +90,8 @@ module.exports = {
           await delay(10000);
 
           await sentMessage.delete();
-        } catch {
-          // continue
+        } catch (error) {
+          msgErrorHandler(error);
         }
         break;
 
@@ -101,8 +102,8 @@ module.exports = {
           await delay(10000);
 
           await sentMessage.delete();
-        } catch {
-          // continue
+        } catch (error) {
+          msgErrorHandler(error);
         }
         break;
     }
@@ -111,8 +112,8 @@ module.exports = {
     if (message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.ManageMessages)) {
       try {
         return await message.delete();
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
   },

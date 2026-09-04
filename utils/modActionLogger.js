@@ -1,5 +1,5 @@
+const msgErrorHandler = require("./msgErrorHandler");
 const logger = require("../logger")("ModActionLogger");
-const { Message, BaseInteraction } = require("discord.js");
 
 // the mod logger is used in both / and msg commands, it's gonna save lines of code too like all /utils files
 module.exports = async function modActionLogger(client, actionSource, embed) {
@@ -23,8 +23,8 @@ module.exports = async function modActionLogger(client, actionSource, embed) {
 
     try {
       return await channel.send({ embeds: [embed] });
-    } catch {
-      return; // imagine set the mod log channel and bot cant log stuff
+    } catch (error) {
+      return msgErrorHandler(error); // imagine set the mod log channel and bot cant log stuff
     }
   } catch (error) {
     logger.error("Failed to log a mod action", error);

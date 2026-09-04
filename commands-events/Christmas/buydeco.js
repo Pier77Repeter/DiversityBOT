@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
 const configChecker = require("../../utils/configChecker");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "buydeco",
@@ -16,7 +17,7 @@ module.exports = {
       try {
         return await message.reply({ embeds: [embed] });
       } catch (error) {
-        return;
+        return msgErrorHandler(error);
       }
     }
 
@@ -32,7 +33,7 @@ module.exports = {
       try {
         return await message.reply({ embeds: [embed] });
       } catch (error) {
-        return;
+        return msgErrorHandler(error);
       }
     }
 
@@ -42,7 +43,7 @@ module.exports = {
       try {
         return await message.reply({ embeds: [embed] });
       } catch (error) {
-        return;
+        return msgErrorHandler(error);
       }
     }
 
@@ -56,19 +57,15 @@ module.exports = {
           try {
             return await message.reply({ embeds: [embed] });
           } catch (error) {
-            return;
+            return msgErrorHandler(error);
           }
         }
 
         await new Promise((resolve, reject) => {
-          client.database.run(
-            "UPDATE Event SET goldenCoins = goldenCoins - 300, decoId1 = 1 WHERE serverId = ? AND userId = ?",
-            [message.guild.id, message.author.id],
-            (err) => {
-              if (err) reject(err);
-              else resolve();
-            }
-          );
+          client.database.run("UPDATE Event SET goldenCoins = goldenCoins - 300, decoId1 = 1 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
+            if (err) reject(err);
+            else resolve();
+          });
         });
 
         embed.setColor(0x00ff00).setTitle("✅ Success").setDescription("You have bought the **Christmas star** for your Christmas tree!");
@@ -76,7 +73,7 @@ module.exports = {
         try {
           return await message.reply({ embeds: [embed] });
         } catch (error) {
-          return;
+          return msgErrorHandler(error);
         }
 
       case "candles":
@@ -86,19 +83,15 @@ module.exports = {
           try {
             return await message.reply({ embeds: [embed] });
           } catch (error) {
-            return;
+            return msgErrorHandler(error);
           }
         }
 
         await new Promise((resolve, reject) => {
-          client.database.run(
-            "UPDATE Event SET goldenCoins = goldenCoins - 100, decoId2 = 1 WHERE serverId = ? AND userId = ?",
-            [message.guild.id, message.author.id],
-            (err) => {
-              if (err) reject(err);
-              else resolve();
-            }
-          );
+          client.database.run("UPDATE Event SET goldenCoins = goldenCoins - 100, decoId2 = 1 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
+            if (err) reject(err);
+            else resolve();
+          });
         });
 
         embed.setColor(0x00ff00).setTitle("✅ Success").setDescription("You have bought the **candles** for your Christmas tree!");
@@ -106,7 +99,7 @@ module.exports = {
         try {
           return await message.reply({ embeds: [embed] });
         } catch (error) {
-          return;
+          return msgErrorHandler(error);
         }
 
       case "christmas balls":
@@ -116,19 +109,15 @@ module.exports = {
           try {
             return await message.reply({ embeds: [embed] });
           } catch (error) {
-            return;
+            return msgErrorHandler(error);
           }
         }
 
         await new Promise((resolve, reject) => {
-          client.database.run(
-            "UPDATE Event SET goldenCoins = goldenCoins - 50, decoId3 = 1 WHERE serverId = ? AND userId = ?",
-            [message.guild.id, message.author.id],
-            (err) => {
-              if (err) reject(err);
-              else resolve();
-            }
-          );
+          client.database.run("UPDATE Event SET goldenCoins = goldenCoins - 50, decoId3 = 1 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
+            if (err) reject(err);
+            else resolve();
+          });
         });
 
         embed.setColor(0x00ff00).setTitle("✅ Success").setDescription("You have bought the **Christmas balls** for your Christmas tree!");
@@ -136,7 +125,7 @@ module.exports = {
         try {
           return await message.reply({ embeds: [embed] });
         } catch (error) {
-          return;
+          return msgErrorHandler(error);
         }
 
       case "tree decorations":
@@ -146,19 +135,15 @@ module.exports = {
           try {
             return await message.reply({ embeds: [embed] });
           } catch (error) {
-            return;
+            return msgErrorHandler(error);
           }
         }
 
         await new Promise((resolve, reject) => {
-          client.database.run(
-            "UPDATE Event SET goldenCoins = goldenCoins - 50, decoId4 = 1 WHERE serverId = ? AND userId = ?",
-            [message.guild.id, message.author.id],
-            (err) => {
-              if (err) reject(err);
-              else resolve();
-            }
-          );
+          client.database.run("UPDATE Event SET goldenCoins = goldenCoins - 50, decoId4 = 1 WHERE serverId = ? AND userId = ?", [message.guild.id, message.author.id], (err) => {
+            if (err) reject(err);
+            else resolve();
+          });
         });
 
         embed.setColor(0x00ff00).setTitle("✅ Success").setDescription("You have bought the **tree decorations** for your Christmas tree!");
@@ -166,7 +151,7 @@ module.exports = {
         try {
           return await message.reply({ embeds: [embed] });
         } catch (error) {
-          return;
+          return msgErrorHandler(error);
         }
 
       default:
@@ -178,7 +163,7 @@ module.exports = {
         try {
           return await message.reply({ embeds: [embed] });
         } catch (error) {
-          return;
+          return msgErrorHandler(error);
         }
     }
   },

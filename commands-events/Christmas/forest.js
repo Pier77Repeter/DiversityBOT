@@ -2,6 +2,7 @@ const { EmbedBuilder } = require("discord.js");
 const configChecker = require("../../utils/configChecker");
 const eventCooldownManager = require("../../utils/eventCooldownManager");
 const mathRandomInt = require("../../utils/mathRandomInt");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "forest",
@@ -19,7 +20,7 @@ module.exports = {
       try {
         return await message.reply({ embeds: [embed] });
       } catch (error) {
-        return;
+        return msgErrorHandler(error);
       }
     }
 
@@ -32,7 +33,7 @@ module.exports = {
       try {
         return await message.reply({ embeds: [embed] });
       } catch (error) {
-        return;
+        return msgErrorHandler(error);
       }
     }
 
@@ -46,7 +47,7 @@ module.exports = {
         (err) => {
           if (err) reject(err);
           else resolve();
-        }
+        },
       );
     });
 
@@ -58,7 +59,7 @@ module.exports = {
     try {
       return await message.reply({ embeds: [embed] });
     } catch (error) {
-      return;
+      return msgErrorHandler(error);
     }
   },
 };

@@ -2,6 +2,7 @@ const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
 const DIG = require("discord-image-generation");
 const logger = require("../logger")("DiscImgGen");
 const serverCooldownManager = require("../utils/serverCooldownManager");
+const msgErrorHandler = require("./msgErrorHandler");
 
 // mentionedUser is an optional parameter, look https://www.geeksforgeeks.org/javascript/how-to-declare-the-optional-function-parameters-in-javascript/
 module.exports = async function discImgGen(client, message, imageName, mentionedUser = null) {
@@ -17,8 +18,8 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   }
 
@@ -28,8 +29,8 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
 
   try {
     sentMessage = await message.reply({ embeds: [embed] });
-  } catch {
-    return;
+  } catch (error) {
+    return msgErrorHandler(error);
   }
 
   const attachment = new AttachmentBuilder();
@@ -361,8 +362,8 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
   }
 
@@ -383,8 +384,8 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
   async function sendMessage() {
     try {
       return await sentMessage.edit({ files: [attachment], embeds: [] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   }
 };

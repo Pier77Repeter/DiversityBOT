@@ -1,5 +1,6 @@
 const { GuildQueueEvent, QueueRepeatMode, useMainPlayer } = require("discord-player");
 const { EmbedBuilder } = require("discord.js");
+const msgErrorHandler = require("../utils/msgErrorHandler");
 
 module.exports = (client) => {
   const player = useMainPlayer();
@@ -31,8 +32,8 @@ module.exports = (client) => {
 
     try {
       return await queue.metadata.channel.send({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   });
 };

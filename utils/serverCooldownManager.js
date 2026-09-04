@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require("discord.js");
+const msgErrorHandler = require("./msgErrorHandler");
 const logger = require("../logger")("ServerCooldownManager");
 
 // only for server cooldowns, unlike "cooldownManager.js" which is for user cooldowns
@@ -50,8 +51,8 @@ module.exports = async function serverCooldownManager(client, message, cooldownN
 
     try {
       await message.reply({ embeds: [embed] });
-    } catch {
-      // continue
+    } catch (error) {
+      msgErrorHandler(error);
     }
 
     return null; // in case of an error (check is in the command)

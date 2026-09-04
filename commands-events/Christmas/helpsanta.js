@@ -2,6 +2,7 @@ const { EmbedBuilder } = require("discord.js");
 const configChecker = require("../../utils/configChecker");
 const eventCooldownManager = require("../../utils/eventCooldownManager");
 const mathRandomInt = require("../../utils/mathRandomInt");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "helpsanta",
@@ -19,7 +20,7 @@ module.exports = {
       try {
         return await message.reply({ embeds: [embed] });
       } catch (error) {
-        return;
+        return msgErrorHandler(error);
       }
     }
 
@@ -32,21 +33,17 @@ module.exports = {
       try {
         return await message.reply({ embeds: [embed] });
       } catch (error) {
-        return;
+        return msgErrorHandler(error);
       }
     }
 
     const coins = mathRandomInt(20, 30);
 
     await new Promise((resolve, reject) => {
-      client.database.run(
-        "UPDATE Event SET goldenCoins = goldenCoins + ? WHERE serverId = ? AND userId = ?",
-        [coins, message.guild.id, message.author.id],
-        (err) => {
-          if (err) reject(err);
-          else resolve();
-        }
-      );
+      client.database.run("UPDATE Event SET goldenCoins = goldenCoins + ? WHERE serverId = ? AND userId = ?", [coins, message.guild.id, message.author.id], (err) => {
+        if (err) reject(err);
+        else resolve();
+      });
     });
 
     embed
@@ -57,7 +54,7 @@ module.exports = {
     try {
       return await message.reply({ embeds: [embed] });
     } catch (error) {
-      return;
+      return msgErrorHandler(error);
     }
   },
 };

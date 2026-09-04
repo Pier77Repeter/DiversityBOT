@@ -1,5 +1,6 @@
-const { GuildQueueEvent, useMainPlayer } = require("discord-player");
+const { useMainPlayer } = require("discord-player");
 const { EmbedBuilder } = require("discord.js");
+const msgErrorHandler = require("../utils/msgErrorHandler");
 const logger = require("../logger")("PlayerError");
 
 // when errors happens so that it dosen't vomit 1000 console errors
@@ -15,8 +16,8 @@ module.exports = (client) => {
 
     try {
       return await queue.metadata.channel.send({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   });
 };

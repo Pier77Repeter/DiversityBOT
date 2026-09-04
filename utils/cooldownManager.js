@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require("discord.js");
+const msgErrorHandler = require("./msgErrorHandler");
 const logger = require("../logger")("CooldownManager");
 
 // this is very useful since it's gonna save tons of lines and time when implementing cooldowns for the commands
@@ -54,8 +55,8 @@ module.exports = async function cooldownManager(client, message, cooldownName, c
 
     try {
       await message.reply({ embeds: [embed] });
-    } catch {
-      // do not vomit anything
+    } catch (error) {
+      msgErrorHandler(error);
     }
 
     return null; // in case of an error (check is in the command)

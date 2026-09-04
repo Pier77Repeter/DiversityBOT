@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require("discord.js");
+const msgErrorHandler = require("./msgErrorHandler");
 const logger = require("../logger")("DbJsonDataSet");
 
 // thing to update json data in DB, at the moment it's only 'items' and 'fishes'
@@ -22,8 +23,8 @@ module.exports = async function dbJsonDataSet(client, message, dataName, jsonDat
 
     try {
       await message.reply({ embeds: [embed] });
-    } catch {
-      // CONTINUE
+    } catch (error) {
+      msgErrorHandler(error);
     }
 
     return null;

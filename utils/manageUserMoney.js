@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require("discord.js");
+const msgErrorHandler = require("./msgErrorHandler");
 const logger = require("../logger")("ManageUserMoney");
 
 // easy thing to manage money, add, subtract ONLY for message author!!!
@@ -64,8 +65,8 @@ module.exports = async function manageUserMoney(client, message, operation, amou
 
     try {
       await message.reply({ embeds: [embed] });
-    } catch {
-      // continue
+    } catch (error) {
+      msgErrorHandler(error);
     }
 
     return null;

@@ -1,4 +1,5 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, EmbedBuilder, MessageFlags } = require("discord.js");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "buttons",
@@ -22,8 +23,8 @@ module.exports = {
     try {
       // to send the button row we gotta do '{ components: [actionRow] }'
       sentMessage = await message.reply({ embeds: [embed], components: [actionRow] });
-    } catch {
-      return; // stop the command execution, no longer needed since we couldn't reply
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     // creating the t h i n g that will listen for the button click and we assosiate with the sentMessage
@@ -40,8 +41,8 @@ module.exports = {
         try {
           // answering the dude who generated the button interaction, to make this visible obly to the dude who clicked, we put the 'flags:' option, and set that this message is ephermeral by 'MessageFlags.Ephemeral'
           return await btnInteraction.reply({ content: "This button isn't for you!", flags: MessageFlags.Ephemeral });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -59,8 +60,8 @@ module.exports = {
           try {
             // updating the message sent by the bot with the updated embed AND actionRow (so that the changes we made are visible), we can only do that 1 time, after this we need to do: sentMessage.edit()
             return await btnInteraction.update({ content: "Updated the embed color to **RED**", embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
         case "btn-buttons-btnTwo":
           // doing the same thing as above
@@ -69,8 +70,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ content: "Updated the embed color to **GREEN**", embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
         case "btn-buttons-btnThree":
           embed.setColor(0x0004ff).setTitle("Blue embed");
@@ -78,8 +79,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ content: "Updated the embed color to **BLUE**", embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
       }
     });
@@ -94,8 +95,8 @@ module.exports = {
       try {
         // updating the message sent by the bot with the updated actionRow with all the buttons disabled
         return await sentMessage.edit({ content: "Buttons has veen disabled! Time out", components: [actionRow] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     });
   },

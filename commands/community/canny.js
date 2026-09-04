@@ -1,11 +1,13 @@
 const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
+const path = require("path");
 const serverCooldownManager = require("../../utils/serverCooldownManager");
 const configChecker = require("../../utils/configChecker");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "canny",
   description: "Play the Mr Incredible canny game",
-  cooldown: 300,
+  cooldown: 180,
   async execute(client, message, args) {
     const embed = new EmbedBuilder();
 
@@ -17,8 +19,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -30,19 +32,19 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
-    const imageFile = new AttachmentBuilder("./media/canny-1.jpg");
+    const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "canny-1.jpg"), { name: "canny-1.jpg" });
 
     embed.setColor(0xffcc66).setTitle("Say something canny (Stage 1/10) or say 'stop' to stop").setImage("attachment://canny-1.jpg");
 
     try {
       await message.reply({ embeds: [embed], files: [imageFile] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     // the collected message author MUST BE EQUAL to the command message author
@@ -57,9 +59,9 @@ module.exports = {
 
       if (receivedMessage.content.length > 256) {
         try {
-          return await receivedMessage.reply({ content: "Message is too long, keep it under 2000 characters" });
-        } catch {
-          return;
+          return await receivedMessage.reply("Message is too long, keep it under 2000 characters");
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -67,7 +69,8 @@ module.exports = {
         return collector.stop();
       }
 
-      imageFile.setFile(`./media/canny-${counter}.jpg`);
+      imageFile.setFile(path.join(process.cwd(), "media", `canny-${counter}.jpg`)).setName(`canny-${counter}.jpg`);
+
       embed
         .setTitle(receivedMessage.content)
         .setImage(`attachment://canny-${counter}.jpg`)
@@ -75,8 +78,8 @@ module.exports = {
 
       try {
         await receivedMessage.reply({ embeds: [embed], files: [imageFile] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     });
 
@@ -84,8 +87,8 @@ module.exports = {
       if (counter === 1) {
         try {
           return await message.reply("You didn't want to continue the game :(");
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
     });

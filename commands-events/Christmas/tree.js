@@ -1,5 +1,6 @@
 const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ComponentType, MessageFlags, ButtonStyle } = require("discord.js");
 const configChecker = require("../../utils/configChecker");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "tree",
@@ -16,7 +17,7 @@ module.exports = {
       try {
         return await message.reply({ embeds: [embed] });
       } catch (error) {
-        return;
+        return msgErrorHandler(error);
       }
     }
 
@@ -29,21 +30,22 @@ module.exports = {
         (err, row) => {
           if (err) reject(err);
           else resolve(row);
-        }
+        },
       );
     });
 
     if (!row) {
-      //embed.setColor(0xff0000).setTitle("😥 Very very sad").setDescription("It seems like the user dosen't know i exist and won't build his tree");
-      embed.setColor(0xff0000).setTitle("😥 Very very sad").setDescription("It seems like the user dosen't know i exist and didn't build his tree!");
+      embed.setColor(0xff0000).setTitle("😥 Very very sad").setDescription("It seems like the user dosen't know i exist and won't build his tree");
+      //embed.setColor(0xff0000).setTitle("😥 Very very sad").setDescription("It seems like the user dosen't know i exist and didn't build his tree!");
 
       try {
         return await message.reply({ embeds: [embed] });
       } catch (error) {
-        return;
+        return msgErrorHandler(error);
       }
     }
 
+    /*
     switch (row.treeLevel) {
       case 0:
         embed
@@ -227,10 +229,10 @@ module.exports = {
     try {
       return await message.reply({ embeds: [embed] });
     } catch (error) {
-      return;
+      return msgErrorHandler(error);
     }
+    */
 
-    /*
     const btnUpgrade = new ButtonBuilder().setCustomId("btn-tree-btnUpgrade").setLabel("Upgrade tree").setStyle("Primary");
     const actionRow = new ActionRowBuilder().addComponents(btnUpgrade);
 
@@ -250,7 +252,7 @@ module.exports = {
             ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
             ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
             ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
-            ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛`
+            ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛`,
           )
           .setFooter({ text: "Empty tree, start collecting materials with d!forest" });
         break;
@@ -269,7 +271,7 @@ module.exports = {
             ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
             ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
             ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
-            ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛`
+            ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛`,
           )
           .setFooter({ text: "Christmas tree level 1/5" });
         break;
@@ -288,7 +290,7 @@ module.exports = {
             ⬛⬛⬛🟫🟫🟫🟫🟫🟫🟫⬛⬛⬛
             ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
             ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
-            ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛`
+            ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛`,
           )
           .setFooter({ text: "Christmas tree level 2/5" });
         break;
@@ -307,7 +309,7 @@ module.exports = {
             ⬛⬛⬛🟫🟫🟫🟫🟫🟫🟫⬛⬛⬛
             ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
             ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
-            ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛`
+            ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛`,
           )
           .setFooter({ text: "Christmas tree level 3/5" });
         break;
@@ -326,7 +328,7 @@ module.exports = {
             ⬛⬛🟩🟫🟫🟫🟫🟫🟫🟫🟩⬛⬛
             ⬛🟩🟩🟩🟩🟩🟫🟩🟩🟩🟩🟩⬛
             ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
-            ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛`
+            ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛`,
           )
           .setFooter({ text: "Christmas tree level 4/5" });
         break;
@@ -413,7 +415,7 @@ module.exports = {
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [actionRow] });
     } catch (error) {
-      return;
+      return msgErrorHandler(error);
     }
 
     const collector = sentMessage.createMessageComponentCollector({
@@ -429,7 +431,7 @@ module.exports = {
             flags: MessageFlags.Ephemeral,
           });
         } catch (error) {
-          return;
+          return msgErrorHandler(error);
         }
       }
 
@@ -444,7 +446,7 @@ module.exports = {
               try {
                 return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
               } catch (error) {
-                return;
+                return msgErrorHandler(error);
               }
             }
 
@@ -455,7 +457,7 @@ module.exports = {
                 (err) => {
                   if (err) reject(err);
                   else resolve();
-                }
+                },
               );
             });
 
@@ -473,7 +475,7 @@ module.exports = {
                 ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
                 ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛
                 ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
-                ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛`
+                ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛`,
               )
               .setFooter({ text: "Christmas tree level 1/5" });
 
@@ -487,7 +489,7 @@ module.exports = {
               try {
                 return await sentMessage.edit({ embeds: [embed], components: [actionRow] });
               } catch (error) {
-                return;
+                return msgErrorHandler(error);
               }
             }
 
@@ -498,7 +500,7 @@ module.exports = {
                 (err) => {
                   if (err) reject(err);
                   else resolve();
-                }
+                },
               );
             });
 
@@ -516,7 +518,7 @@ module.exports = {
                 ⬛⬛⬛🟫🟫🟫🟫🟫🟫🟫⬛⬛⬛
                 ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
                 ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
-                ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛`
+                ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛`,
               )
               .setFooter({ text: "Christmas tree level 2/5" });
 
@@ -530,7 +532,7 @@ module.exports = {
               try {
                 return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
               } catch (error) {
-                return;
+                return msgErrorHandler(error);
               }
             }
 
@@ -541,7 +543,7 @@ module.exports = {
                 (err) => {
                   if (err) reject(err);
                   else resolve();
-                }
+                },
               );
             });
 
@@ -559,7 +561,7 @@ module.exports = {
                 ⬛⬛⬛🟫🟫🟫🟫🟫🟫🟫⬛⬛⬛
                 ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
                 ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
-                ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛`
+                ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛`,
               )
               .setFooter({ text: "Christmas tree level 3/5" });
 
@@ -573,7 +575,7 @@ module.exports = {
               try {
                 return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
               } catch (error) {
-                return;
+                return msgErrorHandler(error);
               }
             }
 
@@ -584,7 +586,7 @@ module.exports = {
                 (err) => {
                   if (err) reject(err);
                   else resolve();
-                }
+                },
               );
             });
 
@@ -602,7 +604,7 @@ module.exports = {
                 ⬛⬛🟩🟫🟫🟫🟫🟫🟫🟫🟩⬛⬛
                 ⬛🟩🟩🟩🟩🟩🟫🟩🟩🟩🟩🟩⬛
                 ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
-                ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛`
+                ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛`,
               )
               .setFooter({ text: "Christmas tree level 4/5" });
 
@@ -616,7 +618,7 @@ module.exports = {
               try {
                 return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
               } catch (error) {
-                return;
+                return msgErrorHandler(error);
               }
             }
 
@@ -627,7 +629,7 @@ module.exports = {
                 (err) => {
                   if (err) reject(err);
                   else resolve();
-                }
+                },
               );
             });
 
@@ -645,7 +647,7 @@ module.exports = {
                 ⬛⬛🟩🟩🟩🟩🟩🟩🟩🟩🟩⬛⬛
                 ⬛🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩🟩⬛
                 ⬛⬛⬛⬛⬛⬛🟫⬛⬛⬛⬛⬛⬛
-                ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛`
+                ⬛⬛⬛⬛🟫🟫🟫🟫🟫⬛⬛⬛⬛`,
               )
               .setFooter({ text: "Christmas has been completed!" });
 
@@ -657,7 +659,7 @@ module.exports = {
         try {
           return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
         } catch (error) {
-          return;
+          return msgErrorHandler(error);
         }
       }
     });
@@ -668,9 +670,8 @@ module.exports = {
       try {
         return await sentMessage.edit({ embeds: [embed], components: [actionRow] });
       } catch (error) {
-        return;
+        return msgErrorHandler(error);
       }
     });
-    */
   },
 };

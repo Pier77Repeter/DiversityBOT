@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require("discord.js");
+const msgErrorHandler = require("./msgErrorHandler");
 const logger = require("../logger")("DbJsonDataGet");
 
 // this just gets the 'items' or 'fishes' from db
@@ -24,8 +25,8 @@ module.exports = async function dbJsonDataGet(client, user, message, dataName) {
 
     try {
       await message.reply({ embeds: [embed] });
-    } catch {
-      // CONTINUE
+    } catch (error) {
+      msgErrorHandler(error);
     }
 
     return null;

@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require("discord.js");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 /*
-THIS COMMAND IS VIBE CODED, WILL BE RE-WRITTEN BEFORE 2.1 UPDATE
+THIS COMMAND IS VIBE CODED, WILL BE RE-WRITTEN BEFORE 2.2 UPDATE
 */
 module.exports = {
   name: "querydb",
@@ -13,8 +14,8 @@ module.exports = {
     if (!query) {
       try {
         return await message.reply("Please provide a SQL query to execute.");
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -26,8 +27,8 @@ module.exports = {
       if (result.rows.length === 0) {
         try {
           return await message.reply("No results found.");
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -50,8 +51,8 @@ module.exports = {
         } else {
           try {
             await message.reply({ embeds: [currentEmbed] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
           currentEmbed = new EmbedBuilder().setColor(0x0099ff).addFields({ name: `Row ${i + 1}`, value: `\`\`\`json\n${rowString}\`\`\`` });
@@ -61,8 +62,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [currentEmbed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     } else {
       // 4. Process Mutating commands (CREATE, INSERT, UPDATE, DELETE)
@@ -77,15 +78,9 @@ module.exports = {
 
       try {
         return await message.reply(resultMessage);
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
-    }
-
-    try {
-      return await message.reply(`❌ **Error executing query:**\n` + `\`\`\`sql\n${query}\`\`\`\n` + `\`\`\`text\n${error.message || error}\`\`\``);
-    } catch {
-      return;
     }
   },
 };

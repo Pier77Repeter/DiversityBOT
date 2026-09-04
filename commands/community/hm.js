@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require("discord.js");
 const serverCooldownManager = require("../../utils/serverCooldownManager");
 const configChecker = require("../../utils/configChecker");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "hm",
@@ -18,8 +19,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -31,8 +32,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -58,8 +59,8 @@ module.exports = {
           ":hause: :hausewithoutglasses: :trollmaster: :PrioQ: :priorityqueue: :hausemasterissue: :feels1tpsman: :coldhause: :hausecool:",
         ].join("\n"),
       );
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

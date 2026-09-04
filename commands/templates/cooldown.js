@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
 const cooldownManager = require("../../utils/cooldownManager");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "cooldown",
@@ -16,16 +17,16 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
     // command logic here
     try {
       return await message.reply("Congrats, you just used the: **" + this.name + "** command");
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

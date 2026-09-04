@@ -1,4 +1,5 @@
 const { ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder, ComponentType, MessageFlags } = require("discord.js");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "menu",
@@ -22,8 +23,8 @@ module.exports = {
 
     try {
       sentMessage = await message.reply({ content: "Choose your weapon", components: [actionRow] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const collector = sentMessage.createMessageComponentCollector({
@@ -40,8 +41,8 @@ module.exports = {
             content: "This menu isn't for you!",
             flags: MessageFlags.Ephemeral,
           });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
 
       collector.resetTimer();
@@ -54,22 +55,22 @@ module.exports = {
             try {
               // update the interaction, we can only do that 1 time, after this we need to do: sentMessage.edit()
               await menuInteraction.update({ content: "Biden blast selected", components: [actionRow] });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
             break;
           case "curseOfRA":
             try {
               await menuInteraction.update({ content: "Curse of RA selected", components: [actionRow] });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
             break;
           case "bob":
             try {
               await menuInteraction.update({ content: "Bob selected", components: [actionRow] });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
             break;
         }
@@ -81,11 +82,10 @@ module.exports = {
 
       // update the menu when disabled
       try {
-        await sentMessage.edit({ content: "Bob selected", components: [actionRow] });
-      } catch {
-        return;
+        return await sentMessage.edit({ content: "Bob selected", components: [actionRow] });
+      } catch (error) {
+        return msgErrorHandler(error);
       }
-      return;
     });
   },
 };

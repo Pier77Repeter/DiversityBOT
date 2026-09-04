@@ -1,4 +1,6 @@
 const { StringSelectMenuBuilder, ActionRowBuilder, StringSelectMenuOptionBuilder, AttachmentBuilder, EmbedBuilder, ComponentType, MessageFlags } = require("discord.js");
+const path = require("path");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "help",
@@ -22,7 +24,7 @@ module.exports = {
       );
     const actionRow = new ActionRowBuilder().addComponents(menuHelp);
 
-    const imageFile = new AttachmentBuilder("./media/DVC_highquality.jpg");
+    const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "DVC_highquality.jpg"), { name: "DVC_highquality.jpg" });
 
     const embed = new EmbedBuilder()
       .setColor(0x33cc00)
@@ -35,7 +37,7 @@ module.exports = {
           "Important commands: **d!help**, **/help**",
           "More commands will come soon. Please, be patient ;)",
           "", // for jumping down 2 times
-          "Bot current version: **2.1.0**",
+          "Bot current version: **2.1.1**",
           "Support me by **joining in here: https://discord.gg/KxadTdz**",
         ].join("\n"),
       )
@@ -59,8 +61,8 @@ module.exports = {
 
     try {
       sentMessage = await message.reply({ embeds: [embed], files: [imageFile], components: [actionRow] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const collector = sentMessage.createMessageComponentCollector({
@@ -75,8 +77,8 @@ module.exports = {
             content: "This menu isn't for you, just type d!help",
             flags: MessageFlags.Ephemeral,
           });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -146,8 +148,8 @@ module.exports = {
                 embeds: [embed, menuOptionEmbed],
                 components: [actionRow],
               });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
             break;
           case "menuOption-help-menuHelp-music":
@@ -178,8 +180,8 @@ module.exports = {
                 embeds: [embed, menuOptionEmbed],
                 components: [actionRow],
               });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
             break;
           case "menuOption-help-menuHelp-economy":
@@ -226,8 +228,8 @@ module.exports = {
                 embeds: [embed, menuOptionEmbed],
                 components: [actionRow],
               });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
             break;
           case "menuOption-help-menuHelp-img":
@@ -286,8 +288,8 @@ module.exports = {
                 embeds: [embed, menuOptionEmbed],
                 components: [actionRow],
               });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
             break;
           case "menuOption-help-menuHelp-utility":
@@ -324,8 +326,8 @@ module.exports = {
                 embeds: [embed, menuOptionEmbed],
                 components: [actionRow],
               });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
             break;
           // name was too long for Prettier so i had to trunk it
@@ -350,8 +352,8 @@ module.exports = {
                 embeds: [embed, menuOptionEmbed],
                 components: [actionRow],
               });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
             break;
         }
@@ -367,8 +369,8 @@ module.exports = {
           embeds: [embed],
           components: [actionRow],
         });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     });
   },

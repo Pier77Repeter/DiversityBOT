@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
 const configChecker = require("../../utils/configChecker");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "decoshop",
@@ -16,7 +17,7 @@ module.exports = {
       try {
         return await message.reply({ embeds: [embed] });
       } catch (error) {
-        return;
+        return msgErrorHandler(error);
       }
     }
 
@@ -51,7 +52,7 @@ module.exports = {
     try {
       return await message.reply({ embeds: [embed] });
     } catch (error) {
-      return;
+      return msgErrorHandler(error);
     }
   },
 };
