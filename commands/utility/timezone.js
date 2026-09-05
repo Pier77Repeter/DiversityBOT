@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require("discord.js");
 const { DateTime } = require("luxon");
 const listsGetRandomItem = require("../../utils/listsGetRandomItem");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "timezone",
@@ -49,8 +50,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -64,8 +65,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -75,8 +76,8 @@ module.exports = {
     if (!converted.isValid) {
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -90,8 +91,8 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

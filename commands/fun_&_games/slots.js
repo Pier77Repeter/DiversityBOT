@@ -1,4 +1,5 @@
 const { Slots } = require("discord-gamecord");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "slots",
@@ -16,8 +17,8 @@ module.exports = {
 
     try {
       return await slots.startGame();
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

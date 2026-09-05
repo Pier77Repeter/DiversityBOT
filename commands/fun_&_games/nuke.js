@@ -1,8 +1,10 @@
 const { EmbedBuilder, ButtonStyle, MessageFlags, ComponentType, AttachmentBuilder } = require("discord.js");
 const { ButtonBuilder } = require("@discordjs/builders");
 const { ActionRowBuilder } = require("@discordjs/builders");
+const path = require("path");
 const delay = require("../../utils/delay");
 const cooldownManager = require("../../utils/cooldownManager");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "nuke",
@@ -11,8 +13,8 @@ module.exports = {
   async execute(client, message, args) {
     try {
       if (!args[0]) return await message.reply("You need to specify a location to nuke");
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const embed = new EmbedBuilder();
@@ -25,8 +27,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -49,8 +51,8 @@ module.exports = {
     let sentMessage;
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [btnRow] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const btnCollector = sentMessage.createMessageComponentCollector({
@@ -67,8 +69,8 @@ module.exports = {
             content: "You can't launch this nuke, it's for someone else",
             flags: MessageFlags.Ephemeral,
           });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -89,8 +91,8 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
           await delay(2000);
@@ -99,8 +101,8 @@ module.exports = {
 
           try {
             await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
           await delay(1000);
@@ -109,8 +111,8 @@ module.exports = {
 
           try {
             await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
           await delay(1000);
@@ -119,8 +121,8 @@ module.exports = {
 
           try {
             await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
           await delay(1000);
@@ -129,8 +131,8 @@ module.exports = {
 
           try {
             await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
           await delay(1000);
@@ -139,8 +141,8 @@ module.exports = {
 
           try {
             await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
           await delay(1000);
@@ -150,8 +152,8 @@ module.exports = {
 
           try {
             await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
           await delay(5000);
@@ -167,8 +169,8 @@ module.exports = {
 
           try {
             await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
           btnCollector.stop();
@@ -177,7 +179,7 @@ module.exports = {
         case "btn-nuke-cancelLaunch":
           hasUserClickedBtn = true;
 
-          const imageFile = new AttachmentBuilder("./media/thumbsUpEmoji.jpg");
+          const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "thumbsUpEmoji.jpg"), { name: "thumbsUpEmoji.jpg" });
 
           btnConfirmLaunch.setDisabled(true);
           btnCancelLaunch.setDisabled(true);
@@ -191,8 +193,8 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], files: [imageFile], components: [btnRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
           btnCollector.stop();
@@ -209,8 +211,8 @@ module.exports = {
 
         try {
           return await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 

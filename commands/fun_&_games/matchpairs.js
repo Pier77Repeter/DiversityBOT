@@ -1,4 +1,5 @@
 const { MatchPairs } = require("discord-gamecord");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "matchpairs",
@@ -21,8 +22,8 @@ module.exports = {
 
     try {
       return await matchPairs.startGame();
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

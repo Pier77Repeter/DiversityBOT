@@ -3,6 +3,7 @@ const cooldownManager = require("../../utils/cooldownManager");
 const manageUserMoney = require("../../utils/manageUserMoney");
 const dbJsonDataGet = require("../../utils/dbJsonDataGet");
 const mathRandomInt = require("../../utils/mathRandomInt");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "crime",
@@ -19,8 +20,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -32,8 +33,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -50,8 +51,8 @@ module.exports = {
 
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [actionRow] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const collector = sentMessage.createMessageComponentCollector({
@@ -69,8 +70,8 @@ module.exports = {
             content: "You better not commit a crime",
             flags: MessageFlags.Ephemeral,
           });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -93,8 +94,8 @@ module.exports = {
 
         try {
           return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -116,8 +117,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-crime-btnArson":
@@ -137,8 +138,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-crime-btnRobbery":
@@ -158,8 +159,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-crime-btnDrug":
@@ -179,8 +180,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
       }
     });
@@ -196,8 +197,8 @@ module.exports = {
 
         try {
           return await sentMessage.edit({ embeds: [embed], components: [actionRow] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
     });

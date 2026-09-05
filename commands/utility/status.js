@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
 const os = require("os");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "status",
@@ -11,8 +12,8 @@ module.exports = {
 
     try {
       sentMessage = await message.reply({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     function formatUptime(seconds) {
@@ -87,8 +88,8 @@ module.exports = {
 
       try {
         return await sentMessage.edit({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }, 2000);
   },

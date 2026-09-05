@@ -3,6 +3,7 @@ const dbJsonDataGet = require("../../utils/dbJsonDataGet");
 const manageUserMoney = require("../../utils/manageUserMoney");
 const dbJsonDataSet = require("../../utils/dbJsonDataSet");
 const { itemPrices, fishPrices } = require("../../config.json");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "sell",
@@ -15,8 +16,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -102,10 +103,9 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
-        break;
     }
 
     // like d!buy, this function saved lots of S P A C E
@@ -115,8 +115,8 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -137,8 +137,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
   },

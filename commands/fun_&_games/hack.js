@@ -1,8 +1,10 @@
 const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
+const path = require("path");
 const listsGetRandomItem = require("../../utils/listsGetRandomItem");
 const mathRandomInt = require("../../utils/mathRandomInt");
 const cooldownManager = require("../../utils/cooldownManager");
 const delay = require("../../utils/delay");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "hack",
@@ -11,8 +13,8 @@ module.exports = {
   async execute(client, message, args) {
     try {
       if (!message.mentions.members.first()) return await message.reply("You need to **mention** an user, else who do i hack?");
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const embed = new EmbedBuilder();
@@ -28,46 +30,48 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
-    const imageFile = new AttachmentBuilder("./media/hackerMan.jpg");
+    const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "hackerMan.jpg"), { name: "hackerMan.jpg" });
+
     embed
       .setColor(0x990000)
       .setDescription(["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> hack -u ", member.username, "\n", "```"].join(""))
       .setThumbnail("attachment://hackerMan.jpg");
 
     let sentMessage;
+
     try {
       sentMessage = await message.reply({ embeds: [embed], files: [imageFile] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
     embed.setDescription(["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▖] Injecting Brownware...", "\n", "```"].join(""));
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
     embed.setDescription(["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▘] Brownware injected, time to hack!", "\n", "```"].join(""));
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
     embed.setDescription(["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▝] Getting Discord account token...", "\n", "```"].join(""));
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
@@ -77,16 +81,16 @@ module.exports = {
     );
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
     embed.setDescription(["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▖] Getting IP address...", "\n", "```"].join(""));
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
@@ -108,16 +112,16 @@ module.exports = {
     );
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
     embed.setDescription(["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▝] Stealing all the important data...", "\n", "```"].join(""));
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
@@ -158,16 +162,16 @@ module.exports = {
     );
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
     embed.setDescription(["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▖] Exploiting coords using Nocom...", "\n", "```"].join(""));
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
@@ -190,16 +194,16 @@ module.exports = {
     );
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
     embed.setDescription(["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▝] Hacking all important accounts...", "\n", "```"].join(""));
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
@@ -220,8 +224,8 @@ module.exports = {
     );
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
@@ -230,16 +234,16 @@ module.exports = {
     );
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
     embed.setDescription(["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▘] The remote code has been executed", "\n", "```"].join(""));
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
@@ -272,8 +276,8 @@ module.exports = {
     );
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
@@ -282,16 +286,16 @@ module.exports = {
     );
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
     embed.setDescription(["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▖] Opening the '+18' folder...", "\n", "```"].join(""));
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
@@ -324,8 +328,8 @@ module.exports = {
     );
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
@@ -334,8 +338,8 @@ module.exports = {
     );
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
@@ -344,8 +348,8 @@ module.exports = {
     );
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
@@ -354,8 +358,8 @@ module.exports = {
     );
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(2000);
@@ -365,8 +369,8 @@ module.exports = {
     );
     try {
       return await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

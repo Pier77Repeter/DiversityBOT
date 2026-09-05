@@ -1,6 +1,7 @@
 const { PermissionsBitField, EmbedBuilder } = require("discord.js");
 const configChecker = require("../../utils/configChecker");
 const modActionLogger = require("../../utils/modActionLogger");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "unban",
@@ -15,8 +16,8 @@ module.exports = {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -24,8 +25,8 @@ module.exports = {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need the permission `Ban members` to use this command");
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -33,8 +34,8 @@ module.exports = {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("I don't have the permission to `Ban members`");
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -43,8 +44,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -56,8 +57,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -65,13 +66,13 @@ module.exports = {
 
     try {
       bannedUser = await message.guild.bans.fetch(userId);
-    } catch {
+    } catch (error) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("This user hasn't been banned from the server");
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -82,8 +83,8 @@ module.exports = {
         .setDescription("The user id **" + bannedUser.user.tag + "** is NOT banned from the server");
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -95,8 +96,8 @@ module.exports = {
       .setDescription("Successfully unbanned **" + bannedUser.user.tag + "** from the server");
     try {
       await message.reply({ embeds: [embed] });
-    } catch {
-      // continue for logging
+    } catch (error) {
+      msgErrorHandler(error);
     }
 
     // MOD LOGGING HERE

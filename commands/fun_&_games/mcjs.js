@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require("discord.js");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "mcjs",
@@ -8,8 +9,8 @@ module.exports = {
 
     try {
       if (!ip) return await message.reply("Give the server IP to ping like **diversitycraft.xyz**");
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     let getServerData = await fetch("https://mcapi.us/server/status?ip=" + ip);
@@ -18,8 +19,8 @@ module.exports = {
     if (serverData.status == "error") {
       try {
         return await message.reply("Server is unreachable, or you just sent an invalid IP");
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -36,8 +37,8 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

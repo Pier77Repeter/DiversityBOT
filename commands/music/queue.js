@@ -1,6 +1,7 @@
 const { useQueue } = require("discord-player");
 const { EmbedBuilder } = require("discord.js");
 const configChecker = require("../../utils/configChecker.js");
+const msgErrorHandler = require("../../utils/msgErrorHandler.js");
 
 module.exports = {
   name: "queue",
@@ -17,8 +18,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -28,8 +29,8 @@ module.exports = {
     if (!queue) {
       try {
         return await message.reply("There are no songs playing in this server");
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -49,8 +50,8 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

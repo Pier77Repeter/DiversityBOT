@@ -1,4 +1,5 @@
 const { EmbedBuilder, PermissionsBitField } = require("discord.js");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "setup",
@@ -11,8 +12,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -21,8 +22,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -39,10 +40,9 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
-        break;
 
       case "music":
         if (await updateConfig("music_cmd")) {
@@ -53,8 +53,8 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
 
       case "event":
@@ -66,8 +66,8 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
 
       case "community":
@@ -79,8 +79,8 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
 
       case "leveling":
@@ -92,8 +92,8 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
 
       default:
@@ -101,10 +101,9 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
-        break;
     }
 
     // bro, honestly it was time we write a function for this crap
@@ -123,8 +122,8 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 

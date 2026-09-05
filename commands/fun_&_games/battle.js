@@ -1,8 +1,10 @@
 const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
+const path = require("path");
 const cooldownManager = require("../../utils/cooldownManager");
 const delay = require("../../utils/delay");
 const mathRandomInt = require("../../utils/mathRandomInt");
 const listsGetRandomItem = require("../../utils/listsGetRandomItem");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "battle",
@@ -11,8 +13,8 @@ module.exports = {
   async execute(client, message, args) {
     try {
       if (!message.mentions.members.first()) return await message.reply("Herr " + message.author.username + ", you need to mention an opponent!");
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const embed = new EmbedBuilder();
@@ -28,12 +30,13 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
-    const imageFile = new AttachmentBuilder("./media/letBattleBegin.jpg");
+    const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "letBattleBegin.jpg"), { name: "letBattleBegin.jpg" });
+
     embed
       .setColor(0xc0c0c0)
       .setTitle("⚙️ Preparing the arena...")
@@ -41,10 +44,11 @@ module.exports = {
       .setImage("attachment://letBattleBegin.jpg");
 
     let sentMessage;
+
     try {
       sentMessage = await message.reply({ embeds: [embed], files: [imageFile] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(3000);
@@ -54,13 +58,13 @@ module.exports = {
     let battleDamage = 0;
     let preventInfiniteLoop = 0; // i dont trust my own code O_O
 
-    imageFile.setFile("./media/battleBegins.jpg");
+    imageFile.setFile(path.join(process.cwd(), "media", "battleBegins.jpg")).setName("battleBegins.jpg");
     embed.setImage("attachment://battleBegins.jpg");
 
     try {
       await sentMessage.edit({ embeds: [embed], files: [imageFile] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     while (preventInfiniteLoop < 100) {
@@ -81,8 +85,8 @@ module.exports = {
 
         try {
           await sentMessage.edit({ embeds: [embed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
 
         await delay(4000);
@@ -96,8 +100,8 @@ module.exports = {
 
         try {
           return await sentMessage.edit({ embeds: [embed], files: [] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -155,8 +159,8 @@ module.exports = {
 
       try {
         await sentMessage.edit({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
 
       await delay(3000);
@@ -176,8 +180,8 @@ module.exports = {
 
         try {
           await sentMessage.edit({ embeds: [embed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
 
         await delay(4000);
@@ -191,8 +195,8 @@ module.exports = {
 
         try {
           return await sentMessage.edit({ embeds: [embed], files: [] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -250,8 +254,8 @@ module.exports = {
 
       try {
         await sentMessage.edit({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
 
       await delay(3000);

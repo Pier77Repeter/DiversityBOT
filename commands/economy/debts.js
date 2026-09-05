@@ -1,4 +1,5 @@
 const { EmbedBuilder, ButtonBuilder, ButtonStyle, MessageFlags, ActionRowBuilder, ComponentType } = require("discord.js");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "debts",
@@ -18,8 +19,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -48,8 +49,8 @@ module.exports = {
     let sentMessage;
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [btnRow] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const btnCollector = sentMessage.createMessageComponentCollector({
@@ -61,8 +62,8 @@ module.exports = {
       if (btnInteraction.user.id !== message.author.id) {
         try {
           return await btnInteraction.reply({ content: "This button isn't for you", flags: MessageFlags.Ephemeral });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -72,8 +73,8 @@ module.exports = {
             content: "You want to pay debts for someone else? Nah you won't",
             flags: MessageFlags.Ephemeral,
           });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -88,8 +89,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
         }
 
@@ -112,8 +113,8 @@ module.exports = {
 
         try {
           return await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
     });
@@ -123,8 +124,8 @@ module.exports = {
 
       try {
         return await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     });
   },

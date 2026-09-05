@@ -1,6 +1,7 @@
 const { useMainPlayer } = require("discord-player");
 const { EmbedBuilder } = require("discord.js");
 const configChecker = require("../../utils/configChecker");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "skip",
@@ -16,16 +17,16 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
     if (!message.member.voice.channel) {
       try {
         return await message.reply("You need to be in a voice channel to use this command!");
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -35,8 +36,8 @@ module.exports = {
     if (!queue || !queue.isPlaying()) {
       try {
         return await message.reply("There is nothing to loop right now, play some songs first");
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -46,8 +47,8 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

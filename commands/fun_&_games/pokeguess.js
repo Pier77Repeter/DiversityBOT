@@ -1,4 +1,5 @@
 const { GuessThePokemon } = require("discord-gamecord");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "pokeguess",
@@ -20,8 +21,8 @@ module.exports = {
 
     try {
       return await pokeGuess.startGame();
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

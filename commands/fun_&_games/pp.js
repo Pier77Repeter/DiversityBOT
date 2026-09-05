@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require("discord.js");
 const delay = require("../../utils/delay");
 const mathRandomInt = require("../../utils/mathRandomInt");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "pp",
@@ -13,8 +14,8 @@ module.exports = {
     let sentMessage;
     try {
       sentMessage = await message.reply({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(3000);
@@ -39,8 +40,8 @@ module.exports = {
 
     try {
       return await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

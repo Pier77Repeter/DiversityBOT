@@ -1,5 +1,6 @@
 const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle, MessageFlags } = require("discord.js");
 const axios = require("axios");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "urban",
@@ -9,26 +10,26 @@ module.exports = {
 
     try {
       if (!searchTerm) return await message.reply("Please provide a search term");
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     let response;
     try {
       response = await axios.get("https://api.urbandictionary.com/v0/define?term=" + encodeURIComponent(searchTerm));
-    } catch {
+    } catch (error) {
       try {
         return await message.reply("O_o, something went wrong while searching in the dictionary");
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
     if (!response.data.list || response.data.list.length === 0) {
       try {
         return await message.reply(`No definitions found for "${searchTerm}"`);
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -86,8 +87,8 @@ module.exports = {
     let sentMessage;
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [btnRow] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const btnCollector = sentMessage.createMessageComponentCollector({
@@ -101,8 +102,8 @@ module.exports = {
             content: "Don't bother this user's command, type d!urban to search for yourself",
             flags: MessageFlags.Ephemeral,
           });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -125,8 +126,8 @@ module.exports = {
       const updatedUrbanMessageEmbed = createDefinitionEmbed(definitions[currentIndex], currentIndex, definitions.length);
       try {
         await btnInteraction.update({ embeds: [updatedUrbanMessageEmbed], components: [btnRow] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     });
 
@@ -136,8 +137,8 @@ module.exports = {
 
       try {
         return await sentMessage.edit({ components: [btnRow] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     });
   },

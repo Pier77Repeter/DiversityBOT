@@ -1,8 +1,10 @@
 const { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, MessageFlags, AttachmentBuilder } = require("discord.js");
+const path = require("path");
 const cooldownManager = require("../../utils/cooldownManager");
 const manageUserMoney = require("../../utils/manageUserMoney");
 const mathRandomInt = require("../../utils/mathRandomInt");
 const listsGetRandomItem = require("../../utils/listsGetRandomItem");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "pv",
@@ -20,12 +22,12 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
-    const imageFile = new AttachmentBuilder().setFile("./media/YouTube.png");
+    const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "YouTube.png"), { name: "YouTube.png" });
 
     embed
       .setColor(0x3366ff)
@@ -44,8 +46,8 @@ module.exports = {
 
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [actionRow], files: [imageFile] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const collector = sentMessage.createMessageComponentCollector({
@@ -60,8 +62,8 @@ module.exports = {
       if (btnInteraction.user.id !== message.author.id) {
         try {
           return await btnInteraction.reply({ content: "Don't steal his YT content!", flags: MessageFlags.Ephemeral });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -75,7 +77,7 @@ module.exports = {
           btnTutorial.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
           if (mathRandomInt(1, 5) === 1) {
-            imageFile.setFile("./media/not_stonks.jpg");
+            imageFile.setFile(path.join(process.cwd(), "media", "not_stonks.jpg")).setName("not_stonks.jpg");
 
             embed
               .setColor(0xff0000)
@@ -85,8 +87,8 @@ module.exports = {
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
           }
 
@@ -94,7 +96,7 @@ module.exports = {
 
           if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-          imageFile.setFile("./media/stonks.jpg");
+          imageFile.setFile(path.join(process.cwd(), "media", "stonks.jpg")).setName("stonks.jpg");
 
           embed
             .setColor(0x33cc00)
@@ -110,8 +112,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-pm-btnDocumentary":
@@ -121,7 +123,7 @@ module.exports = {
           btnTutorial.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
           if (mathRandomInt(1, 5) === 1) {
-            imageFile.setFile("./media/not_stonks.jpg");
+            imageFile.setFile(path.join(process.cwd(), "media", "not_stonks.jpg")).setName("not_stonks.jpg");
 
             embed
               .setColor(0xff0000)
@@ -131,8 +133,8 @@ module.exports = {
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
           }
 
@@ -140,7 +142,7 @@ module.exports = {
 
           if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-          imageFile.setFile("./media/stonks.jpg");
+          imageFile.setFile(path.join(process.cwd(), "media", "stonks.jpg")).setName("stonks.jpg");
 
           embed
             .setColor(0x33cc00)
@@ -156,8 +158,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-pm-btnFunny":
@@ -167,7 +169,7 @@ module.exports = {
           btnTutorial.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
           if (mathRandomInt(1, 5) === 1) {
-            imageFile.setFile("./media/not_stonks.jpg");
+            imageFile.setFile(path.join(process.cwd(), "media", "not_stonks.jpg")).setName("not_stonks.jpg");
 
             embed
               .setColor(0xff0000)
@@ -179,8 +181,8 @@ module.exports = {
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
           }
 
@@ -188,7 +190,7 @@ module.exports = {
 
           if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-          imageFile.setFile("./media/stonks.jpg");
+          imageFile.setFile(path.join(process.cwd(), "media", "stonks.jpg")).setName("stonks.jpg");
 
           embed
             .setColor(0x33cc00)
@@ -204,8 +206,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-pm-btnTutorial":
@@ -215,7 +217,7 @@ module.exports = {
           btnTutorial.setStyle(ButtonStyle.Success).setDisabled(true);
 
           if (mathRandomInt(1, 5) === 1) {
-            imageFile.setFile("./media/not_stonks.jpg");
+            imageFile.setFile(path.join(process.cwd(), "media", "not_stonks.jpg")).setName("not_stonks.jpg");
 
             embed
               .setColor(0xff0000)
@@ -225,8 +227,8 @@ module.exports = {
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
           }
 
@@ -234,7 +236,7 @@ module.exports = {
 
           if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-          imageFile.setFile("./media/stonks.jpg");
+          imageFile.setFile(path.join(process.cwd(), "media", "stonks.jpg")).setName("stonks.jpg");
 
           embed
             .setColor(0x33cc00)
@@ -261,15 +263,15 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
       }
     });
 
     collector.on("end", async () => {
       if (!hasClickedBtn) {
-        imageFile.setFile("./media/YouTube.png");
+        imageFile.setFile(path.join(process.cwd(), "media", "YouTube.png")).setName("YouTube.png");
 
         embed.setTitle("🤷 Nothing to post").setDescription("Out of ideas? Can happen, take your time to think for an original video").setThumbnail("attachment://YouTube.png");
 
@@ -280,8 +282,8 @@ module.exports = {
 
         try {
           return await sentMessage.edit({ embeds: [embed], components: [actionRow], files: [imageFile] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
     });

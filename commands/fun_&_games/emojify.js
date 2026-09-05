@@ -1,4 +1,5 @@
 const { Emojify } = require("discord-gamecord");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "emojify",
@@ -7,25 +8,25 @@ module.exports = {
     // this is yet another way to check if there are args or not
     try {
       if (args.lenght == 0) return await message.reply("Provide ***t e x t*** to convert into emojis");
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     if (args.lenght > 1024) {
       try {
         return await message.reply("Text is too looooooooooong, max 1024 chars!");
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
     try {
       return await message.reply(await Emojify(args.join(" ")));
-    } catch {
+    } catch (error) {
       try {
         return await message.reply("Text is too long, make it shorter so that i can send it");
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
   },

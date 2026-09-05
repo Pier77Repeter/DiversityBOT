@@ -2,6 +2,7 @@ const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ComponentType, MessageFlags
 const cooldownManager = require("../../utils/cooldownManager");
 const mathRandomInt = require("../../utils/mathRandomInt");
 const manageUserMoney = require("../../utils/manageUserMoney");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "work",
@@ -17,8 +18,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -30,8 +31,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -119,8 +120,8 @@ module.exports = {
 
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [actionRow] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const collector = sentMessage.createMessageComponentCollector({
@@ -132,8 +133,8 @@ module.exports = {
       if (btnInteraction.user.id !== message.author.id) {
         try {
           return await btnInteraction.reply({ content: "You can't work for someone else", flags: MessageFlags.Ephemeral });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -171,8 +172,8 @@ module.exports = {
 
         try {
           return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -194,8 +195,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-work-fireFighter-two":
@@ -213,8 +214,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-work-fireFighter-three":
@@ -232,8 +233,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-work-teacher-one":
@@ -251,8 +252,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-work-teacher-two":
@@ -270,8 +271,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-work-teacher-three":
@@ -289,8 +290,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-work-discordMod-one":
@@ -308,8 +309,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-work-discordMod-two":
@@ -327,8 +328,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-work-discordMod-three":
@@ -346,8 +347,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-work-mechanic-one":
@@ -365,8 +366,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-work-mechanic-two":
@@ -384,8 +385,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-work-mechanic-three":
@@ -403,8 +404,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-work-chef-one":
@@ -422,8 +423,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-work-chef-two":
@@ -441,8 +442,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-work-chef-three":
@@ -460,8 +461,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-work-scientist-one":
@@ -479,8 +480,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-work-scientist-two":
@@ -498,8 +499,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-work-scientist-three":
@@ -517,8 +518,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
       }
     });
@@ -553,8 +554,8 @@ module.exports = {
 
         try {
           return await sentMessage.edit({ embeds: [embed], components: [actionRow] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
     });

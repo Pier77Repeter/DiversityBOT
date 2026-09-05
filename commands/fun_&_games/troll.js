@@ -1,5 +1,7 @@
 const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
+const path = require("path");
 const listsGetRandomItem = require("../../utils/listsGetRandomItem");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "troll",
@@ -7,8 +9,8 @@ module.exports = {
   async execute(client, message, args) {
     try {
       if (!message.mentions.members.first()) return await message.reply(message.author.username + ", insert troll target");
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const trollImageName = listsGetRandomItem(
@@ -43,7 +45,9 @@ module.exports = {
       ],
       false,
     );
-    const imageFile = new AttachmentBuilder("./media/" + trollImageName);
+
+    const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", trollImageName), { name: trollImageName });
+
     const embed = new EmbedBuilder()
       .setColor(0xc0c0c0)
       .setTitle(message.mentions.members.first().user.username + " HAS BEEN TROLLED")
@@ -51,8 +55,8 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed], files: [imageFile] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

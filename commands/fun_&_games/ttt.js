@@ -1,4 +1,5 @@
 const { TicTacToe } = require("discord-gamecord");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "ttt",
@@ -6,8 +7,8 @@ module.exports = {
   async execute(client, message, args) {
     try {
       if (!message.mentions.members.first()) return await message.reply(message.author.username + ", can't play alone, mention a buddy");
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const ttt = new TicTacToe({
@@ -38,8 +39,8 @@ module.exports = {
 
     try {
       ttt.startGame();
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

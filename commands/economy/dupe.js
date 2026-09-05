@@ -4,6 +4,7 @@ const cooldownManager = require("../../utils/cooldownManager");
 const manageUserMoney = require("../../utils/manageUserMoney");
 const mathRandomInt = require("../../utils/mathRandomInt");
 const delay = require("../../utils/delay");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "dupe",
@@ -20,8 +21,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -45,8 +46,8 @@ module.exports = {
 
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [btnRow] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const btnCollector = sentMessage.createMessageComponentCollector({
@@ -61,8 +62,8 @@ module.exports = {
             content: "This isn't your dooping button",
             flags: MessageFlags.Ephemeral,
           });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -79,8 +80,8 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
           await delay(3000);
@@ -97,8 +98,8 @@ module.exports = {
 
             try {
               return await sentMessage.edit({ embeds: [embed] });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
           }
 
@@ -112,8 +113,8 @@ module.exports = {
 
           try {
             return await sentMessage.edit({ embeds: [embed] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-dupe-btnDupeChunk":
@@ -126,8 +127,8 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
           await delay(3000);
@@ -143,8 +144,8 @@ module.exports = {
 
             try {
               return await sentMessage.edit({ embeds: [embed] });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
           }
 
@@ -158,8 +159,8 @@ module.exports = {
 
           try {
             return await sentMessage.edit({ embeds: [embed] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-dupe-btnDupeAlt":
@@ -172,8 +173,8 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
           await delay(3000);
@@ -189,8 +190,8 @@ module.exports = {
 
             try {
               return await sentMessage.edit({ embeds: [embed] });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
           }
 
@@ -204,8 +205,8 @@ module.exports = {
 
           try {
             return await sentMessage.edit({ embeds: [embed] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-dupe-btnDupePopbob":
@@ -218,8 +219,8 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
           await delay(3000);
@@ -234,8 +235,8 @@ module.exports = {
 
           try {
             return await sentMessage.edit({ embeds: [embed] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
       }
     });
@@ -251,8 +252,8 @@ module.exports = {
 
         try {
           return await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
     });

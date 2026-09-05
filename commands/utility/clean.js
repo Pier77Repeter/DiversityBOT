@@ -2,6 +2,7 @@ const { PermissionsBitField, EmbedBuilder } = require("discord.js");
 const delay = require("../../utils/delay");
 const configChecker = require("../../utils/configChecker");
 const modActionLogger = require("../../utils/modActionLogger");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "clean",
@@ -18,8 +19,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -28,8 +29,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -38,8 +39,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -50,8 +51,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -60,8 +61,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -76,7 +77,7 @@ module.exports = {
     try {
       const deleted = await message.channel.bulkDelete(messagesToProcess, true);
       deletedCount = deleted.size;
-    } catch {
+    } catch (error) {
       embed
         .setColor(0xff0000)
         .setTitle("❌ Error")
@@ -84,8 +85,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -96,8 +97,8 @@ module.exports = {
         await delay(5000);
         await sentMessage.delete();
       });
-    } catch {
-      // continue, no need to stop
+    } catch (error) {
+      msgErrorHandler(error);
     }
 
     // MOD LOGGING HERE

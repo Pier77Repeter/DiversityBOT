@@ -1,4 +1,5 @@
 const listsGetRandomItem = require("../../utils/listsGetRandomItem");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "roast",
@@ -6,8 +7,8 @@ module.exports = {
   async execute(client, message, args) {
     try {
       if (!message.mentions.members.first()) return await message.reply(message.author.username + ", mention the user to roast");
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     try {
@@ -75,8 +76,8 @@ module.exports = {
             "I don't know what your problem is, but I'm guessing it's hard to pronounce.",
           ]),
       });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require("@discordjs/builders");
 const cooldownManager = require("../../utils/cooldownManager");
 const manageUserMoney = require("../../utils/manageUserMoney");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "daily",
@@ -17,8 +18,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -28,8 +29,8 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

@@ -1,4 +1,5 @@
 const { TwoZeroFourEight } = require("discord-gamecord");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "2048",
@@ -24,8 +25,8 @@ module.exports = {
 
     try {
       return await twoZeroFourEight.startGame();
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

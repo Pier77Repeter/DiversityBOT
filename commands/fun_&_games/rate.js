@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
 const mathRandomInt = require("../../utils/mathRandomInt");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "rate",
@@ -23,8 +24,8 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

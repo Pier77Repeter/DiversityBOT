@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require("@discordjs/builders");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "deposit",
@@ -12,8 +13,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -40,16 +41,12 @@ module.exports = {
 
           try {
             return await message.reply({ embeds: [embed] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
         }
 
-        await client.database.query("UPDATE users SET money = 0, bank_money = bank_money + $1 WHERE server_id = $2 AND user_id = $3", [
-          money,
-          message.guildId,
-          message.author.id,
-        ]);
+        await client.database.query("UPDATE users SET money = 0, bank_money = bank_money + $1 WHERE server_id = $2 AND user_id = $3", [money, message.guildId, message.author.id]);
 
         embed
           .setColor(0x33ff33)
@@ -61,8 +58,8 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
 
       default:
@@ -71,8 +68,8 @@ module.exports = {
 
           try {
             return await message.reply({ embeds: [embed] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
         }
 
@@ -81,8 +78,8 @@ module.exports = {
 
           try {
             return await message.reply({ embeds: [embed] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
         }
 
@@ -108,8 +105,8 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
     }
   },

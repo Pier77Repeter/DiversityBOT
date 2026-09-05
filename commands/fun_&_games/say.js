@@ -1,5 +1,6 @@
 const { EmbedBuilder, PermissionsBitField } = require("discord.js");
 const randomColor = require("../../utils/randomColor.js");
+const msgErrorHandler = require("../../utils/msgErrorHandler.js");
 
 module.exports = {
   name: "say",
@@ -11,8 +12,8 @@ module.exports = {
     if (content.length > maxLength) {
       try {
         return await message.reply(`Message too long! Maximum length is ${maxLength} characters.`);
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -20,16 +21,16 @@ module.exports = {
 
     try {
       await message.channel.send({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     // put this here so that even if we cant delete the message at least it still works
     if (!message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.ManageMessages)) return;
     try {
       return await message.delete();
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

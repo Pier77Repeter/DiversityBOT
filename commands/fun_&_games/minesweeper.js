@@ -1,4 +1,5 @@
 const { Minesweeper } = require("discord-gamecord");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "minesweeper",
@@ -22,8 +23,8 @@ module.exports = {
 
     try {
       return await minesweeper.startGame();
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

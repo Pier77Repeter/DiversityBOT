@@ -1,6 +1,8 @@
 const { EmbedBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, MessageFlags } = require("discord.js");
+const path = require("path");
 const cooldownManager = require("../../utils/cooldownManager");
 const delay = require("../../utils/delay");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "sctest",
@@ -17,12 +19,12 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
-    const scThumbnailFile = new AttachmentBuilder("./media/scTestThumbnail.jpg");
+    const scThumbnailFile = new AttachmentBuilder(path.join(process.cwd(), "media", "scTestThumbnail.jpg"), { name: "scTestThumbnail.jpg" });
 
     embed.setColor(0xff0000).setTitle("Social credit test").setDescription("Are you sure to start the quiz?").setImage("attachment://scTestThumbnail.jpg");
 
@@ -34,8 +36,8 @@ module.exports = {
     let sentMessage;
     try {
       sentMessage = await message.reply({ embeds: [embed], files: [scThumbnailFile], components: [btnRow] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     let questionProgressCounter = 0;
@@ -43,10 +45,10 @@ module.exports = {
 
     // This is where AI comes handy
     // Images
-    const wrongAnswerImage = new AttachmentBuilder("./media/scTestWrongAnswer.jpg");
-    const rightAnswerImage = new AttachmentBuilder("./media/scTestRightAnswer.jpg");
-    const xiPortraitImage = new AttachmentBuilder("./media/scTestXi.jpg");
-    const testCompletedImage = new AttachmentBuilder("./media/scTestComplete.jpg");
+    const wrongAnswerImage = new AttachmentBuilder(path.join(process.cwd(), "media", "scTestWrongAnswer.jpg"), { name: "scTestWrongAnswer.jpg" });
+    const rightAnswerImage = new AttachmentBuilder(path.join(process.cwd(), "media", "scTestRightAnswer.jpg"), { name: "scTestRightAnswer.jpg" });
+    const xiPortraitImage = new AttachmentBuilder(path.join(process.cwd(), "media", "scTestXi.jpg"), { name: "scTestXi.jpg" });
+    const testCompletedImage = new AttachmentBuilder(path.join(process.cwd(), "media", "scTestComplete.jpg"), { name: "scTestComplete.jpg" });
 
     // Right-Wrong embeds
     const scTestRightAnswerMessageEmbed = new EmbedBuilder()
@@ -151,8 +153,8 @@ module.exports = {
             content: "Someone else is doing this test, try it with **d!sctest**",
             flags: MessageFlags.Ephemeral,
           });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -169,8 +171,8 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], files: [scThumbnailFile], components: [btnRowQuestionOne] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
           break;
         case "btn-sctest-testStartTwo":
@@ -183,8 +185,8 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], files: [scThumbnailFile], components: [btnRowQuestionOne] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
           break;
 
@@ -413,8 +415,8 @@ module.exports = {
 
       try {
         return await sentMessage.edit({ embeds: [embed], files: [scThumbnailFile], components: [] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     });
 
@@ -438,8 +440,8 @@ module.exports = {
           files: [rightAnswerImage],
           components: [btnRowToDisable],
         });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
 
       await delay(3000);
@@ -450,15 +452,15 @@ module.exports = {
       if (correctBtn.data.custom_id === "btn-sctest-qFive-ansA") {
         try {
           return await sentMessage.edit({ embeds: [embed], files: [scThumbnailFile, xiPortraitImage], components: [nextQuestionBtnRow] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
       try {
         await sentMessage.edit({ embeds: [embed], files: [scThumbnailFile], components: [nextQuestionBtnRow] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -469,8 +471,8 @@ module.exports = {
       try {
         // last thing we gonna do
         return await btnInteraction.update({ embeds: [scTestWrongAnswerMessageEmbed], files: [wrongAnswerImage], components: [] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 

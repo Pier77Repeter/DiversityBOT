@@ -2,6 +2,7 @@ const { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentTyp
 const cooldownManager = require("../../utils/cooldownManager");
 const manageUserMoney = require("../../utils/manageUserMoney");
 const mathRandomInt = require("../../utils/mathRandomInt");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "hl",
@@ -19,8 +20,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -41,8 +42,8 @@ module.exports = {
 
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [actionRow] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const collector = sentMessage.createMessageComponentCollector({
@@ -60,8 +61,8 @@ module.exports = {
             content: "It's not your game",
             flags: MessageFlags.Ephemeral,
           });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -80,8 +81,8 @@ module.exports = {
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
           }
 
@@ -96,8 +97,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-hl-btnHigh":
@@ -112,8 +113,8 @@ module.exports = {
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
           }
 
@@ -128,8 +129,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
       }
     });
@@ -143,8 +144,8 @@ module.exports = {
 
         try {
           return await sentMessage.edit({ embeds: [embed], components: [actionRow] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
     });

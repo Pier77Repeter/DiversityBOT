@@ -1,6 +1,7 @@
 const { useQueue } = require("discord-player");
 const { EmbedBuilder } = require("discord.js");
 const configChecker = require("../../utils/configChecker");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "stop",
@@ -16,8 +17,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -28,8 +29,8 @@ module.exports = {
     if (!voiceChannel) {
       try {
         return await message.reply("You need to be in a voice channel to stop the music!");
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -37,8 +38,8 @@ module.exports = {
     if (message.guild.members.me.voice.channel && message.guild.members.me.voice.channel !== voiceChannel) {
       try {
         return await message.reply("I am already playing in a different voice channel!");
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -47,8 +48,8 @@ module.exports = {
     if (!queue) {
       try {
         return await message.reply("There's no music queue to stop here!");
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -58,8 +59,8 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

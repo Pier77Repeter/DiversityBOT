@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require("@discordjs/builders");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "give",
@@ -13,8 +14,8 @@ module.exports = {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You can't give money to yourself");
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -27,8 +28,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -54,8 +55,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -68,8 +69,8 @@ module.exports = {
 
           try {
             return await message.reply({ embeds: [embed] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
         }
 
@@ -86,8 +87,8 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
 
       default:
@@ -96,8 +97,8 @@ module.exports = {
 
           try {
             return await message.reply({ embeds: [embed] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
         }
 
@@ -106,8 +107,8 @@ module.exports = {
 
           try {
             return await message.reply({ embeds: [embed] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
         }
 
@@ -126,8 +127,8 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
     }
   },

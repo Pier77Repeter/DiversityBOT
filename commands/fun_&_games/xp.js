@@ -1,5 +1,7 @@
 const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
+const path = require("path");
 const configChecker = require("../../utils/configChecker");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "xp",
@@ -15,8 +17,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -33,14 +35,14 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
     const xp = row.rows[0].xp;
     const nextXp = row.rows[0].next_xp;
-    const imageFile = new AttachmentBuilder("./media/xp.png");
+    const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "xp.png"), { name: "xp.png" });
 
     embed
       .setTitle(user.username + " current xp")
@@ -49,8 +51,8 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed], files: [imageFile] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

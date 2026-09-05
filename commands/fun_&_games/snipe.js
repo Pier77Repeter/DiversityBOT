@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require("discord.js");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "snipe",
@@ -27,17 +28,17 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
-    } catch {
+    } catch (error) {
       embed.setColor(0x339999).setTitle("🔍 Sniped message").setDescription("Sniped message wasn't a text message :(");
       embed.setFooter({ text: "Waiting for a good catch..." });
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
   },

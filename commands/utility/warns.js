@@ -1,6 +1,7 @@
 const { EmbedBuilder, PermissionsBitField, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, MessageFlags } = require("discord.js");
 const configChecker = require("../../utils/configChecker");
 const modActionLogger = require("../../utils/modActionLogger");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "warns",
@@ -16,8 +17,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -26,8 +27,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -43,8 +44,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -60,8 +61,8 @@ module.exports = {
 
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [actionRow] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const collector = sentMessage.createMessageComponentCollector({
@@ -73,8 +74,8 @@ module.exports = {
       if (btnInteraction.user.id !== message.author.id) {
         try {
           return await btnInteraction.reply({ content: "You can't use this button, it is not for you", flags: [MessageFlags.Ephemeral] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -90,8 +91,8 @@ module.exports = {
 
         try {
           await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-        } catch {
-          // DO NOT RETURN
+        } catch (error) {
+          msgErrorHandler(error);
         }
 
         // MOD LOGGING HERE
@@ -111,8 +112,8 @@ module.exports = {
 
       try {
         return await sentMessage.edit({ components: [actionRow] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     });
   },

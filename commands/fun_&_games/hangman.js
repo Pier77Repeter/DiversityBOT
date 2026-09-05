@@ -1,5 +1,6 @@
 const { Hangman } = require("discord-gamecord");
 const listsGetRandomItem = require("../../utils/listsGetRandomItem");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "hangman",
@@ -598,8 +599,8 @@ module.exports = {
 
     try {
       return await hangman.startGame();
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

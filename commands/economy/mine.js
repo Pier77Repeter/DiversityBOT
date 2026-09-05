@@ -5,6 +5,7 @@ const mathRandomInt = require("../../utils/mathRandomInt");
 const cooldownManager = require("../../utils/cooldownManager");
 const manageUserMoney = require("../../utils/manageUserMoney");
 const delay = require("../../utils/delay");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "mine",
@@ -21,8 +22,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -34,8 +35,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -48,8 +49,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -59,8 +60,8 @@ module.exports = {
 
     try {
       sentMessage = await message.reply({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(1000);
@@ -69,8 +70,8 @@ module.exports = {
 
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(1000);
@@ -79,8 +80,8 @@ module.exports = {
 
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(1000);
@@ -89,8 +90,8 @@ module.exports = {
 
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(1000);
@@ -99,8 +100,8 @@ module.exports = {
 
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(1000);
@@ -109,8 +110,8 @@ module.exports = {
 
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(1000);
@@ -119,8 +120,8 @@ module.exports = {
 
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(1000);
@@ -129,8 +130,8 @@ module.exports = {
 
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     await delay(1000);
@@ -140,8 +141,8 @@ module.exports = {
 
       try {
         return await sentMessage.edit({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -195,8 +196,8 @@ module.exports = {
 
     try {
       return await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

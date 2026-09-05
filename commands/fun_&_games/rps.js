@@ -1,4 +1,5 @@
 const { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, MessageFlags, ComponentType } = require("discord.js");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "rps",
@@ -6,8 +7,8 @@ module.exports = {
   async execute(client, message, args) {
     try {
       if (!message.mentions.members.first()) return await message.reply("You need to mention an user to play rock paper scissors");
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const mentionedMember = message.mentions.members.first();
@@ -15,16 +16,16 @@ module.exports = {
     if (mentionedMember.id === message.author.id) {
       try {
         return await message.reply("You can't play rock paper scissors with yourself.");
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
     if (mentionedMember.user.bot) {
       try {
         return await message.reply("You can't play rock paper scissors with a bot (they wouldn't play with you)");
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -46,10 +47,11 @@ module.exports = {
       .setFooter({ text: "Click one of the buttons to choose!" });
 
     let sentMessage;
+
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [btnsRow] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const collector = sentMessage.createMessageComponentCollector({ componentType: ComponentType.Button, time: 40_000 });
@@ -68,15 +70,15 @@ module.exports = {
               content: `You choose ${mentionedUserChoice.name} ${mentionedUserChoice.emoji}`,
               flags: MessageFlags.Ephemeral,
             });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
           embed.setDescription(`${message.author.username}'s turn...`);
           try {
             await btnInteraction.update({ embeds: [embed] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
           turn = message.author.id;
@@ -85,8 +87,8 @@ module.exports = {
         } else {
           try {
             await btnInteraction.reply({ content: "You are not in the game!", flags: MessageFlags.Ephemeral });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
         }
 
@@ -96,8 +98,8 @@ module.exports = {
       } else {
         try {
           await btnInteraction.reply({ content: "It's not your turn yet.", flags: MessageFlags.Ephemeral });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
     });
@@ -111,8 +113,8 @@ module.exports = {
 
         try {
           await sentMessage.edit({ embeds: [embed], components: [btnsRow] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       } else if (mentionedUserChoice && authorChoice) {
         let result;
@@ -138,8 +140,8 @@ module.exports = {
 
         try {
           await sentMessage.edit({ embeds: [embed], components: [btnsRow] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
     });

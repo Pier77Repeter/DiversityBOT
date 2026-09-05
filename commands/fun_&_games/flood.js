@@ -1,4 +1,5 @@
 const { Flood } = require("discord-gamecord");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "flood",
@@ -22,8 +23,8 @@ module.exports = {
 
     try {
       return await flood.startGame();
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

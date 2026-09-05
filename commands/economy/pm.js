@@ -1,7 +1,9 @@
 const { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, MessageFlags, AttachmentBuilder } = require("discord.js");
+const path = require("path");
 const cooldownManager = require("../../utils/cooldownManager");
 const manageUserMoney = require("../../utils/manageUserMoney");
 const mathRandomInt = require("../../utils/mathRandomInt");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "pm",
@@ -19,12 +21,12 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
-    const imageFile = new AttachmentBuilder().setFile("./media/Reddit.png");
+    const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "Reddit.png"), { name: "Reddit.png" });
 
     embed
       .setColor(0x3366ff)
@@ -44,8 +46,8 @@ module.exports = {
 
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [actionRow], files: [imageFile] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const collector = sentMessage.createMessageComponentCollector({
@@ -60,8 +62,8 @@ module.exports = {
       if (btnInteraction.user.id !== message.author.id) {
         try {
           return await btnInteraction.reply({ content: "Don't steal his meme", flags: MessageFlags.Ephemeral });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -76,7 +78,7 @@ module.exports = {
           btnOld.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
           if (mathRandomInt(1, 5) === 1) {
-            imageFile.setFile("./media/Downvote.png");
+            imageFile.setFile(path.join(process.cwd(), "media", "Downvote.png")).setName("Downvote.png");
 
             embed
               .setColor(0xff0000)
@@ -86,8 +88,8 @@ module.exports = {
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
           }
 
@@ -95,7 +97,7 @@ module.exports = {
 
           if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-          imageFile.setFile("./media/Upvote.png");
+          imageFile.setFile(path.join(process.cwd(), "media", "Upvote.png")).setName("Upvote.png");
 
           embed
             .setColor(0x33cc00)
@@ -105,8 +107,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-pm-btnMeIrl":
@@ -117,14 +119,14 @@ module.exports = {
           btnOld.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
           if (mathRandomInt(1, 5) === 1) {
-            imageFile.setFile("./media/Downvote.png");
+            imageFile.setFile(path.join(process.cwd(), "media", "Downvote.png")).setName("Downvote.png");
 
             embed.setColor(0xff0000).setTitle("👎 You posted a me_irl meme").setDescription("Nah! The meme wasn't realistic at all").setThumbnail("attachment://Downvote.png");
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
           }
 
@@ -132,7 +134,7 @@ module.exports = {
 
           if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-          imageFile.setFile("./media/Upvote.png");
+          imageFile.setFile(path.join(process.cwd(), "media", "Upvote.png")).setName("Upvote.png");
 
           embed
             .setColor(0x33cc00)
@@ -142,8 +144,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-pm-btnClassic":
@@ -154,18 +156,14 @@ module.exports = {
           btnOld.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
           if (mathRandomInt(1, 5) === 1) {
-            imageFile.setFile("./media/Downvote.png");
+            imageFile.setFile(path.join(process.cwd(), "media", "Downvote.png")).setName("Downvote.png");
 
-            embed
-              .setColor(0xff0000)
-              .setTitle("👎 You posted a classic meme")
-              .setDescription("This meme is not funny anymore, stop it")
-              .setThumbnail("attachment://Downvote.png");
+            embed.setColor(0xff0000).setTitle("👎 You posted a classic meme").setDescription("This meme is not funny anymore, stop it").setThumbnail("attachment://Downvote.png");
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
           }
 
@@ -173,7 +171,7 @@ module.exports = {
 
           if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-          imageFile.setFile("./media/Upvote.png");
+          imageFile.setFile(path.join(process.cwd(), "media", "Upvote.png")).setName("Upvote.png");
 
           embed
             .setColor(0x33cc00)
@@ -183,8 +181,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-pm-btnCopyPasta":
@@ -195,14 +193,14 @@ module.exports = {
           btnOld.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
           if (mathRandomInt(1, 5) === 1) {
-            imageFile.setFile("./media/Downvote.png");
+            imageFile.setFile(path.join(process.cwd(), "media", "Downvote.png")).setName("Downvote.png");
 
             embed.setColor(0xff0000).setTitle("👎 You posted a copy pasta").setDescription("Stop copying this meme! It's cringe").setThumbnail("attachment://Downvote.png");
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
           }
 
@@ -210,7 +208,7 @@ module.exports = {
 
           if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-          imageFile.setFile("./media/Upvote.png");
+          imageFile.setFile(path.join(process.cwd(), "media", "Upvote.png")).setName("Upvote.png");
 
           embed
             .setColor(0x33cc00)
@@ -220,8 +218,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-pm-btnOld":
@@ -232,7 +230,7 @@ module.exports = {
           btnOld.setStyle(ButtonStyle.Success).setDisabled(true);
 
           if (mathRandomInt(1, 5) === 1) {
-            imageFile.setFile("./media/Downvote.png");
+            imageFile.setFile(path.join(process.cwd(), "media", "Downvote.png")).setName("Downvote.png");
 
             embed
               .setColor(0xff0000)
@@ -242,8 +240,8 @@ module.exports = {
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
           }
 
@@ -251,7 +249,7 @@ module.exports = {
 
           if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-          imageFile.setFile("./media/Upvote.png");
+          imageFile.setFile(path.join(process.cwd(), "media", "Upvote.png")).setName("Upvote.png");
 
           embed
             .setColor(0x33cc00)
@@ -261,15 +259,15 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
       }
     });
 
     collector.on("end", async () => {
       if (!hasClickedBtn) {
-        imageFile.setFile("./media/Reddit.png");
+        imageFile.setFile(path.join(process.cwd(), "media", "Reddit.png")).setName("Reddit.png");
 
         embed.setTitle("🤷 Nothing to post").setDescription("I guess the meme you were about to post wasn't that good").setThumbnail("attachment://Reddit.png");
 
@@ -281,8 +279,8 @@ module.exports = {
 
         try {
           return await sentMessage.edit({ embeds: [embed], components: [actionRow], files: [imageFile] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
     });

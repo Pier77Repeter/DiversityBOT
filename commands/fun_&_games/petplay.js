@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require("discord.js");
 const mathRandomInt = require("../../utils/mathRandomInt");
 const cooldownManager = require("../../utils/cooldownManager");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "petplay",
@@ -16,8 +17,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -32,8 +33,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -51,8 +52,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -64,8 +65,8 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

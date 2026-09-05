@@ -2,6 +2,7 @@ const { EmbedBuilder } = require("discord.js");
 const dbJsonDataGet = require("../../utils/dbJsonDataGet");
 const manageUserMoney = require("../../utils/manageUserMoney");
 const dbJsonDataSet = require("../../utils/dbJsonDataSet");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 const { itemPrices } = require("../../config.json");
 
 module.exports = {
@@ -15,8 +16,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -78,8 +79,8 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
 
         async function buyItem(itemCost, itemId, itemName, canBuyMultiple) {
@@ -88,8 +89,8 @@ module.exports = {
 
             try {
               return await message.reply({ embeds: [embed] });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
           }
 
@@ -98,8 +99,8 @@ module.exports = {
 
             try {
               return await message.reply({ embeds: [embed] });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
           }
 
@@ -113,8 +114,8 @@ module.exports = {
 
           try {
             return await message.reply({ embeds: [embed] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
         }
     }

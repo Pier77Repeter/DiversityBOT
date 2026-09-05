@@ -1,4 +1,5 @@
 const { Connect4 } = require("discord-gamecord");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "connect4",
@@ -6,8 +7,8 @@ module.exports = {
   async execute(client, message, args) {
     try {
       if (!message.mentions.members.first()) return await message.reply(message.author.username + ", you need someone to play with!");
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const connectFour = new Connect4({
@@ -36,8 +37,8 @@ module.exports = {
 
     try {
       return await connectFour.startGame();
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

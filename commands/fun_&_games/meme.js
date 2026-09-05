@@ -1,5 +1,7 @@
 const { EmbedBuilder, AttachmentBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, MessageFlags } = require("discord.js");
+const path = require("path");
 const cooldownManager = require("../../utils/cooldownManager");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "meme",
@@ -17,8 +19,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -32,8 +34,8 @@ module.exports = {
     if (memeData.code == 404) {
       try {
         return await message.reply("Subreddit not found, try again, maybe with an actual subreddit");
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -41,13 +43,13 @@ module.exports = {
     if (memeData.code == 403) {
       try {
         return await message.reply("Subreddit is set to private, i can't get anything from there");
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
     if (memeData.nsfw) {
-      imageFile.setFile("./media/arnoldSchwarzeneggerStopMeme.jpg");
+      imageFile.setFile(path.join(process.cwd(), "media", "arnoldSchwarzeneggerStopMeme.jpg")).setName("arnoldSchwarzeneggerStopMeme.jpg");
 
       embed
         .setColor(0xcc0000)
@@ -57,8 +59,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed], files: [imageFile] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -74,10 +76,11 @@ module.exports = {
     const btnRow = new ActionRowBuilder().addComponents(btnNextMeme, btnStop);
 
     let sentMessage;
+
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [btnRow] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const btnCollector = sentMessage.createMessageComponentCollector({
@@ -89,8 +92,8 @@ module.exports = {
       if (btnInteraction.user.id !== message.author.id) {
         try {
           return await btnInteraction.reply({ content: "You gotta type d!meme for yourself", flags: MessageFlags.Ephemeral });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -103,13 +106,13 @@ module.exports = {
 
             try {
               return await btnInteraction.update({ content: "Opsy, i couldn't get the meme, try typing the command again", components: [] });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
           }
 
           if (memeData.nsfw) {
-            imageFile.setFile("./media/arnoldSchwarzeneggerStopMeme.jpg");
+            imageFile.setFile(path.join(process.cwd(), "media", "arnoldSchwarzeneggerStopMeme.jpg")).setName("arnoldSchwarzeneggerStopMeme.jpg");
 
             embed
               .setColor(0xcc0000)
@@ -122,8 +125,8 @@ module.exports = {
 
             try {
               return await btnInteraction.update({ embeds: [embed], components: [], files: [imageFile] });
-            } catch {
-              return;
+            } catch (error) {
+              return msgErrorHandler(error);
             }
           }
 
@@ -138,8 +141,8 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
           break;
@@ -150,8 +153,8 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
           break;
@@ -164,8 +167,8 @@ module.exports = {
 
       try {
         return await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     });
 
@@ -175,8 +178,8 @@ module.exports = {
         const memeData = await response.json();
 
         return memeData;
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
   },

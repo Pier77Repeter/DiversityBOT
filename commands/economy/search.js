@@ -1,9 +1,11 @@
 const { EmbedBuilder } = require("@discordjs/builders");
 const { ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, MessageFlags, AttachmentBuilder } = require("discord.js");
+const path = require("path");
 const cooldownManager = require("../../utils/cooldownManager");
 const manageUserMoney = require("../../utils/manageUserMoney");
 const mathRandomInt = require("../../utils/mathRandomInt");
 const delay = require("../../utils/delay");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "search",
@@ -20,8 +22,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -38,12 +40,12 @@ module.exports = {
       searchProbs,
       hasClickedBtn = false;
 
-    const imageFile = new AttachmentBuilder("./media/fitSmooth.gif");
+    const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "fitSmooth.gif"), { name: "fitSmooth.gif" });
 
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [btnRow] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const btnCollector = sentMessage.createMessageComponentCollector({
@@ -55,8 +57,8 @@ module.exports = {
       if (btnInteraction.user.id !== message.author.id) {
         try {
           return await btnInteraction.reply({ content: "This isn't your dooping button", flags: MessageFlags.Ephemeral });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -72,8 +74,8 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
           await delay(3000);
@@ -86,8 +88,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
 
             case 2:
@@ -95,8 +97,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
 
             case 3:
@@ -104,8 +106,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
 
             case 4:
@@ -120,8 +122,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed], files: [imageFile] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
 
             case 5:
@@ -135,8 +137,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
 
             case 6:
@@ -150,8 +152,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
 
             case 7:
@@ -166,8 +168,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed], files: [imageFile] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
 
             default:
@@ -175,8 +177,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
           }
 
@@ -189,8 +191,8 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
           await delay(3000);
@@ -203,8 +205,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
 
             case 2:
@@ -212,8 +214,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
 
             case 3:
@@ -221,8 +223,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
 
             case 4:
@@ -237,8 +239,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed], files: [imageFile] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
 
             case 5:
@@ -252,8 +254,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
 
             case 6:
@@ -267,8 +269,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
 
             case 7:
@@ -283,8 +285,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed], files: [imageFile] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
 
             default:
@@ -292,8 +294,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
           }
 
@@ -306,8 +308,8 @@ module.exports = {
 
           try {
             await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
           await delay(3000);
@@ -320,8 +322,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
 
             case 2:
@@ -329,8 +331,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
 
             case 3:
@@ -338,8 +340,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
 
             case 4:
@@ -354,8 +356,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed], files: [imageFile] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
 
             case 5:
@@ -369,8 +371,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
 
             case 6:
@@ -384,8 +386,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
 
             case 7:
@@ -400,8 +402,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed], files: [imageFile] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
 
             default:
@@ -409,8 +411,8 @@ module.exports = {
 
               try {
                 return await sentMessage.edit({ embeds: [embed] });
-              } catch {
-                return;
+              } catch (error) {
+                return msgErrorHandler(error);
               }
           }
       }
@@ -426,8 +428,8 @@ module.exports = {
 
         try {
           return await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
     });

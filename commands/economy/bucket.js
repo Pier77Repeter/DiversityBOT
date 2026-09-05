@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
 const dbJsonDataGet = require("../../utils/dbJsonDataGet");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "bucket",
@@ -60,8 +61,8 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

@@ -1,5 +1,6 @@
 const axios = require("axios");
 const { EmbedBuilder } = require("discord.js");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "stealemoji",
@@ -11,8 +12,8 @@ module.exports = {
 
     try {
       if (!emoji) return await message.reply("Provide an emoji, thanks");
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const emojiName = emoji[0].split(":")[1];
@@ -25,11 +26,11 @@ module.exports = {
 
       try {
         await axios.get(`https://cdn.discordapp.com/emojis/${emojiId}`);
-      } catch {
+      } catch (error) {
         try {
           return await message.reply("Invalid emoji, gib a real one");
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -48,14 +49,14 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     } else {
       try {
         return await message.reply("You need to provide a message with ONLY the emoji to steal");
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 

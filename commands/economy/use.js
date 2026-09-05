@@ -2,6 +2,7 @@ const { EmbedBuilder } = require("discord.js");
 const dbJsonDataSet = require("../../utils/dbJsonDataSet");
 const dbJsonDataGet = require("../../utils/dbJsonDataGet");
 const delay = require("./../../utils/delay");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "use",
@@ -15,8 +16,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -30,8 +31,8 @@ module.exports = {
 
           try {
             return await message.reply({ embeds: [embed] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
         }
 
@@ -43,8 +44,8 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
 
       case "beans":
@@ -53,8 +54,8 @@ module.exports = {
 
           try {
             return await message.reply({ embeds: [embed] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
         }
 
@@ -65,10 +66,11 @@ module.exports = {
         embed.setColor(0xffcc00).setTitle("Delicious").setDescription("You ate the beans! 🥫🥫🥫");
 
         let sentMessage;
+
         try {
           sentMessage = await message.reply({ embeds: [embed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
 
         await delay(3000);
@@ -76,8 +78,8 @@ module.exports = {
         embed.setColor(0x000000).setTitle("And...").setDescription(null);
         try {
           await sentMessage.edit({ embeds: [embed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
 
         await delay(2000);
@@ -85,8 +87,8 @@ module.exports = {
         embed.setColor(0x33ff33).setTitle("💨💨💨 You farted!");
         try {
           return await sentMessage.edit({ embeds: [embed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
 
       case "poo":
@@ -95,16 +97,16 @@ module.exports = {
 
           try {
             return await message.reply({ embeds: [embed] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
         }
 
         if (!message.mentions.members.first()) {
           try {
             return await message.reply("Mention your victim before using the poo");
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
         }
 
@@ -119,8 +121,8 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
 
       default:
@@ -128,8 +130,8 @@ module.exports = {
 
         try {
           return await message.reply({ embeds: [embed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
     }
   },

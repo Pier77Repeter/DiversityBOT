@@ -3,6 +3,7 @@ const dbJsonDataGet = require("../../utils/dbJsonDataGet");
 const dbJsonDataSet = require("../../utils/dbJsonDataSet");
 const mathRandomInt = require("../../utils/mathRandomInt");
 const cooldownManager = require("../../utils/cooldownManager");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "fish",
@@ -19,8 +20,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -32,8 +33,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -46,8 +47,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -56,8 +57,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -88,8 +89,8 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

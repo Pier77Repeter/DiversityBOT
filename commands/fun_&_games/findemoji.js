@@ -1,4 +1,5 @@
 const { FindEmoji } = require("discord-gamecord");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "findemoji",
@@ -25,8 +26,8 @@ module.exports = {
 
     try {
       return await findEmoji.startGame();
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

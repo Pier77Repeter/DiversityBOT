@@ -1,4 +1,5 @@
 const listsGetRandomItem = require("../../utils/listsGetRandomItem");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "8ball",
@@ -7,8 +8,8 @@ module.exports = {
     // compact way to check and reply
     try {
       if (args.length < 1) return await message.reply(message.author.username + " what is your beautiful question?");
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     try {
@@ -56,8 +57,8 @@ module.exports = {
           ),
         ].join(""),
       );
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

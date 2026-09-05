@@ -1,4 +1,5 @@
 const { WouldYouRather } = require("discord-gamecord");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "wyr",
@@ -22,8 +23,8 @@ module.exports = {
 
     try {
       return await wouldYouRather.startGame();
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

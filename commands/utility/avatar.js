@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require("discord.js");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "avatar",
@@ -13,8 +14,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -31,6 +32,10 @@ module.exports = {
       .setDescription("**[Download](" + downloadUrl + ")**")
       .setImage(avatarUrl);
 
-    return await message.reply({ embeds: [embed] });
+    try {
+      return await message.reply({ embeds: [embed] });
+    } catch (error) {
+      return msgErrorHandler(error);
+    }
   },
 };

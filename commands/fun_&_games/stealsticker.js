@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require("discord.js");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "stealsticker",
@@ -9,8 +10,8 @@ module.exports = {
     if (!replyedMessage) {
       try {
         return await message.reply("Reply to a message containing a sticker");
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -20,16 +21,16 @@ module.exports = {
     if (!sticker) {
       try {
         return await message.reply("No snicker has been found in that message");
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
     if (sticker.url.endsWith(".json")) {
       try {
         return await message.reply("I can not steal Discord's official stickers");
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -41,8 +42,8 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

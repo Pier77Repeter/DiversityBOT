@@ -1,5 +1,7 @@
 const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
+const path = require("path");
 const listsGetRandomItem = require("../../utils/listsGetRandomItem");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "kill",
@@ -7,12 +9,12 @@ module.exports = {
   async execute(client, message, args) {
     try {
       if (!message.mentions.members.first()) return await message.reply(message.author.username + ", can you mention an user?");
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const mentionedMember = message.mentions.members.first().user.username;
-    const imageFile = new AttachmentBuilder("./media/funnyKillImage.jpg");
+    const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "funnyKillImage.jpg"), { name: "funnyKillImage.jpg" });
     const embed = new EmbedBuilder()
       .setColor(0x660000)
       .setDescription(
@@ -61,8 +63,8 @@ module.exports = {
 
     try {
       return await message.reply({ embeds: [embed], files: [imageFile] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
   },
 };

@@ -1,4 +1,5 @@
 const { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, MessageFlags } = require("discord.js");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "jobs",
@@ -13,8 +14,8 @@ module.exports = {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You already have a job, come back when you will eventually get fired");
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -40,8 +41,8 @@ module.exports = {
 
     try {
       sentMessage = await message.reply({ embeds: [embed], components: [actionRow] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     // better name it collector
@@ -52,10 +53,14 @@ module.exports = {
 
     collector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        return await btnInteraction.reply({
-          content: "Are you trying to steal someone else's job?!",
-          flags: MessageFlags.Ephemeral,
-        });
+        try {
+          return await btnInteraction.reply({
+            content: "Are you trying to steal someone else's job?!",
+            flags: MessageFlags.Ephemeral,
+          });
+        } catch (error) {
+          return msgErrorHandler(error);
+        }
       }
 
       collector.resetTimer();
@@ -66,16 +71,16 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
         case "btn-jobs-btnPrevious":
           actionRow.setComponents(btnNext, btnFireFighter, btnTeacher, btnDiscordMod);
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
         case "btn-jobs-btnFireFighter":
           embed.setColor(0x33cc00).setTitle("🚒 Fire Fighter").setDescription("You are now a Fire Fighter, you can start working with **d!work**");
@@ -93,8 +98,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
 
         case "btn-jobs-btnTeacher":
@@ -113,8 +118,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
         case "btn-jobs-btnDiscordMod":
           embed.setColor(0x33cc00).setTitle("💻 Discord Mod").setDescription("You are now a Discord Mod, you can start working with **d!work**");
@@ -132,8 +137,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
         case "btn-jobs-btnMechanic":
           embed.setColor(0x33cc00).setTitle("🔧 Mechanic").setDescription("You are now a Mechanic, you can start working with **d!work**");
@@ -151,8 +156,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
         case "btn-jobs-btnChef":
           embed.setColor(0x33cc00).setTitle("🧑‍🍳 Chief").setDescription("You are now a Chief, you can start working with **d!work**");
@@ -170,8 +175,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
         case "btn-jobs-btnScientist":
           embed.setColor(0x33cc00).setTitle("🧪 Scientist").setDescription("You are now a Scientist, you can start working with **d!work**");
@@ -189,8 +194,8 @@ module.exports = {
 
           try {
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch {
-            return;
+          } catch (error) {
+            return msgErrorHandler(error);
           }
       }
     });
@@ -207,8 +212,8 @@ module.exports = {
 
       try {
         return await sentMessage.edit({ embeds: [embed], components: [actionRow] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     });
   },

@@ -3,6 +3,7 @@ const { EmbedBuilder, PermissionsBitField } = require("discord.js");
 const { useMainPlayer } = require("discord-player");
 const configChecker = require("../../utils/configChecker");
 const serverCooldownManager = require("../../utils/serverCooldownManager");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "play",
@@ -19,8 +20,8 @@ module.exports = {
 
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -34,8 +35,8 @@ module.exports = {
         .setDescription("⏰ Listen some music before using **d!play** again in **<t:" + cooldown[1] + ":R>**");
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -43,8 +44,8 @@ module.exports = {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Correct usage is: **d!play <song name>**").setImage("https://c.tenor.com/W_aA0wh5C4gAAAAd/tenor.gif");
       try {
         return await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -56,32 +57,32 @@ module.exports = {
     if (!voiceChannel) {
       try {
         return await message.reply("You need to be in a voice channel to play music!");
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
     if (message.guild.members.me.voice.channel && message.guild.members.me.voice.channel !== voiceChannel) {
       try {
         return await message.reply("I am already playing in a different voice channel!");
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
     if (!message.guild.members.me.permissions.has(PermissionsBitField.Flags.Connect)) {
       try {
         return await message.reply("I do not have permission to join your voice channel!");
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
     if (!message.guild.members.me.permissionsIn(voiceChannel).has(PermissionsBitField.Flags.Speak)) {
       try {
         return await message.reply("I do not have permission to speak in your voice channel!");
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -97,8 +98,8 @@ module.exports = {
     let sentMessage;
     try {
       sentMessage = await message.reply({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     const player = useMainPlayer();
@@ -112,8 +113,8 @@ module.exports = {
       embed.setColor(0xff0000).setTitle("❌ Not Found").setDescription("No track was found for your query.");
       try {
         return await sentMessage.edit({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     }
 
@@ -130,8 +131,8 @@ module.exports = {
 
     try {
       await sentMessage.edit({ embeds: [embed] });
-    } catch {
-      return;
+    } catch (error) {
+      return msgErrorHandler(error);
     }
 
     // must wait for the message author to answer the number
@@ -151,8 +152,8 @@ module.exports = {
 
         try {
           return await sentMessage.edit({ embeds: [embed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -164,8 +165,8 @@ module.exports = {
 
         try {
           return await receivedMessage.reply({ embeds: [errorEmbed] });
-        } catch {
-          return;
+        } catch (error) {
+          return msgErrorHandler(error);
         }
       }
 
@@ -178,8 +179,8 @@ module.exports = {
 
       try {
         sentMessage = await message.reply({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
 
       const { queue } = await player.play(voiceChannel, track, {
@@ -203,8 +204,8 @@ module.exports = {
 
       try {
         return await sentMessage.edit({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     });
 
@@ -213,8 +214,8 @@ module.exports = {
 
       try {
         return await sentMessage.edit({ embeds: [embed] });
-      } catch {
-        return;
+      } catch (error) {
+        return msgErrorHandler(error);
       }
     });
   },
