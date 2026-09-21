@@ -104,7 +104,7 @@ const client = new Client({
 });
 
 // updating Top.gg stats, at least for my bot, dont want to log it
-const ap = AutoPoster(topggToken, client);
+//AutoPoster(topggToken, client);
 
 // AFTER the bot fully loaded THEN we can log in
 loader.initLoader(client).then(async () => {

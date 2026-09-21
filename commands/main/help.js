@@ -28,7 +28,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor(0x33cc00)
-      .setTitle("📖 Help menu")
+      .setTitle("📖 Help Menu")
       .setDescription(
         [
           '👋 Hello there! I\'m DiversityBOT, a totally "normal" Discord Bot!',
@@ -37,7 +37,7 @@ module.exports = {
           "Important commands: **d!help**, **/help**",
           "More commands will come soon. Please, be patient ;)",
           "", // for jumping down 2 times
-          "Bot current version: **2.1.1**",
+          "Bot current version: **2.2**",
           "Support me by **joining in here: https://discord.gg/KxadTdz**",
         ].join("\n"),
       )
@@ -45,7 +45,7 @@ module.exports = {
       .setFields(
         {
           name: "📰 New updates:",
-          value: "Release 2.1, type **d!news** for more!",
+          value: "Release 2.2, type **d!news** for more!",
           inline: false,
         },
         {
@@ -127,7 +127,6 @@ module.exports = {
                   "**d!trivia** - Guess the correct answers",
                   "**d!ttt <@user>** - Play tic tac toe with the mentioned user",
                   "**d!wyr** - Would you rather do this or that",
-                  "**d!akinator** - And i'll try to guess your character",
                   "**d!sctest** - Start the Social Credits test",
                   "**d!scredits** or **d!scredits <@user>** - Check credits score",
                   "**d!xp** - See your current xp",
@@ -299,7 +298,7 @@ module.exports = {
               .setDescription(
                 [
                   "**d!config** - See Bot's configurations",
-                  "**d!setup <configName>** - Configure the Bot (Only admin)",
+                  "**d!setup <config name>** - Configure the Bot (Only admin)",
                   "**d!status** - Check Bot's stats",
                   "**d!news** - See Bot news and changelogs",
                   "**d!link** - Get the link to invite me",
@@ -330,7 +329,6 @@ module.exports = {
               return msgErrorHandler(error);
             }
             break;
-          // name was too long for Prettier so i had to trunk it
           case "menuOption-help-menuHelp-comm":
             menuOptionEmbed
               .setColor(0x00cccc)
