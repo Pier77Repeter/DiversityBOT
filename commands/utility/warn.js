@@ -2,7 +2,7 @@ const { EmbedBuilder, PermissionsBitField } = require("discord.js");
 const configChecker = require("../../utils/configChecker");
 const modActionLogger = require("../../utils/modActionLogger");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
-const createUserData = require("../../utils/createUserData");
+const createDbData = require("../../utils/createDbData");
 
 module.exports = {
   name: "warn",
@@ -72,7 +72,7 @@ module.exports = {
 
     if (!checkRow.rows[0].exists) {
       // an user MUST be warned even if he never used the bot, must create his data NOW
-      await createUserData(client, message.guildId, userToWarn.user.id);
+      await createDbData(client, message.guildId, userToWarn.user.id);
     }
 
     await client.database.query("UPDATE users SET warns = warns + 1 WHERE server_id = $1 AND user_id = $2", [message.guildId, userToWarn.user.id]);

@@ -18,7 +18,7 @@ module.exports = {
     }
 
     if (!args[0]) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Specify one of the following names: **mod**, **music**, **event**, **community**, **leveling**");
+      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Specify one of the following names: **mod**, **music**, **event**, **community**, **leveling**, **rng**");
 
       try {
         return await message.reply({ embeds: [embed] });
@@ -96,8 +96,24 @@ module.exports = {
           return msgErrorHandler(error);
         }
 
+      case "rng":
+        if (await updateConfig("rng_cmd")) {
+          embed.setDescription("🎲 RNG commands are now **ACTIVE**");
+        } else {
+          embed.setDescription("🎲 RNG commands are now **NOT ACTIVE**");
+        }
+
+        try {
+          return await message.reply({ embeds: [embed] });
+        } catch (error) {
+          return msgErrorHandler(error);
+        }
+
       default:
-        embed.setColor(0xff0000).setTitle("❌ Error").setDescription("That config dosen't exist, choose between: **mod**, **music**, **event**, **community**, **leveling**");
+        embed
+          .setColor(0xff0000)
+          .setTitle("❌ Error")
+          .setDescription("That config dosen't exist, choose between: **mod**, **music**, **event**, **community**, **leveling**, **rng**");
 
         try {
           return await message.reply({ embeds: [embed] });

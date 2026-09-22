@@ -3,15 +3,16 @@ const path = require("path");
 const { economySettings } = require("../config.json");
 const listsGetRandomItem = require("../utils/listsGetRandomItem");
 const mathRandomInt = require("../utils/mathRandomInt");
-const configChecker = require("../utils/configChecker");
 const logger = require("../logger")("MessageCreate");
 const loader = require("../loader");
 const msgErrorHandler = require("../utils/msgErrorHandler");
-const createUserData = require("../utils/createUserData");
+const createDbData = require("../utils/createDbData");
+const rngItemRoll = require("../utils/rngItemRoll");
 
 module.exports = (client) => {
   // bot prefix is d!
   const botPrefix = "d!";
+  const isBotRestarting = loader.getRestartStatus();
 
   client.on(Events.MessageCreate, async (message) => {
     // only members can use the bot
@@ -107,10 +108,10 @@ module.exports = (client) => {
     // re-naiming the logger, else it will keep the specific log of the command, below
     logger.setFileName("MessageCreate");
 
-    // only updates when not restarting, even if user isn't using the bot
-    if (!loader.getRestartStatus()) {
+    // only updates when NOT restarting, even if user isn't using the bot
+    if (!isBotRestarting) {
       await userDataUpdater(message).catch((error) => {
-        return logger.error("UserDataUpdater threw an error, look here", error);
+        return logger.error("userDataUpdater threw an error, look here", error);
       });
     }
 
@@ -118,7 +119,7 @@ module.exports = (client) => {
     if (!message.content.toLowerCase().startsWith(botPrefix)) return;
 
     // check if bot is restarting, you aren't supposed to use it while it restarts
-    if (loader.getRestartStatus()) {
+    if (isBotRestarting) {
       const embed = new EmbedBuilder()
         .setColor(0x990000)
         .setTitle("⚠️ Bot is restarting")
@@ -191,9 +192,9 @@ module.exports = (client) => {
       }
     }
 
-    // HERE WE ARE INSERTING NEW USER DATA (now that the user has typed an actual command)
-    await createUserData(client, message.guildId, message.author.id).catch((error) => {
-      return logger.error("createUserData threw an error, look here", error);
+    // INSERTING NEW USER DATA IF NEW, look in ./utils/createDbData.js (now that the user has typed an actual command)
+    await createDbData(client, message.guildId, message.author.id).catch((error) => {
+      return logger.error("createDbData threw an error, look here", error);
     });
 
     // ready to log for the specific command
@@ -245,34 +246,45 @@ module.exports = (client) => {
 
   // this functions contains all the shit for updating user data in db
   async function userDataUpdater(message) {
-    // check if user is in db
-    const checkUser = await client.database.query(`SELECT 1 FROM users WHERE server_id = $1 AND user_id = $2`, [message.guildId, message.author.id]);
-
-    // stop here so configChecker doesn't spam errors
-    if (checkUser.rowCount === 0) return;
-
-    const isLevelingEnabled = await configChecker(client, message, "leveling_cmd", false);
-
+    /*
+    This query is huge as fuck, does the job of multiple queries, so first in order:
+    1) Find the row in the users table WHERE both server_id = message.guildId ($1) AND user_id = message.author.id ($2)
+    2) Join the servers table on server_id to get the server's configs
+    3) Check s.leveling_cmd from the joined server settings: add xp +1 if enabled or 0 if disabled
+    4) Compare unixNow ($3) against each existing cooldown. If the required duration has experied set the field to $3 else keep the original timestamp
+    5) Return all updated columns from the user row alongside the server row in a single result set. If either row doesn't exist, zero rows are affected
+    */
     const unixNow = Date.now();
-    const xpToAdd = isLevelingEnabled ? 1 : 0;
 
-    // this query replaces 5 separate queries! It updates xp, checks/updates all 3 passive cooldowns, and returns the data ONLY if the user exists
     const query = `
-      UPDATE users 
+      UPDATE users u
       SET 
-        xp = xp + $1::int,
-        tax_cooldown = CASE WHEN tax_cooldown + 86400000 <= $2::bigint THEN $2::bigint ELSE tax_cooldown END,
-        debts_cooldown = CASE WHEN debts_cooldown + 86400000 <= $2::bigint THEN $2::bigint ELSE debts_cooldown END,
-        pet_cooldown = CASE WHEN pet_cooldown + 10800000 <= $2::bigint THEN $2::bigint ELSE pet_cooldown END
-      WHERE server_id = $3 AND user_id = $4
-      RETURNING *;
+        xp = u.xp + (CASE WHEN s.leveling_cmd THEN 1 ELSE 0 END),
+        tax_cooldown = CASE WHEN u.tax_cooldown + 86400000 <= $3::bigint THEN $3::bigint ELSE u.tax_cooldown END,
+        debts_cooldown = CASE WHEN u.debts_cooldown + 86400000 <= $3::bigint THEN $3::bigint ELSE u.debts_cooldown END,
+        pet_cooldown = CASE WHEN u.pet_cooldown + 10800000 <= $3::bigint THEN $3::bigint ELSE u.pet_cooldown END
+      FROM servers s
+      WHERE u.server_id = $1 
+        AND u.user_id = $2 
+        AND s.server_id = u.server_id
+      RETURNING u.*, s.leveling_cmd, s.rng_cmd, s.server_drops;
     `;
 
-    const res = await client.database.query(query, [xpToAdd, unixNow, message.guildId, message.author.id]);
-    const user = res.rows[0];
+    const res = await client.database.query(query, [message.guildId, message.author.id, unixNow]);
+
+    // well user or server isn't it db, stop
+    if (!res.rows[0]) return;
+
+    // we have the updated user data along with server configs
+    const row = res.rows[0];
+
+    const isLevelingEnabled = row.leveling_cmd;
+    const isRngEnabled = row.rng_cmd;
+    const wealth = Number(row.money) + Number(row.bank_money);
+    const serverDrops = row.server_drops;
 
     // LEVEL UP CHECK
-    if (isLevelingEnabled && user.xp >= user.next_xp) {
+    if (isLevelingEnabled && row.xp >= row.next_xp) {
       const levelRes = await client.database.query(
         "UPDATE users SET xp = 0, next_xp = next_xp + 100, level = level + 1 WHERE server_id = $1 AND user_id = $2 RETURNING level, next_xp",
         [message.guildId, message.author.id],
@@ -316,38 +328,37 @@ module.exports = (client) => {
       }
     }
 
-    // TAXES CHECK (Daily), if the db timestamp exactly matches the unixNow we generated above, it means the CASE statement triggered!
-    const wealth = Number(user.money) + Number(user.bank_money);
-    if (wealth > 0 && Number(user.tax_cooldown) === unixNow) {
+    // TAXES CHECK (Daily 24 hours)
+    if (wealth > 0 && Number(row.tax_cooldown) === unixNow) {
       const taxRate = economySettings.maxTaxRate * (wealth / (wealth + economySettings.halfwayConstant));
       const taxAmount = Math.floor(economySettings.dailyEarnings * taxRate);
 
       await client.database.query(
         `
-        UPDATE users SET 
-          money = GREATEST(0::bigint, money - $1::bigint),
-          bank_money = GREATEST(0::bigint, bank_money - GREATEST(0::bigint, $1::bigint - money))
-        WHERE server_id = $2 AND user_id = $3;
-      `,
+          UPDATE users SET 
+            money = GREATEST(0::bigint, money - $1::bigint),
+            bank_money = GREATEST(0::bigint, bank_money - GREATEST(0::bigint, $1::bigint - money))
+          WHERE server_id = $2 AND user_id = $3;
+        `,
         [taxAmount, message.guildId, message.author.id],
       );
     }
 
-    // DEBTS CHECK (Daily)
-    if (Number(user.debts) > 0 && Number(user.debts_cooldown) === unixNow) {
-      const newDebts = Math.trunc((Number(user.debts) + Number(user.money) + Number(user.bank_money)) * 0.03);
+    // DEBTS CHECK (Daily 24 hours)
+    if (Number(row.debts) > 0 && Number(row.debts_cooldown) === unixNow) {
+      const newDebts = Math.trunc((Number(row.debts) + Number(row.money) + Number(row.bank_money)) * 0.03);
       await client.database.query("UPDATE users SET debts = debts + $1 WHERE server_id = $2 AND user_id = $3", [newDebts, message.guildId, message.author.id]);
     }
 
     // PET CHECK (Every 3 hours)
-    if (user.has_pet && Number(user.pet_cooldown) === unixNow) {
+    if (row.has_pet && Number(row.pet_cooldown) === unixNow) {
       const petRes = await client.database.query(
         `
-        UPDATE users 
-        SET pet_stats_health = pet_stats_health - $1, pet_stats_fun = pet_stats_fun - $2, pet_stats_hunger = pet_stats_hunger - $3, pet_stats_thirst = pet_stats_thirst - $4 
-        WHERE server_id = $5 AND user_id = $6
-        RETURNING pet_stats_health, pet_stats_hunger, pet_stats_thirst
-      `,
+          UPDATE users 
+          SET pet_stats_health = pet_stats_health - $1, pet_stats_fun = pet_stats_fun - $2, pet_stats_hunger = pet_stats_hunger - $3, pet_stats_thirst = pet_stats_thirst - $4 
+          WHERE server_id = $5 AND user_id = $6
+          RETURNING pet_stats_health, pet_stats_hunger, pet_stats_thirst
+        `,
         [mathRandomInt(5, 20), mathRandomInt(5, 20), mathRandomInt(5, 20), mathRandomInt(5, 20), message.guildId, message.author.id],
       );
 
@@ -364,9 +375,14 @@ module.exports = (client) => {
         try {
           await message.reply({ embeds: [embed] });
         } catch (error) {
-          msgErrorHandler(error); // log and continue and end
+          msgErrorHandler(error); // log and continue x3
         }
       }
+    }
+
+    // RNG CHECK (maybe a 10 seconds cooldown)
+    if (isRngEnabled) {
+      await rngItemRoll(message, serverDrops, 20);
     }
   }
 };

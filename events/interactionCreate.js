@@ -3,7 +3,7 @@ const listsGetRandomItem = require("../utils/listsGetRandomItem");
 const logger = require("../logger")("InteractionCreate");
 const loader = require("../loader");
 const msgErrorHandler = require("../utils/msgErrorHandler");
-const createUserData = require("../utils/createUserData");
+const createDbData = require("../utils/createDbData");
 
 module.exports = (client) => {
   client.on(Events.InteractionCreate, async (interaction) => {
@@ -38,8 +38,8 @@ module.exports = (client) => {
     logger.setFileName("InteractionCreate");
 
     // HERE WE ARE INSERTING NEW USER DATA
-    await createUserData(client, interaction.guildId, interaction.user.id).catch((error) => {
-      return logger.error("createUserData threw an error, look here", error);
+    await createDbData(client, interaction.guildId, interaction.user.id).catch((error) => {
+      return logger.error("createDbData threw an error, look here", error);
     });
 
     // ready to log for the specific slash command

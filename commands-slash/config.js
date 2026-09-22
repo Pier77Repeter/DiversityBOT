@@ -4,7 +4,7 @@ module.exports = {
   data: new SlashCommandBuilder().setName("config").setDescription("Displays Bot configuration in the server"),
 
   async execute(client, interaction) {
-    const row = await client.database.query("SELECT mod_cmd, music_cmd, event_cmd, community_cmd, leveling_cmd, mod_log_channel FROM servers WHERE server_id = $1", [
+    const row = await client.database.query("SELECT mod_cmd, music_cmd, event_cmd, community_cmd, leveling_cmd, rng_cmd, mod_log_channel FROM servers WHERE server_id = $1", [
       interaction.guildId,
     ]);
 
@@ -89,6 +89,18 @@ module.exports = {
       embed.addFields({
         name: "🏆 Leveling commands",
         value: "❌ Leveling commands are: **NOT ACTIVE**",
+      });
+    }
+
+    if (configType.rng_cmd) {
+      embed.addFields({
+        name: "🎲 RNG commands",
+        value: "✅ RNG commands are: **ACTIVE**",
+      });
+    } else {
+      embed.addFields({
+        name: "🎲 RNG commands",
+        value: "❌ RNG commands are: **NOT ACTIVE**",
       });
     }
 

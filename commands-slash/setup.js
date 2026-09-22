@@ -16,6 +16,7 @@ module.exports = {
           { name: "🎉 Events commands", value: "events" },
           { name: "🌍 Community commands", value: "community" },
           { name: "🏆 Leveling commands", value: "leveling" },
+          { name: "🎲 RNG commands", value: "rng" },
         ),
     )
     .addBooleanOption((option) => option.setName("enabled").setDescription("Enable or disable the category").setRequired(true)),
@@ -44,6 +45,10 @@ module.exports = {
       case "leveling":
         columnName = "leveling_cmd";
         enabledCmds = "🏆 Leveling commands";
+        break;
+      case "rng":
+        columnName = "rng_cmd";
+        enabledCmds = "🎲 RNG commands";
         break;
       default:
         return interaction.reply({ content: "Invalid category.", ephemeral: MessageFlags.Ephemeral }); // should not happen, but good to have

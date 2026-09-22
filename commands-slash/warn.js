@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, MessageFlags } = require("discord.js");
 const configChecker = require("../utils/configChecker");
 const modActionLogger = require("../utils/modActionLogger");
-const createUserData = require("../utils/createUserData");
+const createDbData = require("../utils/createDbData");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -65,7 +65,7 @@ module.exports = {
 
     if (!checkRow.rows[0].exists) {
       // an user MUST be warned even if he never used the bot, must create his data NOW
-      await createUserData(client, interaction.guildId, memberToWarn.user.id);
+      await createDbData(client, interaction.guildId, memberToWarn.user.id);
     }
 
     await client.database.query("UPDATE users SET warns = warns + 1 WHERE server_id = $1 AND user_id = $2", [interaction.guildId, memberToWarn.user.id]);
