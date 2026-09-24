@@ -262,12 +262,13 @@ module.exports = (client) => {
         xp = u.xp + (CASE WHEN s.leveling_cmd THEN 1 ELSE 0 END),
         tax_cooldown = CASE WHEN u.tax_cooldown + 86400000 <= $3::bigint THEN $3::bigint ELSE u.tax_cooldown END,
         debts_cooldown = CASE WHEN u.debts_cooldown + 86400000 <= $3::bigint THEN $3::bigint ELSE u.debts_cooldown END,
-        pet_cooldown = CASE WHEN u.pet_cooldown + 10800000 <= $3::bigint THEN $3::bigint ELSE u.pet_cooldown END
+        pet_cooldown = CASE WHEN u.pet_cooldown + 10800000 <= $3::bigint THEN $3::bigint ELSE u.pet_cooldown END,
+        rng_cooldown = CASE WHEN u.rng_cooldown + 10000 <= $3::bigint THEN $3::bigint ELSE u.rng_cooldown END
       FROM servers s
       WHERE u.server_id = $1 
         AND u.user_id = $2 
         AND s.server_id = u.server_id
-      RETURNING u.*, s.leveling_cmd, s.rng_cmd, s.server_drops;
+      RETURNING u.*, s.leveling_cmd, s.rng_cmd, s.server_drops, s.rng_drop_chance;
     `;
 
     const res = await client.database.query(query, [message.guildId, message.author.id, unixNow]);
@@ -282,6 +283,7 @@ module.exports = (client) => {
     const isRngEnabled = row.rng_cmd;
     const wealth = Number(row.money) + Number(row.bank_money);
     const serverDrops = row.server_drops;
+    const globalDropRate = row.rng_drop_chance;
 
     // LEVEL UP CHECK
     if (isLevelingEnabled && row.xp >= row.next_xp) {
@@ -380,9 +382,10 @@ module.exports = (client) => {
       }
     }
 
-    // RNG CHECK (maybe a 10 seconds cooldown)
+    // RNG CHECK (Every 10 seconds to prevent spam)
+    // add later to the if ' && Number(row.rng_cooldown) === unixNow'
     if (isRngEnabled) {
-      await rngItemRoll(message, serverDrops, 20);
+      await rngItemRoll(client, message, serverDrops, globalDropRate); // BASE SHOULD BE BETWEEN 3-10% for a fair and not spammy system
     }
   }
 };

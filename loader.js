@@ -38,6 +38,7 @@ module.exports = {
           rng_cmd BOOLEAN DEFAULT true,
           mod_log_channel VARCHAR(20),
           server_drops JSONB DEFAULT '[]'::jsonb,
+          rng_drop_chance INT DEFAULT 5,
           play_cooldown BIGINT DEFAULT 0,
           image_cooldown BIGINT DEFAULT 0,
           hm_cooldown BIGINT DEFAULT 0,

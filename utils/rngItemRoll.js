@@ -1,17 +1,20 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, PermissionsBitField } = require("discord.js");
 const rng = require("./rng");
+const dbJsonDataGet = require("./dbJsonDataGet");
+const dbJsonDataSet = require("./dbJsonDataSet");
+const manageUserMoney = require("./manageUserMoney");
 
-module.exports = async function rngItemRoll(message, serverDrops, globalDropRate) {
-  // RNG 1: Does a drop event trigger?
+// this is needed to roll the items every time i message is sent
+// it works by doing 2 rolls, 1 for dropping an item, 2 for dropping X item
+module.exports = async function rngItemRoll(client, message, serverDrops, globalDropRate) {
   const eventRoll = rng();
-  if (eventRoll > globalDropRate) return; // The 5% check failed, no drop.
+  if (eventRoll > globalDropRate) return; // no items dropped this message :(
 
-  // RNG 2: The event triggered! What drops from the pool?
+  // AN ITEM HAS BEEN FOUND! TIME TO PRAY JOHN RNG
   const itemRoll = rng();
   let cumulativeChance = 0;
   let wonReward = null;
 
-  // Evaluate the pool exactly as the owner defined it
   for (const drop of serverDrops) {
     cumulativeChance += drop.chance;
 
@@ -21,48 +24,111 @@ module.exports = async function rngItemRoll(message, serverDrops, globalDropRate
     }
   }
 
-  // If itemRoll lands in the empty space (e.g., rolls 50 but pool total is 33),
-  // wonReward remains null and the user gets nothing despite the event triggering.
+  // sometimes the combined chance of the server drops dosen't reach 100% do you may get double unlucky
   if (!wonReward) return;
+
+  // we must first check if the user has found that drop already or if it's new, lets start with getting the drops
+  const drops = await dbJsonDataGet(client, message.author, message, "found_drops");
+  if (drops === null) return;
+
+  const currentDate = new Date().toISOString();
+
+  // check if the user already owns this item
+  const existingItem = drops.findIndex((item) => item.id === wonReward.id);
+
+  if (existingItem !== -1) {
+    drops[existingItem].quantity = (drops[existingItem].quantity || 1) + 1;
+    drops[existingItem].last_found_date = currentDate;
+  } else {
+    // to save space, only store the essential data we need to get the item name, desc, odds, etc. that is the id
+    drops.push({
+      id: wonReward.id,
+      quantity: 1,
+      first_found_date: currentDate,
+      last_found_date: currentDate,
+    });
+  }
+
+  // well we are just saving every found drops
+  if ((await dbJsonDataSet(client, message, "found_drops", JSON.stringify(drops))) === null) return;
 
   const odds = wonReward.chance;
   const embed = new EmbedBuilder();
 
-  // Process the reward
-  if (wonReward.type === "item") {
-    if (odds > 20) {
-      embed.setColor(0x2ecc71).setTitle("🍀 RNG DROP! 🍀");
-    }
+  // owners can setup different rewards types: role, item, money and maybe more stuff i dont know
+  switch (wonReward.type) {
+    case "item":
+      embed.setDescription(`**${message.author.username}** just found a **${wonReward.name}**!\n\n*${wonReward.desc}*`);
 
-    if (odds <= 20 && odds > 10) {
-      embed.setColor(0x459bff).setTitle("🔥 RNG DROP! 🔥");
-    }
+      break;
 
-    if (odds <= 10 && odds > 3) {
-      embed.setColor(0x55ffff).setTitle("✨ RNG DROP! ✨");
-    }
+    case "money":
+      embed.setDescription(`**${message.author.username}** just found a **${wonReward.name}** and got **${wonReward.money}$**!\n\n*${wonReward.desc}*`);
 
-    if (odds <= 3 && odds > 1) {
-      embed.setColor(0xa335ee).setTitle("⭐ RNG DROP! ⭐");
-    }
+      if ((await manageUserMoney(client, message, "+", wonReward.money)) === null) return;
 
-    if (odds <= 1 && odds > 0.1) {
-      embed.setColor(0xff55ff).setTitle("🌟 RNG DROP! 🌟");
-    }
+      break;
 
-    if (odds < 0.1) {
-      embed.setColor(0xff5555).setTitle("💫 RNG DROP! 💫");
-    }
+    case "role":
+      const role = message.guild.roles.cache.get(wonReward.role_id);
 
-    embed
-      .setDescription(`**${message.author.username}** just found a **${wonReward.name}**!\n\n*${wonReward.desc}*`)
-      .setFooter({ text: message.author.username, iconURL: message.author.avatarURL({ dynamic: true }) })
-      .setTimestamp();
+      // i mean, no role exists you won nothing
+      if (!role) return;
 
-    try {
-      await message.reply({ embeds: [embed] });
-    } catch (error) {
-      msgErrorHandler(error);
-    }
+      embed.setDescription(`**${message.author.username}** just found the role <@&${role.id}>!\n\n*${wonReward.desc}*`);
+
+      if (!message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.ManageRoles)) {
+        embed.addFields({ name: "F!", value: "I'm missing `Manage Roles` permission to give you the role, ask a server mod" });
+        break;
+      }
+
+      await message.member.roles.add(role).catch(() => {
+        embed.addFields({ name: "Whopsy!", value: "I couldn't add you the role automatically, ask a server mod" });
+      });
+
+      // wasn't sure if it was better to stay silent or announc you found it twice, well better say something since we have 'quantity' attribute now
+      if (message.member.roles.cache.has(role.id)) {
+        embed.setDescription(`**${message.author.username}** just found again the role <@&${role.id}>!\n\n*${wonReward.desc}*`);
+      }
+
+      break;
+
+    // shouldn't happen?
+    default:
+      embed.setDescription(`**${message.author.username}** just found the ***U N K N O W N***!`);
+      break;
+  }
+
+  // looks cool to make the embed dynamic to the drop's chance
+  if (odds > 20) {
+    embed.setColor(0x2ecc71).setTitle("🍀 RNG DROP! 🍀");
+  }
+
+  if (odds <= 20 && odds > 10) {
+    embed.setColor(0x459bff).setTitle("🔥 RNG DROP! 🔥");
+  }
+
+  if (odds <= 10 && odds > 3) {
+    embed.setColor(0x55ffff).setTitle("✨ RNG DROP! ✨");
+  }
+
+  if (odds <= 3 && odds > 1) {
+    embed.setColor(0xa335ee).setTitle("⭐ RNG DROP! ⭐");
+  }
+
+  if (odds <= 1 && odds > 0.1) {
+    embed.setColor(0xff55ff).setTitle("🌟 RNG DROP! 🌟");
+  }
+
+  if (odds < 0.1) {
+    embed.setColor(0xff5555).setTitle("💫 RNG DROP! 💫");
+  }
+
+  embed.setFooter({ text: message.author.username, iconURL: message.author.avatarURL({ dynamic: true }) }).setTimestamp();
+
+  try {
+    return await message.reply({ embeds: [embed] });
+  } catch (error) {
+    return msgErrorHandler(error);
   }
 };

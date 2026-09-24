@@ -42,151 +42,59 @@ module.exports = async function createDbData(client, serverId, userId) {
     fishId10Count: 0,
   };
 
-  // empty, will be filled when users drops something
-  const dropsJsonData = {};
-
   const serverDropsJsonData = [
     {
       id: "1",
       type: "item",
       name: "DiversityGem",
-      desc: "A very rare role drop.",
-      chance: 0.1,
+      desc: "The finest gem in all of Earth",
+      chance: 0.01,
     },
     {
       id: "2",
-      type: "item",
-      name: "Mystery Box",
-      desc: "Contains unknown riches.",
-      chance: 5.5,
+      type: "money",
+      name: "Lucky Lottery Ticket",
+      desc: "The lottery ticket you always dream to win",
+      chance: 0.7,
+      money: 1000000,
     },
     {
       id: "3",
-      type: "item",
-      name: "Common Box",
-      desc: "Contains basic supplies.",
-      chance: 20.8,
+      type: "role",
+      name: "Special Golden",
+      desc: "A secret version of the Golden role!",
+      chance: 2,
+      role_id: "784816759886577694",
     },
     {
       id: "4",
       type: "item",
-      name: "Pocket Lint",
-      desc: "Absolutely worthless, but you found it.",
-      chance: 22.0,
+      name: "Notch's Golden Apple",
+      desc: "The uncraftable apple of Minecraft",
+      chance: 7,
     },
     {
       id: "5",
-      type: "item",
-      name: "Rusty Coin",
-      desc: "An old coin from a forgotten era.",
-      chance: 19.71,
+      type: "money",
+      name: "Money on the ground",
+      desc: "Well i guess you can just take them for free",
+      chance: 15,
+      money: 10,
     },
     {
       id: "6",
-      type: "item",
-      name: "Bronze Token",
-      desc: "Can be traded for low-tier rewards.",
-      chance: 15.0,
+      type: "role",
+      name: "Stupidity",
+      desc: "Even the RNG itself thinks you are stupid",
+      chance: 36,
+      role_id: "788002186273095730",
     },
     {
       id: "7",
-      type: "item",
-      name: "Silver Token",
-      desc: "Can be traded for mid-tier rewards.",
-      chance: 8.0,
-    },
-    {
-      id: "8",
-      type: "item",
-      name: "Gold Token",
-      desc: "Can be traded for high-tier rewards.",
-      chance: 5.0,
-    },
-    {
-      id: "9",
-      type: "item",
-      name: "Platinum Token",
-      desc: "A highly sought-after currency.",
-      chance: 2.0,
-    },
-    {
-      id: "10",
-      type: "role",
-      name: "Lucky Citizen",
-      desc: "A cosmetic role for finding this token.",
-      chance: 1.0,
-      roleId: "YOUR_ROLE_ID_HERE",
-    },
-    {
-      id: "11",
-      type: "item",
-      name: "Magic Dust",
-      desc: "Tingles to the touch.",
-      chance: 0.5,
-    },
-    {
-      id: "12",
-      type: "item",
-      name: "Glowing Shard",
-      desc: "Emits a faint blue light.",
-      chance: 0.2,
-    },
-    {
-      id: "13",
-      type: "item",
-      name: "Void Fragment",
-      desc: "It feels heavy, yet weighs nothing.",
-      chance: 0.1,
-    },
-    {
-      id: "14",
-      type: "item",
-      name: "Celestial Essence",
-      desc: "A bottled piece of a fallen star.",
-      chance: 0.05,
-    },
-    {
-      id: "15",
-      type: "role",
-      name: "Chosen One",
-      desc: "An extremely rare role.",
-      chance: 0.02,
-      roleId: "YOUR_ROLE_ID_HERE",
-    },
-    {
-      id: "16",
-      type: "item",
-      name: "Godly Blessing",
-      desc: "You feel an immense surge of power.",
-      chance: 0.01,
-    },
-    {
-      id: "17",
-      type: "item",
-      name: "Developer's Tear",
-      desc: "Shed during a late-night debugging session.",
-      chance: 0.005,
-    },
-    {
-      id: "18",
-      type: "item",
-      name: "Glitch Entity",
-      desc: "MissingNo has entered the chat.",
-      chance: 0.004,
-    },
-    {
-      id: "19",
-      type: "item",
-      name: "Universal Seed",
-      desc: "The building block of a new reality.",
-      chance: 0.0009,
-    },
-    {
-      id: "20",
-      type: "item",
-      name: "The Absolute Nothingness",
-      desc: "True RNG perfection. You defied all odds.",
-      chance: 0.0001,
+      type: "unknown",
+      name: "THE UNKNOWN",
+      desc: "This is breaks the fabric of reality itself, nobody knows what is this and what it does, but one thing is certain, you have been blessed by the RNG",
+      chance: 0.00001,
     },
   ];
 
@@ -195,11 +103,11 @@ module.exports = async function createDbData(client, serverId, userId) {
   const query = `
       WITH server_insert AS (
         INSERT INTO servers(server_id, server_drops) 
-        VALUES($1, $6) 
+        VALUES($1, $5) 
         ON CONFLICT (server_id) DO NOTHING
       )
-      INSERT INTO users(server_id, user_id, items, fishes, found_drops) 
-      VALUES($1, $2, $3, $4, $5) 
+      INSERT INTO users(server_id, user_id, items, fishes) 
+      VALUES($1, $2, $3, $4) 
       ON CONFLICT (server_id, user_id) DO NOTHING;
     `;
 
@@ -209,7 +117,7 @@ module.exports = async function createDbData(client, serverId, userId) {
     VALUES($1, $2) ON CONFLICT (server_id, user_id) DO NOTHING;
   */
 
-  const values = [serverId, userId, itemsJsonData, fishesJsonData, dropsJsonData, JSON.stringify(serverDropsJsonData)];
+  const values = [serverId, userId, itemsJsonData, fishesJsonData, JSON.stringify(serverDropsJsonData)];
 
   await client.database.query(query, values); // we inserted new data!
 };

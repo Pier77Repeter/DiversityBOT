@@ -5,9 +5,10 @@ module.exports = {
   name: "config",
   description: "Shows bot configurations",
   async execute(client, message, args) {
-    const row = await client.database.query("SELECT mod_cmd, music_cmd, event_cmd, community_cmd, leveling_cmd, rng_cmd, mod_log_channel FROM servers WHERE server_id = $1", [
-      message.guildId,
-    ]);
+    const row = await client.database.query(
+      "SELECT mod_cmd, music_cmd, event_cmd, community_cmd, leveling_cmd, rng_cmd, rng_drop_chance, mod_log_channel FROM servers WHERE server_id = $1",
+      [message.guildId],
+    );
 
     const embed = new EmbedBuilder();
 
@@ -93,16 +94,29 @@ module.exports = {
       });
     }
 
+    // both embed fields are influenced by the same config
     if (configs.rng_cmd) {
-      embed.addFields({
-        name: "🎲 RNG commands",
-        value: "✅ RNG commands are: **ACTIVE**",
-      });
+      embed.addFields(
+        {
+          name: "🎲 RNG commands",
+          value: "✅ RNG commands are: **ACTIVE**",
+        },
+        {
+          name: "🧮 RNG drop chance",
+          value: "✅ RNG Chance to find any drop is: **" + configs.rng_drop_chance + "%**",
+        },
+      );
     } else {
-      embed.addFields({
-        name: "🎲 RNG commands",
-        value: "❌ RNG commands are: **NOT ACTIVE**",
-      });
+      embed.addFields(
+        {
+          name: "🎲 RNG commands",
+          value: "❌ RNG commands are: **NOT ACTIVE**",
+        },
+        {
+          name: "🧮 RNG drop chance",
+          value: "❌ RNG Chance to find any drop is: **" + configs.rng_drop_chance + "%**",
+        },
+      );
     }
 
     if (configs.mod_log_channel !== null) {
