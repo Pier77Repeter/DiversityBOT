@@ -31,7 +31,7 @@ module.exports = async function rngItemRoll(client, message, serverDrops, global
   const drops = await dbJsonDataGet(client, message.author, message, "found_drops");
   if (drops === null) return;
 
-  const currentDate = new Date().toISOString();
+  const currentDate = new Date().toLocaleString();
 
   // check if the user already owns this item
   const existingItem = drops.findIndex((item) => item.id === wonReward.id);
@@ -86,7 +86,7 @@ module.exports = async function rngItemRoll(client, message, serverDrops, global
         embed.addFields({ name: "Whopsy!", value: "I couldn't add you the role automatically, ask a server mod" });
       });
 
-      // wasn't sure if it was better to stay silent or announc you found it twice, well better say something since we have 'quantity' attribute now
+      // wasn't sure if it was better to stay silent or announce you found it twice, well better say something since we have 'quantity' attribute now
       if (message.member.roles.cache.has(role.id)) {
         embed.setDescription(`**${message.author.username}** just found again the role <@&${role.id}>!\n\n*${wonReward.desc}*`);
       }

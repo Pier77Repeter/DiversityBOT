@@ -108,12 +108,10 @@ module.exports = (client) => {
     // re-naiming the logger, else it will keep the specific log of the command, below
     logger.setFileName("MessageCreate");
 
-    // only updates when NOT restarting, even if user isn't using the bot
-    if (!isBotRestarting) {
-      await userDataUpdater(message).catch((error) => {
-        return logger.error("userDataUpdater threw an error, look here", error);
-      });
-    }
+    // helper function to update user stuff
+    await userDataUpdater(message).catch((error) => {
+      return logger.error("userDataUpdater threw an error, look here", error);
+    });
 
     // check if message starts with the bot prefix
     if (!message.content.toLowerCase().startsWith(botPrefix)) return;
@@ -246,6 +244,9 @@ module.exports = (client) => {
 
   // this functions contains all the shit for updating user data in db
   async function userDataUpdater(message) {
+    // only update when not restarting
+    if (isBotRestarting) return;
+
     /*
     This query is huge as fuck, does the job of multiple queries, so first in order:
     1) Find the row in the users table WHERE both server_id = message.guildId ($1) AND user_id = message.author.id ($2)

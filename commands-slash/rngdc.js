@@ -46,7 +46,7 @@ module.exports = {
       .setDescription(`The Global Drop Chance has been set to **${dropChance}%**\n\n*It is highly reccomended to set the chance between **1%** and **10%** to reduce Bot's spam*`);
 
     try {
-      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
+      return await interaction.reply({ embeds: [embed] });
     } catch {
       return;
     }

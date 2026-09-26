@@ -1,6 +1,7 @@
-const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle, MessageFlags } = require("discord.js");
+const { EmbedBuilder } = require("discord.js");
 const axios = require("axios");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
+const embedPaginator = require("../../utils/embedPaginator");
 
 module.exports = {
   name: "urban",
@@ -15,6 +16,7 @@ module.exports = {
     }
 
     let response;
+
     try {
       response = await axios.get("https://api.urbandictionary.com/v0/define?term=" + encodeURIComponent(searchTerm));
     } catch (error) {
@@ -34,112 +36,45 @@ module.exports = {
     }
 
     const definitions = response.data.list;
-    let currentIndex = 0;
+    const embeds = [];
 
-    // create an embed for a specific definition
-    const createDefinitionEmbed = (definition, index, total) => {
+    for (let index = 0; index < definitions.length; index++) {
       const MAX_DESCRIPTION_LENGTH = 1024;
-      let description = definition.definition.replace(/[\[\]]/g, ""); // remove brackets, see the API response
+      let description = definitions[index].definition.replace(/[\[\]]/g, ""); // remove brackets, see the API response
 
       if (description.length > MAX_DESCRIPTION_LENGTH) {
         description = description.substring(0, MAX_DESCRIPTION_LENGTH - 3) + "...";
       }
 
       const MAX_EXAMPLE_LENGTH = 1024;
-      let example = definition.example.replace(/[\[\]]/g, "");
+      let example = definitions[index].example.replace(/[\[\]]/g, "");
 
       if (example.length > MAX_EXAMPLE_LENGTH) {
         example = example.substring(0, MAX_EXAMPLE_LENGTH - 3) + "...";
       }
 
-      return new EmbedBuilder() // return the embed with the new data
-        .setTitle("Definition of: " + definition.word)
-        .setURL(definition.permalink)
-        .setDescription(description)
-        .addFields(
-          { name: "Example", value: example },
-          { name: "Author", value: definition.author, inline: true },
-          {
-            name: "Votes",
-            value: "👍 " + definition.thumbs_up.toString() + " - 👎 " + definition.thumbs_down.toString(),
-          },
-        )
-        .setFooter({ text: `Pages ${index + 1} of ${total}` });
-    };
+      embeds.push(
+        new EmbedBuilder()
+          .setColor(0x668baf)
+          .setTitle("Definition of: " + definitions[index].word)
+          .setURL(definitions[index].permalink)
+          .setDescription(description)
+          .addFields(
+            { name: "Example", value: example },
+            { name: "Author", value: definitions[index].author, inline: true },
+            {
+              name: "Votes",
+              value: "👍 " + definitions[index].thumbs_up.toString() + " - 👎 " + definitions[index].thumbs_down.toString(),
+            },
+          )
+          .setFooter({ text: `Pages ${index + 1} of ${definitions.length}` }),
+      );
+    }
 
-    // initial embed
-    const embed = createDefinitionEmbed(definitions[currentIndex], currentIndex, definitions.length);
-
-    const prevBtn = new ButtonBuilder()
-      .setCustomId("btn-urban-prevBbtn")
-      .setLabel("Previous")
-      .setStyle(ButtonStyle.Primary)
-      .setDisabled(currentIndex === 0);
-
-    const nextBtn = new ButtonBuilder()
-      .setCustomId("btn-urban-nextBtn")
-      .setLabel("Next")
-      .setStyle(ButtonStyle.Primary)
-      .setDisabled(currentIndex === definitions.length - 1);
-
-    const btnRow = new ActionRowBuilder().addComponents(prevBtn, nextBtn);
-
-    let sentMessage;
     try {
-      sentMessage = await message.reply({ embeds: [embed], components: [btnRow] });
+      return await embedPaginator(this.name, message, embeds);
     } catch (error) {
       return msgErrorHandler(error);
     }
-
-    const btnCollector = sentMessage.createMessageComponentCollector({
-      time: 60_000,
-    });
-
-    btnCollector.on("collect", async (btnInteraction) => {
-      if (btnInteraction.user.id !== message.author.id) {
-        try {
-          return await btnInteraction.reply({
-            content: "Don't bother this user's command, type d!urban to search for yourself",
-            flags: MessageFlags.Ephemeral,
-          });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
-      }
-
-      switch (btnInteraction.customId) {
-        case "btn-urban-prevBbtn":
-          btnCollector.resetTimer();
-          currentIndex--;
-          break;
-
-        case "btn-urban-nextBtn":
-          btnCollector.resetTimer();
-          currentIndex++;
-          break;
-      }
-
-      // updating button states
-      prevBtn.setDisabled(currentIndex === 0);
-      nextBtn.setDisabled(currentIndex === definitions.length - 1);
-
-      const updatedUrbanMessageEmbed = createDefinitionEmbed(definitions[currentIndex], currentIndex, definitions.length);
-      try {
-        await btnInteraction.update({ embeds: [updatedUrbanMessageEmbed], components: [btnRow] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
-    });
-
-    btnCollector.on("end", async () => {
-      prevBtn.setDisabled(true);
-      nextBtn.setDisabled(true);
-
-      try {
-        return await sentMessage.edit({ components: [btnRow] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
-    });
   },
 };
