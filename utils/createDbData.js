@@ -1,3 +1,5 @@
+const logger = require("../logger")("CreatedDbData");
+
 // used in messageCreate.js, interactionCreate.js, warn.js and /warn
 module.exports = async function createDbData(client, serverId, userId) {
   // now you can S E E the json crap
@@ -119,5 +121,7 @@ module.exports = async function createDbData(client, serverId, userId) {
 
   const values = [serverId, userId, itemsJsonData, fishesJsonData, JSON.stringify(serverDropsJsonData)];
 
-  await client.database.query(query, values); // we inserted new data!
+  await client.database.query(query, values).catch((error) => {
+    logger.error(`Failed to create new server/user data`, error);
+  }); // we inserted new data!
 };

@@ -9,7 +9,7 @@ module.exports = async function modActionLogger(client, actionSource, embed) {
 
     // this handles channel not found in db (critical error)
     if (row.rowCount === 0) {
-      throw new Error("Failed to find mod log channel: Server '" + actionSource.guildId + "' - Channel '" + actionSource.channelId + "'");
+      throw new Error(`Failed to find mod log channel: Server '${actionSource.guildId}' - Channel '${actionSource.channelId}'`);
     }
 
     // if mod log channel is null just do nothin

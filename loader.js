@@ -15,7 +15,7 @@ let isBotRestarting = false;
 
 module.exports = {
   initLoader: async (client) => {
-    // loadig the postgres database
+    // loading the postgres database
     logger.info("Loading the database...");
 
     try {
@@ -178,10 +178,10 @@ module.exports = {
           // passing the Discord client to the event function
           event(client);
         } else {
-          logger.warn("Invalid event file: " + file + ", expected 'module.exports' to be a function");
+          logger.warn(`Invalid event file: ${file}, expected 'module.exports' to be a function`);
         }
       } catch (error) {
-        logger.error("Error loading event " + file, error);
+        logger.error(`Error loading event ${file}`, error);
       }
     }
 
@@ -206,15 +206,15 @@ module.exports = {
                 if (typeof alias === "string") {
                   client.commands.set(alias, command);
                 } else {
-                  logger.warn("Invalid alias '" + alias + "' in command file: " + file);
+                  logger.warn(`Invalid alias '${alias}' in command file: ${file}`);
                 }
               });
             }
           } else {
-            logger.warn("Invalid command file: " + file + " missing required 'name' and 'execute' property");
+            logger.warn(`Invalid command file: ${file} missing required 'name' and 'execute' property`);
           }
         } catch (error) {
-          logger.error("Error loading command " + file, error);
+          logger.error(`Error loading command ${file}`, error);
         }
       }
     }
@@ -235,10 +235,10 @@ module.exports = {
           // push the JSON representation of the slash command to the array
           slashCommands.push(command.data.toJSON());
         } else {
-          logger.warn("Invalid slash command file: " + filePath + " missing 'data' and 'execute' property");
+          logger.warn(`Invalid slash command file: ${filePath} missing 'data' and 'execute' property`);
         }
       } catch (error) {
-        logger.error("Error loading slash command " + file, error);
+        logger.error(`Error loading slash command ${file}`, error);
       }
     }
 

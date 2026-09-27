@@ -9,7 +9,7 @@ module.exports = async function dbJsonDataSet(client, message, dataName, jsonDat
 
     return 0; // everything went gut
   } catch (error) {
-    logger.error("Error setting user json data '" + dataName + "': Server '" + message.guildId + "' - User '" + message.author.id + "'", error);
+    logger.error(`Error setting user json data '${dataName}': Server '${message.guildId}' - User '${message.author.id}'`, error);
 
     const embed = new EmbedBuilder()
       .setColor(0xff0000)

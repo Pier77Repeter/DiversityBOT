@@ -8,7 +8,7 @@ module.exports = async function manageUserMoney(client, message, operation, amou
   const row = await client.database.query("SELECT money, bank_money, debts FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
   // this shouldn't happen SINCE data is created in 'messageCreate' event
-  if (row.rowCount === 0) throw new Error("Failed to find in database: Server '" + message.guildId + "' - User '" + message.author.id + "'");
+  if (row.rowCount === 0) throw new Error(`Failed to find in database: Server '${message.guildId}' - User '${message.author.id}'`);
 
   // INTSSSSSSSSSSSSSSSSS
   const money = Number(row.rows[0].money);
@@ -18,7 +18,7 @@ module.exports = async function manageUserMoney(client, message, operation, amou
     switch (operation) {
       case "+":
         // User has hit the maximum possible limit
-        if (money + bank_money >= 999999999999999999) {
+        if (money + bank_money >= 999999999999999999n) {
           const embed = new EmbedBuilder().setColor(0xff0000).setTitle("❌ You are too rich!").setDescription("You reached the maximum possible limit of **999999999999999999$**");
 
           try {
@@ -51,7 +51,7 @@ module.exports = async function manageUserMoney(client, message, operation, amou
         throw new Error("Invalid operation, manage user money with '+' or '-'");
     }
   } catch (error) {
-    logger.error("Error updating user money: Server '" + message.guildId + "' - User '" + message.author.id + "'", error);
+    logger.error(`Error updating user money: Server '${message.guildId}' - User '${message.author.id}'`, error);
 
     const embed = new EmbedBuilder()
       .setColor(0xff0000)

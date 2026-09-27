@@ -5,7 +5,7 @@ const embedPaginator = require("../../utils/embedPaginator.js");
 
 module.exports = {
   name: "mydrops",
-  aliases: ["mydps", "founddrops"],
+  aliases: ["mydps", "founddrops", "rngmd", "rngfd"],
   description: "Shows all the drops an user has found, supports mentioned members too",
   async execute(client, message, args) {
     const embed = new EmbedBuilder();
@@ -91,7 +91,7 @@ module.exports = {
       }
 
       fields.push(
-        { name: `${serverDrops[dropId].name} (x${drop.quantity})`, value: `*${serverDrops[dropId].desc}*` },
+        { name: `${serverDrops[dropId].name} (x${drop.quantity})`, value: `> *${serverDrops[dropId].desc}*` },
         { name: "Odds", value: `**${rarity}** (${serverDrops[dropId].chance}%)`, inline: true },
         { name: "Dates", value: `First found: \`${drop.first_found_date}\`\nLast found: \`${drop.last_found_date}\``, inline: true },
       );

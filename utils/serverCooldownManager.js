@@ -23,7 +23,7 @@ module.exports = async function serverCooldownManager(client, message, cooldownN
 
     // if server isn't found go to catch block
     if (res.rowCount === 0) {
-      throw new Error("Failed to find in database: Server '" + message.guildId + "'");
+      throw new Error(`Failed to find in database: Server '${message.guildId}'`);
     }
 
     const dbTimestamp = Number(res.rows[0][cooldownName]); // do not forget 'Number()'
@@ -41,7 +41,7 @@ module.exports = async function serverCooldownManager(client, message, cooldownN
     // update the cooldown immediatly
     return false; // cooldown was off and the update went good :thumbsup:
   } catch (error) {
-    logger.error("Error handling cooldown '" + cooldownName + "': Server '" + message.guildId + "'", error);
+    logger.error(`Error handling cooldown '${cooldownName}': Server '${message.guildId}'`, error);
 
     const embed = new EmbedBuilder()
       .setColor(0xff0000)

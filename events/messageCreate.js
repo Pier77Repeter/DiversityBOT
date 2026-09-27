@@ -191,9 +191,7 @@ module.exports = (client) => {
     }
 
     // INSERTING NEW USER DATA IF NEW, look in ./utils/createDbData.js (now that the user has typed an actual command)
-    await createDbData(client, message.guildId, message.author.id).catch((error) => {
-      return logger.error("createDbData threw an error, look here", error);
-    });
+    await createDbData(client, message.guildId, message.author.id);
 
     // ready to log for the specific command
     logger.setFileName("MessageCreate/" + command.name + ".js");

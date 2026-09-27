@@ -8,9 +8,11 @@ module.exports = {
   async execute(client, interaction) {
     const embed = new EmbedBuilder()
       .setColor(0xff9900)
-      .setTitle("📒 List of all available slash commands")
+      .setTitle("📒 Slash commands")
       .setDescription(
         [
+          "To see all the actual commands, type **d!help**, slash commands are only supported for utlity / moderation purposes",
+          "",
           "**/help** - Display all the available slash commands",
           "**/config** - See Bot's settings on the server",
           "**/setup** - Turns on/off bot's commands",

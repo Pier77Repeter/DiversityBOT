@@ -151,7 +151,7 @@ module.exports = (client) => {
 
     // yay new server!
     await client.database.query("INSERT INTO servers(server_id, server_drops) VALUES($1, $2)", [guild.id, JSON.stringify(serverDropsJsonData)]).catch((error) => {
-      logger.error("Error while INSERTING data in db: Server '" + guild.id + "'", error);
+      logger.error(`Error while INSERTING data in db: Server '${guild.id}'`, error);
     });
   });
 };

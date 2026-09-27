@@ -352,7 +352,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
       return await sendMessage();
 
     default:
-      logger.error("The image named '" + imageName + "' does NOT exist");
+      logger.error(`The image named '${imageName}' does NOT exist`);
 
       embed
         .setColor(0xff0000)

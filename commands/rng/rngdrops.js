@@ -5,7 +5,7 @@ const embedPaginator = require("../../utils/embedPaginator.js");
 
 module.exports = {
   name: "rngdrops",
-  aliases: ["drops", "sdrops", "serverdrops"],
+  aliases: ["drops", "sdrops", "serverdrops", "rngsd"],
   description: "Shows all the configured server drops",
   async execute(client, message, args) {
     const embed = new EmbedBuilder();
@@ -57,6 +57,7 @@ module.exports = {
     const fields = [];
     const color = 0x1fa7b1;
     const title = `📦 ${message.guild.name}'s drops`;
+    const desc = "List of drops that can be found while chatting in this server, the owner can edit, remove or create new drops";
 
     for (const drop of serverDrops) {
       odds = Number(drop.chance);
@@ -86,7 +87,7 @@ module.exports = {
       }
 
       fields.push(
-        { name: `${drop.name} (${drop.id})`, value: `*${drop.desc}*` },
+        { name: `${drop.name} (${drop.id})`, value: `> *${drop.desc}*` },
         { name: "Odds", value: `**${rarity}** (${drop.chance}%)`, inline: true },
         { name: "Type", value: `${drop.type}`, inline: true },
       );
@@ -99,6 +100,7 @@ module.exports = {
           new EmbedBuilder()
             .setColor(color)
             .setTitle(title)
+            .setDescription(desc)
             .addFields(fields)
             .setFooter({ text: `Global drop chance is ${row.rows[0].rng_drop_chance}%` }),
         );
@@ -113,6 +115,7 @@ module.exports = {
         new EmbedBuilder()
           .setColor(color)
           .setTitle(title)
+          .setDescription(desc)
           .addFields(fields)
           .setFooter({ text: `Global drop chance is ${row.rows[0].rng_drop_chance}%` }),
       );

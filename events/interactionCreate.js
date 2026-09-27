@@ -38,9 +38,7 @@ module.exports = (client) => {
     logger.setFileName("InteractionCreate");
 
     // HERE WE ARE INSERTING NEW USER DATA
-    await createDbData(client, interaction.guildId, interaction.user.id).catch((error) => {
-      return logger.error("createDbData threw an error, look here", error);
-    });
+    await createDbData(client, interaction.guildId, interaction.user.id);
 
     // ready to log for the specific slash command
     logger.setFileName("InteractionCreate/" + interaction.commandName + ".js");

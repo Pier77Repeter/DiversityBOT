@@ -116,12 +116,12 @@ loader.initLoader(client).then(async () => {
 
 // when the client is ready
 client.once(Events.ClientReady, (readyClient) => {
-  logger.info("DiversityBOT is ready, logged in as " + readyClient.user.tag);
+  logger.info(`DiversityBOT is ready, logged in as ${readyClient.user.tag}`);
 
   // bot status setup, client.guilds.cache.size returns the correct number AFTER the 'ready' event fires
   const botStatus = [
     { name: "DiversityCraft", type: ActivityType.Playing },
-    { name: client.guilds.cache.size + " servers!", type: ActivityType.Watching },
+    { name: `${client.guilds.cache.size} servers!`, type: ActivityType.Watching },
     { name: "Version 2.0??? WOW!!!", type: ActivityType.Playing },
     //{ name: "It's Christmas season boyz 🎅🎄", type: ActivityType.Playing },
     {
