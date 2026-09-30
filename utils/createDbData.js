@@ -46,14 +46,14 @@ module.exports = async function createDbData(client, serverId, userId) {
 
   const serverDropsJsonData = [
     {
-      id: "1",
+      id: 1,
       type: "item",
       name: "DiversityGem",
       desc: "The finest gem in all of Earth",
       chance: 0.01,
     },
     {
-      id: "2",
+      id: 2,
       type: "money",
       name: "Lucky Lottery Ticket",
       desc: "The lottery ticket you always dream to win",
@@ -61,7 +61,7 @@ module.exports = async function createDbData(client, serverId, userId) {
       money: 1000000,
     },
     {
-      id: "3",
+      id: 3,
       type: "role",
       name: "Special Golden",
       desc: "A secret version of the Golden role!",
@@ -69,14 +69,14 @@ module.exports = async function createDbData(client, serverId, userId) {
       role_id: "784816759886577694",
     },
     {
-      id: "4",
+      id: 4,
       type: "item",
       name: "Notch's Golden Apple",
       desc: "The uncraftable apple of Minecraft",
       chance: 7,
     },
     {
-      id: "5",
+      id: 5,
       type: "money",
       name: "Money on the ground",
       desc: "Well i guess you can just take them for free",
@@ -84,7 +84,7 @@ module.exports = async function createDbData(client, serverId, userId) {
       money: 10,
     },
     {
-      id: "6",
+      id: 6,
       type: "role",
       name: "Stupidity",
       desc: "Even the RNG itself thinks you are stupid",
@@ -92,7 +92,7 @@ module.exports = async function createDbData(client, serverId, userId) {
       role_id: "788002186273095730",
     },
     {
-      id: "7",
+      id: 7,
       type: "unknown",
       name: "THE UNKNOWN",
       desc: "This is breaks the fabric of reality itself, nobody knows what is this and what it does, but one thing is certain, you have been blessed by the RNG",

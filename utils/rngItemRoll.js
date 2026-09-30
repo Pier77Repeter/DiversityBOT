@@ -3,6 +3,9 @@ const rng = require("./rng");
 const dbJsonDataGet = require("./dbJsonDataGet");
 const dbJsonDataSet = require("./dbJsonDataSet");
 const manageUserMoney = require("./manageUserMoney");
+const msgErrorHandler = require("./msgErrorHandler");
+
+// This file will be moved to messageCreate.js as a function, this is NOT an utility file
 
 // this is needed to roll the items every time i message is sent
 // it works by doing 2 rolls, 1 for dropping an item, 2 for dropping X item
@@ -28,7 +31,7 @@ module.exports = async function rngItemRoll(client, message, serverDrops, global
   if (!wonReward) return;
 
   // we must first check if the user has found that drop already or if it's new, lets start with getting the drops
-  const drops = await dbJsonDataGet(client, message.author, message, "found_drops");
+  const drops = await dbJsonDataGet(client, message, "found_drops", message.author.id);
   if (drops === null) return;
 
   const currentDate = new Date().toLocaleString();
@@ -50,7 +53,7 @@ module.exports = async function rngItemRoll(client, message, serverDrops, global
   }
 
   // well we are just saving every found drops
-  if ((await dbJsonDataSet(client, message, "found_drops", JSON.stringify(drops))) === null) return;
+  if ((await dbJsonDataSet(client, message, "found_drops", drops, message.author.id)) === null) return;
 
   const odds = wonReward.chance;
   const embed = new EmbedBuilder();
@@ -126,9 +129,5 @@ module.exports = async function rngItemRoll(client, message, serverDrops, global
 
   embed.setFooter({ text: message.author.username, iconURL: message.author.avatarURL({ dynamic: true }) }).setTimestamp();
 
-  try {
-    return await message.reply({ embeds: [embed] });
-  } catch (error) {
-    return msgErrorHandler(error);
-  }
+  return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
 };

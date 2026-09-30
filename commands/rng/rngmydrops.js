@@ -4,8 +4,8 @@ const configChecker = require("../../utils/configChecker.js");
 const embedPaginator = require("../../utils/embedPaginator.js");
 
 module.exports = {
-  name: "mydrops",
-  aliases: ["mydps", "founddrops", "rngmd", "rngfd"],
+  name: "rngmydrops",
+  aliases: ["mydrops", "mydps", "founddrops", "rngfd"],
   description: "Shows all the drops an user has found, supports mentioned members too",
   async execute(client, message, args) {
     const embed = new EmbedBuilder();

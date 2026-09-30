@@ -4,7 +4,7 @@ const configChecker = require("../../utils/configChecker.js");
 
 module.exports = {
   name: "rngdc",
-  aliases: ["rngdropchance"],
+  aliases: ["rngdropchance", "rngcalc", "rngcalculator", "rngitem"],
   description: "Set the global chance to find a drop for sending a message",
   async execute(client, message, args) {
     const embed = new EmbedBuilder();

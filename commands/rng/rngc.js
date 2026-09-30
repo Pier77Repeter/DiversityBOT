@@ -53,7 +53,7 @@ module.exports = {
     let odds;
 
     for (const drop of serverDrops) {
-      if (drop.name.toLowerCase() === dropIdOrName || drop.id === dropIdOrName) {
+      if (drop.name.toLowerCase() === dropIdOrName || drop.id === parseInt(dropIdOrName)) {
         embed.setTitle(`📔 Item Overview (${drop.id})`).setDescription(`**${drop.name}**\n\n*${drop.desc}*\n`);
 
         // REMEMBER TO PARSE TO NUMBER
@@ -84,7 +84,7 @@ module.exports = {
         }
 
         const perMsgChance = Number((globalDropChance / 100) * odds);
-        const numOfMsgs = perMsgChance === 100 ? 1 : Number(Math.ceil(Math.log(1 - 99.99999 / 100) / Math.log(1 - perMsgChance / 100)));
+        const numOfMsgs = perMsgChance === 100 ? 1 : Number(Math.ceil(Math.log(1 - 99.999999 / 100) / Math.log(1 - perMsgChance / 100)));
 
         // this fixed the issue of having results like "5e-8%" or "12.34000000%"
         const formatPercent = (n) => {
