@@ -14,34 +14,18 @@ module.exports = {
 
     if (!isRngEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("RNG commands are off! Type **d!setup rng** to enable them");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const dropIdOrName = String(args.join(" ")).toLowerCase();
-
     if (!dropIdOrName) {
-      try {
-        return await message.reply("Can you specify which drop you want me to show you?");
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply("Can you specify which drop you want me to show you?").catch(msgErrorHandler);
     }
 
     const row = await client.database.query("SELECT rng_drop_chance, server_drops FROM servers WHERE server_id = $1", [message.guildId]);
-
     if (row.rowCount === 0) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("No drops have been created, setup one with **d!dropadd**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      embed.setColor(0xff0000).setTitle("❌ Nothing").setDescription("No drops have been created, setup one with **d!dropadd**");
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const serverDrops = row.rows[0].server_drops;
@@ -64,7 +48,7 @@ module.exports = {
         }
 
         if (odds <= 20 && odds > 10) {
-          embed.setColor(0x459bff).addFields({ name: "Odds", value: `**Uncommon** (${odds}%)`, inline: true });
+          embed.setColor(0x459bff).addFields({ name: "Odds", value: `**Occasional** (${odds}%)`, inline: true });
         }
 
         if (odds <= 10 && odds > 3) {
@@ -86,7 +70,7 @@ module.exports = {
         const perMsgChance = Number((globalDropChance / 100) * odds);
         const numOfMsgs = perMsgChance === 100 ? 1 : Number(Math.ceil(Math.log(1 - 99.999999 / 100) / Math.log(1 - perMsgChance / 100)));
 
-        // this fixed the issue of having results like "5e-8%" or "12.34000000%"
+        // this fixes the issue of having results like "5e-8%" or "12.34000000%"
         const formatPercent = (n) => {
           const s = Number(n)
             .toFixed(8)
@@ -102,10 +86,6 @@ module.exports = {
       }
     }
 
-    try {
-      return await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

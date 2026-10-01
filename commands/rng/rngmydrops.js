@@ -15,12 +15,7 @@ module.exports = {
 
     if (!isRngEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("RNG commands are off! Type **d!setup rng** to enable them");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const user = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
@@ -28,13 +23,8 @@ module.exports = {
     const row = await client.database.query("SELECT u.found_drops, s.server_drops FROM users u, servers s WHERE u.server_id = $1 AND u.user_id = $2", [message.guildId, user.id]);
 
     if (row.rowCount === 0) {
-      embed.setColor(0xff0000).setTitle("❌ Nothing so see").setDescription("This user never used even one of my commands >:(");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      embed.setColor(0xff0000).setTitle("❌ Nothing To See").setDescription("This user never used even one of my commands >:(");
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const serverDrops = row.rows[0].server_drops;
@@ -71,7 +61,7 @@ module.exports = {
       }
 
       if (odds <= 20 && odds > 10) {
-        rarity = "Uncommon";
+        rarity = "Occasional";
       }
 
       if (odds <= 10 && odds > 3) {
@@ -111,10 +101,6 @@ module.exports = {
       embeds.push(new EmbedBuilder().setColor(color).setTitle(title).addFields(fields));
     }
 
-    try {
-      return await embedPaginator(this.name, message, embeds);
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await embedPaginator(this.name, message, embeds).catch(msgErrorHandler);
   },
 };

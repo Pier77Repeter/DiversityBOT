@@ -16,19 +16,16 @@ module.exports = {
 
     if (!isRngEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("RNG commands are off! Type **d!setup rng** to enable them");
-
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need the permission `Administrator` to use this command");
-
+      embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("You need the permission `Administrator` to use this command");
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!args[0]) {
       embed.setColor(0xff0000).setTitle("❌ Missing ID").setDescription("Please provide the ID of the drop to remove, usage **d!rngdelete <id>**`");
-
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -36,7 +33,6 @@ module.exports = {
 
     if (isNaN(itemId)) {
       embed.setColor(0xff0000).setTitle("❌ Invalid ID").setDescription("The ID must be a valid number, check the item ids with **d!drops**");
-
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -44,8 +40,7 @@ module.exports = {
     const serverDrops = await dbJsonDataGet(client, message, "server_drops");
 
     if (!Array.isArray(serverDrops)) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("No items have been configured in this server");
-
+      embed.setColor(0xff0000).setTitle("❌ Nothing").setDescription("No items have been configured in this server");
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -53,8 +48,7 @@ module.exports = {
     const serverItemId = serverDrops.findIndex((drop) => drop.id === itemId);
 
     if (serverItemId === -1) {
-      embed.setColor(0xff0000).setTitle("❌ Item not found").setDescription(`Item with id **${itemId}** wasn't found in the server drops list`);
-
+      embed.setColor(0xff0000).setTitle("❌ Item Not Found").setDescription(`Item with id **${itemId}** wasn't found in the server drops list`);
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -75,7 +69,7 @@ module.exports = {
       if (hasItem) {
         userDrops = userDrops.filter((drop) => drop.id !== itemId);
 
-        if ((await dbJsonDataSet(client, message, "found_drops", userDrops, row.user_id)) == null) return;
+        if ((await dbJsonDataSet(client, message, "found_drops", userDrops, row.user_id)) === null) return;
       }
     }
 
