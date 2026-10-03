@@ -3,7 +3,7 @@ const msgErrorHandler = require("./msgErrorHandler");
 const logger = require("../logger")("DbJsonDataSet");
 
 // thing to update json data in DB, same logic as dbJsonDataSet, supports both servers and users tables
-module.exports = async function dbJsonDataSet(client, message, dataName, jsonData, userId = null) {
+module.exports = async function dbJsonDataSet(client, message, dataName, jsonData, userId = null, logError = true) {
   const embed = new EmbedBuilder();
 
   // working on users table
@@ -44,6 +44,6 @@ module.exports = async function dbJsonDataSet(client, message, dataName, jsonDat
   }
 
   // we did not set the data correctly :(
-  await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+  if (logError) await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   return null;
 };

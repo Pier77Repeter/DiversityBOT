@@ -2,6 +2,7 @@ const { EmbedBuilder } = require("discord.js");
 const msgErrorHandler = require("../../utils/msgErrorHandler.js");
 const configChecker = require("../../utils/configChecker.js");
 const embedPaginator = require("../../utils/embedPaginator.js");
+const rngRarityLabel = require("../../utils/rngRarityLabel.js");
 
 module.exports = {
   name: "rngdrops",
@@ -34,9 +35,7 @@ module.exports = {
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
-    let odds,
-      rarity,
-      counter = 0;
+    let counter = 0;
 
     const embeds = [];
     const fields = [];
@@ -45,35 +44,9 @@ module.exports = {
     const desc = "List of drops that can be found while chatting in this server, the owner can edit, remove or create new drops";
 
     for (const drop of serverDrops) {
-      odds = Number(drop.chance);
-
-      if (odds > 20) {
-        rarity = "Common";
-      }
-
-      if (odds <= 20 && odds > 10) {
-        rarity = "Occasional";
-      }
-
-      if (odds <= 10 && odds > 3) {
-        rarity = "Rare";
-      }
-
-      if (odds <= 3 && odds > 1) {
-        rarity = "Extraordinary";
-      }
-
-      if (odds <= 1 && odds > 0.1) {
-        rarity = "Ask John RNG";
-      }
-
-      if (odds < 0.1) {
-        rarity = "Pray RNGesus";
-      }
-
       fields.push(
-        { name: `${drop.name} (${drop.id})`, value: `> *${drop.desc}*` },
-        { name: "Odds", value: `**${rarity}** (${drop.chance}%)`, inline: true },
+        { name: `(ID ${drop.id}) ${drop.name}`, value: `> *${drop.desc}*` },
+        { name: "Odds", value: `**${rngRarityLabel(Number(drop.chance))}** (${drop.chance}%)`, inline: true },
         { name: "Type", value: `${drop.type}`, inline: true },
       );
 

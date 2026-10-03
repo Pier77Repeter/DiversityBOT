@@ -4,6 +4,8 @@ const configChecker = require("../../utils/configChecker.js");
 const dbJsonDataGet = require("../../utils/dbJsonDataGet.js");
 const dbJsonDataSet = require("../../utils/dbJsonDataSet.js");
 
+// TODO: implement maximum amount of drops (1000? 10k?)
+
 module.exports = {
   name: "rngadd",
   aliases: ["rngadddrop", "rngad"],
@@ -46,7 +48,7 @@ module.exports = {
 
     const chance = parseFloat(chanceStr);
 
-    if (isNaN(chance) || chance < 0.000001 || chance > 100) {
+    if (isNaN(chance) || chance < 0.00001 || chance > 100) {
       embed.setColor(0xff0000).setTitle("❌ Invalid Chance").setDescription("The drop chance must be a valid number between **100** and **0.000001**");
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
@@ -96,7 +98,7 @@ module.exports = {
     switch (type) {
       case "item":
         newDrop = {
-          id: newId,
+          id: newId.toString(),
           type: "item",
           name: name,
           desc: desc,
@@ -114,7 +116,7 @@ module.exports = {
         }
 
         newDrop = {
-          id: newId,
+          id: newId.toString(),
           type: "money",
           name: name,
           desc: desc,
@@ -134,7 +136,7 @@ module.exports = {
         }
 
         newDrop = {
-          id: newId,
+          id: newId.toString(),
           type: "role",
           name: name,
           desc: desc,

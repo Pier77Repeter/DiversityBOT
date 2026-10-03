@@ -1,7 +1,7 @@
 // the best method for randomness is using the built-in crypto (https://nodejs.org/api/crypto.html)
 const { webcrypto } = require("crypto");
 
-module.exports = function rng() {
+module.exports = function rng(ceiling = 100) {
   // hold one 64-bit unsigned integer in an array
   const array = new BigUint64Array(1);
 
@@ -12,5 +12,5 @@ module.exports = function rng() {
   const maxUint64 = 18446744073709551615n;
 
   // cast to 64-bit floating-point number
-  return (Number(array[0]) / Number(maxUint64)) * 100;
+  return (Number(array[0]) / Number(maxUint64)) * ceiling;
 };

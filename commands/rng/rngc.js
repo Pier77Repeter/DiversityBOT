@@ -1,6 +1,8 @@
 const { EmbedBuilder } = require("discord.js");
 const msgErrorHandler = require("../../utils/msgErrorHandler.js");
 const configChecker = require("../../utils/configChecker.js");
+const rngRarityColor = require("../../utils/rngRarityColor.js");
+const rngRarityLabel = require("../../utils/rngRarityLabel.js");
 
 module.exports = {
   name: "rngc",
@@ -22,12 +24,17 @@ module.exports = {
       return await message.reply("Can you specify which drop you want me to show you?").catch(msgErrorHandler);
     }
 
-    const row = await client.database.query("SELECT rng_drop_chance, server_drops FROM servers WHERE server_id = $1", [message.guildId]);
+    const row = await client.database.query("SELECT s.rng_drop_chance, s.server_drops, u.rng_meter_selection FROM servers s, users u WHERE s.server_id = $1 AND u.user_id = $2", [
+      message.guildId,
+      message.author.id,
+    ]);
+
     if (row.rowCount === 0) {
       embed.setColor(0xff0000).setTitle("❌ Nothing").setDescription("No drops have been created, setup one with **d!dropadd**");
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
+    const selRngMeter = row.rows[0].rng_meter_selection;
     const serverDrops = row.rows[0].server_drops;
     const globalDropChance = row.rows[0].rng_drop_chance;
 
@@ -37,50 +44,23 @@ module.exports = {
     let odds;
 
     for (const drop of serverDrops) {
-      if (drop.name.toLowerCase() === dropIdOrName || drop.id === parseInt(dropIdOrName)) {
-        embed.setTitle(`📔 Item Overview (${drop.id})`).setDescription(`**${drop.name}**\n\n*${drop.desc}*\n`);
+      if (drop.name.toLowerCase() === dropIdOrName || drop.id === dropIdOrName) {
+        embed.setTitle(`🧮 Item Overview (ID ${drop.id})`).setDescription(`**${drop.name}**\n> *${drop.desc}*\n`);
 
         // REMEMBER TO PARSE TO NUMBER
         odds = Number(drop.chance);
 
-        if (odds > 20) {
-          embed.setColor(0x2ecc71).addFields({ name: "Odds", value: `**Common** (${odds}%)`, inline: true });
-        }
-
-        if (odds <= 20 && odds > 10) {
-          embed.setColor(0x459bff).addFields({ name: "Odds", value: `**Occasional** (${odds}%)`, inline: true });
-        }
-
-        if (odds <= 10 && odds > 3) {
-          embed.setColor(0x55ffff).addFields({ name: "Odds", value: `**Rare** (${odds}%)`, inline: true });
-        }
-
-        if (odds <= 3 && odds > 1) {
-          embed.setColor(0xa335ee).addFields({ name: "Odds", value: `**Extraordinary** (${odds}%)`, inline: true });
-        }
-
-        if (odds <= 1 && odds > 0.1) {
-          embed.setColor(0xff55ff).addFields({ name: "Odds", value: `**Ask John RNG** (${odds}%)`, inline: true });
-        }
-
-        if (odds < 0.1) {
-          embed.setColor(0xff5555).addFields({ name: "Odds", value: `**Pray RNGesus** (${odds}%)`, inline: true });
-        }
+        embed.setColor(rngRarityColor(odds)).addFields({ name: "Odds", value: `**${rngRarityLabel(odds)}** (${odds}%)`, inline: true });
 
         const perMsgChance = Number((globalDropChance / 100) * odds);
-        const numOfMsgs = perMsgChance === 100 ? 1 : Number(Math.ceil(Math.log(1 - 99.999999 / 100) / Math.log(1 - perMsgChance / 100)));
-
-        // this fixes the issue of having results like "5e-8%" or "12.34000000%"
-        const formatPercent = (n) => {
-          const s = Number(n)
-            .toFixed(8)
-            .replace(/\.?0+$/, "");
-          return s;
-        };
+        const numOfMsgs = perMsgChance === 100 ? 1 : 1 / (perMsgChance / 100);
 
         embed
-          .addFields({ name: "Per-Message Odds", value: `${formatPercent(perMsgChance)}%`, inline: true })
-          .setFooter({ text: `1/${numOfMsgs} from messages with a global drop of ${globalDropChance}%` });
+          .addFields({ name: "Per-Message Odds", value: `${perMsgChance.toFixed(7).toString()}%`, inline: true })
+          .setFooter({ text: `1/${Math.round(numOfMsgs)} from messages with a global drop of ${globalDropChance}%` });
+
+        // last but not least rng meter
+        if (selRngMeter === drop.id) embed.addFields({ name: "🟢 SELECTED", value: "" });
 
         break;
       }

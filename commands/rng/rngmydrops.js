@@ -2,6 +2,7 @@ const { EmbedBuilder } = require("discord.js");
 const msgErrorHandler = require("../../utils/msgErrorHandler.js");
 const configChecker = require("../../utils/configChecker.js");
 const embedPaginator = require("../../utils/embedPaginator.js");
+const rngRarityLabel = require("../../utils/rngRarityLabel.js");
 
 module.exports = {
   name: "rngmydrops",
@@ -42,47 +43,22 @@ module.exports = {
       }
     }
 
-    let odds,
-      rarity,
-      dropId,
-      counter = 0;
-
     const embeds = [];
     const fields = [];
     const color = 0x1fa7b1;
     const title = `🔍 ${user.username}'s found drops`;
 
+    let odds,
+      dropId,
+      counter = 0;
+
     for (const drop of userFoundDrops) {
       dropId = Number(drop.id - 1);
       odds = Number(serverDrops[dropId].chance);
 
-      if (odds > 20) {
-        rarity = "Common";
-      }
-
-      if (odds <= 20 && odds > 10) {
-        rarity = "Occasional";
-      }
-
-      if (odds <= 10 && odds > 3) {
-        rarity = "Rare";
-      }
-
-      if (odds <= 3 && odds > 1) {
-        rarity = "Extraordinary";
-      }
-
-      if (odds <= 1 && odds > 0.1) {
-        rarity = "Ask John RNG";
-      }
-
-      if (odds < 0.1) {
-        rarity = "Pray RNGesus";
-      }
-
       fields.push(
         { name: `${serverDrops[dropId].name} (x${drop.quantity})`, value: `> *${serverDrops[dropId].desc}*` },
-        { name: "Odds", value: `**${rarity}** (${serverDrops[dropId].chance}%)`, inline: true },
+        { name: "Odds", value: `**${rngRarityLabel(odds)}** (${serverDrops[dropId].chance}%)`, inline: true },
         { name: "Dates", value: `First found: \`${drop.first_found_date}\`\nLast found: \`${drop.last_found_date}\``, inline: true },
       );
 

@@ -4,7 +4,7 @@ const logger = require("../logger")("DbJsonDataGet");
 
 // this gets any json data from database, since json data can be only be present in either users or servers
 // we can just put the user parameter has optional so by default it gets the server json data
-module.exports = async function dbJsonDataGet(client, message, dataName, userId = null) {
+module.exports = async function dbJsonDataGet(client, message, dataName, userId = null, logError = true) {
   const embed = new EmbedBuilder();
 
   // working on users table
@@ -49,6 +49,6 @@ module.exports = async function dbJsonDataGet(client, message, dataName, userId 
   }
 
   // we got an error and not the json we wanted :(
-  await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+  if (logError) await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   return null;
 };

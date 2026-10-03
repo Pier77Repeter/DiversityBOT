@@ -74,6 +74,8 @@ module.exports = {
           items JSONB DEFAULT '[]'::jsonb,
           fishes JSONB DEFAULT '[]'::jsonb,
           found_drops JSONB DEFAULT '[]'::jsonb,
+          rng_meter_selection VARCHAR(4),
+          rng_meter_progress DOUBLE PRECISION DEFAULT 0,
           job_type VARCHAR(20),
           has_pet BOOLEAN DEFAULT false,
           pet_id VARCHAR(20),
