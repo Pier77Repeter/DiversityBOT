@@ -1,5 +1,6 @@
 const { Events } = require("discord.js");
 const logger = require("../logger")("GuildMemberRemove");
+
 // remove data of a leaving user from a server
 module.exports = (client) => {
   client.on(Events.GuildMemberRemove, async (member) => {

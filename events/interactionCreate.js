@@ -27,11 +27,7 @@ module.exports = (client) => {
         .setDescription("I'm currently restarting, to preserve the integrity of your data in my database, you won't be able to use me until restart is completed.")
         .setFooter({ text: "Estimated downtime is 5 minute" });
 
-      try {
-        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     // re-naiming the logger, else it will keep the specific log of the command
@@ -49,8 +45,8 @@ module.exports = (client) => {
     } catch (error) {
       logger.error("Error while executing a slash command", error);
 
-      try {
-        return await interaction.reply({
+      return await interaction
+        .reply({
           content: listsGetRandomItem(
             [
               "There was an error trying to execute that command!",
@@ -81,10 +77,8 @@ module.exports = (client) => {
             false,
           ),
           flags: MessageFlags.Ephemeral,
-        });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+        })
+        .catch(msgErrorHandler);
     }
   });
 };

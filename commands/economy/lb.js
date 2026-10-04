@@ -29,7 +29,7 @@ module.exports = {
     for (let i = 0; i < lbRows.length; i++) {
       index++;
       const user = await message.client.users.fetch(lbRows[i].user_id).catch(() => null);
-      const totalMoney = lbRows[i].money + lbRows[i].bank_money - lbRows[i].debts;
+      const totalMoney = Number(lbRows[i].money) + Number(lbRows[i].bank_money) - Number(lbRows[i].debts);
 
       if (user !== null) {
         leaderBoardText += index + ") " + user.username + " - **" + totalMoney + "$**\n";

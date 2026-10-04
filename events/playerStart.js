@@ -10,9 +10,7 @@ module.exports = (client) => {
     const queueLoopEnabled = queue.repeatMode === QueueRepeatMode.QUEUE;
     if (loopEnabled || queueLoopEnabled) return;
 
-    const embed = new EmbedBuilder();
-
-    embed
+    const embed = new EmbedBuilder()
       .setColor(0xcc66cc)
       .setTitle(track.title)
       .setDescription(
@@ -30,10 +28,6 @@ module.exports = (client) => {
       embed.setImage(track.thumbnail);
     }
 
-    try {
-      return await queue.metadata.channel.send({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await queue.metadata.channel.send({ embeds: [embed] }).catch(msgErrorHandler);
   });
 };

@@ -10,14 +10,8 @@ module.exports = (client) => {
   player.events.on("error", async (queue, error) => {
     logger.error("Error while trying to play a track", error);
 
-    const embed = new EmbedBuilder();
+    const embed = new EmbedBuilder().setColor(0xff0000).setTitle("❌ Error").setDescription("I couldn't play that track. It's likely protected or unavailable in my region");
 
-    embed.setColor(0xff0000).setTitle("❌ Error").setDescription("I couldn't play that track. It's likely protected or unavailable in my region");
-
-    try {
-      return await queue.metadata.channel.send({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await queue.metadata.channel.send({ embeds: [embed] }).catch(msgErrorHandler);
   });
 };

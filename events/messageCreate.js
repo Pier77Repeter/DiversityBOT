@@ -21,10 +21,10 @@ module.exports = (client) => {
     // check if the bot can send messages to message.channel (it's useless to use the bot if you cant interact with it)
     if (!message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.SendMessages)) return;
 
-    // check if bot gets pinged, not when you use a command like 'd!stats @DiversityBOT'
+    // check if bot gets pinged, not when you use a command like 'd!stats @DiversityBOT', no need to return
     if (!message.content.toLowerCase().startsWith(botPrefix) && message.content.includes("<@878594739744673863>")) {
-      try {
-        await message.reply({
+      await message
+        .reply({
           content: listsGetRandomItem(
             [
               "What do you want?",
@@ -98,11 +98,8 @@ module.exports = (client) => {
             ],
             false,
           ),
-        });
-      } catch (error) {
-        // dont return, continue execution
-        msgErrorHandler(error);
-      }
+        })
+        .catch(msgErrorHandler);
     }
 
     // re-naiming the logger, else it will keep the specific log of the command, below
@@ -110,7 +107,7 @@ module.exports = (client) => {
 
     // helper function to update user stuff
     await userDataUpdater(message).catch((error) => {
-      return logger.error("userDataUpdater threw an error, look here", error);
+      return logger.error("UserDataUpdater threw an error, look here", error);
     });
 
     // check if message starts with the bot prefix
@@ -123,12 +120,7 @@ module.exports = (client) => {
         .setTitle("⚠️ Bot is restarting")
         .setDescription("I'm currently restarting, to preserve the integrity of your data in my database, you won't be able to use me until restart is completed.")
         .setFooter({ text: "Estimated downtime is 5 minute" });
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     // split the message into command and arguments
@@ -140,8 +132,8 @@ module.exports = (client) => {
 
     // check if the command exists
     if (!command) {
-      try {
-        return await message.reply(
+      return await message
+        .reply(
           listsGetRandomItem(
             [
               "That command doesn't exist, type d!help",
@@ -184,10 +176,8 @@ module.exports = (client) => {
             ],
             false,
           ),
-        );
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+        )
+        .catch(msgErrorHandler);
     }
 
     // INSERTING NEW USER DATA IF NEW, look in ./utils/createDbData.js (now that the user has typed an actual command)
@@ -202,8 +192,8 @@ module.exports = (client) => {
     } catch (error) {
       logger.error("Error while executing a message command", error);
 
-      try {
-        return await message.reply(
+      return await message
+        .reply(
           listsGetRandomItem(
             [
               "There was an error trying to execute that command!",
@@ -233,10 +223,8 @@ module.exports = (client) => {
             ],
             false,
           ),
-        );
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+        )
+        .catch(msgErrorHandler);
     }
   });
 
@@ -302,11 +290,7 @@ module.exports = (client) => {
         .setThumbnail("attachment://levelUp.png")
         .setFooter({ text: message.author.username, iconURL: message.author.displayAvatarURL() });
 
-      try {
-        await message.reply({ embeds: [embed], files: [imageFile] });
-      } catch (error) {
-        msgErrorHandler(error); // log and continue
-      }
+      await message.reply({ embeds: [embed], files: [imageFile] }).catch(msgErrorHandler); // log and continue
     }
 
     // REPUTATION CHECK
@@ -321,11 +305,7 @@ module.exports = (client) => {
           .setDescription(`Gave **+1** reputation to ${mentionedMember.username}`)
           .setFooter({ text: "Check your rep with d!rep" });
 
-        try {
-          await message.reply({ embeds: [embed] });
-        } catch (error) {
-          msgErrorHandler(error); // log and continue x2
-        }
+        await message.reply({ embeds: [embed] }).catch(msgErrorHandler); // log and continue x2
       }
     }
 
@@ -373,18 +353,14 @@ module.exports = (client) => {
 
         const embed = new EmbedBuilder().setColor(0xff0000).setTitle("🪦 Oh no").setDescription("Your pet sadly died, you didn't care for it enough >:(");
 
-        try {
-          await message.reply({ embeds: [embed] });
-        } catch (error) {
-          msgErrorHandler(error); // log and continue x3
-        }
+        await message.reply({ embeds: [embed] }).catch(msgErrorHandler); // log and continue x3
       }
     }
 
     // RNG CHECK (Every 10 seconds to prevent spam)
     // add later to the if ' && Number(row.rng_cooldown) === unixNow'
     if (isRngEnabled) {
-      await rngItemRoll(client, message, serverDrops, globalDropRate); // BASE SHOULD BE BETWEEN 3-10% for a fair and not spammy system
+      await rngItemRoll(client, message, serverDrops, globalDropRate); // BASE SHOULD BE BETWEEN 1-10% for a fair and not spammy system
     }
   }
 };
