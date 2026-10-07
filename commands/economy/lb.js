@@ -13,16 +13,12 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (row.rowCount === 0) {
-      embed.setColor(0x00cccc).setTitle("Nobody has money").setDescription("Bruh, you all should get some work done here");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      embed.setColor(0x00cccc).setTitle("📉 Nobody has Money").setDescription("Bruh, you all should get some work done here");
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
-    let leaderBoardText = "";
+    let lbUsersList = "";
+    let lbMoneyList = "";
     let index = 0; // added this because in case user is null you would see in the leaderboard skipped numbers, example: 1), 2), 4), 7). depends how many invalid users the are
     const lbRows = row.rows;
 
@@ -32,7 +28,28 @@ module.exports = {
       const totalMoney = Number(lbRows[i].money) + Number(lbRows[i].bank_money) - Number(lbRows[i].debts);
 
       if (user !== null) {
-        leaderBoardText += index + ") " + user.username + " - **" + totalMoney + "$**\n";
+        // this is just for estetics
+        switch (index) {
+          case 1:
+            lbUsersList += `🥇 ${user.username}\n`;
+            lbMoneyList += `🥇 **${totalMoney}$**\n`;
+            break;
+
+          case 2:
+            lbUsersList += `🥈 ${user.username}\n`;
+            lbMoneyList += `🥈 **${totalMoney}$**\n`;
+            break;
+
+          case 3:
+            lbUsersList += `🥉 ${user.username}\n`;
+            lbMoneyList += `🥉 **${totalMoney}$**\n`;
+            break;
+
+          default:
+            lbUsersList += `${index}) ${user.username}\n`;
+            lbMoneyList += `**${totalMoney}$**\n`;
+            break;
+        }
       }
 
       if (user === null) {
@@ -40,12 +57,11 @@ module.exports = {
       }
     }
 
-    embed.setTitle("📊 Top 10 richest in the server").setDescription(leaderBoardText).setFooter({ text: message.guild.name, iconURL: message.guild.iconURL() });
+    embed
+      .setTitle("📊 Top 10 Richest Members")
+      .addFields({ name: "Users", value: lbUsersList, inline: true }, { name: "Money", value: lbMoneyList, inline: true })
+      .setFooter({ text: message.guild.name, iconURL: message.guild.iconURL() });
 
-    try {
-      return await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

@@ -15,13 +15,15 @@ module.exports = {
       .setDisabled(false)
       .addOptions(
         // format is menuOption-<commandName>-<menuName>-<optionName>
-        new StringSelectMenuOptionBuilder().setValue("menuOption-help-menuHelp-fun").setLabel("Fun & Games").setEmoji("🎮").setDescription("Fun commands").setDefault(false),
-        new StringSelectMenuOptionBuilder().setValue("menuOption-help-menuHelp-music").setLabel("Music").setEmoji("🎵").setDescription("Music commands").setDefault(false),
-        new StringSelectMenuOptionBuilder().setValue("menuOption-help-menuHelp-economy").setLabel("Economy").setEmoji("⚖️").setDescription("Economy commands").setDefault(false),
-        new StringSelectMenuOptionBuilder().setValue("menuOption-help-menuHelp-img").setLabel("Image").setEmoji("📸").setDescription("Image commands").setDefault(false),
-        new StringSelectMenuOptionBuilder().setValue("menuOption-help-menuHelp-utility").setLabel("Utility").setEmoji("🧰").setDescription("Utility commands").setDefault(false),
-        new StringSelectMenuOptionBuilder().setValue("menuOption-help-menuHelp-comm").setLabel("Community").setEmoji("🌍").setDescription("Community commands").setDefault(false),
+        new StringSelectMenuOptionBuilder().setValue("menuOption-help-menuHelp-fun").setLabel("Fun & Games").setEmoji("🎮").setDescription("Fun Commands").setDefault(false),
+        new StringSelectMenuOptionBuilder().setValue("menuOption-help-menuHelp-music").setLabel("Music").setEmoji("🎵").setDescription("Music Commands").setDefault(false),
+        new StringSelectMenuOptionBuilder().setValue("menuOption-help-menuHelp-economy").setLabel("Economy").setEmoji("⚖️").setDescription("Economy Commands").setDefault(false),
+        new StringSelectMenuOptionBuilder().setValue("menuOption-help-menuHelp-img").setLabel("Image").setEmoji("📸").setDescription("Image Commands").setDefault(false),
+        new StringSelectMenuOptionBuilder().setValue("menuOption-help-menuHelp-utility").setLabel("Utility").setEmoji("🧰").setDescription("Utility Commands").setDefault(false),
+        new StringSelectMenuOptionBuilder().setValue("menuOption-help-menuHelp-rng").setLabel("RNG").setEmoji("🎲").setDescription("RNG Commands").setDefault(false),
+        new StringSelectMenuOptionBuilder().setValue("menuOption-help-menuHelp-comm").setLabel("Community").setEmoji("🌍").setDescription("Community Commands").setDefault(false),
       );
+
     const actionRow = new ActionRowBuilder().addComponents(menuHelp);
 
     const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "DVC_highquality.jpg"), { name: "DVC_highquality.jpg" });
@@ -34,11 +36,11 @@ module.exports = {
           '👋 Hello there! I\'m DiversityBOT, a totally "normal" Discord Bot!',
           "Feel free to look at aaaalll of my commands by using the menu below",
           "Remember to give me all the needed permissions, else some features may not work properly",
-          "Important commands: **d!help**, **/help**",
+          "Important commands: **d!help**, **d!config**, **/help**, **/config**",
           "More commands will come soon. Please, be patient ;)",
           "", // for jumping down 2 times
           "Bot current version: **2.2**",
-          "Support me by **joining in here: https://discord.gg/KxadTdz**",
+          "Support me by **joining here https://discord.gg/KxadTdz**",
         ].join("\n"),
       )
       .setThumbnail("attachment://DVC_highquality.jpg")
@@ -57,13 +59,10 @@ module.exports = {
       )
       .setFooter({ text: "DiversityBOT© 2021-2026", iconURL: "attachment://DVC_highquality.jpg" });
 
-    let sentMessage;
+    const sentMessage = await message.reply({ embeds: [embed], files: [imageFile], components: [actionRow] }).catch(msgErrorHandler);
 
-    try {
-      sentMessage = await message.reply({ embeds: [embed], files: [imageFile], components: [actionRow] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    // no message sent? well stop everything
+    if (!sentMessage) return;
 
     const collector = sentMessage.createMessageComponentCollector({
       componentType: ComponentType.StringSelect,
@@ -72,14 +71,7 @@ module.exports = {
 
     collector.on("collect", async (menuInteraction) => {
       if (menuInteraction.user.id !== message.author.id) {
-        try {
-          return await menuInteraction.reply({
-            content: "This menu isn't for you, just type d!help",
-            flags: MessageFlags.Ephemeral,
-          });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await menuInteraction.reply({ content: "This menu isn't for you, just type d!help", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
       }
 
       collector.resetTimer();
@@ -90,7 +82,7 @@ module.exports = {
           case "menuOption-help-menuHelp-fun":
             menuOptionEmbed
               .setColor(0x00cccc)
-              .setTitle("🎮 Fun & Games section:")
+              .setTitle("🎮 Fun & Games Section")
               .setDescription(
                 [
                   "**d!event** - Displays ongoing Bot event",
@@ -140,21 +132,16 @@ module.exports = {
                   "**d!petfeed** - Feed your pet",
                   "**d!petdrink** - Give water to your pet",
                 ].join("\n"),
-              );
+              )
+              .setFooter({ text: "1/7 sections" });
 
-            try {
-              await menuInteraction.update({
-                embeds: [embed, menuOptionEmbed],
-                components: [actionRow],
-              });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            await menuInteraction.update({ embeds: [embed, menuOptionEmbed], components: [actionRow] }).catch(msgErrorHandler);
             break;
+
           case "menuOption-help-menuHelp-music":
             menuOptionEmbed
               .setColor(0x00cccc)
-              .setTitle("🎵 Music section:")
+              .setTitle("🎵 Music Section:")
               .setDescription(
                 [
                   "**You must be in a voice channel!**",
@@ -172,21 +159,16 @@ module.exports = {
                   "**d!loopqueue** - Loops the whole queue",
                   "**d!lyric <song name>** - Get the lyrics of a given song",
                 ].join("\n"),
-              );
+              )
+              .setFooter({ text: "2/7 sections" });
 
-            try {
-              await menuInteraction.update({
-                embeds: [embed, menuOptionEmbed],
-                components: [actionRow],
-              });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            await menuInteraction.update({ embeds: [embed, menuOptionEmbed], components: [actionRow] }).catch(msgErrorHandler);
             break;
+
           case "menuOption-help-menuHelp-economy":
             menuOptionEmbed
               .setColor(0x00cccc)
-              .setTitle("⚖️ Economy section:")
+              .setTitle("⚖️ Economy Section")
               .setDescription(
                 [
                   "**d!balance** - See how much money the user has",
@@ -220,21 +202,16 @@ module.exports = {
                   "**d!rob <@user>** - Rob the mentioned user",
                   "**d!roulette <amount>** - Play the roulette",
                 ].join("\n"),
-              );
+              )
+              .setFooter({ text: "3/7 sections" });
 
-            try {
-              await menuInteraction.update({
-                embeds: [embed, menuOptionEmbed],
-                components: [actionRow],
-              });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            await menuInteraction.update({ embeds: [embed, menuOptionEmbed], components: [actionRow] }).catch(msgErrorHandler);
             break;
+
           case "menuOption-help-menuHelp-img":
             menuOptionEmbed
               .setColor(0x00cccc)
-              .setTitle("📸 Image section:")
+              .setTitle("📸 Image Section")
               .setDescription(
                 [
                   "**d!ad** or **d!affect <@user>**",
@@ -280,21 +257,16 @@ module.exports = {
                   "**d!triggered** or **d!triggered <@user>**",
                   "**d!wanted** or **d!wanted <@user>**",
                 ].join("\n"),
-              );
+              )
+              .setFooter({ text: "4/7 sections" });
 
-            try {
-              await menuInteraction.update({
-                embeds: [embed, menuOptionEmbed],
-                components: [actionRow],
-              });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            await menuInteraction.update({ embeds: [embed, menuOptionEmbed], components: [actionRow] }).catch(msgErrorHandler);
             break;
+
           case "menuOption-help-menuHelp-utility":
             menuOptionEmbed
               .setColor(0x00cccc)
-              .setTitle("🧰 Utility section:")
+              .setTitle("🧰 Utility Section")
               .setDescription(
                 [
                   "**d!config** - See Bot's configurations",
@@ -318,41 +290,56 @@ module.exports = {
                   "**d!warn <@user> <reason>** - Warn a member (Only admin)",
                   "**d!warns <@user>** - Check or clear member's warns (Only admin)",
                 ].join("\n"),
-              );
+              )
+              .setFooter({ text: "5/7 sections" });
 
-            try {
-              await menuInteraction.update({
-                embeds: [embed, menuOptionEmbed],
-                components: [actionRow],
-              });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            await menuInteraction.update({ embeds: [embed, menuOptionEmbed], components: [actionRow] }).catch(msgErrorHandler);
             break;
+
+          case "menuOption-help-menuHelp-rng":
+            menuOptionEmbed
+              .setColor(0x00cccc)
+              .setTitle("🎲 RNG Section")
+              .setDescription(
+                [
+                  "It is reccomended to read **d!rnginfo** for understanding this system",
+                  "",
+                  "**d!rnginfo** - Shows how this system works",
+                  "**d!rngdc <number>** - Set the global item drop chance in the server (Only admin)",
+                  "**d!rngadd <dropName> <dropDesc> <dropChance> <dropType> <typeArg>** - Add a new drop (Only admin)",
+                  "**d!rngedit <dropId> <newDropName> <newDesc> <newDropChance> <newType> <newTypeArgs>** - Edit an existing drop (Only admin)",
+                  "**d!rngdelete <dropId>** - Remove a drop the from server (Only admin)",
+                  "**d!rngxpadd <@user> <amount>** - Add experience to an user's RNG Meter (Only admin)",
+                  "**d!rngxpremove <@user> <amount>** - Remove experience from an user's RNG Meter (Only admin)",
+                  "**d!rngdrops** - Shows the configured server drops",
+                  "**d!rngmydrops** - Shows all the found drops",
+                  "**d!rngc <dropId>/<dropName>** - Shows all the nerd stats for a drop",
+                  "**d!rngmeter** - Shows the RNG Meter (if selected)",
+                  "**d!rngselect <dropId>/<dropName>** - Select an item for the RNG Meter",
+                ].join("\n"),
+              )
+              .setFooter({ text: "6/7 sections" });
+
+            await menuInteraction.update({ embeds: [embed, menuOptionEmbed], components: [actionRow] }).catch(msgErrorHandler);
+            break;
+
           case "menuOption-help-menuHelp-comm":
             menuOptionEmbed
               .setColor(0x00cccc)
-              .setTitle("🌍 Community section:")
+              .setTitle("🌍 Community Section")
               .setDescription(
                 [
-                  "**This section will often change due to new commands being, added, changed or removed**",
-                  "You can suggest your own command at https://discord.gg/KxadTdz",
+                  "This section will often change due to new commands being added, changed or removed, you can suggest a new one at https://discord.gg/KxadTdz",
                   "",
                   "**d!hm** - Hausemaster moment",
                   "**d!jm** - Java moment",
                   "**d!canny** - Play canny the game",
                   "**d!uncanny** - Same game but uncanny version",
                 ].join("\n"),
-              );
+              )
+              .setFooter({ text: "7/7 sections" });
 
-            try {
-              await menuInteraction.update({
-                embeds: [embed, menuOptionEmbed],
-                components: [actionRow],
-              });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            await menuInteraction.update({ embeds: [embed, menuOptionEmbed], components: [actionRow] }).catch(msgErrorHandler);
             break;
         }
       }
@@ -362,14 +349,7 @@ module.exports = {
       menuHelp.setPlaceholder("Menu disabled, type again d!help");
       menuHelp.setDisabled(true);
 
-      try {
-        return await sentMessage.edit({
-          embeds: [embed],
-          components: [actionRow],
-        });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await sentMessage.edit({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
     });
   },
 };

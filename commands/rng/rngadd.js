@@ -4,8 +4,6 @@ const configChecker = require("../../utils/configChecker.js");
 const dbJsonDataGet = require("../../utils/dbJsonDataGet.js");
 const dbJsonDataSet = require("../../utils/dbJsonDataSet.js");
 
-// TODO: implement maximum amount of drops (1000? 10k?)
-
 module.exports = {
   name: "rngadd",
   aliases: ["rngadddrop", "rngad"],
@@ -32,18 +30,41 @@ module.exports = {
     const givenArgs = args.join(" ");
     const parts = givenArgs.split("|").map((part) => part.trim());
 
-    if (parts.length < 4 || parts.length > 5) {
+    if (parts.length < 3 || parts.length > 5) {
       embed.setColor(0xff0000).setTitle("❌ Invalid Format").setDescription("Correct usage **d!rngadd dropName | optionalDesc | chance | type | typeArgs**");
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
-    let name, desc, chanceStr, type, typeArg;
+    let name, desc, chanceStr, typeArg;
+    let type = parts[1] ? parts[3].toLowerCase() : parts[2].toLowerCase(); // desc can be optional parameter, so we adapt for it
 
+    // d!rngadd name | desc | chance | item
+    if (parts.length === 4 && type === "item") {
+      [name, desc, chanceStr, type] = parts;
+
+      // d!rngadd name | chance | item
+    } else if (parts.length < 4 && type === "item") {
+      [name, chanceStr, type] = parts;
+      desc = "This mystical item has no description :(";
+    }
+
+    // d!rngadd name | desc | chance | not item | args
     if (parts.length === 5) {
       [name, desc, chanceStr, type, typeArg] = parts;
-    } else {
+
+      // d!rngadd name | chance | not item | args
+    } else if (type !== "item") {
       [name, chanceStr, type, typeArg] = parts;
       desc = "This mystical item has no description :(";
+    }
+
+    if (name.length > 32 || desc.length > 128) {
+      embed
+        .setColor(0xff0000)
+        .setTitle("❌ Name Or Desc too Long")
+        .setDescription("An item name has a maximum length of **32** characters, while an item description can have maximum **128** characters");
+
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const chance = parseFloat(chanceStr);
@@ -79,6 +100,16 @@ module.exports = {
         .setDescription(
           `The combined drop chance of all server drops is **${Number(calcTotalChance.toFixed(8))}%** (Maximum is 100%).\n\nYou only have **${Number(availableSpace.toFixed(8))}%** available space left, remove or adjust existing items by **${Number(overflow.toFixed(8))}%** to fit this item`,
         );
+
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    }
+
+    // max 100 server drops
+    if (serverDrops.length > 99) {
+      embed
+        .setColor(0xff0000)
+        .setTitle("❌ Drops List is Full")
+        .setDescription("This server the the maximum amount of possible drops configured, remove an existing drop with **d!rngdelete <itemId>** to add a new one");
 
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
@@ -141,7 +172,7 @@ module.exports = {
           name: name,
           desc: desc,
           chance: chance,
-          role_id: typeArg,
+          role_id: role.id,
         };
 
         break;

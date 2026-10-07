@@ -4,6 +4,13 @@ const configChecker = require("../../utils/configChecker.js");
 const rngRarityColor = require("../../utils/rngRarityColor.js");
 const rngRarityLabel = require("../../utils/rngRarityLabel.js");
 
+function formatMsgNum(num) {
+  if (num >= 1_000_000_000) return (num / 1_000_000_000).toFixed(1) + "B";
+  if (num >= 1_000_000) return (num / 1_000_000).toFixed(1) + "M";
+  if (num >= 1_000) return (num / 1_000).toFixed(1) + "K";
+  return num.toLocaleString();
+}
+
 module.exports = {
   name: "rngc",
   aliases: ["rngcalc", "rngcalculator"],
@@ -56,8 +63,8 @@ module.exports = {
         const numOfMsgs = perMsgChance === 100 ? 1 : 1 / (perMsgChance / 100);
 
         embed
-          .addFields({ name: "Per-Message Odds", value: `${perMsgChance.toFixed(7).toString()}%`, inline: true })
-          .setFooter({ text: `1/${Math.round(numOfMsgs)} from messages with a global drop of ${globalDropChance}%` });
+          .addFields({ name: "Per-Message Odds", value: `${perMsgChance.toFixed(7).replace(/\.?0+$/, "")}%`, inline: true })
+          .setFooter({ text: `1/${formatMsgNum(Math.round(numOfMsgs))} from messages with a GDC of ${globalDropChance}%` });
 
         // last but not least rng meter
         if (selRngMeter === drop.id) embed.addFields({ name: "🟢 SELECTED", value: "" });

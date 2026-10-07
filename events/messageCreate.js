@@ -7,7 +7,10 @@ const logger = require("../logger")("MessageCreate");
 const loader = require("../loader");
 const msgErrorHandler = require("../utils/msgErrorHandler");
 const createDbData = require("../utils/createDbData");
-const rngItemRoll = require("../utils/rngItemRoll");
+const rng = require("../utils/rng");
+const rngRarityColor = require("../utils/rngRarityColor");
+const manageUserMoney = require("../utils/manageUserMoney");
+const dbJsonDataSet = require("../utils/dbJsonDataSet");
 
 module.exports = (client) => {
   // bot prefix is d!
@@ -250,7 +253,7 @@ module.exports = (client) => {
         tax_cooldown = CASE WHEN u.tax_cooldown + 86400000 <= $3::bigint THEN $3::bigint ELSE u.tax_cooldown END,
         debts_cooldown = CASE WHEN u.debts_cooldown + 86400000 <= $3::bigint THEN $3::bigint ELSE u.debts_cooldown END,
         pet_cooldown = CASE WHEN u.pet_cooldown + 10800000 <= $3::bigint THEN $3::bigint ELSE u.pet_cooldown END,
-        rng_cooldown = CASE WHEN u.rng_cooldown + 10000 <= $3::bigint THEN $3::bigint ELSE u.rng_cooldown END
+        rng_cooldown = CASE WHEN u.rng_cooldown + 3000 <= $3::bigint THEN $3::bigint ELSE u.rng_cooldown END
       FROM servers s
       WHERE u.server_id = $1 
         AND u.user_id = $2 
@@ -270,7 +273,10 @@ module.exports = (client) => {
     const isRngEnabled = row.rng_cmd;
     const wealth = Number(row.money) + Number(row.bank_money);
     const serverDrops = row.server_drops;
-    const globalDropRate = row.rng_drop_chance;
+    const globalDropChance = row.rng_drop_chance;
+    const rngMeterSelection = row.rng_meter_selection;
+    const rngMeterProgress = row.rng_meter_progress;
+    const foundDrops = row.found_drops;
 
     // LEVEL UP CHECK
     if (isLevelingEnabled && row.xp >= row.next_xp) {
@@ -285,7 +291,7 @@ module.exports = (client) => {
 
       const embed = new EmbedBuilder()
         .setColor(0xffcc00)
-        .setTitle("⬆️ Level up")
+        .setTitle("⬆️ Level Up")
         .setDescription(`Your new level: **${newStats.level}**\nXP for next level: **${newStats.next_xp}**`)
         .setThumbnail("attachment://levelUp.png")
         .setFooter({ text: message.author.username, iconURL: message.author.displayAvatarURL() });
@@ -301,7 +307,7 @@ module.exports = (client) => {
 
         const embed = new EmbedBuilder()
           .setColor(0xffcc00)
-          .setTitle("🤝 So kind of you")
+          .setTitle("🤝 So Kind of You")
           .setDescription(`Gave **+1** reputation to ${mentionedMember.username}`)
           .setFooter({ text: "Check your rep with d!rep" });
 
@@ -357,10 +363,183 @@ module.exports = (client) => {
       }
     }
 
-    // RNG CHECK (Every 10 seconds to prevent spam)
-    // add later to the if ' && Number(row.rng_cooldown) === unixNow'
-    if (isRngEnabled) {
-      await rngItemRoll(client, message, serverDrops, globalDropRate); // BASE SHOULD BE BETWEEN 1-10% for a fair and not spammy system
+    // RNG CHECK (Every 3 seconds to prevent spam and overloading the bot with this intensive task)
+    if (isRngEnabled && Number(row.rng_cooldown) === unixNow) {
+      // rng meter progress must be updated first, add xp only if user has selected an item
+      if (rngMeterSelection) {
+        await client.database.query("UPDATE users SET rng_meter_progress = rng_meter_progress + $1 WHERE server_id = $2 AND user_id = $3", [
+          message.content.startsWith("d!") ? 1.2 : 1, // using bot commands will fill the rng 20% faster than a normal message
+          message.guildId,
+          message.author.id,
+        ]);
+      }
+
+      const eventRoll = rng();
+
+      // no items dropped this message, since rng is the last thing we do in 'userDataUpdater()', we can actually return without issue
+      if (eventRoll > globalDropChance) return;
+
+      // if the server drop pool is already 100% we may have an overflow since meter increases the chance the closer you max it
+      let totalPoolChance = 0;
+      let guaranteedDrop = null;
+
+      const drops = serverDrops.map((drop) => {
+        let currentChance = drop.chance;
+
+        if (rngMeterSelection === drop.id) {
+          const effectiveChance = (globalDropChance / 100) * (drop.chance / 100);
+          const maxScore = effectiveChance < 1 ? Math.ceil(1 / effectiveChance) : 1;
+
+          // check if the rng meter is full for drop chance scaling
+          if (rngMeterProgress >= maxScore) {
+            currentChance = 100;
+            guaranteedDrop = { ...drop, activeChance: 100 };
+          } else {
+            currentChance = drop.chance * (1 + 2 * (rngMeterProgress / maxScore));
+          }
+        }
+
+        totalPoolChance += currentChance;
+        return { ...drop, activeChance: currentChance };
+      });
+
+      let wonReward = null;
+
+      if (guaranteedDrop) {
+        wonReward = guaranteedDrop;
+      } else {
+        // totalPoolChance is to adjust the rng meter possible overflow
+        const rollCeiling = Math.max(100, totalPoolChance);
+        const itemRoll = rng(rollCeiling); // <-- May the RNG bless the message author :pray:
+
+        let cumulativeChance = 0;
+
+        for (const drop of drops) {
+          cumulativeChance += drop.activeChance;
+
+          if (itemRoll <= cumulativeChance) {
+            wonReward = drop;
+            break;
+          }
+        }
+      }
+
+      // by default the combined chance of the server drops dosen't reach 100%, double unlucky :(
+      if (!wonReward) return;
+
+      let isMeterDrop = false;
+
+      // oh! dropped selected item in the meter
+      if (rngMeterSelection === wonReward.id) {
+        await client.database.query("UPDATE users SET rng_meter_progress = 0 WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
+
+        isMeterDrop = true;
+      }
+
+      // we must first check if the user has found that drop already or if it's new
+      if (foundDrops === null) return;
+
+      const currentDate = new Date().toLocaleString();
+      const existingItem = foundDrops.findIndex((item) => item.id === wonReward.id);
+
+      if (existingItem !== -1) {
+        foundDrops[existingItem].quantity = (foundDrops[existingItem].quantity || 1) + 1;
+        foundDrops[existingItem].last_found_date = currentDate;
+      } else {
+        // to save space, only store the essential data we need
+        foundDrops.push({
+          id: wonReward.id,
+          quantity: 1,
+          first_found_date: currentDate,
+          last_found_date: currentDate,
+        });
+      }
+
+      // well we are just saving the found drop
+      if ((await dbJsonDataSet(client, message, "found_drops", foundDrops, message.author.id, false)) === null) return;
+
+      const odds = wonReward.chance;
+      const embed = new EmbedBuilder();
+      const meterText = isMeterDrop ? `\n\n**🎯 RNG Meter!** Reselected the **${wonReward.name}**` : "";
+
+      // owners can setup different rewards types: role, item, money and maybe more stuff i dont know
+      switch (wonReward.type) {
+        case "item":
+          embed.setDescription(`**${message.author.username}** just found a **${wonReward.name}**!\n\n*${wonReward.desc}*${meterText}`);
+          break;
+
+        case "money":
+          embed.setDescription(`**${message.author.username}** just found a **${wonReward.name}** and got **${wonReward.money}$**!\n\n*${wonReward.desc}*${meterText}`);
+
+          if ((await manageUserMoney(client, message, "+", wonReward.money)) === null) return;
+          break;
+
+        case "role":
+          const role = message.guild.roles.cache.get(wonReward.role_id);
+
+          // i mean, no role exists you won nothing, but still tell the user
+          if (!role) {
+            embed.setDescription(`**${message.author.username}** just found a role that dosen't exist!\n\n*${wonReward.desc}*${meterText}`).addFields({
+              name: "IMPORTANT",
+              value: `Tell the server owner that the drop with id **${wonReward.id}** does NOT have a valid role anymore and needs to be updated with a valid role`,
+            });
+            break;
+          }
+
+          // wasn't sure if it was better to stay silent or announce you found it twice, well better say something since we have 'quantity' attribute
+          if (message.member.roles.cache.has(role.id)) {
+            embed.setDescription(`**${message.author.username}** just found again the role <@&${role.id}>!\n\n*${wonReward.desc}*${meterText}`);
+            break;
+          }
+
+          embed.setDescription(`**${message.author.username}** just found the role <@&${role.id}>!\n\n*${wonReward.desc}*${meterText}`);
+
+          if (!message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.ManageRoles)) {
+            embed.addFields({ name: "F!", value: "I'm missing `Manage Roles` permission to give you the role, ask a server mod" });
+            break;
+          }
+
+          await message.member.roles.add(role).catch(() => {
+            embed.addFields({ name: "Whopsy!", value: "I couldn't add you the role automatically, ask a server mod" });
+          });
+          break;
+
+        // shouldn't happen?
+        default:
+          embed.setDescription(`**${message.author.username}** just found the ***U N K N O W N***!\n\n*${wonReward.desc}*${meterText}`);
+          break;
+      }
+
+      embed.setColor(rngRarityColor(odds));
+
+      // looks cool to make the embed dynamic to the drop's chance
+      if (odds > 20) {
+        embed.setTitle("🍀 RNG DROP! 🍀");
+      }
+
+      if (odds <= 20 && odds > 10) {
+        embed.setTitle("🔥 RNG DROP! 🔥");
+      }
+
+      if (odds <= 10 && odds > 3) {
+        embed.setTitle("✨ RNG DROP! ✨");
+      }
+
+      if (odds <= 3 && odds > 1) {
+        embed.setTitle("⭐ RNG DROP! ⭐");
+      }
+
+      if (odds <= 1 && odds > 0.1) {
+        embed.setTitle("🌟 RNG DROP! 🌟");
+      }
+
+      if (odds <= 0.1) {
+        embed.setTitle("💫 RNG DROP! 💫");
+      }
+
+      embed.setFooter({ text: message.author.username, iconURL: message.author.avatarURL({ dynamic: true }) }).setTimestamp();
+
+      await message.reply({ embeds: [embed] }).catch(msgErrorHandler); // log and finally stop
     }
   }
 };
