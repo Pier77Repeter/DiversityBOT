@@ -50,11 +50,7 @@ module.exports = async function cooldownManager(client, message, cooldownName, c
         { name: "Submit Report Here", value: "https://discord.gg/KxadTdz" },
       );
 
-    try {
-      await message.reply({ embeds: [embed] });
-    } catch (error) {
-      msgErrorHandler(error);
-    }
+    await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
     return null;
   }

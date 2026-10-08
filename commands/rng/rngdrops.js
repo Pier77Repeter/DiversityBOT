@@ -28,7 +28,7 @@ module.exports = {
 
     const serverDrops = row.rows[0].server_drops;
 
-    embed.setColor(0x1fa7b1).setTitle(`📦 ${message.guild.name}'s drops`);
+    embed.setColor(0x1fa7b1).setTitle(`📦 ${message.guild.name}'s Drops`);
 
     if (serverDrops.length === 0) {
       embed.setDescription("No drops to display here, add one with **d!dropadd**");
@@ -40,8 +40,8 @@ module.exports = {
     const embeds = [];
     const fields = [];
     const color = 0x1fa7b1;
-    const title = `📦 ${message.guild.name}'s drops`;
-    const desc = "List of drops that can be found while chatting in this server, the owner can edit, remove or create new drops";
+    const title = `📦 ${message.guild.name}'s Drops`;
+    const desc = "List of drops that can be found while chatting in this server, the owner can edit, remove or create new ones";
 
     for (const drop of serverDrops) {
       fields.push(
@@ -60,7 +60,7 @@ module.exports = {
             .setTitle(title)
             .setDescription(desc)
             .addFields(fields)
-            .setFooter({ text: `Global drop chance is ${row.rows[0].rng_drop_chance}%` }),
+            .setFooter({ text: `${message.guild.name} - GDC is ${row.rows[0].rng_drop_chance}%`, iconURL: message.guild.iconURL() }),
         );
         fields.splice(0, fields.length);
         counter = 0;
@@ -75,7 +75,7 @@ module.exports = {
           .setTitle(title)
           .setDescription(desc)
           .addFields(fields)
-          .setFooter({ text: `Global drop chance is ${row.rows[0].rng_drop_chance}%` }),
+          .setFooter({ text: `${message.guild.name} - GDC is ${row.rows[0].rng_drop_chance}%`, iconURL: message.guild.iconURL() }),
       );
     }
 

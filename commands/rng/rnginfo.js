@@ -25,6 +25,7 @@ module.exports = {
       "The expected amount of messages to drop the item is calculated as:\n`Num of Msgs = 1 / (PMC / 100)`",
       "", // skip
       "**The RNG Meter** is an helpful tool to focus your luck on a specific item, gaining RNG Meter EXP will increase the item's drop chance with a maximum of **x3**",
+      "When sending a message the RNG Meter progress will advance by **1 EXP** with a 3 seconds cooldown between each sent message to prevent spam / flooding, my commands will fill the meter 20% faster.",
       "",
       "For Admins, in case an item is removed from the server drops list, **it will be removed from every member who found it**. Better be careful about it!",
       "",

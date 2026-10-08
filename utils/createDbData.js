@@ -123,7 +123,8 @@ module.exports = async function createDbData(client, serverId, userId) {
 
   const values = [serverId, userId, JSON.stringify(serverDropsJsonData), itemsJsonData, fishesJsonData];
 
+  // we insert new data!
   await client.database.query(query, values).catch((error) => {
-    logger.error(`Failed to create new server/user data`, error);
-  }); // we inserted new data!
+    logger.error(`Failed to create new server/user in db`, error);
+  });
 };

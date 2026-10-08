@@ -529,11 +529,11 @@ module.exports = (client) => {
         embed.setTitle("⭐ RNG DROP! ⭐");
       }
 
-      if (odds <= 1 && odds > 0.1) {
+      if (odds <= 1 && odds >= 0.1) {
         embed.setTitle("🌟 RNG DROP! 🌟");
       }
 
-      if (odds <= 0.1) {
+      if (odds < 0.1) {
         embed.setTitle("💫 RNG DROP! 💫");
       }
 

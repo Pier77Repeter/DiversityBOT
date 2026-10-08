@@ -38,7 +38,7 @@ module.exports = async function manageUserMoney(client, message, operation, amou
           const debts = amount - money;
 
           // user has lots of debts... just do nothing
-          if (debts >= -999999999999999999) return 0;
+          if (debts >= -999999999999999999n) return 0;
 
           await client.database.query("UPDATE users SET money = 0, debts = debts + $1 WHERE server_id = $2 AND user_id = $3", [debts, message.guildId, message.author.id]);
         } else {
@@ -63,11 +63,7 @@ module.exports = async function manageUserMoney(client, message, operation, amou
         { name: "Submit Report Here", value: "https://discord.gg/KxadTdz" },
       );
 
-    try {
-      await message.reply({ embeds: [embed] });
-    } catch (error) {
-      msgErrorHandler(error);
-    }
+    await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
     return null;
   }

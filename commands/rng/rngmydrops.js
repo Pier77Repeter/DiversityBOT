@@ -31,7 +31,7 @@ module.exports = {
     const serverDrops = row.rows[0].server_drops;
     const userFoundDrops = row.rows[0].found_drops;
 
-    embed.setColor(0x1fa7b1).setTitle(`🔍 ${user.username}'s found drops`);
+    embed.setColor(0x1fa7b1).setTitle(`🔍 ${user.username}'s Found Drops`);
 
     if (userFoundDrops.length === 0) {
       embed.setDescription("No drops to display here, haven't found nothing *YET*");
@@ -46,7 +46,7 @@ module.exports = {
     const embeds = [];
     const fields = [];
     const color = 0x1fa7b1;
-    const title = `🔍 ${user.username}'s found drops`;
+    const title = `🔍 ${user.username}'s Found Drops`;
 
     let odds,
       dropId,
@@ -66,7 +66,13 @@ module.exports = {
 
       // we only store 4 fields per embed to prevent reaching 1024 char limit
       if (counter === 4) {
-        embeds.push(new EmbedBuilder().setColor(color).setTitle(title).addFields(fields));
+        embeds.push(
+          new EmbedBuilder()
+            .setColor(color)
+            .setTitle(title)
+            .addFields(fields)
+            .setFooter({ text: user.username, iconURL: user.avatarURL({ dynamic: true }) }),
+        );
         fields.splice(0, fields.length);
         counter = 0;
       }
@@ -74,7 +80,13 @@ module.exports = {
 
     // dont want duplicates
     if (counter !== 0) {
-      embeds.push(new EmbedBuilder().setColor(color).setTitle(title).addFields(fields));
+      embeds.push(
+        new EmbedBuilder()
+          .setColor(color)
+          .setTitle(title)
+          .addFields(fields)
+          .setFooter({ text: user.username, iconURL: user.avatarURL({ dynamic: true }) }),
+      );
     }
 
     return await embedPaginator(this.name, message, embeds).catch(msgErrorHandler);

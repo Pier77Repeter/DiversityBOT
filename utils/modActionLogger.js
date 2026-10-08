@@ -21,11 +21,7 @@ module.exports = async function modActionLogger(client, actionSource, embed) {
     // maybe it got deleted
     if (!channel) return;
 
-    try {
-      return await channel.send({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error); // imagine set the mod log channel and bot cant log stuff
-    }
+    return await channel.send({ embeds: [embed] }).catch(msgErrorHandler); // imagine set the mod log channel and bot cant log stuff
   } catch (error) {
     logger.error("Failed to log a mod action", error);
   }

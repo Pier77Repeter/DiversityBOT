@@ -96,7 +96,7 @@ module.exports = {
       `Progress: **${progressPercent.toFixed(1)}%**`,
       `${createProgressBar(userMeterProgress, maxScore)} **${currentXp}**/**${formatXp(maxScore)}**`,
       ``,
-      `Filling the meter increases the drop chance of this item. Reaching **100%** will guarantee it to drop!`,
+      `Filling the meter increases the drop chance of this item. Reaching 100% will guarantee it to drop!`,
       ``,
     ].join("\n");
 
