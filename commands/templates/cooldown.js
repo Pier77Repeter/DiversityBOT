@@ -15,18 +15,10 @@ module.exports = {
     if (cooldown) {
       const embed = new EmbedBuilder().setColor(0x000000).setDescription("⏰ WAIT: **<t:" + cooldown[1] + ":R>** to use this again");
 
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     // command logic here
-    try {
-      return await message.reply("Congrats, you just used the: **" + this.name + "** command");
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply("Congrats, you just used the: **" + this.name + "** command").catch(msgErrorHandler);
   },
 };

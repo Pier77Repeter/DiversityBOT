@@ -20,12 +20,7 @@ module.exports = {
       .setThumbnail(message.author.displayAvatarURL()) // thumbnail of the embed is the message author's avatar, aka pfp
       .setImage("attachment://DVC_highquality.jpg"); // to upload local images, always put 'attachment://' before the file name
 
-    // sending the embed with the image and return because it's the last thing to do
-    try {
-      // to put embeds and images inside message.reply() you do this '{ embeds: [embed1, embed2], files: [file1, file2] }'
-      return await message.reply({ embeds: [embed], files: [imageFile] });
-    } catch (error) {
-      return msgErrorHandler(error); // only log errors that aren't related to the Discord API, check the structure of the error with console.log(error)
-    }
+    // sending the embed with the image and return because it's the last thing to do, put embeds and images inside message.reply() you do this '{ embeds: [embed1, embed2], files: [file1, file2] }'
+    return await message.reply({ embeds: [embed], files: [imageFile] }).catch(msgErrorHandler);
   },
 };

@@ -9,30 +9,22 @@ module.exports = {
   async execute(client, message, args) {
     if (message.author.id !== "724990112030654484") return;
 
-    var sentMessage;
+    let sentMessage;
 
     if (!args[0]) {
-      try {
-        sentMessage = await message.reply("Please insert the name of crypto: **btc**, **doge**, **moa**, **div**");
+      sentMessage = await message.reply("Please insert the name of crypto: **btc**, **doge**, **moa**, **div**").catch(msgErrorHandler);
 
-        await delay(10000);
+      await delay(10000);
 
-        return await sentMessage.delete();
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await sentMessage.delete().catch(msgErrorHandler);
     }
 
     if (isNaN(args[1])) {
-      try {
-        sentMessage = await message.reply("Please insert a valid number");
+      sentMessage = await message.reply("Please insert a valid number").catch(msgErrorHandler);
 
-        await delay(10000);
+      await delay(10000);
 
-        return await sentMessage.delete();
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await sentMessage.delete().catch(msgErrorHandler);
     }
 
     const cryptoName = args[0].toLowerCase();
@@ -42,79 +34,55 @@ module.exports = {
       case "btc":
         itemPrices.bitcoinPrice = cryptoPrice;
 
-        try {
-          sentMessage = await message.reply("Bitcoin's price is now **" + itemPrices.bitcoinPrice + "$**");
+        sentMessage = await message.reply("Bitcoin's price is now **" + itemPrices.bitcoinPrice + "$**").catch(msgErrorHandler);
 
-          await delay(10000);
+        await delay(10000);
 
-          await sentMessage.delete();
-        } catch (error) {
-          msgErrorHandler(error);
-        }
+        await sentMessage.delete().catch(msgErrorHandler);
         break;
 
       case "doge":
         itemPrices.dogecoinPrice = cryptoPrice;
 
-        try {
-          sentMessage = await message.reply("Dogecoin's price is now **" + itemPrices.dogecoinPrice + "$**");
+        sentMessage = await message.reply("Dogecoin's price is now **" + itemPrices.dogecoinPrice + "$**").catch(msgErrorHandler);
 
-          await delay(10000);
+        await delay(10000);
 
-          await sentMessage.delete();
-        } catch (error) {
-          msgErrorHandler(error);
-        }
+        await sentMessage.delete().catch(msgErrorHandler);
         break;
 
       case "moa":
         itemPrices.moacoinPrice = cryptoPrice;
 
-        try {
-          sentMessage = await message.reply("Moacoin's price is now **" + itemPrices.moacoinPrice + "$**");
+        sentMessage = await message.reply("Moacoin's price is now **" + itemPrices.moacoinPrice + "$**").catch(msgErrorHandler);
 
-          await delay(10000);
+        await delay(10000);
 
-          await sentMessage.delete();
-        } catch (error) {
-          msgErrorHandler(error);
-        }
+        await sentMessage.delete().catch(msgErrorHandler);
         break;
 
       case "div":
         itemPrices.divcoinPrice = cryptoPrice;
 
-        try {
-          sentMessage = await message.reply("Moacoin's price is now **" + itemPrices.divcoinPrice + "$**");
+        sentMessage = await message.reply("Moacoin's price is now **" + itemPrices.divcoinPrice + "$**").catch(msgErrorHandler);
 
-          await delay(10000);
+        await delay(10000);
 
-          await sentMessage.delete();
-        } catch (error) {
-          msgErrorHandler(error);
-        }
+        await sentMessage.delete().catch(msgErrorHandler);
         break;
 
       default:
-        try {
-          sentMessage = await message.reply("Invalid crypto name, chose between: **btc**, **doge**, **moa**, **div**");
+        sentMessage = await message.reply("Invalid crypto name, chose between: **btc**, **doge**, **moa**, **div**").catch(msgErrorHandler);
 
-          await delay(10000);
+        await delay(10000);
 
-          await sentMessage.delete();
-        } catch (error) {
-          msgErrorHandler(error);
-        }
+        await sentMessage.delete().catch(msgErrorHandler);
         break;
     }
 
     // this at the end
     if (message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.ManageMessages)) {
-      try {
-        return await message.delete();
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.delete().catch(msgErrorHandler);
     }
   },
 };

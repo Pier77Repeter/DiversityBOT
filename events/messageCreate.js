@@ -253,7 +253,7 @@ module.exports = (client) => {
         tax_cooldown = CASE WHEN u.tax_cooldown + 86400000 <= $3::bigint THEN $3::bigint ELSE u.tax_cooldown END,
         debts_cooldown = CASE WHEN u.debts_cooldown + 86400000 <= $3::bigint THEN $3::bigint ELSE u.debts_cooldown END,
         pet_cooldown = CASE WHEN u.pet_cooldown + 10800000 <= $3::bigint THEN $3::bigint ELSE u.pet_cooldown END,
-        rng_cooldown = CASE WHEN u.rng_cooldown + 3000 <= $3::bigint THEN $3::bigint ELSE u.rng_cooldown END
+        rng_cooldown = CASE WHEN u.rng_cooldown + 2000 <= $3::bigint THEN $3::bigint ELSE u.rng_cooldown END
       FROM servers s
       WHERE u.server_id = $1 
         AND u.user_id = $2 
@@ -363,7 +363,7 @@ module.exports = (client) => {
       }
     }
 
-    // RNG CHECK (Every 3 seconds to prevent spam and overloading the bot with this intensive task)
+    // RNG CHECK (Every 2 seconds to prevent spam and overloading the bot with this intensive task)
     if (isRngEnabled && Number(row.rng_cooldown) === unixNow) {
       // rng meter progress must be updated first, add xp only if user has selected an item
       if (rngMeterSelection) {

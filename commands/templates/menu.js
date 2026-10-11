@@ -19,13 +19,10 @@ module.exports = {
     const actionRow = new ActionRowBuilder().addComponents(menu);
 
     // reply message with the menu
-    let sentMessage;
+    const sentMessage = await message.reply({ content: "Choose your weapon", components: [actionRow] }).catch(msgErrorHandler);
 
-    try {
-      sentMessage = await message.reply({ content: "Choose your weapon", components: [actionRow] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    // if an error happens (managed by msgErrorHandler) while sending the message we can safely stop executing this command as sentMessage is undefined
+    if (!sentMessage) return;
 
     const collector = sentMessage.createMessageComponentCollector({
       componentType: ComponentType.StringSelect, // menu option type
@@ -35,15 +32,9 @@ module.exports = {
     // when the menu is clicked event
     collector.on("collect", async (menuInteraction) => {
       // always check if the user is the author
-      if (menuInteraction.user.id !== message.author.id)
-        try {
-          return await menuInteraction.reply({
-            content: "This menu isn't for you!",
-            flags: MessageFlags.Ephemeral,
-          });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+      if (menuInteraction.user.id !== message.author.id) {
+        return await menuInteraction.reply({ content: "This menu isn't for you!", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+      }
 
       collector.resetTimer();
 
@@ -52,26 +43,17 @@ module.exports = {
         // checking which option was selected menuInteraction.values[0] to get the options (this is the first option)
         switch (menuInteraction.values[0]) {
           case "bidenBlast":
-            try {
-              // update the interaction, we can only do that 1 time, after this we need to do: sentMessage.edit()
-              await menuInteraction.update({ content: "Biden blast selected", components: [actionRow] });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            // update the interaction, we can only do that 1 time, after this we need to do: sentMessage.edit()
+            await menuInteraction.update({ content: "Biden blast selected", components: [actionRow] }).catch(msgErrorHandler);
+
             break;
           case "curseOfRA":
-            try {
-              await menuInteraction.update({ content: "Curse of RA selected", components: [actionRow] });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            await menuInteraction.update({ content: "Curse of RA selected", components: [actionRow] }).catch(msgErrorHandler);
+
             break;
           case "bob":
-            try {
-              await menuInteraction.update({ content: "Bob selected", components: [actionRow] });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            await menuInteraction.update({ content: "Bob selected", components: [actionRow] }).catch(msgErrorHandler);
+
             break;
         }
       }
@@ -81,11 +63,7 @@ module.exports = {
       menu.setDisabled(true); // disabling the menu
 
       // update the menu when disabled
-      try {
-        return await sentMessage.edit({ content: "Bob selected", components: [actionRow] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await sentMessage.edit({ content: "Bob selected", components: [actionRow] }).catch(msgErrorHandler);
     });
   },
 };

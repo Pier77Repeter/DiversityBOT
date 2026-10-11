@@ -7,9 +7,9 @@ Notes: DiversityBOT is the biggest project i've ever made!
 
 // error handler to prevent crashes, top priority even tho position dosen't metter
 process.on("uncaughtException", (error) => {
-  console.warn("\n[Error handler]: CRASH PREVENTED, PLEASE LOOK AT THE ERROR!!!\n=============================================================");
+  console.warn("\n[Error Handler]: CRASH PREVENTED, PLEASE LOOK AT THE ERROR!!!\n=============================================================");
   console.error(error);
-  console.warn("=============================================================\n[Error handler]: CRASH PREVENTED, PLEASE LOOK AT THE ERROR!!!\n");
+  console.warn("=============================================================\n[Error Handler]: CRASH PREVENTED, PLEASE LOOK AT THE ERROR!!!\n");
 });
 
 // init log
@@ -104,7 +104,11 @@ const client = new Client({
 });
 
 // updating Top.gg stats, at least for my bot, dont want to log it
-//AutoPoster(topggToken, client);
+/*
+AutoPoster(topggToken, client).catch((error) => {
+  logger.error("Failed to update top.gg statistics (nothing important unless token isn't configured");
+});
+*/
 
 // AFTER the bot fully loaded THEN we can log in
 loader.initLoader(client).then(async () => {

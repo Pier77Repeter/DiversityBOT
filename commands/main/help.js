@@ -36,8 +36,7 @@ module.exports = {
           '👋 Hello there! I\'m DiversityBOT, a totally "normal" Discord Bot!',
           "Feel free to look at aaaalll of my commands by using the menu below",
           "Remember to give me all the needed permissions, else some features may not work properly",
-          "Important commands: **d!help**, **d!config**, **/help**, **/config**",
-          "More commands will come soon. Please, be patient ;)",
+          "Important commands: **d!help**, **d!config**, **/help** and **/config**",
           "", // for jumping down 2 times
           "Bot current version: **2.2**",
           "Support me by **joining here https://discord.gg/KxadTdz**",
@@ -46,12 +45,12 @@ module.exports = {
       .setThumbnail("attachment://DVC_highquality.jpg")
       .setFields(
         {
-          name: "📰 New updates:",
+          name: "📰 New Updates:",
           value: "Release 2.2, type **d!news** for more!",
           inline: false,
         },
         {
-          name: "🎉 Ongoing event: None",
+          name: "🎉 Ongoing Event: None",
           value: "More info in the Discord server!",
           //value: "Type d!event or /event to see more details!",
           inline: false,
@@ -75,6 +74,7 @@ module.exports = {
       }
 
       collector.resetTimer();
+
       const menuOptionEmbed = new EmbedBuilder();
 
       if (menuInteraction.customId === "menu-help-menuHelp") {
@@ -307,7 +307,7 @@ module.exports = {
                   "**d!rnginfo** - Shows how this system works",
                   "**d!rngdc <number>** - Set the global item drop chance in the server (Only admin)",
                   "**d!rngadd <dropName> <dropDesc> <dropChance> <dropType> <typeArg>** - Add a new drop (Only admin)",
-                  "**d!rngedit <dropId> <newDropName> <newDesc> <newDropChance> <newType> <newTypeArgs>** - Edit an existing drop (Only admin)",
+                  "**d!rngedit <dropId> <newDropName> <newDesc> <newDropChance> <newType> <newTypeArg>** - Edit an existing drop (Only admin)",
                   "**d!rngdelete <dropId>** - Remove a drop the from server (Only admin)",
                   "**d!rngxpadd <@user> <amount>** - Add experience to an user's RNG Meter (Only admin)",
                   "**d!rngxpremove <@user> <amount>** - Remove experience from an user's RNG Meter (Only admin)",
