@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, PermissionsBitField, MessageFlags } = require("discord.js");
 const configChecker = require("../utils/configChecker");
 const modActionLogger = require("../utils/modActionLogger");
+const msgErrorHandler = require("../utils/msgErrorHandler");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -16,28 +17,16 @@ module.exports = {
 
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **/setup** to enable them");
-
-      try {
-        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch {
-        return;
-      }
+      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("I don't have the permission to `Manage messages`");
-
-      try {
-        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch {
-        return;
-      }
+      embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("I don't have the permission to `Manage Messages` in this server");
+      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     const amount = interaction.options.getNumber("messages");
-
     const fetchedMessages = await interaction.channel.messages.fetch({ limit: amount });
-
     const messagesToProcess = fetchedMessages.toJSON().slice(0, amount);
 
     let deletedCount = 0;
@@ -49,26 +38,18 @@ module.exports = {
     } catch {
       embed
         .setColor(0xff0000)
-        .setTitle("❌ Error")
+        .setTitle("❌ Failed to Delete Messages")
         .setDescription("An error occurred while trying to clean messages, messages older than 14 days cannot be deleted, try a smaller amount");
 
-      try {
-        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch {
-        return;
-      }
+      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     embed
       .setColor(0x33ff33)
-      .setTitle("✅ Done")
+      .setTitle("✅ Cleaned")
       .setDescription("Successfully cleaned **" + deletedCount + "** messages from the channel");
 
-    try {
-      await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-    } catch {
-      // continue
-    }
+    await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
     // MOD LOGGING HERE
     embed
@@ -78,6 +59,6 @@ module.exports = {
       .setFooter({ text: "Action by " + interaction.user.tag, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
       .setTimestamp();
 
-    await modActionLogger(client, interaction, embed);
+    return await modActionLogger(client, interaction, embed);
   },
 };

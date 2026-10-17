@@ -2,6 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, MessageFlags } =
 const configChecker = require("../utils/configChecker");
 const modActionLogger = require("../utils/modActionLogger");
 const createDbData = require("../utils/createDbData");
+const msgErrorHandler = require("../utils/msgErrorHandler");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -18,46 +19,26 @@ module.exports = {
 
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **/setup** to enable them");
-
-      try {
-        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch {
-        return;
-      }
+      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     const memberToWarn = interaction.options.getMember("member");
     const warnReason = interaction.options.getString("reason") || "No reason provided";
 
     if (!memberToWarn) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Could not find that member in the server, they left...");
-
-      try {
-        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch {
-        return;
-      }
+      embed.setColor(0xff0000).setTitle("❌ No Member").setDescription("Could not find that member in the server, they left...");
+      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     if (memberToWarn.id === interaction.user.id) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You can't warn yourself lol");
-
-      try {
-        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch {
-        return;
-      }
+      embed.setColor(0xff0000).setTitle("❌ What?").setDescription("You can't warn yourself lol");
+      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     // can't warn bots
     if (memberToWarn.user.bot) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You can't warn a Discord Bot");
-
-      try {
-        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch {
-        return;
-      }
+      embed.setColor(0xff0000).setTitle("❌ Can't Warn").setDescription("You can't warn a Discord Bot");
+      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     // if user dosen't exist in database we gotta create it
@@ -72,23 +53,19 @@ module.exports = {
 
     embed
       .setColor(0x33ff33)
-      .setTitle("✅ Done")
+      .setTitle("✅ Warned")
       .setDescription("The user **" + memberToWarn.user.tag + "** has been warned");
 
-    try {
-      await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-    } catch {
-      // continue
-    }
+    await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
     // MOD LOGGING HERE
     embed
       .setColor(0x33ff33)
-      .setTitle("🛂 Warned member")
+      .setTitle("🛂 Warned Member")
       .setDescription("**" + memberToWarn.user.tag + "** has been warned" + "\n" + "Reason: " + warnReason)
       .setFooter({ text: "Action by " + interaction.user.tag, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
       .setTimestamp();
 
-    await modActionLogger(client, interaction, embed);
+    return await modActionLogger(client, interaction, embed);
   },
 };

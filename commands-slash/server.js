@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const msgErrorHandler = require("../utils/msgErrorHandler");
 
 module.exports = {
   data: new SlashCommandBuilder().setName("server").setDescription("Shows all the stats of the server"),
@@ -14,7 +15,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor(0x000099)
-      .setTitle([interaction.guild.name + "'s informations"].join(""))
+      .setTitle([interaction.guild.name + "'s Informations"].join(""))
       .setDescription(
         [
           "Server ID: **" + interaction.guildId + "**",
@@ -45,10 +46,6 @@ module.exports = {
       .setImage(interaction.guild.iconURL({ dynamic: true }))
       .setFooter({ text: "View the server's configs with /config" });
 
-    try {
-      return await interaction.reply({ embeds: [embed] });
-    } catch {
-      return;
-    }
+    return await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

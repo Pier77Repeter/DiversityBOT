@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const delay = require("../utils/delay");
+const msgErrorHandler = require("../utils/msgErrorHandler");
 
 module.exports = {
   data: new SlashCommandBuilder().setName("ping").setDescription("Replies with Pong!"),
@@ -9,11 +10,7 @@ module.exports = {
 
     let sentMessage;
 
-    try {
-      await interaction.reply({ embeds: [embed] });
-    } catch {
-      return;
-    }
+    await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
     await delay(3000);
 
@@ -24,17 +21,13 @@ module.exports = {
 
     embed
       .setColor(0x33ff33)
-      .setTitle("🏓 Bot is functioning")
+      .setTitle("🏓 Bot is Functioning")
       .setDescription("I'm working as expected :P")
       .setFields({
         name: "🖥 DiversityBOT Server",
         value: `Roundtrip latency: **${latency}**\nWebsocket heartbeat: **${interaction.client.ws.ping}ms**`,
       });
 
-    try {
-      return await interaction.editReply({ embeds: [embed] });
-    } catch {
-      return;
-    }
+    return await interaction.editReply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

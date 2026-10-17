@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, PermissionsBitField, MessageFlags } = require("discord.js");
 const configChecker = require("../utils/configChecker");
 const modActionLogger = require("../utils/modActionLogger");
+const msgErrorHandler = require("../utils/msgErrorHandler");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -17,33 +18,21 @@ module.exports = {
 
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **/setup** to enable them");
-      try {
-        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch {
-        return;
-      }
+      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     // Bot's permissions check
     if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.BanMembers)) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("I don't have the permission to `Ban members`");
-      try {
-        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch {
-        return;
-      }
+      embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("I don't have the permission to `Ban Members` in this server");
+      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     const memberId = interaction.options.getString("userid");
     const unbanReason = interaction.options.getString("reason") || "No reason provided";
 
     if (memberId === interaction.user.id) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You can't unban yourself lol");
-      try {
-        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch {
-        return;
-      }
+      embed.setColor(0xff0000).setTitle("❌ What?").setDescription("You can't unban yourself lol");
+      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     let bannedUser;
@@ -51,13 +40,8 @@ module.exports = {
     try {
       bannedUser = await interaction.guild.bans.fetch(memberId);
     } catch {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("This user hasn't been banned from the server");
-
-      try {
-        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch {
-        return;
-      }
+      embed.setColor(0xff0000).setTitle("❌ Not Banned").setDescription("This user hasn't been banned from the server");
+      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     // as always, the error is catch in interactionCreate.js
@@ -65,14 +49,10 @@ module.exports = {
 
     embed
       .setColor(0x33ff33)
-      .setTitle("✅ Done")
+      .setTitle("✅ Unbanned")
       .setDescription("Successfully unbanned **" + bannedUser.user.tag + "** from the server");
 
-    try {
-      await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-    } catch {
-      // continue, do not stop
-    }
+    await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
     // MOD LOGGING HERE
     embed
@@ -82,6 +62,6 @@ module.exports = {
       .setFooter({ text: "Action by " + interaction.user.tag, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
       .setTimestamp();
 
-    await modActionLogger(client, interaction, embed);
+    return await modActionLogger(client, interaction, embed);
   },
 };

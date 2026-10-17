@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const { DateTime } = require("luxon");
 const listsGetRandomItem = require("../utils/listsGetRandomItem");
+const msgErrorHandler = require("../utils/msgErrorHandler");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -93,11 +94,7 @@ module.exports = {
     });
 
     if (!dt.isValid) {
-      try {
-        return await interaction.reply("Invalid hour formatting, use the 24 hour system, examples `13:33`, `9:10`, `22:40`");
-      } catch {
-        return;
-      }
+      return await interaction.reply("Invalid hour formatting, use the 24 hour system, examples `13:33`, `9:10`, `22:40`").catch(msgErrorHandler);
     }
 
     const converted = dt.setZone(toZone);
@@ -108,10 +105,6 @@ module.exports = {
       .setColor("Blurple")
       .setTitle(listsGetRandomItem(emojis) + " " + fromZone + " " + timeStr + " ➡️ " + toZone + " " + converted.toFormat("dd-LL HH:mm"));
 
-    try {
-      return await interaction.reply({ embeds: [embed] });
-    } catch {
-      return;
-    }
+    return await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

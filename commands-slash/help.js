@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const msgErrorHandler = require("../utils/msgErrorHandler");
 
 module.exports = {
   // slash command data (name, description), required
@@ -8,7 +9,7 @@ module.exports = {
   async execute(client, interaction) {
     const embed = new EmbedBuilder()
       .setColor(0xff9900)
-      .setTitle("📒 Slash commands")
+      .setTitle("📒 Slash Commands")
       .setDescription(
         [
           "To see all the actual commands, type **d!help**, slash commands are only supported for utlity / moderation purposes",
@@ -37,10 +38,6 @@ module.exports = {
         ].join("\n"),
       );
 
-    try {
-      return await interaction.reply({ embeds: [embed] });
-    } catch {
-      return;
-    }
+    return await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

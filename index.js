@@ -104,11 +104,11 @@ const client = new Client({
 });
 
 // updating Top.gg stats, at least for my bot, dont want to log it
-/*
-AutoPoster(topggToken, client).catch((error) => {
-  logger.warn("Failed to update top.gg statistics (nothing important unless token isn't configured");
-});
-*/
+try {
+  AutoPoster(null, client); // set temp to null, will change later when done with 2.2
+} catch {
+  logger.warn("Failed to update top.gg stats (nothing important unless token isn't configured)");
+}
 
 // AFTER the bot fully loaded THEN we can log in
 loader.initLoader(client).then(async () => {

@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, PermissionsBitField, MessageFlags } = require("discord.js");
 const configChecker = require("../utils/configChecker");
 const modActionLogger = require("../utils/modActionLogger");
+const msgErrorHandler = require("../utils/msgErrorHandler");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -17,78 +18,49 @@ module.exports = {
 
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **/setup** to enable them");
-
-      try {
-        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch {
-        return;
-      }
+      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("I don't have the permission to `Moderate members`");
-
-      try {
-        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch {
-        return;
-      }
+      embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("I don't have the permission to `Moderate Members` in this server");
+      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     const memberToUnmute = interaction.options.getMember("member");
     const unmuteReason = interaction.options.getString("reason") || "No reason provided";
 
     if (!memberToUnmute) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Could not find that member in the server, did they just left?");
-
-      try {
-        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch {
-        return;
-      }
+      embed.setColor(0xff0000).setTitle("❌ No Member").setDescription("Could not find that member in the server, did they just left?");
+      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     if (memberToUnmute.id === interaction.user.id) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You can't unmute yourself lol");
-
-      try {
-        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch {
-        return;
-      }
+      embed.setColor(0xff0000).setTitle("❌ What?").setDescription("You can't unmute yourself lol");
+      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     if (!memberToUnmute.moderatable) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("I can't unmute this user, maybe they have a higher role than me");
-
-      try {
-        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch {
-        return;
-      }
+      embed.setColor(0xff0000).setTitle("❌ Can't Unmute").setDescription("I can't unmute this user, maybe they have a higher role than me");
+      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     await memberToUnmute.timeout(null, unmuteReason);
 
     embed
       .setColor(0x33ff33)
-      .setTitle("✅ Done")
+      .setTitle("✅ Unmuted")
       .setDescription("The user **" + memberToUnmute.user.tag + "** has been unmuted" + "\n" + "Reason: " + unmuteReason);
 
-    try {
-      await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-    } catch {
-      // continue
-    }
+    await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
     // MOD LOGGING HERE
     embed
       .setColor(0x33ff33)
-      .setTitle("🔈 Unmuted member")
+      .setTitle("🔈 Unmuted Member")
       .setDescription("**" + memberToUnmute.user.tag + "** has been unmuted" + "\n" + "Reason: " + unmuteReason)
       .setFooter({ text: "Action by " + interaction.user.tag, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
       .setTimestamp();
 
-    await modActionLogger(client, interaction, embed);
+    return await modActionLogger(client, interaction, embed);
   },
 };

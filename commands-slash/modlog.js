@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, PermissionsBitField, MessageFlags } = require("discord.js");
 const configChecker = require("../utils/configChecker");
 const modActionLogger = require("../utils/modActionLogger");
+const msgErrorHandler = require("../utils/msgErrorHandler");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -16,12 +17,7 @@ module.exports = {
 
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **/setup** to enable them");
-
-      try {
-        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch {
-        return;
-      }
+      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     const channel = interaction.options.getChannel("channel") || null;
@@ -33,28 +29,19 @@ module.exports = {
 
       embed
         .setColor(0x33ff33)
-        .setTitle("✅ Logging disabled")
+        .setTitle("✅ Logging Disabled")
         .setDescription(
           "You haven't mentioned any channel, this means that logging is now **NOT ACTIVE**" +
             "\n" +
-            "You can mention a channel to active logging, make sure i have the permission to `Send messages` in that channel",
+            "You can mention a channel to active logging, make sure i have the permission to `Send Messages` in that channel",
         );
 
-      try {
-        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch {
-        return;
-      }
+      return await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!interaction.guild.members.me.permissionsIn(channel).has(PermissionsBitField.Flags.SendMessages)) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("I don't have the permission to `Send messages` in that channel");
-
-      try {
-        return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-      } catch {
-        return;
-      }
+      embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("I don't have the permission to `Send Messages` in that channel");
+      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     await client.database.query("UPDATE servers SET mod_log_channel = $1 WHERE server_id = $2", [channel.id, interaction.guild.id]);
@@ -64,23 +51,19 @@ module.exports = {
       .setTitle("✅ Done")
       .setDescription("Moderation actions will be logged in <#" + channel.id + ">");
 
-    try {
-      await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral });
-    } catch {
-      // continue
-    }
+    await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
     // MOD LOGGING HERE
     embed
       .setColor(0x33ff33)
-      .setTitle("📝 Mod actions logger")
-      .setDescription("Moderation actions (bans, kicks, mutes, etc.) will be logged in this channel, make sure i keep the permission to `Send messages` in this channel")
+      .setTitle("📝 Mod Actions Logger")
+      .setDescription("Moderation actions (bans, kicks, mutes, etc.) will be logged in this channel, make sure i keep the permission to `Send Messages` in this channel")
       .setFooter({
         text: "Configured by " + interaction.user.tag,
         iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
       })
       .setTimestamp();
 
-    await modActionLogger(client, interaction, embed);
+    return await modActionLogger(client, interaction, embed);
   },
 };

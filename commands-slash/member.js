@@ -14,7 +14,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor(0x000099)
-      .setTitle([user.username + "'s informations"].join(""))
+      .setTitle([user.username + "'s Informations"].join(""))
       .setDescription(
         [
           "**Global name:** " + globalName,
@@ -32,10 +32,6 @@ module.exports = {
       )
       .setImage(memberPfp);
 
-    try {
-      return await interaction.reply({ embeds: [embed] });
-    } catch {
-      return;
-    }
+    return await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

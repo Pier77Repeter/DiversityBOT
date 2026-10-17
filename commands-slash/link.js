@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const msgErrorHandler = require("../utils/msgErrorHandler");
 
 module.exports = {
   data: new SlashCommandBuilder().setName("link").setDescription("Displays all links for the Bot"),
@@ -6,7 +7,7 @@ module.exports = {
   async execute(client, interaction) {
     const embed = new EmbedBuilder()
       .setColor(0xcc0000)
-      .setTitle("🤖 Bot links")
+      .setTitle("🤖 Bot Links")
       .addFields({
         name: "Invite link",
         value: "https://discord.com/oauth2/authorize?client_id=878594739744673863",
@@ -16,10 +17,6 @@ module.exports = {
       .addFields({ name: "Website link", value: "https://bot.diversitycraft.org/", inline: false })
       .setFooter({ text: "Make sure the give me all the needed permissions" });
 
-    try {
-      return await interaction.reply({ embeds: [embed] });
-    } catch {
-      return;
-    }
+    return await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

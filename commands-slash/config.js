@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const msgErrorHandler = require("../utils/msgErrorHandler");
 
 module.exports = {
   data: new SlashCommandBuilder().setName("config").setDescription("Displays Bot configuration in the server"),
@@ -14,22 +15,18 @@ module.exports = {
     if (row.rowCount === 0) {
       embed
         .setColor(0xff0000)
-        .setTitle("⚠️ Critical error")
+        .setTitle("⚠️ Critical Error")
         .setDescription("Failed to get server configs, please **report this error with the server ID**")
         .addFields({ name: "Server ID", value: `\`${interaction.guildId}\``, inline: true }, { name: "Submit Report Here", value: "https://discord.gg/KxadTdz" });
 
-      try {
-        return await interaction.reply({ embeds: [embed] });
-      } catch {
-        return;
-      }
+      return await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const configs = row.rows[0];
 
     embed
       .setColor(0x000099)
-      .setTitle("⚙️ " + interaction.guild.name + "'s Bot settings")
+      .setTitle("⚙️ " + interaction.guild.name + "'s Bot Settings")
       .setDescription("You can use **/setup** to turn on and off these configs, only admins can use that command")
       .spliceFields(0, 1);
 
@@ -130,10 +127,6 @@ module.exports = {
       });
     }
 
-    try {
-      return await interaction.reply({ embeds: [embed] });
-    } catch {
-      return;
-    }
+    return await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

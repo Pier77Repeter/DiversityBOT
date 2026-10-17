@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, MessageFlags } = require("discord.js");
+const msgErrorHandler = require("../utils/msgErrorHandler");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -51,20 +52,16 @@ module.exports = {
         enabledCmds = "🎲 RNG commands";
         break;
       default:
-        return interaction.reply({ content: "Invalid category.", ephemeral: MessageFlags.Ephemeral }); // should not happen, but good to have
+        return interaction.reply({ content: "Invalid category.", ephemeral: MessageFlags.Ephemeral }).catch(msgErrorHandler); // should not happen, but good to have
     }
 
     await client.database.query(`UPDATE servers SET ${columnName} = $1 WHERE server_id = $2`, [enabled, interaction.guildId]);
 
     const embed = new EmbedBuilder()
       .setColor(0x33ff33)
-      .setTitle("✅ Configuration updated")
+      .setTitle("✅ Configuration Updated")
       .setDescription(`${enabledCmds} are now **${enabled ? "ACTIVE" : "NOT ACTIVE"}**`);
 
-    try {
-      return await interaction.reply({ embeds: [embed] });
-    } catch {
-      return;
-    }
+    return await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };
