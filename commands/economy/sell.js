@@ -2,8 +2,8 @@ const { EmbedBuilder } = require("discord.js");
 const dbJsonDataGet = require("../../utils/dbJsonDataGet");
 const manageUserMoney = require("../../utils/manageUserMoney");
 const dbJsonDataSet = require("../../utils/dbJsonDataSet");
-const { itemPrices, fishPrices } = require("../../config.json");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
+const jsonDataAssociator = require("../../utils/jsonDataAssociator");
 
 module.exports = {
   name: "sell",
@@ -12,134 +12,64 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (!args[0]) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Wrong syntax, choose an item you want to sell **d!sell <itemName>**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      embed.setColor(0xff0000).setTitle("❌ Invalid Args").setDescription("Wrong syntax, choose an item you want to sell **d!sell <itemName>**");
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
-    const items = await dbJsonDataGet(client, message.author, message, "items");
+    const items = await dbJsonDataGet(client, message, "items", message.author.id);
     if (items === null) return;
 
-    const fishes = await dbJsonDataGet(client, message.author, message, "fishes");
+    const fishes = await dbJsonDataGet(client, message, "fishes", message.author.id);
     if (fishes === null) return;
 
-    switch (args.join(" ").toLowerCase()) {
-      case "diversitygem":
-        return await sellItem("items", items, "itemId1", "DiversityGem", itemPrices.diversityGemPrice, true);
+    const thingToSell = args.join(" ").toLowerCase();
 
-      case "bitcoin":
-        return await sellItem("items", items, "itemId2", "Bitcoin", itemPrices.bitcoinPrice, false);
+    const botItems = jsonDataAssociator("items", items);
+    const botFishes = jsonDataAssociator("fishes", fishes);
 
-      case "dogecoin":
-        return await sellItem("items", items, "itemId3", "Dogecoin", itemPrices.dogecoinPrice, false);
+    let foundSomething = false;
 
-      case "gun":
-        return await sellItem("items", items, "itemId4", "Gun", itemPrices.gunPrice, true);
+    botItems.forEach((item) => {
+      if (item.id === thingToSell || item.name.toLowerCase() === thingToSell) {
+        foundSomething = true;
+        return sellItem("items", items, item.id, item.displayName, item.price, item.isSingleItem);
+      }
+    });
 
-      case "ak-47":
-        return await sellItem("items", items, "itemId5", "AK-47", itemPrices.ak47Price, true);
+    botFishes.forEach((fish) => {
+      if (fish.id === thingToSell || fish.name.toLowerCase() === thingToSell) {
+        foundSomething = true;
+        return sellItem("fishes", fishes, fish.id, fish.displayName, fish.price, fish.isSingleItem);
+      }
+    });
 
-      case "fishing rod":
-        return await sellItem("items", items, "itemId6", "Fishing Rod", itemPrices.fishingRodPrice, true);
-
-      case "banana":
-        return await sellItem("items", items, "itemId7", "Banana", itemPrices.bananaPrice, true);
-
-      case "beans":
-        return await sellItem("items", items, "itemId8", "Beans", itemPrices.beansPrice, true);
-
-      case "holy poo":
-        return await sellItem("items", items, "itemId9", "Holy Poo", itemPrices.holyPooPrice, true);
-
-      case "moacoin":
-        return await sellItem("items", items, "itemId10", "Moacoin", itemPrices.moacoinPrice, false);
-
-      case "divcoin":
-        return await sellItem("items", items, "itemId11", "Divcoin", itemPrices.divcoinPrice, false);
-
-      case "kar98k scoped":
-        return await sellItem("items", items, "itemId12", "Kar98k-Scoped", itemPrices.kar98kPrice, true);
-
-      case "pickaxe":
-        return await sellItem("items", items, "itemId13", "Pickaxe", itemPrices.pickaxePrice, true);
-
-      // fish section
-      case "fish":
-        return await sellItem("fishes", fishes, "fishId1", "Classic Fish", fishPrices.fishPrice, false);
-
-      case "tropical fish":
-        return await sellItem("fishes", fishes, "fishId2", "Tropical Fish", fishPrices.tropicalFishPrice, false);
-
-      case "blowfish":
-        return await sellItem("fishes", fishes, "fishId3", "Puffer Fish", fishPrices.pufferFishPrice, false);
-
-      case "shrimp":
-        return await sellItem("fishes", fishes, "fishId4", "Shrimp", fishPrices.shrimpPrice, false);
-
-      case "lobster":
-        return await sellItem("fishes", fishes, "fishId5", "Lobster", fishPrices.lobsterPrice, false);
-
-      case "crab":
-        return await sellItem("fishes", fishes, "fishId6", "Crab", fishPrices.crabPrice, false);
-
-      case "squid":
-        return await sellItem("fishes", fishes, "fishId7", "Squid", fishPrices.squidPrice, false);
-
-      case "octopus":
-        return await sellItem("fishes", fishes, "fishId8", "Octopus", fishPrices.octopusPrice, false);
-
-      case "shark":
-        return await sellItem("fishes", fishes, "fishId9", "Shark", fishPrices.sharkPrice, false);
-
-      case "whale":
-        return await sellItem("fishes", fishes, "fishId10", "Whale", fishPrices.whalePrice, false);
-
-      default:
-        embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Item dosen't exist! You can only sell items or fishes by name like **d!sell fishing rod**");
-
-        try {
-          return await message.reply({ embeds: [embed] });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+    if (!foundSomething) {
+      embed.setColor(0xff0000).setTitle("❌ Item Not Found").setDescription("Item dosen't exist! You can only sell items or fishes by name like **d!sell fishing rod**");
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     // like d!buy, this function saved lots of S P A C E
     async function sellItem(itemType, jsonData, itemId, itemName, itemPrice, isSingleItem) {
-      if (!jsonData[itemId]) {
-        embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't own this item");
+      itemId = parseInt(itemId) - 1; // index starts from 0
 
-        try {
-          return await message.reply({ embeds: [embed] });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+      // can't be less than 0 for sure
+      if (jsonData[itemId].quantity === 0) {
+        embed.setColor(0xff0000).setTitle("❌ Not Owned").setDescription("You don't have this item");
+        return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
       }
 
       if (isSingleItem) {
-        jsonData[itemId] = false;
+        jsonData[itemId].quantity = 0;
+      } else {
+        jsonData[itemId].quantity--;
       }
 
-      if (!isSingleItem && jsonData[itemId + "Count"] - 1 === 0) {
-        jsonData[itemId] = false;
-      } else if (!isSingleItem) {
-        jsonData[itemId + "Count"]--;
-      }
-
-      if ((await dbJsonDataSet(client, message, itemType, jsonData)) === null) return;
+      if ((await dbJsonDataSet(client, message, itemType, jsonData, message.author.id)) === null) return;
       if ((await manageUserMoney(client, message, "+", itemPrice)) === null) return;
 
-      embed.setColor(0x00ff00).setTitle("✅ Sold successful").setDescription(`You sold the ${itemName} for **${itemPrice}$**`);
+      embed.setColor(0x00ff00).setTitle("✅ Sold Successful").setDescription(`You sold the ${itemName} for **${itemPrice}$**`);
 
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
   },
 };

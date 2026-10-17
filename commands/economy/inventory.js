@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require("discord.js");
 const dbJsonDataGet = require("../../utils/dbJsonDataGet");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
+const jsonDataAssociator = require("../../utils/jsonDataAssociator");
 
 module.exports = {
   name: "inventory",
@@ -9,68 +10,27 @@ module.exports = {
   async execute(client, message, args) {
     const user = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
 
-    const items = await dbJsonDataGet(client, user, message, "items");
+    const items = await dbJsonDataGet(client, message, "items", user.id);
     if (items === null) return;
 
     const embed = new EmbedBuilder()
       .setColor(0x33ccff)
-      .setTitle("💼 " + user.username + "'s inventory:")
-      .setDescription("You have nothing, go buy something in the store!");
+      .setTitle("💼 " + user.username + "'s Inventory")
+      .setDescription("There is no item to display here, go buy something from my store!");
 
-    // have to remove this description if user has something ^
-    for (const key in items) {
-      if (key.startsWith("itemId") && !key.endsWith("Count")) {
-        if (items[key] === true) {
-          embed.setDescription(null);
-          break;
-        }
+    // have to remove this description if user has something
+    items.forEach((item) => {
+      if (item.quantity > 0) return embed.setDescription(null);
+    });
+
+    const botItems = jsonDataAssociator("items", items);
+
+    botItems.forEach((item) => {
+      if (item.quantity > 0) {
+        embed.addFields({ name: `${item.displayName} (x${item.quantity})`, value: `Item ID: **${item.id++}**` });
       }
-    }
+    });
 
-    if (items.itemId1) {
-      embed.addFields({ name: "💎 DiversityGem", value: "Item ID: **1**" });
-    }
-    if (items.itemId2) {
-      embed.addFields({ name: "🪙 " + items.itemId2Count + " Bitcoin", value: "Item ID: **2**" });
-    }
-    if (items.itemId3) {
-      embed.addFields({ name: "🪙 " + items.itemId3Count + " Dogecoin", value: "Item ID: **3**" });
-    }
-    if (items.itemId4) {
-      embed.addFields({ name: "🔫 Gun", value: "Item ID: **4**" });
-    }
-    if (items.itemId5) {
-      embed.addFields({ name: "🔫 AK-47", value: "Item ID: **5**" });
-    }
-    if (items.itemId6) {
-      embed.addFields({ name: "🎣 Fishing rod", value: "Item ID: **6**" });
-    }
-    if (items.itemId7) {
-      embed.addFields({ name: "🍌 Banana", value: "Item ID: **7**" });
-    }
-    if (items.itemId8) {
-      embed.addFields({ name: "🥫 Beans", value: "Item ID: **8**" });
-    }
-    if (items.itemId9) {
-      embed.addFields({ name: "💩 Holy poo", value: "Item ID: **9**" });
-    }
-    if (items.itemId10) {
-      embed.addFields({ name: "🗿 " + items.itemId10Count + " Moacoin", value: "Item ID: **10**" });
-    }
-    if (items.itemId11) {
-      embed.addFields({ name: "🪙 " + items.itemId11Count + " Divcoin", value: "Item ID: **11**" });
-    }
-    if (items.itemId12) {
-      embed.addFields({ name: "🔫 Kar98k scoped", value: "Item ID: **12**" });
-    }
-    if (items.itemId13) {
-      embed.addFields({ name: "⛏️ Pickaxe", value: "Item ID: **13**" });
-    }
-
-    try {
-      return await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

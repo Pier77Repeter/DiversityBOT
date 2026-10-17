@@ -21,11 +21,7 @@ module.exports = async function manageUserMoney(client, message, operation, amou
         if (money + bank_money >= 999999999999999999n) {
           const embed = new EmbedBuilder().setColor(0xff0000).setTitle("❌ You are too rich!").setDescription("You reached the maximum possible limit of **999999999999999999$**");
 
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch {
-            return;
-          }
+          await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
         }
 
         await client.database.query("UPDATE users SET money = money + $1 WHERE server_id = $2 AND user_id = $3", [amount, message.guildId, message.author.id]);
@@ -55,7 +51,7 @@ module.exports = async function manageUserMoney(client, message, operation, amou
 
     const embed = new EmbedBuilder()
       .setColor(0xff0000)
-      .setTitle("❌ Error")
+      .setTitle("⚠️ Critical Error")
       .setDescription("Failed to update your money, please **report this error with the server id and your user id**")
       .addFields(
         { name: "Server ID", value: `\`${message.guildId}\``, inline: true },

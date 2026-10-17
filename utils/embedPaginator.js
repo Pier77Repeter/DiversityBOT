@@ -9,11 +9,7 @@ module.exports = async function embedPaginator(commandName, message, pages, time
 
     // why call this function to only send 1 embed?
     if (pages.length === 1) {
-      try {
-        return await message.reply({ embeds: pages, components: [] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: pages, components: [] }).catch(msgErrorHandler);
     }
 
     let index = 0;
@@ -30,13 +26,9 @@ module.exports = async function embedPaginator(commandName, message, pages, time
 
     const actionRow = new ActionRowBuilder().addComponents([btnFirst, btnPrev, btnPageCount, btnNext, btnLast]);
 
-    let sentMessage;
+    const sentMessage = await message.reply({ embeds: [pages[index]], components: [actionRow] }).catch(msgErrorHandler);
 
-    try {
-      sentMessage = await message.reply({ embeds: [pages[index]], components: [actionRow] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    if (!sentMessage) return;
 
     const collector = sentMessage.createMessageComponentCollector({
       componentType: ComponentType.Button,
@@ -45,11 +37,7 @@ module.exports = async function embedPaginator(commandName, message, pages, time
 
     collector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        try {
-          return await btnInteraction.reply({ content: "This button isn't for you!", flags: MessageFlags.Ephemeral });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await btnInteraction.reply({ content: "This button isn't for you!", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
       }
 
       switch (btnInteraction.customId) {
@@ -96,21 +84,13 @@ module.exports = async function embedPaginator(commandName, message, pages, time
         btnNext.setDisabled(false);
       }
 
-      try {
-        await btnInteraction.update({ embeds: [pages[index]], components: [actionRow] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      await btnInteraction.update({ embeds: [pages[index]], components: [actionRow] }).catch(msgErrorHandler);
 
       collector.resetTimer();
     });
 
     collector.on("end", async () => {
-      try {
-        await sentMessage.edit({ embeds: [pages[index]], components: [] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await sentMessage.edit({ embeds: [pages[index]], components: [] }).catch(msgErrorHandler);
     });
   } catch (error) {
     logger.error(error);

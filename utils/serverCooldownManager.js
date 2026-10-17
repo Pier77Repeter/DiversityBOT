@@ -45,7 +45,7 @@ module.exports = async function serverCooldownManager(client, message, cooldownN
 
     const embed = new EmbedBuilder()
       .setColor(0xff0000)
-      .setTitle("⚠️ Critical error")
+      .setTitle("⚠️ Critical Error")
       .setDescription("Failed to update the server cooldown, please **report this error with the server id**")
       .addFields({ name: "Server ID", value: `\`${message.guildId}\``, inline: true }, { name: "Submit Report Here", value: "https://discord.gg/KxadTdz" });
 

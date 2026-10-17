@@ -1,52 +1,38 @@
-const logger = require("../logger")("CreatedDbData");
+const logger = require("../logger")("CreateDbData");
 
 // used in messageCreate.js, interactionCreate.js, warn.js and /warn
 module.exports = async function createDbData(client, serverId, userId) {
-  // now you can S E E the json crap
-  const itemsJsonData = {
-    itemId1: false,
-    itemId2: false,
-    itemId2Count: 0,
-    itemId3: false,
-    itemId3Count: 0,
-    itemId4: false,
-    itemId5: false,
-    itemId6: false,
-    itemId7: false,
-    itemId8: false,
-    itemId9: false,
-    itemId10: false,
-    itemId10Count: 0,
-    itemId11: false,
-    itemId11Count: 0,
-  };
+  // the json data has been redesigned, if quantity = 0 its same as false
+  const items = [
+    { id: "1", quantity: 0 },
+    { id: "2", quantity: 0 },
+    { id: "3", quantity: 0 },
+    { id: "4", quantity: 0 },
+    { id: "5", quantity: 0 },
+    { id: "6", quantity: 0 },
+    { id: "7", quantity: 0 },
+    { id: "8", quantity: 0 },
+    { id: "9", quantity: 0 },
+    { id: "10", quantity: 0 },
+    { id: "11", quantity: 0 },
+    { id: "12", quantity: 0 },
+    { id: "13", quantity: 0 },
+  ];
 
-  const fishesJsonData = {
-    fishId1: false,
-    fishId1Count: 0,
-    fishId2: false,
-    fishId2Count: 0,
-    fishId3: false,
-    fishId3Count: 0,
-    fishId4: false,
-    fishId4Count: 0,
-    fishId5: false,
-    fishId5Count: 0,
-    fishId6: false,
-    fishId6Count: 0,
-    fishId7: false,
-    fishId7Count: 0,
-    fishId8: false,
-    fishId8Count: 0,
-    fishId9: false,
-    fishId9Count: 0,
-    fishId10: false,
-    fishId10Count: 0,
-  };
+  const fishes = [
+    { id: "1", quantity: 0 },
+    { id: "2", quantity: 0 },
+    { id: "3", quantity: 0 },
+    { id: "4", quantity: 0 },
+    { id: "5", quantity: 0 },
+    { id: "6", quantity: 0 },
+    { id: "7", quantity: 0 },
+    { id: "8", quantity: 0 },
+    { id: "9", quantity: 0 },
+    { id: "10", quantity: 0 },
+  ];
 
-  // the json abominations above ^ will be changed using the style below, only saving id and quantity
-
-  const serverDropsJsonData = [
+  const serverDrops = [
     {
       id: "1",
       type: "unknown",
@@ -121,10 +107,10 @@ module.exports = async function createDbData(client, serverId, userId) {
     VALUES($1, $2) ON CONFLICT (server_id, user_id) DO NOTHING;
   */
 
-  const values = [serverId, userId, JSON.stringify(serverDropsJsonData), itemsJsonData, fishesJsonData];
+  const values = [serverId, userId, JSON.stringify(serverDrops), JSON.stringify(items), JSON.stringify(fishes)];
 
   // we insert new data!
   await client.database.query(query, values).catch((error) => {
-    logger.error(`Failed to create new server/user in db`, error);
+    logger.error("Failed to create new server/user in db", error);
   });
 };

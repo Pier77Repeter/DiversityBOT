@@ -3,7 +3,7 @@ const dbJsonDataGet = require("../../utils/dbJsonDataGet");
 const manageUserMoney = require("../../utils/manageUserMoney");
 const dbJsonDataSet = require("../../utils/dbJsonDataSet");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
-const { itemPrices } = require("../../config.json");
+const jsonDataAssociator = require("../../utils/jsonDataAssociator");
 
 module.exports = {
   name: "buy",
@@ -13,15 +13,10 @@ module.exports = {
 
     if (!args[0]) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Wrong syntax, choose the item you want to buy **d!buy <itemName>**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
-    const items = await dbJsonDataGet(client, message.author, message, "items");
+    const items = await dbJsonDataGet(client, message, "items", message.author.id);
     if (items === null) return;
 
     const row = await client.database.query("SELECT money FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
@@ -33,91 +28,48 @@ module.exports = {
       );
     }
 
-    switch (args.join(" ").toLowerCase()) {
-      case "diversitygem":
-        // magnificent function
-        return await buyItem(itemPrices.diversityGemPrice, "itemId1", "DiversityGem", false);
+    const itemToBuy = args.join(" ").toLowerCase();
 
-      case "bitcoin":
-        return await buyItem(itemPrices.bitcoinPrice, "itemId2", "Bitcoin", true);
+    // jsonDataAssociator() simply adds the quantity to a pre-defined array of bot items
+    const botItems = jsonDataAssociator("items", items);
 
-      case "dogecoin":
-        return await buyItem(itemPrices.dogecoinPrice, "itemId3", "Dogecoin", true);
+    let foundItem = false;
 
-      case "gun":
-        return await buyItem(itemPrices.gunPrice, "itemId4", "Gun", false);
+    botItems.forEach(async (item) => {
+      if (item.id === itemToBuy || item.name.toLowerCase() === itemToBuy) {
+        foundItem = true;
+        // WHY ID - 1??? because i say so, item ids starts from 1 but json array index starts from 0
+        return await buyItem(item.id - 1, item.displayName, item.price, item.isSingleItem);
+      }
+    });
 
-      case "ak-47":
-        return await buyItem(itemPrices.ak47Price, "itemId5", "AK-47", false);
+    // well we haven't found any item
+    if (!foundItem) {
+      embed.setColor(0xff0000).setTitle("❌ Not Found").setDescription("That item does not exist in my store, check with **d!shop**");
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    }
 
-      case "fishing rod":
-        return await buyItem(itemPrices.fishingRodPrice, "itemId6", "Fishing Rod", false);
+    async function buyItem(itemId, itemName, itemCost, isSingleItem) {
+      if (items[itemId].quantity > 0 && isSingleItem) {
+        embed.setColor(0xff0000).setTitle("❌ Already Bought").setDescription("You already own this item, check with **d!inv**");
+        return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      }
 
-      case "banana":
-        return await buyItem(itemPrices.bananaPrice, "itemId7", "Banana", false);
+      if (row.rows[0].money < itemCost) {
+        const missingMoney = (Number(row.rows[0].money) - parseInt(itemCost)) * -1; // remove the -
 
-      case "beans":
-        return await buyItem(itemPrices.beansPrice, "itemId8", "Beans", false);
+        embed.setColor(0xff0000).setTitle("❌ Missing Money").setDescription(`You need **${missingMoney}$** to buy that item`);
+        return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      }
 
-      case "holy poo":
-        return await buyItem(itemPrices.holyPooPrice, "itemId9", "Holy Poo", false);
+      items[itemId].quantity = isSingleItem ? 1 : items[itemId].quantity + 1;
 
-      case "moacoin":
-        return await buyItem(itemPrices.moacoinPrice, "itemId10", "Moacoin", true);
+      if ((await dbJsonDataSet(client, message, "items", items, message.author.id)) === null) return;
+      if ((await manageUserMoney(client, message, "-", itemCost)) === null) return;
 
-      case "divcoin":
-        return await buyItem(itemPrices.divcoinPrice, "itemId11", "Divcoin", true);
+      embed.setColor(0x00ff00).setTitle("✅ Purchase Successful").setDescription(`You bought a **${itemName}** for **${itemCost}$**`);
 
-      case "kar98k scoped":
-        return await buyItem(itemPrices.kar98kPrice, "itemId12", "Kar98k Scoped", false);
-
-      case "pickaxe":
-        return await buyItem(itemPrices.pickaxePrice, "itemId13", "Pickaxe", false);
-
-      default:
-        embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Item dosen't exist! You can only buy items by name like **d!buy fishing rod**");
-
-        try {
-          return await message.reply({ embeds: [embed] });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
-
-        async function buyItem(itemCost, itemId, itemName, canBuyMultiple) {
-          if (items[itemId] && canBuyMultiple) {
-            embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You already own this item");
-
-            try {
-              return await message.reply({ embeds: [embed] });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
-          }
-
-          if (row.rows[0].money < itemPrices[itemId]) {
-            embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have enough money to buy this item");
-
-            try {
-              return await message.reply({ embeds: [embed] });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
-          }
-
-          items[itemId] = true;
-          if (canBuyMultiple) items[itemId + "Count"]++;
-
-          if ((await dbJsonDataSet(client, message, "items", items)) === null) return;
-          if ((await manageUserMoney(client, message, "-", itemCost)) === null) return;
-
-          embed.setColor(0x00ff00).setTitle("✅ Purchase successful").setDescription(`You bought a **${itemName}** for **${itemCost}$**`);
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
-        }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
   },
 };

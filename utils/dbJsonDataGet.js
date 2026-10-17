@@ -20,7 +20,7 @@ module.exports = async function dbJsonDataGet(client, message, dataName, userId 
 
       embed
         .setColor(0xff0000)
-        .setTitle("⚠️ Critical error")
+        .setTitle("⚠️ Critical Error")
         .setDescription("Failed to get your stuff from my database, please **report this error with the server ID and your user ID**")
         .addFields(
           { name: "Server ID", value: `\`${message.guildId}\``, inline: true },
@@ -42,7 +42,7 @@ module.exports = async function dbJsonDataGet(client, message, dataName, userId 
 
       embed
         .setColor(0xff0000)
-        .setTitle("⚠️ Critical error")
+        .setTitle("⚠️ Critical Error")
         .setDescription("Failed to get server stuff from my database, please **report this error with the server ID**")
         .addFields({ name: "Server ID", value: `\`${message.guildId}\``, inline: true }, { name: "Submit Report Here", value: "https://discord.gg/KxadTdz" });
     }

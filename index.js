@@ -106,7 +106,7 @@ const client = new Client({
 // updating Top.gg stats, at least for my bot, dont want to log it
 /*
 AutoPoster(topggToken, client).catch((error) => {
-  logger.error("Failed to update top.gg statistics (nothing important unless token isn't configured");
+  logger.warn("Failed to update top.gg statistics (nothing important unless token isn't configured");
 });
 */
 
