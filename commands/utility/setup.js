@@ -8,12 +8,15 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need the permission `Administrator` to use this command");
+      embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("You need the permission `Administrator` to use this command");
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!args[0]) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Specify one of the following names: **mod**, **music**, **event**, **community**, **leveling**, **rng**");
+      embed
+        .setColor(0xff0000)
+        .setTitle("❌ Missing Category")
+        .setDescription("Specify one of the following names: **mod**, **music**, **event**, **community**, **leveling**, **rng**");
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -78,7 +81,7 @@ module.exports = {
       default:
         embed
           .setColor(0xff0000)
-          .setTitle("❌ Error")
+          .setTitle("❌ Invalid Category")
           .setDescription("That config dosen't exist, choose between: **mod**, **music**, **event**, **community**, **leveling**, **rng**");
 
         return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
@@ -94,14 +97,14 @@ module.exports = {
       if (row.rowCount === 0) {
         embed
           .setColor(0xff0000)
-          .setTitle("⚠️ Critical error")
+          .setTitle("⚠️ Critical Error")
           .setDescription("Failed to update server configs, please **report this error with the server ID**")
           .addFields({ name: "Server ID", value: `\`${message.guildId}\``, inline: true }, { name: "Submit Report Here", value: "https://discord.gg/KxadTdz" });
 
         return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
       }
 
-      embed.setColor(0x33ff33).setTitle("✅ Configuration updated");
+      embed.setColor(0x33ff33).setTitle("✅ Configuration Updated");
 
       return row.rows[0][configName];
     }

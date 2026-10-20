@@ -10,7 +10,8 @@ module.exports = {
     const user = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
 
     if (!user) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Please mention a valid user");
+      embed.setColor(0xff0000).setTitle("❌ Missing User").setDescription("Please mention a valid user");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -22,10 +23,8 @@ module.exports = {
     const downloadUrl = `https://cdn.discordapp.com/avatars/${userId}/${avatarHash}.${ext}?size=${size}`;
 
     const avatarUrl = user.displayAvatarURL({ size: 1024, dynamic: true });
-    embed
-      .setTitle(`${user.username}'s avatar`)
-      .setDescription("**[Download](" + downloadUrl + ")**")
-      .setImage(avatarUrl);
+
+    embed.setTitle(`${user.username}'s Avatar`).setDescription(`**[Download](${downloadUrl})**`).setImage(avatarUrl);
 
     return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },

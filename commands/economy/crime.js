@@ -19,6 +19,7 @@ module.exports = {
     // item with id 7 is at index id - 1, which is 6
     if (items[6].quantity === 0) {
       embed.setColor(0xff0000).setTitle("❌ Missing Item").setDescription("You need an **AK-47** to commit a crime");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -26,7 +27,8 @@ module.exports = {
     if (cooldown === null) return;
 
     if (cooldown) {
-      embed.setColor(0x000000).setDescription("⏰ You will able to commit another crime again: **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription(`⏰ You will able to commit another crime again: **<t:${cooldown[1]}:R>**`);
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -40,7 +42,6 @@ module.exports = {
     const actionRow = new ActionRowBuilder().addComponents(btnMuder, btnArson, btnRobbery, btnDrug);
 
     const sentMessage = await message.reply({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
-
     if (!sentMessage) return;
 
     const collector = sentMessage.createMessageComponentCollector({

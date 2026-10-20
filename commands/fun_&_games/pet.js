@@ -16,6 +16,7 @@ module.exports = {
 
     if (row.rowCount === 0 || !row.rows[0].has_pet) {
       embed.setColor(0xff0000).setTitle("❌ Missing Pet").setDescription("No pet here, type **d!adopt <@user>** to adopt one");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -23,7 +24,7 @@ module.exports = {
 
     embed
       .setColor(0x00cccc)
-      .setTitle("🐱 Your Fluffy " + client.users.cache.get(rowData.pet_id).username)
+      .setTitle(`🐱 Your Fluffy ${client.users.cache.get(rowData.pet_id).username}`)
       .setDescription(
         [
           "These are all the pet stats, don't make them reach 0%",
@@ -36,12 +37,12 @@ module.exports = {
       .setFields(
         {
           name: "💟 Health",
-          value: "**" + rowData.pet_stats_health + "%**",
+          value: `**${rowData.pet_stats_health}%**`,
           inline: true,
         },
         {
           name: "🎾 Fun",
-          value: "**" + rowData.pet_stats_fun + "%**",
+          value: `**${rowData.pet_stats_fun}%**`,
           inline: true,
         },
         {
@@ -51,12 +52,12 @@ module.exports = {
         },
         {
           name: "🍗 Hunger",
-          value: "**" + rowData.pet_stats_hunger + "%**",
+          value: `**${rowData.pet_stats_hunger}%**`,
           inline: true,
         },
         {
           name: "💧 Thirst",
-          value: "**" + rowData.pet_stats_thirst + "%**",
+          value: `**${rowData.pet_stats_thirst}%**`,
           inline: true,
         },
       )

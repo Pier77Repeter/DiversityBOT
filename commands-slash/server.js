@@ -15,30 +15,30 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor(0x000099)
-      .setTitle([interaction.guild.name + "'s Informations"].join(""))
+      .setTitle(`${interaction.guild.name}'s Informations`)
       .setDescription(
         [
-          "Server ID: **" + interaction.guildId + "**",
+          `Server ID: **${interaction.guildId}**`,
           "",
-          "Server owner: <@" + interaction.guild.ownerId + ">",
+          `Server owner: <@${interaction.guild.ownerId}>`,
           "",
-          "Server creation date: `" + interaction.guild.createdAt + "`",
+          `Server creation date: \`${interaction.guild.createdAt}\``,
           "",
-          "Boost level: `" + interaction.guild.premiumTier + "`",
+          `Boost level: \`${interaction.guild.premiumTier}\``,
           "",
-          "Server boosts: `" + interaction.guild.premiumSubscriptionCount + "`",
+          `Server boosts: \`${interaction.guild.premiumSubscriptionCount}\``,
           "",
-          "Total users: `" + interaction.guild.memberCount + "`",
+          `Total users: \`${interaction.guild.memberCount}\``,
           "",
-          "Members: `" + nonBotMemberCount + "`",
+          `Members: \`${nonBotMemberCount}\``,
           "",
-          "Bots: `" + botMemberCount + "`",
+          `Bots: \`${botMemberCount}\``,
           "",
-          "Number of text channels: `" + textChannelCount + "`",
+          `Number of text channels: \`${textChannelCount}\``,
           "",
-          "Number of voice channels: `" + voiceChannelCount + "`",
+          `Number of voice channels: \`${voiceChannelCount}\``,
           "",
-          "Role slots: `" + interaction.guild.roles.cache.size + "/250`",
+          `Role slots: \`${interaction.guild.roles.cache.size}/250\``,
           "",
           "**Server icon:**",
         ].join("\n"),

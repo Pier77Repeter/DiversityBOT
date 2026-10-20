@@ -22,7 +22,7 @@ module.exports = {
     if (cooldown === null) return;
 
     if (cooldown) {
-      embed.setColor(0x000000).setDescription("⏰ Better do it again **<t:" + cooldown[1] + ":R>**, you might be found by the FBI");
+      embed.setColor(0x000000).setDescription(`⏰ Better do it again **<t:${cooldown[1]}:R>**, you might be found by the FBI`);
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -63,7 +63,7 @@ module.exports = {
     await delay(2000);
     const hackcmdTokenRandom = mathRandomInt(1000000000000000, 9007199254740991);
     embed.setDescription(
-      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▗] Discord login token: " + hackcmdTokenRandom, "\n", "```"].join(""),
+      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", `> [▗] Discord login token: ${hackcmdTokenRandom}`, "\n", "```"].join(""),
     );
     try {
       await sentMessage.edit({ embeds: [embed] });
@@ -91,7 +91,7 @@ module.exports = {
         "\n",
         "\n",
         "\n",
-        "> [▘] IP address: " + hackcmdIpNumbers[0] + "." + hackcmdIpNumbers[1] + "." + hackcmdIpNumbers[2] + "." + hackcmdIpNumbers[3],
+        `> [▘] IP address: ${hackcmdIpNumbers[0]}.${hackcmdIpNumbers[1]}.${hackcmdIpNumbers[2]}.${hackcmdIpNumbers[3]}`,
         "\n",
         "```",
       ].join(""),
@@ -121,8 +121,7 @@ module.exports = {
         "\n",
         "\n",
         "\n",
-        "> [▗] Stolen data: " +
-          listsGetRandomItem([
+        `> [▗] Stolen data: ${listsGetRandomItem([
             "his project source code",
             "maths book",
             "Stole his meme",
@@ -141,7 +140,7 @@ module.exports = {
             "I found the secret about Area 51",
             "This guys has cringe memes",
             ":eyes:",
-          ]),
+          ])}`,
         "\n",
         "```",
       ].join(""),
@@ -173,7 +172,7 @@ module.exports = {
         "\n",
         "\n",
         "\n",
-        "> [▘] House coords: X: " + hackcmdCoordsX + ", Z: " + hackcmdCoordsZ,
+        `> [▘] House coords: X: ${hackcmdCoordsX}, Z: ${hackcmdCoordsZ}`,
         "\n",
         "```",
       ].join(""),
@@ -203,7 +202,7 @@ module.exports = {
         "\n",
         "\n",
         "\n",
-        "> [▗] Hacked account: " + listsGetRandomItem(["Instagram", "School", "Youtube", "Twitch", "Discord", "Reddit", "Minecraft", "Roblox", "Steam", "PornHub", "Reddit"]),
+        `> [▗] Hacked account: ${listsGetRandomItem(["Instagram", "School", "Youtube", "Twitch", "Discord", "Reddit", "Minecraft", "Roblox", "Steam", "PornHub", "Reddit"])}`,
         "\n",
         "```",
       ].join(""),
@@ -243,8 +242,7 @@ module.exports = {
         "\n",
         "\n",
         "\n",
-        "> [▝] Changing his Desktop background to: " +
-          listsGetRandomItem([
+        `> [▝] Changing his Desktop background to: ${listsGetRandomItem([
             "a famous art",
             "a big ass",
             "something of secret",
@@ -255,7 +253,7 @@ module.exports = {
             "a secret project",
             "a random girl on insta",
             "Obama",
-          ]),
+          ])}`,
         "\n",
         "```",
       ].join(""),
@@ -295,8 +293,7 @@ module.exports = {
         "\n",
         "\n",
         "\n",
-        "> [▘] I found: " +
-          listsGetRandomItem([
+        `> [▘] I found: ${listsGetRandomItem([
             "a damn...no comment...",
             "a lot of Hentai :eyes:",
             "nothing!",
@@ -307,7 +304,7 @@ module.exports = {
             "Minecraft porn? wtf",
             "Sexy girls! :eyes:",
             "A LOT OF HOT ANIME GIRLS! :eyes:",
-          ]),
+          ])}`,
         "\n",
         "```",
       ].join(""),
@@ -320,7 +317,7 @@ module.exports = {
 
     await delay(2000);
     embed.setDescription(
-      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▝] Sending all the data to: " + messageAuthor, "\n", "```"].join(""),
+      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", `> [▝] Sending all the data to: ${messageAuthor}`, "\n", "```"].join(""),
     );
     try {
       await sentMessage.edit({ embeds: [embed] });
@@ -351,7 +348,7 @@ module.exports = {
     await delay(2000);
     embed.setColor(0x33cc00);
     embed.setDescription(
-      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> " + member.username + " has been hacked and reported!", "\n", "```"].join(""),
+      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", `> ${member.username} has been hacked and reported!`, "\n", "```"].join(""),
     );
     return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
   },

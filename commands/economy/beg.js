@@ -15,12 +15,14 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (cooldown) {
-      embed.setColor(0x000000).setDescription("⏰ Beg again **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription(`⏰ Beg again **<t:${cooldown[1]}:R>**`);
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (mathRandomInt(1, 4) === 1) {
       embed.setColor(0xff0000).setTitle("💸 Ignored").setDescription("You begged but nobody gave you money, try again later");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -90,33 +92,33 @@ module.exports = {
       .setDescription(
         listsGetRandomItem(
           [
-            "Oh you poor little beggar, **" + money + "$**!",
-            "The party was epik, here, **" + money + "$**!",
-            "Thanks for the homeworks, here, **" + money + "$**!",
-            "Here, have, **" + money + "$**!",
-            "Oh poor boy, here **" + money + "$**!",
-            "You so nice, here **" + money + "$**!",
-            "Cute, here **" + money + "$**!",
-            "Nice song, here **" + money + "$**!",
-            "Here some money, **" + money + "$**!",
-            "Congratulation!, You won **" + money + "$**!",
-            "Just because i'm nice, here **" + money + "$**!",
-            "Thanks for helping, here **" + money + "$**!",
-            "Yes, here **" + money + "$**!",
-            "I'll help you, here **" + money + "$**!",
-            "Free money for you, here **" + money + "$**!",
-            "Lucky, here **" + money + "$**!",
-            "What a nice guy, here **" + money + "$**!",
-            "Thank you for cake, here **" + money + "$**!",
-            "I have some extra coins, here **" + money + "$**!",
-            "Shhhhhhhh, here **" + money + "$**!",
-            "You saved my cat! Here **" + money + "$**!",
-            "Under the sea i found some money, here **" + money + "$**!",
-            "I duped extra money, here **" + money + "$**!",
-            "Thank for supporting us, here **" + money + "$**!",
-            "Wow i lost, here **" + money + "$**!",
-            "You won, so, here **" + money + "$**!",
-            "Pssss, here **" + money + "$**!",
+            `Oh you poor little beggar, **${money}$**!`,
+            `The party was epik, here, **${money}$**!`,
+            `Thanks for the homeworks, here, **${money}$**!`,
+            `Here, have, **${money}$**!`,
+            `Oh poor boy, here **${money}$**!`,
+            `You so nice, here **${money}$**!`,
+            `Cute, here **${money}$**!`,
+            `Nice song, here **${money}$**!`,
+            `Here some money, **${money}$**!`,
+            `Congratulation!, You won **${money}$**!`,
+            `Just because i'm nice, here **${money}$**!`,
+            `Thanks for helping, here **${money}$**!`,
+            `Yes, here **${money}$**!`,
+            `I'll help you, here **${money}$**!`,
+            `Free money for you, here **${money}$**!`,
+            `Lucky, here **${money}$**!`,
+            `What a nice guy, here **${money}$**!`,
+            `Thank you for cake, here **${money}$**!`,
+            `I have some extra coins, here **${money}$**!`,
+            `Shhhhhhhh, here **${money}$**!`,
+            `You saved my cat! Here **${money}$**!`,
+            `Under the sea i found some money, here **${money}$**!`,
+            `I duped extra money, here **${money}$**!`,
+            `Thank for supporting us, here **${money}$**!`,
+            `Wow i lost, here **${money}$**!`,
+            `You won, so, here **${money}$**!`,
+            `Pssss, here **${money}$**!`,
           ],
           false,
         ),

@@ -14,6 +14,7 @@ module.exports = {
 
     if (!isLevelingEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Leveling commands are off! Type **d!setup leveling** to enable them");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -24,10 +25,7 @@ module.exports = {
     embed.setColor(0x00cccc);
 
     if (row.rowCount === 0) {
-      embed
-        .setTitle(user.username + " current level")
-        .setDescription("Bro is at level **0** 🤦‍♂️🤦‍♂️🤦‍♂️")
-        .setThumbnail(user.displayAvatarURL());
+      embed.setTitle(`${user.username} Current Level`).setDescription("Bro is at level **0** 🤦‍♂️🤦‍♂️🤦‍♂️").setThumbnail(user.displayAvatarURL());
 
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
@@ -37,8 +35,8 @@ module.exports = {
     const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "level.png"), { name: "level.png" });
 
     embed
-      .setTitle(user.username + " current level")
-      .setDescription(["💈 Level: **" + level + "**", "", "⏭️ XP requiered for next level: **" + nextXp + "**"].join("\n"))
+      .setTitle(`${user.username} Current Level`)
+      .setDescription([`💈 Level: **${level}**`, "", `⏭️ XP requiered for next level: **${nextXp}**`].join("\n"))
       .setThumbnail("attachment://level.png");
 
     return await message.reply({ embeds: [embed], files: [imageFile] }).catch(msgErrorHandler);

@@ -16,7 +16,7 @@ module.exports = {
     if (res.rowCount === 0) {
       embed
         .setColor(0x808080)
-        .setTitle(user.username + "'s Taxes")
+        .setTitle(`${user.username}'s Taxes`)
         .setDescription(["**📊 Total money: ** `0$`", "**🪙 Daily tax: ** `0$`", "**⚖️ Tax rate: ** `0%`"].join("\n"));
 
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
@@ -34,7 +34,7 @@ module.exports = {
       })
       .addFields(
         { name: "Names", value: "\n📊 Total money\n🪙 Daily tax\n⚖️ Tax rate", inline: true },
-        { name: "Values", value: "\n`" + wealth + "$`\n`" + taxAmount + "$`\n`" + (taxRate * 100).toFixed(2) + "%`", inline: true },
+        { name: "Values", value: `\n\`${wealth}$\`\n\`${taxAmount}$\`\n\`${(taxRate * 100).toFixed(2)}%\``, inline: true },
       )
       .setFooter({ text: "Taxes are automatically paid every day" });
 

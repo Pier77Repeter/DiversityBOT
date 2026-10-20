@@ -17,6 +17,7 @@ module.exports = {
 
     if (!isMusicEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -24,21 +25,18 @@ module.exports = {
     if (cooldown === null) return;
 
     if (cooldown) {
-      embed
-        .setColor(0x000000)
-        .setTitle(null)
-        .setDescription("⏰ Listen some music before using **d!play** again in **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setTitle(null).setDescription(`⏰ Listen some music before using **d!play** again in **<t:${cooldown[1]}:R>**`);
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!args.length > 0) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Correct usage is: **d!play <song name>**").setImage("https://c.tenor.com/W_aA0wh5C4gAAAAd/tenor.gif");
+      embed.setColor(0xff0000).setTitle("❌ Incorrect Usage").setDescription("Correct usage is: **d!play <song name>**").setImage("https://c.tenor.com/W_aA0wh5C4gAAAAd/tenor.gif");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const query = args.join(" ");
-    embed.setImage(null); // in case the command gets typed again correctly
-
     const voiceChannel = message.member.voice.channel;
 
     if (!voiceChannel) {
@@ -56,8 +54,6 @@ module.exports = {
     if (!message.guild.members.me.permissionsIn(voiceChannel).has(PermissionsBitField.Flags.Speak)) {
       return await message.reply("I do not have permission to speak in your voice channel!").catch(msgErrorHandler);
     }
-
-    let isFirstSong; // this is needed to make the fancy "Music API is connected" msg
 
     embed
       .setColor(0x666666)
@@ -82,18 +78,22 @@ module.exports = {
     }
 
     // showing the list of found tracks
-    embed.setColor("Green").setTitle("📃 Found tracks for '" + query + "'");
+    embed.setColor("Green").setTitle(`📃 Found tracks for '${query}'`);
 
     let tracksListText = "";
 
     search.tracks.forEach((element, i) => {
-      tracksListText += i + 1 + ") **" + element.title + "** | By **" + element.author + "**\n\n";
+      tracksListText += `${i + 1}) **${element.title}** | By **${element.author}**\n\n`;
     });
 
     embed.setDescription(tracksListText).setFooter({ text: 'Choose the song (just say the number), say "no" or "exit" to cancel' });
 
     // NEW! i can actually do this in 1 line with an if
-    if (!(await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler))) return;
+    try {
+      await sentMessage.edit({ embeds: [embed] });
+    } catch (error) {
+      return msgErrorHandler(error);
+    }
 
     // must wait for the message author to answer the number
     const filter = (collectedMessage) => collectedMessage.author.id === message.author.id;
@@ -117,7 +117,8 @@ module.exports = {
 
       if (isNaN(songIndex) || !search.tracks[songIndex]) {
         // so we do not touch the original embed when the collector stops and we dont show double error
-        const errorEmbed = new EmbedBuilder().setColor("DarkRed").setTitle("❌ Error").setDescription("The number you just sent was not present in the track list");
+        const errorEmbed = new EmbedBuilder().setColor("DarkRed").setTitle("❌ Invalid Choice").setDescription("The number you just sent was not present in the track list");
+
         return await receivedMessage.reply({ embeds: [errorEmbed] }).catch(msgErrorHandler);
       }
 
@@ -149,11 +150,13 @@ module.exports = {
       });
 
       embed.setColor(0x33cc00).setTitle("✅ Added to Queue").setDescription(`**${track.title}** has been added!`).setFooter(null);
+
       return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
     });
 
     collector.on("end", async () => {
       embed.setColor("LightGrey");
+
       return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
     });
   },

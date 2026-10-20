@@ -20,10 +20,10 @@ module.exports = {
       .setTitle(ip)
       .setDescription(
         [
-          "Status: " + "`" + serverData.status + "`",
-          "Version: " + "`" + serverData.server.name + "`",
-          "MOTD: " + "`" + serverData.motd + "`",
-          "Players: " + "`" + serverData.players.now + "/" + serverData.players.max + "`",
+          `Status: \`${serverData.status}\``,
+          `Version: \`${serverData.server.name}\``,
+          `MOTD: \`${serverData.motd}\``,
+          `Players: \`${serverData.players.now}/${serverData.players.max}\``,
         ].join("\n"),
       );
 

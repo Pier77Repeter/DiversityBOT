@@ -14,21 +14,25 @@ module.exports = {
 
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need the permission `Ban members` to use this command");
+      embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("You need the permission `Ban Members` to use this command");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!message.guild.members.me.permissions.has(PermissionsBitField.Flags.BanMembers)) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("I don't have the permission to `Ban members`");
+      embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("I don't have the permission to `Ban Members`");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (args[0] === message.author.id) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You can't unban yourself lol");
+      embed.setColor(0xff0000).setTitle("❌ What?").setDescription("You can't unban yourself lol");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -36,7 +40,8 @@ module.exports = {
     const unbanReason = args.slice(1).join(" ") || "No reason provided.";
 
     if (!userId) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Please provide the **ID of the user** you want to unban");
+      embed.setColor(0xff0000).setTitle("❌ Missing User ID").setDescription("Please provide the **ID of the user** you want to unban");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -45,34 +50,31 @@ module.exports = {
     try {
       bannedUser = await message.guild.bans.fetch(userId);
     } catch (error) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("This user hasn't been banned from the server");
+      embed.setColor(0xff0000).setTitle("❌ Can't Unban").setDescription("This user hasn't been banned from the server");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!bannedUser) {
-      embed
-        .setColor(0xff0000)
-        .setTitle("❌ Error")
-        .setDescription("The user id **" + bannedUser.user.tag + "** is NOT banned from the server");
+      embed.setColor(0xff0000).setTitle("❌ Can't Unban").setDescription(`The user id **${bannedUser.user.tag}** is NOT banned from the server`);
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     await message.guild.members.unban(userId, unbanReason);
 
-    embed
-      .setColor(0x33ff33)
-      .setTitle("✅ Done")
-      .setDescription("Successfully unbanned **" + bannedUser.user.tag + "** from the server");
+    embed.setColor(0x33ff33).setTitle("✅ Unbanned").setDescription(`Successfully unbanned **${bannedUser.user.tag}** from the server`);
+
     await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
     // MOD LOGGING HERE
     embed
       .setColor(0x33ff33)
-      .setTitle("🔓 Unbanned member")
-      .setDescription("**" + bannedUser.user.tag + "** has been unbanned from the server" + "\n" + "Reason: " + unbanReason)
-      .setFooter({ text: "Action by " + message.author.tag, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+      .setTitle("🔓 Unbanned Member")
+      .setDescription(`**${bannedUser.user.tag}** has been unbanned from the server\nReason: ${unbanReason}`)
+      .setFooter({ text: `Action by ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
       .setTimestamp();
 
-    await modActionLogger(client, message, embed);
+    return await modActionLogger(client, message, embed);
   },
 };

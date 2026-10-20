@@ -103,7 +103,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor("Blurple")
-      .setTitle(listsGetRandomItem(emojis) + " " + fromZone + " " + timeStr + " ➡️ " + toZone + " " + converted.toFormat("dd-LL HH:mm"));
+      .setTitle(`${listsGetRandomItem(emojis)} ${fromZone} ${timeStr} ➡️ ${toZone} ${converted.toFormat("dd-LL HH:mm")}`);
 
     return await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },

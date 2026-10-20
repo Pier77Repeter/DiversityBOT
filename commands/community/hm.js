@@ -5,7 +5,7 @@ const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "hm",
-  aliases: ["hausemastermoment"],
+  aliases: ["hausemastermoment", "hm"],
   description: "Hausemaster moment",
   cooldown: 15,
   async execute(client, message, args) {
@@ -16,6 +16,7 @@ module.exports = {
 
     if (!isCommunityEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Community commands are off! Type **d!setup community** to enable them");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -24,6 +25,7 @@ module.exports = {
 
     if (cooldown) {
       embed.setColor(0x000000).setDescription(`⏰ You can do another Hausemaster moment **<t:${cooldown[1]}:R>**`);
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 

@@ -24,14 +24,14 @@ module.exports = {
 
     embed
       .setColor(0x33cc00)
-      .setTitle(user + ", this is your peepee")
+      .setTitle(`${user}, this is your peepee`)
       .setFooter({ text: "This is for science" })
       .setImage();
 
     if (mathRandomInt(1, 10) === 1) {
       embed.setDescription("BD").setFooter({ text: "No pp here" });
     } else {
-      embed.setDescription("B" + embedDesc + "D");
+      embed.setDescription(`B${embedDesc}D`);
     }
 
     return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);

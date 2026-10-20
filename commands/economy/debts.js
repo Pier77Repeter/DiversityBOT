@@ -12,10 +12,7 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (row.rowCount === 0) {
-      embed
-        .setColor(0x808080)
-        .setTitle(user.username + " dosen't have any debts")
-        .setDescription("At the moment there are no debts to pay");
+      embed.setColor(0x808080).setTitle(`${user.username} dosen't have any debts`).setDescription("At the moment there are no debts to pay");
 
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
@@ -29,8 +26,8 @@ module.exports = {
     const dailyIncrease = Math.trunc((debts + money + Number(data.bank_money)) * 0.03);
 
     embed
-      .setTitle(user.username + "'s Debts")
-      .setDescription(["**🧾 Debts:** `" + debts + "$`", "**📈 Daily increase:** `" + dailyIncrease + "$`"].join("\n"))
+      .setTitle(`${user.username}'s Debts`)
+      .setDescription([`**🧾 Debts:** \`${debts}$\``, `**📈 Daily increase:** \`${dailyIncrease}$\``].join("\n"))
       .setFooter({ text: "The longer you wait, the higher the debts get" });
 
     const payDebtsBtn = new ButtonBuilder().setCustomId("btn-debts-btnPayDebts").setLabel("Pay debts").setStyle(ButtonStyle.Primary);
@@ -43,6 +40,7 @@ module.exports = {
     }
 
     const sentMessage = await message.reply({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
+    if (!sentMessage) return;
 
     const btnCollector = sentMessage.createMessageComponentCollector({
       componentType: ComponentType.Button,
@@ -65,6 +63,7 @@ module.exports = {
 
         if (money === 0) {
           embed.setColor(0xff0000).setTitle("❌ Not Enough Money").setDescription("You have **0$ in your wallet**, you need to withdraw them from your bank").setFooter(null);
+
           payDebtsBtn.setDisabled(true);
 
           return await btnInteraction.update({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);

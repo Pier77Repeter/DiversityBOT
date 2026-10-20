@@ -19,7 +19,8 @@ module.exports = {
     if (cooldown === null) return;
 
     if (cooldown) {
-      embed.setColor(0x000000).setDescription("⏰ No need to nuke this fast, another nuke will be ready **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription(`⏰ No need to nuke this fast, another nuke will be ready **<t:${cooldown[1]}:R>**`);
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -28,7 +29,7 @@ module.exports = {
     embed
       .setColor(0x14141f)
       .setTitle("🚀 ICBM Control Panel")
-      .setDescription("Target location: " + target)
+      .setDescription(`Target location: ${target}`)
       .setTimestamp()
       .setThumbnail("https://c.tenor.com/8Juj0k-1L4AAAAAC/tenor.gif")
       .setFooter({
@@ -61,13 +62,9 @@ module.exports = {
           btnConfirmLaunch.setDisabled(true);
           btnCancelLaunch.setDisabled(true);
 
-          embed
-            .setColor(0xff3300)
-            .setDescription("Launching nuke towards: " + target)
-            .setThumbnail()
-            .setFooter({
-              text: "Initiating nuke launch",
-            });
+          embed.setColor(0xff3300).setDescription(`Launching nuke towards: ${target}`).setThumbnail().setFooter({
+            text: "Initiating nuke launch",
+          });
 
           try {
             await btnInteraction.update({ embeds: [embed], components: [btnRow] });
@@ -77,7 +74,7 @@ module.exports = {
 
           await delay(2000);
 
-          embed.setDescription(["Launching nuke towards: " + target, "\n", "**5...**"].join(""));
+          embed.setDescription([`Launching nuke towards: ${target}`, "\n", "**5...**"].join(""));
 
           try {
             await sentMessage.edit({ embeds: [embed], components: [btnRow] });
@@ -87,7 +84,7 @@ module.exports = {
 
           await delay(1000);
 
-          embed.setDescription(["Launching nuke towards: " + target, "\n", "**4...**"].join(""));
+          embed.setDescription([`Launching nuke towards: ${target}`, "\n", "**4...**"].join(""));
 
           try {
             await sentMessage.edit({ embeds: [embed], components: [btnRow] });
@@ -97,7 +94,7 @@ module.exports = {
 
           await delay(1000);
 
-          embed.setDescription(["Launching nuke towards: " + target, "\n", "**3...**"].join(""));
+          embed.setDescription([`Launching nuke towards: ${target}`, "\n", "**3...**"].join(""));
 
           try {
             await sentMessage.edit({ embeds: [embed], components: [btnRow] });
@@ -107,7 +104,7 @@ module.exports = {
 
           await delay(1000);
 
-          embed.setDescription(["Launching nuke towards: " + target, "\n", "**2...**"].join(""));
+          embed.setDescription([`Launching nuke towards: ${target}`, "\n", "**2...**"].join(""));
 
           try {
             await sentMessage.edit({ embeds: [embed], components: [btnRow] });
@@ -117,7 +114,7 @@ module.exports = {
 
           await delay(1000);
 
-          embed.setDescription(["Launching nuke towards: " + target, "\n", "**1...**"].join(""));
+          embed.setDescription([`Launching nuke towards: ${target}`, "\n", "**1...**"].join(""));
 
           try {
             await sentMessage.edit({ embeds: [embed], components: [btnRow] });
@@ -127,7 +124,7 @@ module.exports = {
 
           await delay(1000);
 
-          embed.setDescription("🚀🚀🚀 Nuke is flying towards: " + target);
+          embed.setDescription(`🚀🚀🚀 Nuke is flying towards: ${target}`);
           embed.setImage("https://c.tenor.com/I2ZKnQpI2GcAAAAd/tenor.gif");
 
           try {
@@ -140,8 +137,8 @@ module.exports = {
 
           embed
             .setColor(0xcc0000)
-            .setTitle(message.author.username + " WHAT HAVE YOU DONE?!")
-            .setDescription(target + " has been nuked with extreme success!")
+            .setTitle(`${message.author.username} WHAT HAVE YOU DONE?!`)
+            .setDescription(`${target} has been nuked with extreme success!`)
             .setThumbnail()
             .setImage("https://c.tenor.com/E8m5PNgADeYAAAAC/tenor.gif")
             .setTimestamp()
@@ -166,7 +163,7 @@ module.exports = {
 
           embed
             .setColor(0x33cc00)
-            .setDescription("Nuke launch failed, " + target + " is safe :P")
+            .setDescription(`Nuke launch failed, ${target} is safe :P`)
             .setThumbnail()
             .setImage("attachment://thumbsUpEmoji.jpg")
             .setFooter({ text: "Launch cancelled" });

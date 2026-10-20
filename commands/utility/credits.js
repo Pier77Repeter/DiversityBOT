@@ -5,7 +5,7 @@ module.exports = {
   name: "credits",
   description: "Special people who made me",
   async execute(client, message, args) {
-    const embed = new EmbedBuilder().setColor(0xffff00).setTitle("🤩 Special credits").setDescription("Thanks to all the following people for making me possible!").addFields(
+    const embed = new EmbedBuilder().setColor(0xffff00).setTitle("🤩 Special Credits").setDescription("Thanks to all the following people for making me possible!").addFields(
       {
         name: "**Pier77Repeter**",
         value: "For coding and maintaining me!",

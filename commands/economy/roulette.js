@@ -16,7 +16,8 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (cooldown) {
-      embed.setColor(0x000000).setDescription("⏰ You play the roulette again **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription(`⏰ You play the roulette again **<t:${cooldown[1]}:R>**`);
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -34,6 +35,7 @@ module.exports = {
 
     if (isNaN(args[0]) || args[0] > row.money) {
       embed.setColor(0xff0000).setTitle("❌ Missing Money").setDescription("You don't have enough money in your wallet to play the roulette, at least **1000$**");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -51,20 +53,15 @@ module.exports = {
     if (mathRandomInt(1, 5) === 1) {
       // yes, you will lose more money than you bet >:(
       money = mathRandomInt(700, 1200) + parseInt(args[0]);
+
       if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-      embed
-        .setColor(0x33cc00)
-        .setTitle("🤑🤑🤑 YOU WON!")
-        .setDescription("You literally won **" + money + "$**! Congrats!");
+      embed.setColor(0x33cc00).setTitle("🤑🤑🤑 YOU WON!").setDescription(`You literally won **${money}$**! Congrats!`);
 
       return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
-    embed
-      .setColor(0xff0000)
-      .setTitle("☹️ NNNNNNNNNNNOOOOOOOOOO")
-      .setDescription("You lost **" + args[0] + "$**! :(((((((((");
+    embed.setColor(0xff0000).setTitle("☹️ NNNNNNNNNNNOOOOOOOOOO").setDescription(`You lost **${args[0]}$**! :(((((((((`);
 
     return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
   },

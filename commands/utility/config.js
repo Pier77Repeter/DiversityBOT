@@ -15,7 +15,7 @@ module.exports = {
     if (row.rowCount === 0) {
       embed
         .setColor(0xff0000)
-        .setTitle("⚠️ Critical error")
+        .setTitle("⚠️ Critical Error")
         .setDescription("Failed to get server configs, please **report this error with the server ID**")
         .addFields({ name: "Server ID", value: `\`${message.guildId}\``, inline: true }, { name: "Submit Report Here", value: "https://discord.gg/KxadTdz" });
 
@@ -26,7 +26,7 @@ module.exports = {
 
     embed
       .setColor(0x000099)
-      .setTitle("⚙️ " + message.guild.name + "'s Bot settings")
+      .setTitle(`⚙️ ${message.guild.name}'s Bot Settings`)
       .setDescription("You are seeing this with **d!config** command, i suggest you to use **/config** instead, it's much easier to configure")
       .spliceFields(0, 1);
 
@@ -99,7 +99,7 @@ module.exports = {
         },
         {
           name: "🧮 RNG drop chance",
-          value: "✅ RNG Chance to find any drop is: **" + configs.rng_drop_chance + "%**",
+          value: `✅ RNG Chance to find any drop is: **${configs.rng_drop_chance}%**`,
         },
       );
     } else {
@@ -110,7 +110,7 @@ module.exports = {
         },
         {
           name: "🧮 RNG drop chance",
-          value: "❌ RNG Chance to find any drop is: **" + configs.rng_drop_chance + "%**",
+          value: `❌ RNG Chance to find any drop is: **${configs.rng_drop_chance}%**`,
         },
       );
     }
@@ -118,7 +118,7 @@ module.exports = {
     if (configs.mod_log_channel !== null) {
       embed.addFields({
         name: "📝 Mod logging",
-        value: "✅ Moderator actions are being logged in <#" + configs.mod_log_channel + ">",
+        value: `✅ Moderator actions are being logged in <#${configs.mod_log_channel}>`,
       });
     } else {
       embed.addFields({

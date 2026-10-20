@@ -15,7 +15,7 @@ module.exports = {
     if (cooldown === null) return;
 
     if (cooldown) {
-      embed.setColor(0x000000).setDescription("⏰ Memes out of stock, come back **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription(`⏰ Memes out of stock, come back **<t:${cooldown[1]}:R>**`);
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -50,9 +50,9 @@ module.exports = {
     embed
       .setColor(0xffcc00)
       .setTitle(memeData.title.substring(0, 256))
-      .setDescription("From **r/" + memeData.subreddit + "** | " + memeData.postLink)
+      .setDescription(`From **r/${memeData.subreddit}** | ${memeData.postLink}`)
       .setImage(memeData.url)
-      .setFooter({ text: "⬆️ Upvotes " + memeData.ups });
+      .setFooter({ text: `⬆️ Upvotes ${memeData.ups}` });
 
     const btnNextMeme = new ButtonBuilder().setCustomId("btn-meme-btnNextMeme").setEmoji("🔄").setLabel("Next Meme").setStyle(ButtonStyle.Primary);
     const btnStop = new ButtonBuilder().setCustomId("btn-meme-btnStop").setEmoji("🛑").setLabel("Stop").setStyle(ButtonStyle.Danger);
@@ -99,9 +99,9 @@ module.exports = {
           embed
             .setColor(0xffcc00)
             .setTitle(memeData.title.substring(0, 256))
-            .setDescription("From **r/" + memeData.subreddit + "** | " + memeData.postLink)
+            .setDescription(`From **r/${memeData.subreddit}** | ${memeData.postLink}`)
             .setImage(memeData.url)
-            .setFooter({ text: "⬆️ Upvotes " + memeData.ups });
+            .setFooter({ text: `⬆️ Upvotes ${memeData.ups}` });
 
           btnCollector.resetTimer();
 

@@ -20,10 +20,12 @@ module.exports = {
     let lbUsersList = "";
     let lbMoneyList = "";
     let index = 0; // added this because in case user is null you would see in the leaderboard skipped numbers, example: 1), 2), 4), 7). depends how many invalid users the are
+
     const lbRows = row.rows;
 
     for (let i = 0; i < lbRows.length; i++) {
       index++;
+
       const user = await message.client.users.fetch(lbRows[i].user_id).catch(() => null);
       const totalMoney = Number(lbRows[i].money) + Number(lbRows[i].bank_money) - Number(lbRows[i].debts);
 
@@ -52,9 +54,7 @@ module.exports = {
         }
       }
 
-      if (user === null) {
-        index--; // prevent number skipping
-      }
+      if (user === null) index--; // prevent number skipping
     }
 
     embed

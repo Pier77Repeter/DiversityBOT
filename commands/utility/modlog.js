@@ -13,11 +13,13 @@ module.exports = {
 
     if (isModEnabled === 0) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need the permission `Manage channels` to use this command");
+      embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("You need the permission `Manage Channels` to use this command");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -29,7 +31,7 @@ module.exports = {
 
       embed
         .setColor(0x33ff33)
-        .setTitle("✅ Logging disabled")
+        .setTitle("✅ Logging Disabled")
         .setDescription(
           "You haven't mentioned any channel, this means that logging is now **NOT ACTIVE**" +
             "\n" +
@@ -40,26 +42,24 @@ module.exports = {
     }
 
     if (!message.guild.members.me.permissionsIn(channel).has(PermissionsBitField.Flags.SendMessages)) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("I don't have the permission to `Send messages` in that channel");
+      embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("I don't have the permission to `Send Messages` in that channel");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     await client.database.query("UPDATE servers SET mod_log_channel = $1 WHERE server_id = $2", [channel.id, message.guildId]);
 
-    embed
-      .setColor(0x33ff33)
-      .setTitle("✅ Done")
-      .setDescription("Moderation actions will be logged in <#" + channel.id + ">");
+    embed.setColor(0x33ff33).setTitle("✅ Done").setDescription(`Moderation actions will be logged in <#${channel.id}>`);
 
     await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
     // let them know
     embed
       .setColor(0x33ff33)
-      .setTitle("📝 Mod actions logger")
+      .setTitle("📝 Mod Actions Logger")
       .setDescription("Moderation actions (bans, kicks, mutes, etc.) will be logged in this channel, make sure i keep the permission to `Send messages` in this channel")
       .setFooter({
-        text: "Configured by " + message.author.tag,
+        text: `Configured by ${message.author.tag}`,
         iconURL: message.author.displayAvatarURL({ dynamic: true }),
       })
       .setTimestamp();

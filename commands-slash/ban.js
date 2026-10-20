@@ -22,11 +22,13 @@ module.exports = {
     // configChecker() returns either true or false
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **/setup** to enable them");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.BanMembers)) {
       embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("I don't have the permission to `Ban Members` in this server");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
@@ -35,16 +37,19 @@ module.exports = {
 
     if (!memberToBan) {
       embed.setColor(0xff0000).setTitle("❌ No Member").setDescription("Could not find that member in the server, he's gone already");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     if (memberToBan.id === interaction.user.id) {
       embed.setColor(0xff0000).setTitle("❌ What?").setDescription("You can't ban yourself lol");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     if (!memberToBan.bannable) {
       embed.setColor(0xff0000).setTitle("❌ Can't Ban").setDescription("I can't ban this user, maybe they have a higher role than me");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
@@ -56,7 +61,7 @@ module.exports = {
     embed
       .setColor(0x33ff33)
       .setTitle("✅ Banned")
-      .setDescription("The user **" + memberToBan.user.tag + "** has been banned from the server");
+      .setDescription(`The user **${memberToBan.user.tag}** has been banned from the server`);
 
     await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
@@ -64,8 +69,8 @@ module.exports = {
     embed
       .setColor(0x33ff33)
       .setTitle("🔨 Banned Member")
-      .setDescription("The user " + memberToBan.user.tag + "has been banned from the server.\nReason: " + banReason)
-      .setFooter({ text: "Action by " + interaction.user.tag, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
+      .setDescription(`The user ${memberToBan.user.tag}has been banned from the server.\nReason: ${banReason}`)
+      .setFooter({ text: `Action by ${interaction.user.tag}`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
       .setTimestamp();
 
     // very spicy utility function

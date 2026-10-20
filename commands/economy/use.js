@@ -13,6 +13,7 @@ module.exports = {
 
     if (!itemToUse) {
       embed.setColor(0xff6600).setTitle("Here is the list of usable items").setDescription(["d!use banana", "d!use beans", "d!use poo <@user>"].join("\n"));
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -23,6 +24,7 @@ module.exports = {
       case "banana":
         if (items[6].quantity === 0) {
           embed.setColor(0xff0000).setTitle("❌ Missing Item").setDescription("You don't have a banana, buy it!");
+
           return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
         }
 
@@ -62,7 +64,7 @@ module.exports = {
 
         await delay(2000);
 
-        embed.setColor(0x33ff33).setTitle("💨💨💨 You farted!");
+        embed.setColor(0x33ff33).setTitle("💨💨💨 You Farted!");
 
         return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
 
@@ -81,15 +83,13 @@ module.exports = {
 
         if ((await dbJsonDataSet(client, message, "items", items, message.author.id)) === null) return;
 
-        embed
-          .setColor(0x0ffcc00)
-          .setTitle("You trow the poo 💩")
-          .setDescription(message.mentions.members.first().user.username + " is ded! HA! HA! HA!");
+        embed.setColor(0x0ffcc00).setTitle("You trow the poo 💩").setDescription(`${message.mentions.members.first().user.username} is ded! HA! HA! HA!`);
 
         return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
       default:
         embed.setColor(0xff0000).setTitle("❌ Not Found").setDescription("That items dosen't exist, type **d!use** to see the list");
+
         return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
   },

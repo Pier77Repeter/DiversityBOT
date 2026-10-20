@@ -14,6 +14,7 @@ module.exports = {
 
     if (!isMusicEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -23,20 +24,17 @@ module.exports = {
 
     const player = useMainPlayer();
     const queue = player.nodes.get(message.guild.id);
-
     const volumeArg = parseInt(args[0]);
 
     if (isNaN(volumeArg) || volumeArg < 0 || volumeArg > 100) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Please provide a valid volume level between **0 and 100**");
+      embed.setColor(0xff0000).setTitle("❌ Invalid Number").setDescription("Please provide a valid volume level between **0 and 100**");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     queue.node.setVolume(volumeArg);
 
-    embed
-      .setColor(0x33cc00)
-      .setTitle("🎚️ Done")
-      .setDescription("🔊 Volume set to **" + volumeArg + "%**");
+    embed.setColor(0x33cc00).setTitle("🎚️ Done").setDescription(`🔊 Volume set to **${volumeArg}%**`);
 
     return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },

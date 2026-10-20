@@ -14,7 +14,7 @@ module.exports = {
     if (row.rowCount === 0) {
       embed
         .setColor(0x33cc00)
-        .setTitle(user.username + "'s reputation")
+        .setTitle(`${user.username}'s reputation`)
         .setDescription("Reputation on the server is: **0**")
         .setThumbnail(user.displayAvatarURL());
 
@@ -25,8 +25,8 @@ module.exports = {
 
     embed
       .setColor(0x33cc00)
-      .setTitle(user.username + "'s Reputation")
-      .setDescription("Reputation on the server is: **" + rep + "**")
+      .setTitle(`${user.username}'s Reputation`)
+      .setDescription(`Reputation on the server is: **${rep}**`)
       .setThumbnail(user.displayAvatarURL());
 
     return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);

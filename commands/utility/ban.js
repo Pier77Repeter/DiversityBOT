@@ -18,26 +18,31 @@ module.exports = {
     // 'configChecker()' returns either true or false read that first
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need the permission `Ban members` to use this command");
+      embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("You need the permission `Ban Members` to use this command");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.BanMembers)) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("I don't have the permission to `Ban members`");
+      embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("I don't have the permission to `Ban Members`");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!message.mentions.members.first()) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need to mention the member you want to ban");
+      embed.setColor(0xff0000).setTitle("❌ Missing User").setDescription("You need to mention the member you want to ban");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (message.mentions.members.first().user.id === message.author.id) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You can't ban yourself lol");
+      embed.setColor(0xff0000).setTitle("❌ What?").setDescription("You can't ban yourself lol");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -45,7 +50,8 @@ module.exports = {
     const banReason = args.slice(1).join(" ") || "No reason provided";
 
     if (!userToBan.bannable) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("I can't ban this user, maybe they have a higher role than me?");
+      embed.setColor(0xff0000).setTitle("❌ Can't Ban").setDescription("I can't ban this user, maybe they have a higher role than me?");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -55,21 +61,18 @@ module.exports = {
       reason: banReason,
     });
 
-    embed
-      .setColor(0x33ff33)
-      .setTitle("✅ Done")
-      .setDescription("The user **" + userToBan.user.tag + "** has been banned from the server");
+    embed.setColor(0x33ff33).setTitle("✅ Banned").setDescription(`The user **${userToBan.user.tag}** has been banned from the server`);
 
     await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
     // MOD LOGGING HERE
     embed
       .setColor(0x33ff33)
-      .setTitle("🔨 Banned member")
-      .setDescription("**" + userToBan.user.tag + "** has been banned from the server" + "\n" + "Reason: " + banReason)
-      .setFooter({ text: "Action by " + message.author.tag, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+      .setTitle("🔨 Banned Member")
+      .setDescription(`**${userToBan.user.tag}** has been banned from the server\nReason: ${banReason}`)
+      .setFooter({ text: `Action by ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
       .setTimestamp();
 
-    await modActionLogger(client, message, embed);
+    return await modActionLogger(client, message, embed);
   },
 };

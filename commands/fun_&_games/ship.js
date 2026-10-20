@@ -6,7 +6,7 @@ module.exports = {
   name: "ship",
   description: "See the love power with mentioned user",
   async execute(client, message, args) {
-    if (!message.mentions.members.first()) return await message.reply(message.author.username + ", mention your crush <3").catch(msgErrorHandler);
+    if (!message.mentions.members.first()) return await message.reply(`${message.author.username}, mention your crush <3`).catch(msgErrorHandler);
 
     const embed = new EmbedBuilder();
 
@@ -16,7 +16,7 @@ module.exports = {
       embed
         .setColor(0xcc33cc)
         .setTitle("💘 Love machine 9000(TM)")
-        .setDescription("Love power: **" + lovePower + "%** ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛")
+        .setDescription(`Love power: **${lovePower}%** ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛`)
         .setFields({ name: "😭", value: "You have no heart!" })
         .setImage(message.mentions.members.first().displayAvatarURL());
     }
@@ -25,7 +25,7 @@ module.exports = {
       embed
         .setColor(0xcc33cc)
         .setTitle("💘 Love machine 9000(TM)")
-        .setDescription("Love power: **" + lovePower + "%** 🟪⬛⬛⬛⬛⬛⬛⬛⬛⬛")
+        .setDescription(`Love power: **${lovePower}%** 🟪⬛⬛⬛⬛⬛⬛⬛⬛⬛`)
         .setFields({ name: "😥", value: "That's bad man" })
         .setImage(message.mentions.members.first().displayAvatarURL());
     }
@@ -34,7 +34,7 @@ module.exports = {
       embed
         .setColor(0xcc33cc)
         .setTitle("💘 Love machine 9000(TM)")
-        .setDescription("Love power: **" + lovePower + "%** 🟪🟪⬛⬛⬛⬛⬛⬛⬛⬛")
+        .setDescription(`Love power: **${lovePower}%** 🟪🟪⬛⬛⬛⬛⬛⬛⬛⬛`)
         .setFields({ name: "😦", value: "Pretty low" })
         .setImage(message.mentions.members.first().displayAvatarURL());
     }
@@ -43,7 +43,7 @@ module.exports = {
       embed
         .setColor(0xcc33cc)
         .setTitle("💘 Love machine 9000(TM)")
-        .setDescription("Love power: **" + lovePower + "%** 🟪🟪🟪⬛⬛⬛⬛⬛⬛⬛")
+        .setDescription(`Love power: **${lovePower}%** 🟪🟪🟪⬛⬛⬛⬛⬛⬛⬛`)
         .setFields({ name: "😕", value: "Not too great" })
         .setImage(message.mentions.members.first().displayAvatarURL());
     }
@@ -52,7 +52,7 @@ module.exports = {
       embed
         .setColor(0xcc33cc)
         .setTitle("💘 Love machine 9000(TM)")
-        .setDescription("Love power: **" + lovePower + "%** 🟪🟪🟪🟪⬛⬛⬛⬛⬛⬛")
+        .setDescription(`Love power: **${lovePower}%** 🟪🟪🟪🟪⬛⬛⬛⬛⬛⬛`)
         .setFields({ name: "😕", value: "Nah" })
         .setImage(message.mentions.members.first().displayAvatarURL());
     }
@@ -61,7 +61,7 @@ module.exports = {
       embed
         .setColor(0xcc33cc)
         .setTitle("💘 Love machine 9000(TM)")
-        .setDescription("Love power: **" + lovePower + "%** 🟪🟪🟪🟪🟪⬛⬛⬛⬛⬛")
+        .setDescription(`Love power: **${lovePower}%** 🟪🟪🟪🟪🟪⬛⬛⬛⬛⬛`)
         .setFields({ name: "😶", value: "Barely" })
         .setImage(message.mentions.members.first().displayAvatarURL());
     }
@@ -70,7 +70,7 @@ module.exports = {
       embed
         .setColor(0xcc33cc)
         .setTitle("💘 Love machine 9000(TM)")
-        .setDescription("Love power: **" + lovePower + "%** 🟪🟪🟪🟪🟪🟪⬛⬛⬛⬛")
+        .setDescription(`Love power: **${lovePower}%** 🟪🟪🟪🟪🟪🟪⬛⬛⬛⬛`)
         .setFields({ name: "🙂", value: "Not bad" })
         .setImage(message.mentions.members.first().displayAvatarURL());
     }
@@ -79,7 +79,7 @@ module.exports = {
       embed
         .setColor(0xcc33cc)
         .setTitle("💘 Love machine 9000(TM)")
-        .setDescription("Love power: **" + lovePower + "%** 🟪🟪🟪🟪🟪🟪🟪⬛⬛⬛")
+        .setDescription(`Love power: **${lovePower}%** 🟪🟪🟪🟪🟪🟪🟪⬛⬛⬛`)
         .setFields({ name: "😃", value: "Pretty good" })
         .setImage(message.mentions.members.first().displayAvatarURL());
     }
@@ -88,7 +88,7 @@ module.exports = {
       embed
         .setColor(0xcc33cc)
         .setTitle("💘 Love machine 9000(TM)")
-        .setDescription("Love power: **" + lovePower + "%** 🟪🟪🟪🟪🟪🟪🟪🟪⬛⬛")
+        .setDescription(`Love power: **${lovePower}%** 🟪🟪🟪🟪🟪🟪🟪🟪⬛⬛`)
         .setFields({ name: "😘", value: "Really impressive" })
         .setImage(message.mentions.members.first().displayAvatarURL());
     }
@@ -97,7 +97,7 @@ module.exports = {
       embed
         .setColor(0xcc33cc)
         .setTitle("💘 Love machine 9000(TM)")
-        .setDescription("Love power: **" + lovePower + "%** 🟪🟪🟪🟪🟪🟪🟪🟪🟪⬛")
+        .setDescription(`Love power: **${lovePower}%** 🟪🟪🟪🟪🟪🟪🟪🟪🟪⬛`)
         .setFields({ name: "🥰", value: "Amazing!" })
         .setImage(message.mentions.members.first().displayAvatarURL());
     }
@@ -106,7 +106,7 @@ module.exports = {
       embed
         .setColor(0xcc33cc)
         .setTitle("💘 Love machine 9000(TM)")
-        .setDescription("Love power: **" + lovePower + "%** 🟪🟪🟪🟪🟪🟪🟪🟪🟪🟪")
+        .setDescription(`Love power: **${lovePower}%** 🟪🟪🟪🟪🟪🟪🟪🟪🟪🟪`)
         .setFields({ name: "😍😍😍", value: "PERFECT!" })
         .setImage(message.mentions.members.first().displayAvatarURL());
     }

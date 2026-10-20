@@ -15,7 +15,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor(0x33ccff)
-      .setTitle("💼 " + user.username + "'s Inventory")
+      .setTitle(`💼 ${user.username}'s Inventory`)
       .setDescription("There is no item to display here, go buy something from my store!");
 
     // have to remove this description if user has something

@@ -5,14 +5,11 @@ module.exports = {
   name: "roast",
   description: "Roast mentioned user",
   async execute(client, message, args) {
-    if (!message.mentions.members.first()) return await message.reply(message.author.username + ", mention the user to roast").catch(msgErrorHandler);
+    if (!message.mentions.members.first()) return await message.reply(`${message.author.username}, mention the user to roast`).catch(msgErrorHandler);
 
     return await message.channel
       .send({
-        content:
-          message.mentions.members.first().user.username +
-          " " +
-          listsGetRandomItem([
+        content: `${message.mentions.members.first().user.username} ${listsGetRandomItem([
             "no",
             "i'm nice, why i should be rude",
             "no roast for you",
@@ -70,7 +67,7 @@ module.exports = {
             "Were you born this stupid or did you take lessons?",
             "You should really come with a warning label.",
             "I don't know what your problem is, but I'm guessing it's hard to pronounce.",
-          ]),
+          ])}`,
       })
       .catch(msgErrorHandler);
   },

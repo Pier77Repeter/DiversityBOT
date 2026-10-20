@@ -26,7 +26,7 @@ module.exports = {
 
     embed
       .setColor(0x000099)
-      .setTitle("⚙️ " + interaction.guild.name + "'s Bot Settings")
+      .setTitle(`⚙️ ${interaction.guild.name}'s Bot Settings`)
       .setDescription("You can use **/setup** to turn on and off these configs, only admins can use that command")
       .spliceFields(0, 1);
 
@@ -99,7 +99,7 @@ module.exports = {
         },
         {
           name: "🧮 RNG drop chance",
-          value: "✅ RNG Chance to find any drop is: **" + configs.rng_drop_chance + "%**",
+          value: `✅ RNG Chance to find any drop is: **${configs.rng_drop_chance}%**`,
         },
       );
     } else {
@@ -110,7 +110,7 @@ module.exports = {
         },
         {
           name: "🧮 RNG drop chance",
-          value: "❌ RNG Chance to find any drop is: **" + configs.rng_drop_chance + "%**",
+          value: `❌ RNG Chance to find any drop is: **${configs.rng_drop_chance}%**`,
         },
       );
     }
@@ -118,7 +118,7 @@ module.exports = {
     if (configs.mod_log_channel !== null) {
       embed.addFields({
         name: "📝 Mod logging",
-        value: "✅ Moderator actions are being logged in <#" + configs.mod_log_channel + ">",
+        value: `✅ Moderator actions are being logged in <#${configs.mod_log_channel}>`,
       });
     } else {
       embed.addFields({

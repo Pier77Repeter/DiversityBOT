@@ -17,6 +17,7 @@ module.exports = {
 
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **/setup** to enable them");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
@@ -24,6 +25,7 @@ module.exports = {
 
     if (!member) {
       embed.setColor(0xff0000).setTitle("❌ No Member").setDescription("Could not find that member in the server, they left...");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
@@ -31,20 +33,17 @@ module.exports = {
 
     if (checkRow.rowCount === 0) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Failed to get the user's warns from my database");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
-    embed
-      .setColor(0x33ff33)
-      .setTitle("🚨 " + member.user.tag + "'s Warns")
-      .setDescription("The user **" + member.user.tag + "** has a total of **" + checkRow.rows[0].warns + "** warns");
+    embed.setColor(0x33ff33).setTitle(`🚨 ${member.user.tag}'s Warns`).setDescription(`The user **${member.user.tag}** has a total of **${checkRow.rows[0].warns}** warns`);
 
     // first time we get something like this, format is "s<name>-btn-<btnName>" the 's' stands for slash so it sounds slashwarns-btn-...
     const btnClearWarns = new ButtonBuilder().setCustomId("swarns-btn-btnClearWarns").setLabel("Clear warns").setStyle(ButtonStyle.Primary);
     const actionRow = new ActionRowBuilder().addComponents(btnClearWarns);
 
     const sentMessage = await interaction.reply({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
-
     if (!sentMessage) return;
 
     const collector = sentMessage.createMessageComponentCollector({
@@ -60,10 +59,7 @@ module.exports = {
       if (btnInteraction.customId === "swarns-btn-btnClearWarns") {
         await client.database.query("UPDATE users SET warns = 0 WHERE server_id = $1 AND user_id = $2", [interaction.guildId, member.user.id]);
 
-        embed
-          .setColor(0x33ff33)
-          .setTitle("✅ Done")
-          .setDescription("The warns of **" + member.user.tag + "** have been cleared");
+        embed.setColor(0x33ff33).setTitle("✅ Done").setDescription(`The warns of **${member.user.tag}** have been cleared`);
 
         btnClearWarns.setStyle(ButtonStyle.Success).setDisabled(true);
 
@@ -73,8 +69,8 @@ module.exports = {
         embed
           .setColor(0x33ff33)
           .setTitle("🛂 Cleared Member Warns")
-          .setDescription("**" + member.user.tag + "**'s warns have been cleared")
-          .setFooter({ text: "Action by " + interaction.user.tag, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
+          .setDescription(`**${member.user.tag}**'s warns have been cleared`)
+          .setFooter({ text: `Action by ${interaction.user.tag}`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
           .setTimestamp();
 
         return await modActionLogger(client, interaction, embed);

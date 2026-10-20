@@ -24,7 +24,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor(0x33ccff)
-      .setTitle("🤠 Stolen sticker " + sticker.name)
+      .setTitle(`🤠 Stolen sticker ${sticker.name}`)
       .setImage(sticker.url)
       .setFooter({ text: "Click the image to download" });
 

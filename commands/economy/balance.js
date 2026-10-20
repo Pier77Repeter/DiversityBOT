@@ -15,7 +15,7 @@ module.exports = {
     if (row.rowCount === 0) {
       embed
         .setColor(0x808080)
-        .setTitle(user.username + " dosen't have any money")
+        .setTitle(`${user.username} is Poor`)
         .setDescription("Exactly **0$**, because he didn't use even **1** of my commands >:(")
         .setFooter({ text: "you ain't getting money for free" });
 
@@ -31,10 +31,10 @@ module.exports = {
         name: user.username,
         iconURL: user.displayAvatarURL(),
       })
-      .setDescription("**📊 Total money: ** `" + totalMoney + "$`")
+      .setDescription(`**📊 Total money: ** \`${totalMoney}$\``)
       .addFields(
         { name: "Names", value: "\n💰 Wallet money\n🏦 Bank money\n⚖️ Debts to pay", inline: true },
-        { name: "Values", value: "\n`" + rowData.money + "$`\n`" + rowData.bank_money + "$`\n`" + rowData.debts + "$`", inline: true },
+        { name: "Values", value: `\n\`${rowData.money}$\`\n\`${rowData.bank_money}$\`\n\`${rowData.debts}\``, inline: true },
       );
 
     return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);

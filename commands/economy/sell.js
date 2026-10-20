@@ -13,6 +13,7 @@ module.exports = {
 
     if (!args[0]) {
       embed.setColor(0xff0000).setTitle("❌ Invalid Args").setDescription("Wrong syntax, choose an item you want to sell **d!sell <itemName>**");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -32,6 +33,7 @@ module.exports = {
     botItems.forEach((item) => {
       if (item.id === thingToSell || item.name.toLowerCase() === thingToSell) {
         foundSomething = true;
+
         return sellItem("items", items, item.id, item.displayName, item.price, item.isSingleItem);
       }
     });
@@ -39,12 +41,14 @@ module.exports = {
     botFishes.forEach((fish) => {
       if (fish.id === thingToSell || fish.name.toLowerCase() === thingToSell) {
         foundSomething = true;
+
         return sellItem("fishes", fishes, fish.id, fish.displayName, fish.price, fish.isSingleItem);
       }
     });
 
     if (!foundSomething) {
       embed.setColor(0xff0000).setTitle("❌ Item Not Found").setDescription("Item dosen't exist! You can only sell items or fishes by name like **d!sell fishing rod**");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -55,6 +59,7 @@ module.exports = {
       // can't be less than 0 for sure
       if (jsonData[itemId].quantity === 0) {
         embed.setColor(0xff0000).setTitle("❌ Not Owned").setDescription("You don't have this item");
+
         return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
       }
 

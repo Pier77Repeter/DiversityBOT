@@ -12,12 +12,14 @@ module.exports = {
     // giving money to yourself? whats the point
     if (user.id === message.author.id) {
       embed.setColor(0xff0000).setTitle("❌ Nope").setDescription("You can't give money to yourself");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     // args 1 is like 'd!give @user 69' that 69 is the args[1]
     if (!args[1]) {
       embed.setColor(0xff0000).setTitle("❌ Missing Money").setDescription(`How much money are you giving to ${user.username}?`);
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -35,6 +37,7 @@ module.exports = {
 
     if (mUserRow.rowCount === 0) {
       embed.setColor(0xff0000).setTitle("❌ Nope").setDescription(`You can't give money to ${user.username} because he never tried EVEN 1 of my commands! >:(`);
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -44,6 +47,7 @@ module.exports = {
       case "all":
         if (money === 0) {
           embed.setColor(0xff0000).setTitle("❌ Transaction Failed").setDescription("You don't have any money in your wallet to give");
+
           return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
         }
 
@@ -60,11 +64,13 @@ module.exports = {
       default:
         if (isNaN(moneyToGive) || moneyToGive < 1) {
           embed.setColor(0xff0000).setTitle("❌ Invalid Number").setDescription("Not a valid number, put a number starting from **at least 1**");
+
           return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
         }
 
         if (moneyToGive > money) {
           embed.setColor(0xff0000).setTitle("❌ Transaction Failed").setDescription("You don't have that amount of money in your wallet to give");
+
           return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
         }
 

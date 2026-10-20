@@ -14,6 +14,7 @@ module.exports = {
 
     if (row.rowCount === 0 || !row.rows[0].has_pet) {
       embed.setColor(0xff0000).setTitle("❌ Missing Pet").setDescription("You don't have a pet, adopt it with **d!adopt <@user>**");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -21,15 +22,13 @@ module.exports = {
     if (cooldown === null) return;
 
     if (cooldown) {
-      embed
-        .setColor(0x000000)
-        .setTitle(null)
-        .setDescription("⏰ Play with your pet again **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setTitle(null).setDescription(`⏰ Play with your pet again **<t:${cooldown[1]}:R>**`);
 
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const petFun = row.rows[0].pet_stats_fun;
+
     let petFunToAdd = mathRandomInt(15, 30);
 
     if (petFun + petFunToAdd > 100) {
@@ -40,6 +39,7 @@ module.exports = {
 
     if (petFun + petFunToAdd >= 100) {
       embed.setColor(0xff0000).setTitle("Already happy").setDescription("Your pet is not getting bored");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -47,7 +47,7 @@ module.exports = {
       .setColor(0x33cc00)
       .setTitle("You played with your pet")
       .setDescription("Your pet was really happy to play with you")
-      .setFooter({ text: "Your pet gained +" + petFunToAdd + " fun" });
+      .setFooter({ text: `Your pet gained +${petFunToAdd} fun` });
 
     return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },

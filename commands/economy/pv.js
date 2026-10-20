@@ -18,7 +18,8 @@ module.exports = {
     if (cooldown === null) return;
 
     if (cooldown) {
-      embed.setColor(0x000000).setDescription("⏰ You can publish another video **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription(`⏰ You can publish another video **<t:${cooldown[1]}:R>**`);
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -26,7 +27,7 @@ module.exports = {
 
     embed
       .setColor(0x3366ff)
-      .setTitle(message.author.username + " is going to post a video")
+      .setTitle(`${message.author.username} is going to post a video`)
       .setDescription("What type of video do you want to upload?")
       .setThumbnail("attachment://YouTube.png");
 
@@ -84,11 +85,7 @@ module.exports = {
             .setColor(0x33cc00)
             .setTitle("👍 You posted a gaming video")
             .setDescription(
-              "Your video about: **" +
-                listsGetRandomItem(["Minecraft", "Garry's Mod", "Roblox", "Sex with Stalin", "TF2", "GTA V", "Gen*shit* Impact"], false) +
-                "** and you got **" +
-                money +
-                "$** for the content!",
+              `Your video about: **${listsGetRandomItem(["Minecraft", "Garry's Mod", "Roblox", "Sex with Stalin", "TF2", "GTA V", "Gen*shit* Impact"], false)}** and you got **${money}$** for the content!`,
             )
             .setThumbnail("attachment://stonks.jpg");
 
@@ -122,11 +119,7 @@ module.exports = {
             .setColor(0x33cc00)
             .setTitle("👍 You posted a documentary video")
             .setDescription(
-              "Your video about: **" +
-                listsGetRandomItem(["History", "Science", "Geography", "Physics", "Psychology", "2b2t history", "Mechanics"], false) +
-                "** and you got **" +
-                money +
-                "$** for the content!",
+              `Your video about: **${listsGetRandomItem(["History", "Science", "Geography", "Physics", "Psychology", "2b2t history", "Mechanics"], false)}** and you got **${money}$** for the content!`,
             )
             .setThumbnail("attachment://stonks.jpg");
 
@@ -162,11 +155,7 @@ module.exports = {
             .setColor(0x33cc00)
             .setTitle("👍 You posted a funny video")
             .setDescription(
-              "Your video about: **" +
-                listsGetRandomItem(["Memes", "Funny Cats", "Funny Dogs", "Funny images", "Funny moments", "Trolls", "Funny people"], false) +
-                "** and you got **" +
-                money +
-                "$** for the content!",
+              `Your video about: **${listsGetRandomItem(["Memes", "Funny Cats", "Funny Dogs", "Funny images", "Funny moments", "Trolls", "Funny people"], false)}** and you got **${money}$** for the content!`,
             )
             .setThumbnail("attachment://stonks.jpg");
 
@@ -200,22 +189,18 @@ module.exports = {
             .setColor(0x33cc00)
             .setTitle("👍 You posted a tutorial video")
             .setDescription(
-              "Your video about: **" +
-                listsGetRandomItem(
-                  [
-                    "How to build an house in Minecraft",
-                    "How to DoS with Paint",
-                    "How to install Win10",
-                    "How to fly",
-                    "How to Alt F4 on your teacher",
-                    "How to copy homeworks",
-                    "How to teleport in real life",
-                  ],
-                  false,
-                ) +
-                "** and you got **" +
-                money +
-                "$** for the content!",
+              `Your video about: **${listsGetRandomItem(
+                [
+                  "How to build an house in Minecraft",
+                  "How to DoS with Paint",
+                  "How to install Win10",
+                  "How to fly",
+                  "How to Alt F4 on your teacher",
+                  "How to copy homeworks",
+                  "How to teleport in real life",
+                ],
+                false,
+              )}** and you got **${money}$** for the content!`,
             )
             .setThumbnail("attachment://stonks.jpg");
 
@@ -227,7 +212,7 @@ module.exports = {
       if (!hasClickedBtn) {
         imageFile.setFile(path.join(process.cwd(), "media", "YouTube.png")).setName("YouTube.png");
 
-        embed.setTitle("🤷 Nothing to post").setDescription("Out of ideas? Can happen, take your time to think for an original video").setThumbnail("attachment://YouTube.png");
+        embed.setTitle("🤷 Nothing to Post").setDescription("Out of ideas? Can happen, take your time to think for an original video").setThumbnail("attachment://YouTube.png");
 
         btnGaming.setStyle(ButtonStyle.Secondary).setDisabled(true);
         btnDocumentary.setStyle(ButtonStyle.Secondary).setDisabled(true);

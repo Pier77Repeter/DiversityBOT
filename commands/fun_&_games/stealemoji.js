@@ -35,7 +35,7 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setColor(0x33ccff)
-        .setTitle("🤠 Stolen emoji " + emojiName)
+        .setTitle(`🤠 Stolen emoji ${emojiName}`)
         .setImage(emojiUrl)
         .setFooter({ text: "Click the image to download" });
 

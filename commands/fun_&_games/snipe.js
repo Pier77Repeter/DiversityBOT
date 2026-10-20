@@ -21,7 +21,7 @@ module.exports = {
       embed.setColor(0x339999).setTitle("🔍 Sniped message").setDescription(snipedMessage);
 
       if (member) {
-        embed.setFooter({ text: "Sent by " + member.username, iconURL: member.displayAvatarURL() });
+        embed.setFooter({ text: `Sent by ${member.username}`, iconURL: member.displayAvatarURL() });
       } else {
         embed.setFooter({ text: "Waiting to catch a member..." });
       }

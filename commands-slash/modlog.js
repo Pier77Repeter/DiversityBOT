@@ -17,6 +17,7 @@ module.exports = {
 
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **/setup** to enable them");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
@@ -41,15 +42,13 @@ module.exports = {
 
     if (!interaction.guild.members.me.permissionsIn(channel).has(PermissionsBitField.Flags.SendMessages)) {
       embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("I don't have the permission to `Send Messages` in that channel");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     await client.database.query("UPDATE servers SET mod_log_channel = $1 WHERE server_id = $2", [channel.id, interaction.guild.id]);
 
-    embed
-      .setColor(0x33ff33)
-      .setTitle("✅ Done")
-      .setDescription("Moderation actions will be logged in <#" + channel.id + ">");
+    embed.setColor(0x33ff33).setTitle("✅ Done").setDescription(`Moderation actions will be logged in <#${channel.id}>`);
 
     await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
@@ -59,7 +58,7 @@ module.exports = {
       .setTitle("📝 Mod Actions Logger")
       .setDescription("Moderation actions (bans, kicks, mutes, etc.) will be logged in this channel, make sure i keep the permission to `Send Messages` in this channel")
       .setFooter({
-        text: "Configured by " + interaction.user.tag,
+        text: `Configured by ${interaction.user.tag}`,
         iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
       })
       .setTimestamp();

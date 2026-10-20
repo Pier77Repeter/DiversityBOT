@@ -25,7 +25,8 @@ module.exports = {
     if (cooldown === null) return;
 
     if (cooldown) {
-      embed.setColor(0x000000).setDescription("⏰ Next fishing session **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription(`⏰ Next fishing session **<t:${cooldown[1]}:R>**`);
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -35,11 +36,13 @@ module.exports = {
       if ((await dbJsonDataSet(client, message, "items", items, message.author.id)) === null) return;
 
       embed.setColor(0xff0000).setTitle("😢 Oh No!").setDescription("Your fishing just broke, go buy a new one to fish again");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (mathRandomInt(1, 3) === 1) {
       embed.setColor(0xff0000).setTitle("🌊 Nothing, just water").setDescription("You haven't caught any fish, try again later");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 

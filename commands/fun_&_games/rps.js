@@ -90,6 +90,7 @@ module.exports = {
     collector.on("end", async (collected, reason) => {
       if (reason === "time") {
         embed.setTitle("Rip").setDescription("Someone didn't respond in time >:(").setFooter({ text: null });
+
         btnRpsRock.setDisabled(true);
         btnRpsPaper.setDisabled(true);
         btnRpsScissors.setDisabled(true);

@@ -19,7 +19,7 @@ module.exports = {
 
     if (row.rowCount === 0) {
       throw new Error(
-        ["The records: 'money', 'bankMoney' were NOT found in the database", "Requested from Server: '" + message.guildId + "' - User: '" + message.author.id + "'"].join("\n"),
+        ["The records: 'money', 'bankMoney' were NOT found in the database", `Requested from Server: '${message.guildId}' - User: '${message.author.id}'`].join("\n"),
       );
     }
 
@@ -30,6 +30,7 @@ module.exports = {
       case "all":
         if (money === 0) {
           embed.setColor(0xff0000).setTitle("❌ Transaction Failed").setDescription("You don't have money to deposit in bank");
+
           return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
         }
 
@@ -48,11 +49,13 @@ module.exports = {
       default:
         if (isNaN(moneyToDeposit) || moneyToDeposit < 1) {
           embed.setColor(0xff0000).setTitle("❌ Invalid Number").setDescription("Not a valid number, put a number starting from **at least 1**");
+
           return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
         }
 
         if (moneyToDeposit > money) {
           embed.setColor(0xff0000).setTitle("❌ Transaction Failed").setDescription("You don't have that amount of money to deposit in bank");
+
           return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
         }
 

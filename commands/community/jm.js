@@ -7,7 +7,7 @@ const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "jm",
-  aliases: ["javamoment"],
+  aliases: ["javamoment", "jm"],
   description: "Java moment",
   cooldown: 30,
   async execute(client, message, args) {
@@ -18,6 +18,7 @@ module.exports = {
 
     if (!isCommunityEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Community commands are off! Type **d!setup community** to enable them");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -26,32 +27,53 @@ module.exports = {
 
     if (cooldown) {
       embed.setColor(0x000000).setDescription(`⏰ You can do another Java moment **<t:${cooldown[1]}:R>**`);
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const imageFile = new AttachmentBuilder("./media/javaMascot.png");
 
-    await message.reply({ files: [imageFile] }).catch(msgErrorHandler);
+    try {
+      await message.reply({ files: [imageFile] });
+    } catch (error) {
+      return msgErrorHandler(error);
+    }
 
     await delay(2000);
 
     imageFile.setFile("./media/javaLogo.png");
 
-    await message.channel.send({ files: [imageFile] }).catch(msgErrorHandler);
+    try {
+      await message.channel.send({ files: [imageFile] });
+    } catch (error) {
+      return msgErrorHandler(error);
+    }
 
     await delay(2000);
 
     imageFile.setFile("./media/javaLogo2.png");
 
-    await message.channel.send({ files: [imageFile] }).catch(msgErrorHandler);
+    try {
+      await message.channel.send({ files: [imageFile] });
+    } catch (error) {
+      return msgErrorHandler(error);
+    }
 
     await delay(1000);
 
-    await message.channel.send("Java moment!").catch(msgErrorHandler);
+    try {
+      await message.channel.send("Java moment!");
+    } catch (error) {
+      return msgErrorHandler(error);
+    }
 
     await delay(3000);
 
-    await message.channel.send("https://c.tenor.com/PZSmpxGQHfoAAAAd/tenor.gif").catch(msgErrorHandler);
+    try {
+      await message.channel.send("https://c.tenor.com/PZSmpxGQHfoAAAAd/tenor.gif");
+    } catch (error) {
+      return msgErrorHandler(error);
+    }
 
     await delay(3000);
 

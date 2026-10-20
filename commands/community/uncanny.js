@@ -16,6 +16,7 @@ module.exports = {
 
     if (!isCommunityEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Community commands are off! Type **d!setup community** to enable them");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -24,6 +25,7 @@ module.exports = {
 
     if (cooldown) {
       embed.setColor(0x000000).setDescription(`⏰ You can play another uncanny game **<t:${cooldown[1]}:R>**`);
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -31,7 +33,11 @@ module.exports = {
 
     embed.setColor(0xffcc66).setTitle("Say something uncanny (Stage 1/10)").setImage("attachment://uncanny-1.jpg");
 
-    await message.reply({ embeds: [embed], files: [imageFile] }).catch(msgErrorHandler);
+    try {
+      await message.reply({ embeds: [embed], files: [imageFile] });
+    } catch (error) {
+      return msgErrorHandler(error);
+    }
 
     // the collected message author MUST BE EQUAL to the command message author
     const filter = (collectedMessage) => collectedMessage.author.id === message.author.id;
@@ -47,7 +53,7 @@ module.exports = {
         return await receivedMessage.reply({ content: "Message is too long, keep it under 256 characters" }).catch(msgErrorHandler);
       }
 
-      if (counter > 11 || receivedMessage.content.toLowerCase() == "stop") {
+      if (counter > 11 || receivedMessage.content.toLowerCase() === "stop") {
         return collector.stop();
       }
 

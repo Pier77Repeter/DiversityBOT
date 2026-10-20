@@ -14,11 +14,13 @@ module.exports = {
 
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need the permission `Moderate members` to use this command");
+      embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("You need the permission `Moderate Members` to use this command");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -27,18 +29,12 @@ module.exports = {
     const row = await client.database.query("SELECT warns FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, user.id]);
 
     if (row.rowCount === 0 || row.rows[0].warns === 0) {
-      embed
-        .setColor(0x33ff33)
-        .setTitle("🚨" + user.tag + "'s warns")
-        .setDescription("The user **" + user.tag + "** has a total of **0** warns");
+      embed.setColor(0x33ff33).setTitle(`🚨${user.tag}'s Warns`).setDescription(`The user **${user.tag}** has a total of **0** warns`);
 
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
-    embed
-      .setColor(0x33ff33)
-      .setTitle("🚨" + user.tag + "'s warns")
-      .setDescription("The user **" + user.tag + "** has a total of **" + row.rows[0].warns + "** warns");
+    embed.setColor(0x33ff33).setTitle(`🚨${user.tag}'s Warns`).setDescription(`The user **${user.tag}** has a total of **${row.rows[0].warns}** warns`);
 
     const btnClearWarns = new ButtonBuilder().setCustomId("warns-btn-btnClearWarns").setLabel("Clear warns").setStyle(ButtonStyle.Primary);
     const actionRow = new ActionRowBuilder().addComponents(btnClearWarns);
@@ -59,10 +55,7 @@ module.exports = {
       if (btnInteraction.customId === "warns-btn-btnClearWarns") {
         await client.database.query("UPDATE users SET warns = 0 WHERE server_id = $1 AND user_id = $2", [message.guildId, user.id]);
 
-        embed
-          .setColor(0x33ff33)
-          .setTitle("✅ Done")
-          .setDescription("The warns of **" + user.tag + "** have been cleared");
+        embed.setColor(0x33ff33).setTitle("✅ Done").setDescription(`The warns of **${user.tag}** have been cleared`);
 
         btnClearWarns.setStyle(ButtonStyle.Success).setDisabled(true);
 
@@ -71,12 +64,12 @@ module.exports = {
         // MOD LOGGING HERE
         embed
           .setColor(0x33ff33)
-          .setTitle("🛂 Cleared member warns")
-          .setDescription("**" + user.tag + "**'s warns have been cleared")
-          .setFooter({ text: "Action by " + message.author.tag, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+          .setTitle("🛂 Cleared Member Warns")
+          .setDescription(`**${user.tag}**'s warns have been cleared`)
+          .setFooter({ text: `Action by ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
           .setTimestamp();
 
-        await modActionLogger(client, message, embed);
+        return await modActionLogger(client, message, embed);
       }
     });
 

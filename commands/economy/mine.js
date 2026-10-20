@@ -19,6 +19,7 @@ module.exports = {
 
     if (items[12].quantity === 0) {
       embed.setColor(0xff0000).setTitle("❌ Missing Item").setDescription("You need to buy a **pickaxe** for mining ores");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -26,7 +27,8 @@ module.exports = {
     if (cooldown === null) return;
 
     if (cooldown) {
-      embed.setColor(0x000000).setDescription("⏰ Mine is closed, will re-open **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription(`⏰ Mine is closed, will re-open **<t:${cooldown[1]}:R>**`);
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -36,13 +38,13 @@ module.exports = {
       if ((await dbJsonDataSet(client, message, "items", items, message.author.id)) === null) return;
 
       embed.setColor(0xff0000).setTitle("👷‍♂️💥⬛").setDescription("Your pickaxe exploded! Go buy a new one to mine again");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     embed.setColor(0x666666).setTitle("👷‍♂️⛏️⬛⬛⬛⬛⬛⬛⬛⬛⬛").setDescription("You started mining, let's hope you find some ores").setFooter({ text: "Minecraft bottom text" });
 
     const sentMessage = await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
-
     if (!sentMessage) return;
 
     await delay(1000);
@@ -120,11 +122,7 @@ module.exports = {
     if (mathRandomInt(1, 4) === 1) {
       embed.setColor(0xff0000).setTitle("👷‍♂️⛏️⬛").setDescription("You found nothing").setFooter({ text: "Just rocks" });
 
-      try {
-        return await sentMessage.edit({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     // this was needed for the description
@@ -133,37 +131,37 @@ module.exports = {
     const embedTexts = [
       {
         title: "👷‍♂️⛏️💎",
-        desc: "You found a rare gem, you got **" + oresMoney[0] + "$**",
+        desc: `You found a rare gem, you got **${oresMoney[0]}$**`,
         footer: "Awesome find!",
         price: oresMoney[0],
       },
       {
         title: "👷‍♂️⛏️☠️",
-        desc: "You found a skuuuuuull, you got **" + oresMoney[1] + "$**",
+        desc: `You found a skuuuuuull, you got **${oresMoney[1]}$**`,
         footer: "scary",
         price: oresMoney[1],
       },
       {
         title: "👷‍♂️⛏️🟨",
-        desc: "You found shiny gold, you got **" + oresMoney[2] + "$**",
+        desc: `You found shiny gold, you got **${oresMoney[2]}$**`,
         footer: "Stonks",
         price: oresMoney[2],
       },
       {
         title: "👷‍♂️⛏️♦️",
-        desc: "You found redstone, you got **" + oresMoney[3] + "$**",
+        desc: `You found redstone, you got **${oresMoney[3]}$**`,
         footer: "Mumbo Jumbo reference",
         price: oresMoney[3],
       },
       {
         title: "👷‍♂️⛏️🔷",
-        desc: "You found a diamond, you got **" + oresMoney[4] + "$**",
+        desc: `You found a diamond, you got **${oresMoney[4]}$**`,
         footer: "Craft a diamond armor now",
         price: oresMoney[4],
       },
       {
         title: "👷‍♂️⛏️🛢️",
-        desc: "You found OIL, you got **" + oresMoney[5] + "$**",
+        desc: `You found OIL, you got **${oresMoney[5]}$**`,
         footer: "USA is coming for you!",
         price: oresMoney[5],
       },

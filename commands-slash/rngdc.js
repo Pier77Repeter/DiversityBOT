@@ -16,6 +16,7 @@ module.exports = {
 
     if (!isRngEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("RNG commands are off! Type **d!setup rng** to enable them");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 

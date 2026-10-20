@@ -14,6 +14,7 @@ module.exports = {
 
     if (!isLevelingEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Leveling commands are off! Type **d!setup leveling** to enable them");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -22,11 +23,8 @@ module.exports = {
     const row = await client.database.query("SELECT xp, next_xp FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, user.id]);
 
     if (row.rowCount === 0) {
-      embed
-        .setColor(0x00cccc)
-        .setTitle(user.username + " current XP")
-        .setDescription("Bro has literally **0 XP** 🤦‍♂️")
-        .setThumbnail(user.displayAvatarURL());
+      embed.setColor(0x00cccc).setTitle(`${user.username} current XP`).setDescription("Bro has literally **0 XP** 🤦‍♂️").setThumbnail(user.displayAvatarURL());
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -35,8 +33,8 @@ module.exports = {
     const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "xp.png"), { name: "xp.png" });
 
     embed
-      .setTitle(user.username + " current xp")
-      .setDescription(["🪩 XP: **" + xp + "**", "", "⏭️ XP for the next level: **" + (nextXp - xp) + "**"].join("\n"))
+      .setTitle(`${user.username} current xp`)
+      .setDescription([`🪩 XP: **${xp}**`, "", `⏭️ XP for the next level: **${nextXp - xp}**`].join("\n"))
       .setThumbnail("attachment://xp.png");
 
     return await message.reply({ embeds: [embed], files: [imageFile] }).catch(msgErrorHandler);

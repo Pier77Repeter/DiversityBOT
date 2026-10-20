@@ -12,18 +12,18 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor(0x000099)
-      .setTitle(["🪪 " + user.username + "'s informations"].join(""))
+      .setTitle(`🪪 ${user.username}'s Informations`)
       .setDescription(
         [
-          "**Global name:** " + globalName,
+          `**Global name:** ${globalName}`,
           "",
-          "**ID:** " + member.id,
+          `**ID:** ${member.id}`,
           "",
-          "**Join date:** " + member.joinedAt,
+          `**Join date:** ${member.joinedAt}`,
           "",
-          "**Account creation date:** " + user.createdAt,
+          `**Account creation date:** ${user.createdAt}`,
           "",
-          "**Roles:** " + member.roles.cache.map((role) => role.toString()).join(", "),
+          `**Roles:** ${member.roles.cache.map((role) => role.toString()).join(", ")}`,
           "",
           "**Profile picture:**",
         ].join("\n"),

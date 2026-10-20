@@ -16,7 +16,8 @@ module.exports = {
     if (cooldown === null) return;
 
     if (cooldown) {
-      embed.setColor(0x000000).setDescription("⏰ You can play this game in **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription(`⏰ You can play this game in **<t:${cooldown[1]}:R>**`);
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -31,7 +32,6 @@ module.exports = {
     const actionRow = new ActionRowBuilder().addComponents(btnLow, btnHigh);
 
     const sentMessage = await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
-
     if (!sentMessage) return;
 
     const collector = sentMessage.createMessageComponentCollector({
@@ -56,6 +56,7 @@ module.exports = {
 
           if (highLowSelectedNumber > highLowNumber) {
             embed.setColor(0xff0000).setTitle("❌ Wrong").setDescription(`The selected number was **${highLowSelectedNumber}**`);
+
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
           }
 
@@ -73,6 +74,7 @@ module.exports = {
 
           if (highLowSelectedNumber < highLowNumber) {
             embed.setColor(0xff0000).setTitle("❌ Wrong").setDescription(`The selected number was **${highLowSelectedNumber}**`);
+
             return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
           }
 

@@ -18,12 +18,14 @@ module.exports = {
 
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **/setup** to enable them");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     // Bot's permissions check
     if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.BanMembers)) {
       embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("I don't have the permission to `Ban Members` in this server");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
@@ -32,6 +34,7 @@ module.exports = {
 
     if (memberId === interaction.user.id) {
       embed.setColor(0xff0000).setTitle("❌ What?").setDescription("You can't unban yourself lol");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
@@ -41,25 +44,23 @@ module.exports = {
       bannedUser = await interaction.guild.bans.fetch(memberId);
     } catch {
       embed.setColor(0xff0000).setTitle("❌ Not Banned").setDescription("This user hasn't been banned from the server");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     // as always, the error is catch in interactionCreate.js
     await interaction.guild.members.unban(bannedUser.user.id, unbanReason);
 
-    embed
-      .setColor(0x33ff33)
-      .setTitle("✅ Unbanned")
-      .setDescription("Successfully unbanned **" + bannedUser.user.tag + "** from the server");
+    embed.setColor(0x33ff33).setTitle("✅ Unbanned").setDescription(`Successfully unbanned **${bannedUser.user.tag}** from the server`);
 
     await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
     // MOD LOGGING HERE
     embed
       .setColor(0x33ff33)
-      .setTitle("🔓 Unbanned member")
-      .setDescription("**" + bannedUser.user.tag + "** has been unbanned from the server" + "\n" + "Reason: " + unbanReason)
-      .setFooter({ text: "Action by " + interaction.user.tag, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
+      .setTitle("🔓 Unbanned Member")
+      .setDescription(`**${bannedUser.user.tag}** has been unbanned from the server\nReason: ${unbanReason}`)
+      .setFooter({ text: `Action by ${interaction.user.tag}`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
       .setTimestamp();
 
     return await modActionLogger(client, interaction, embed);

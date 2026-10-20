@@ -17,7 +17,8 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (cooldown) {
-      embed.setColor(0x000000).setDescription("⏰ Don't doop too fast, do it later **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription(`⏰ Don't doop too fast, do it later **<t:${cooldown[1]}:R>**`);
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -68,6 +69,7 @@ module.exports = {
           // the chance to fail to doop
           if (mathRandomInt(1, 6) === 1) {
             money = mathRandomInt(2000, 3000);
+
             if ((await manageUserMoney(client, message, "-", money)) === null) return;
 
             embed.setColor(0xff0000).setTitle("👮 Hausemaster Caught You").setDescription(`Hause saw you duping, and removed **${money}$** from your balance`);
@@ -76,12 +78,10 @@ module.exports = {
           }
 
           money = mathRandomInt(200, 300);
+
           if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-          embed
-            .setColor(0x33ff33)
-            .setTitle("✅ Dupe Completed")
-            .setDescription("You successfully did the dupe and got **" + money + "$**");
+          embed.setColor(0x33ff33).setTitle("✅ Dupe Completed").setDescription(`You successfully did the dupe and got **${money}$**`);
 
           return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
 
@@ -99,6 +99,7 @@ module.exports = {
 
           if (mathRandomInt(1, 6) === 1) {
             money = mathRandomInt(2000, 3000);
+
             if ((await manageUserMoney(client, message, "-", money)) === null) return;
 
             embed.setColor(0xff0000).setTitle("👮 Hausemaster Caught You").setDescription(`Hause saw you duping, and removed **${money}$** from your balance`);
@@ -107,6 +108,7 @@ module.exports = {
           }
 
           money = mathRandomInt(200, 300);
+
           if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed.setColor(0x33ff33).setTitle("✅ Dupe Completed").setDescription(`You successfully did the dupe and got **${money}$**`);
@@ -127,6 +129,7 @@ module.exports = {
 
           if (mathRandomInt(1, 6) === 1) {
             money = mathRandomInt(2000, 3000);
+
             if ((await manageUserMoney(client, message, "-", money)) === null) return;
 
             embed.setColor(0xff0000).setTitle("👮 Hausemaster Caught You").setDescription(`Hause saw you duping, and removed **${money}$** from your balance`);
@@ -135,6 +138,7 @@ module.exports = {
           }
 
           money = mathRandomInt(200, 300);
+
           if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed.setColor(0x33ff33).setTitle("✅ Dupe Completed").setDescription(`You successfully did the dupe and got **${money}$**`);
@@ -154,6 +158,7 @@ module.exports = {
           await delay(3000);
 
           money = mathRandomInt(300, 500);
+
           if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
           embed.setColor(0x33ff33).setTitle("✅ Ultimate Dupe Completed").setDescription(`"You successfully did the dupe and got **${money}$**"`);

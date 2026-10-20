@@ -17,7 +17,8 @@ module.exports = {
     if (cooldown === null) return;
 
     if (cooldown) {
-      embed.setColor(0x000000).setDescription("⏰ You can post another meme **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription(`⏰ You can post another meme **<t:${cooldown[1]}:R>**`);
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -25,7 +26,7 @@ module.exports = {
 
     embed
       .setColor(0x3366ff)
-      .setTitle(message.author.username + " is going to post a meme")
+      .setTitle(`${message.author.username} is going to post a meme`)
       .setDescription("What type of meme are you planning to post?")
       .setThumbnail("attachment://Reddit.png");
 
@@ -84,7 +85,7 @@ module.exports = {
           embed
             .setColor(0x33cc00)
             .setTitle("👍 You posted a funny meme")
-            .setDescription("Hahaha, nice meme there, you got **" + money + "$** for the content")
+            .setDescription(`Hahaha, nice meme there, you got **${money}$** for the content`)
             .setThumbnail("attachment://Upvote.png");
 
           return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
@@ -113,7 +114,7 @@ module.exports = {
           embed
             .setColor(0x33cc00)
             .setTitle("👍 You posted a me_irl meme")
-            .setDescription("It was a true meme and you got **" + money + "$** for that!")
+            .setDescription(`It was a true meme and you got **${money}$** for that!`)
             .setThumbnail("attachment://Upvote.png");
 
           return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
@@ -142,7 +143,7 @@ module.exports = {
           embed
             .setColor(0x33cc00)
             .setTitle("👍 You posted a classic meme")
-            .setDescription("Still a funny meme, you got **" + money + "$** for that!")
+            .setDescription(`Still a funny meme, you got **${money}$** for that!`)
             .setThumbnail("attachment://Upvote.png");
 
           return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
@@ -171,7 +172,7 @@ module.exports = {
           embed
             .setColor(0x33cc00)
             .setTitle("👍 You posted a copy pasta")
-            .setDescription("Lucky, nice meme, here **" + money + "$** for the not copied meme!")
+            .setDescription(`Lucky, nice meme, here **${money}$** for the not copied meme!`)
             .setThumbnail("attachment://Upvote.png");
 
           return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
@@ -201,11 +202,7 @@ module.exports = {
 
           imageFile.setFile(path.join(process.cwd(), "media", "Upvote.png")).setName("Upvote.png");
 
-          embed
-            .setColor(0x33cc00)
-            .setTitle("👍 You posted an old meme")
-            .setDescription("Old memes still funny, you got **" + money + "$**!")
-            .setThumbnail("attachment://Upvote.png");
+          embed.setColor(0x33cc00).setTitle("👍 You posted an old meme").setDescription(`Old memes still funny, you got **${money}$**!`).setThumbnail("attachment://Upvote.png");
 
           return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
       }

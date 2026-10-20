@@ -20,10 +20,7 @@ module.exports = {
     const row = await client.database.query("SELECT money FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, mentionedUser.id]);
 
     if (row.rowCount === 0) {
-      embed
-        .setColor(0xff0000)
-        .setTitle("❌ Nope")
-        .setDescription("You can't rob " + user.username + " because he never tried EVEN 1 of my commands! >:(");
+      embed.setColor(0xff0000).setTitle("❌ Nope").setDescription(`You can't rob ${user.username} because he never tried EVEN 1 of my commands! >:(`);
 
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
@@ -31,7 +28,7 @@ module.exports = {
     if (Number(row.rows[0].money) < 1000) {
       embed
         .setColor(0x808080)
-        .setTitle(mentionedUser.username + " dosen't have enough money")
+        .setTitle(`${mentionedUser.username} dosen't have enough money`)
         .setDescription("This user dosen't have the minimum of **1000$** in his wallet, can't be robbed");
 
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
@@ -41,7 +38,8 @@ module.exports = {
     if (cooldown === null) return;
 
     if (cooldown) {
-      embed.setColor(0x000000).setDescription("⏰ You can rob again **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription(`⏰ You can rob again **<t:${cooldown[1]}:R>**`);
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -63,22 +61,17 @@ module.exports = {
 
       if ((await manageUserMoney(client, message, "-", money)) === null) return;
 
-      embed
-        .setColor(0x33ccff)
-        .setTitle("👮 You got caught stealing")
-        .setDescription("You lost **" + money + "$** 🚓 🚓 🚓 🚓 🚓");
+      embed.setColor(0x33ccff).setTitle("👮 The Police Saw You").setDescription(`The police caught you, and made you return **${money}$** 🚓 🚓 🚓 🚓 🚓`);
 
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     // updating mentioned user's money
     money = mathRandomInt(300, 600);
+
     await client.database.query("UPDATE users SET money = $1 WHERE server_id = $2 AND user_id = $3", [money, message.guildId, mentionedUser.id]);
 
-    embed
-      .setColor(0x33ccff)
-      .setTitle("🕵️‍♂️ Don't tell anyone!")
-      .setDescription("You stole **" + money + "$** from " + mentionedUser.username);
+    embed.setColor(0x33ccff).setTitle("🕵️‍♂️ Don't Tell Anyone!").setDescription(`You stole **${money}$** from ${mentionedUser.username}`);
 
     return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },

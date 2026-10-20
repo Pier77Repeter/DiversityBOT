@@ -16,6 +16,7 @@ module.exports = {
 
     if (!isCommunityEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Community commands are off! Type **d!setup community** to enable them");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -24,6 +25,7 @@ module.exports = {
 
     if (cooldown) {
       embed.setColor(0x000000).setDescription(`⏰ You can play another canny game **<t:${cooldown[1]}:R>**`);
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -31,7 +33,12 @@ module.exports = {
 
     embed.setColor(0xffcc66).setTitle("Say something canny (Stage 1/10) or say 'stop' to stop").setImage("attachment://canny-1.jpg");
 
-    await message.reply({ embeds: [embed], files: [imageFile] }).catch(msgErrorHandler);
+    // in this case, i personally find easier to read the full try-catch block rather than a 1-line instruction
+    try {
+      await message.reply({ embeds: [embed], files: [imageFile] });
+    } catch (error) {
+      return msgErrorHandler(error);
+    }
 
     // the collected message author MUST BE EQUAL to the command message author
     const filter = (collectedMessage) => collectedMessage.author.id === message.author.id;
@@ -58,7 +65,11 @@ module.exports = {
         .setImage(`attachment://canny-${counter}.jpg`)
         .setFooter({ text: `Say something canny (Stage ${counter}/10) or say 'stop' to stop` });
 
-      await receivedMessage.reply({ embeds: [embed], files: [imageFile] }).catch(msgErrorHandler);
+      try {
+        await receivedMessage.reply({ embeds: [embed], files: [imageFile] });
+      } catch (error) {
+        return msgErrorHandler(error);
+      }
     });
 
     collector.on("end", async () => {

@@ -44,7 +44,7 @@ module.exports = {
       embeds.push(
         new EmbedBuilder()
           .setColor(0x668baf)
-          .setTitle("Definition of: " + definitions[index].word)
+          .setTitle(`Definition of: ${definitions[index].word}`)
           .setURL(definitions[index].permalink)
           .setDescription(description)
           .addFields(
@@ -52,7 +52,7 @@ module.exports = {
             { name: "Author", value: definitions[index].author, inline: true },
             {
               name: "Votes",
-              value: "👍 " + definitions[index].thumbs_up.toString() + " - 👎 " + definitions[index].thumbs_down.toString(),
+              value: `👍 ${definitions[index].thumbs_up} - 👎 ${definitions[index].thumbs_down}`,
             },
           )
           .setFooter({ text: `Pages ${index + 1} of ${definitions.length}` }),

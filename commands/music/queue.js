@@ -15,6 +15,7 @@ module.exports = {
 
     if (!isMusicEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -36,7 +37,7 @@ module.exports = {
     embed
       .setColor(0xffcc66)
       .setTitle("⌚ Server music queue:")
-      .setDescription("Now playing: " + currentTrack.title)
+      .setDescription(`Now playing: ${currentTrack.title}`)
       .addFields({ name: "Upcoming tracks:", value: upcomingTracksList });
 
     return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);

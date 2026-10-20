@@ -19,6 +19,7 @@ module.exports = {
 
     if (items[11].quantity === 0) {
       embed.setColor(0xff0000).setTitle("❌ Missing Item").setDescription("You need to buy a **Kar98k Scoped** for hunting");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -26,14 +27,14 @@ module.exports = {
     if (cooldown === null) return;
 
     if (cooldown) {
-      embed.setColor(0x000000).setDescription("⏰ Break time, you can hunt again **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription(`⏰ Break time, you can hunt again **<t:${cooldown[1]}:R>**`);
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     embed.setColor(0x999999).setTitle("👓 You are waiting a prey...");
 
     const sentMessage = await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
-
     if (!sentMessage) return;
 
     await delay(2000);
@@ -65,10 +66,11 @@ module.exports = {
 
     const animal = animals[mathRandomInt(0, animals.length - 1)];
 
-    embed.setColor(0x33cc00).setTitle(animal).setDescription("If you have a good aim you can kill it and sell it");
-
     const btnShoot = new ButtonBuilder().setCustomId("btn-hunt-btnShoot").setStyle(ButtonStyle.Primary).setLabel("Shoot");
+
     const actionRow = new ActionRowBuilder().addComponents(btnShoot);
+
+    embed.setColor(0x33cc00).setTitle(animal).setDescription("If you have a good aim you can kill it and sell it");
 
     try {
       await sentMessage.edit({ embeds: [embed], components: [actionRow] });
@@ -110,6 +112,7 @@ module.exports = {
 
         if (mathRandomInt(1, 3) == 1) {
           embed.setColor(0xff0000).setTitle("💨🔫 You Missed").setDescription("The animal heard the shoot and ran away, unlucky");
+
           return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
         }
 

@@ -19,6 +19,7 @@ module.exports = {
 
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **/setup** to enable them");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
@@ -27,17 +28,20 @@ module.exports = {
 
     if (!memberToWarn) {
       embed.setColor(0xff0000).setTitle("❌ No Member").setDescription("Could not find that member in the server, they left...");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     if (memberToWarn.id === interaction.user.id) {
       embed.setColor(0xff0000).setTitle("❌ What?").setDescription("You can't warn yourself lol");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     // can't warn bots
     if (memberToWarn.user.bot) {
       embed.setColor(0xff0000).setTitle("❌ Can't Warn").setDescription("You can't warn a Discord Bot");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
@@ -51,10 +55,7 @@ module.exports = {
 
     await client.database.query("UPDATE users SET warns = warns + 1 WHERE server_id = $1 AND user_id = $2", [interaction.guildId, memberToWarn.user.id]);
 
-    embed
-      .setColor(0x33ff33)
-      .setTitle("✅ Warned")
-      .setDescription("The user **" + memberToWarn.user.tag + "** has been warned");
+    embed.setColor(0x33ff33).setTitle("✅ Warned").setDescription(`The user **${memberToWarn.user.tag}** has been warned`);
 
     await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
@@ -62,8 +63,8 @@ module.exports = {
     embed
       .setColor(0x33ff33)
       .setTitle("🛂 Warned Member")
-      .setDescription("**" + memberToWarn.user.tag + "** has been warned" + "\n" + "Reason: " + warnReason)
-      .setFooter({ text: "Action by " + interaction.user.tag, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
+      .setDescription(`**${memberToWarn.user.tag}** has been warned\nReason: ${warnReason}`)
+      .setFooter({ text: `Action by ${interaction.user.tag}`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
       .setTimestamp();
 
     return await modActionLogger(client, interaction, embed);

@@ -12,6 +12,7 @@ module.exports = {
     // null is a string in db
     if (row.rows[0].job_type) {
       embed.setColor(0xff0000).setTitle("❌ Already Working").setDescription("You already have a job, come back when you will eventually get fired");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -34,7 +35,6 @@ module.exports = {
     const actionRow = new ActionRowBuilder().setComponents(btnNext, btnFireFighter, btnTeacher, btnDiscordMod);
 
     const sentMessage = await message.reply({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
-
     if (!sentMessage) return;
 
     // better name it collector

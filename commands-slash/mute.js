@@ -19,11 +19,13 @@ module.exports = {
 
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **/setup** to enable them");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
       embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("I don't have the permission to `Moderate Members` in this server");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
@@ -33,25 +35,25 @@ module.exports = {
 
     if (!memberToMute) {
       embed.setColor(0xff0000).setTitle("❌ No Member").setDescription("Could not find that member in the server, did they just left?");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     if (memberToMute.id === interaction.user.id) {
       embed.setColor(0xff0000).setTitle("❌ What?").setDescription("You can't mute yourself lol");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     if (!memberToMute.moderatable) {
       embed.setColor(0xff0000).setTitle("❌ Can't Mute").setDescription("I can't mute this user, maybe they have a higher role than me");
+
       return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
     }
 
     await memberToMute.timeout(muteTime * 60 * 1000, muteReason);
 
-    embed
-      .setColor(0x33ff33)
-      .setTitle("✅ Muted")
-      .setDescription("The user **" + memberToMute.user.tag + "** has been muted for `" + muteTime + " minutes`" + "\n" + "Reason: " + muteReason);
+    embed.setColor(0x33ff33).setTitle("✅ Muted").setDescription(`The user **${memberToMute.user.tag}** has been muted for \`${muteTime} minutes\`\nReason: ${muteReason}`);
 
     await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
@@ -59,8 +61,8 @@ module.exports = {
     embed
       .setColor(0x33ff33)
       .setTitle("🔇 Muted Member")
-      .setDescription("**" + memberToMute.user.tag + "** has been muted for " + muteTime + " minutes" + "\n" + "Reason: " + muteReason)
-      .setFooter({ text: "Action by " + interaction.user.tag, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
+      .setDescription(`**${memberToMute.user.tag}** has been muted for ${muteTime} minutes\nReason: ${muteReason}`)
+      .setFooter({ text: `Action by ${interaction.user.tag}`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
       .setTimestamp();
 
     return await modActionLogger(client, interaction, embed);

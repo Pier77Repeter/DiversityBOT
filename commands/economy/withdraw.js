@@ -10,6 +10,7 @@ module.exports = {
 
     if (!args[0]) {
       embed.setColor(0xff0000).setTitle("❌ Missing Amount").setDescription("Insert the amount of money you want to put in your wallet");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -18,10 +19,9 @@ module.exports = {
     const row = await client.database.query("SELECT bank_money, money FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
     if (row.rowCount === 0) {
-      throw [
-        "The records 'bankMoney', 'money' were NOT found in the database, CHECK THE QUERY",
-        "Requested from Server: '" + message.guildId + "' - User: '" + message.author.id + "'",
-      ].join("\n");
+      throw ["The records 'bankMoney', 'money' were NOT found in the database, CHECK THE QUERY", `Requested from Server: '${message.guildId}' - User: '${message.author.id}'`].join(
+        "\n",
+      );
     }
 
     const money = Number(row.rows[0].money);
@@ -31,6 +31,7 @@ module.exports = {
       case "all":
         if (bankMoney === 0) {
           embed.setColor(0xff0000).setTitle("❌ Transaction Failed").setDescription("Looks like you have no money in the bank");
+
           return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
         }
 
@@ -38,10 +39,10 @@ module.exports = {
 
         embed
           .setColor(0x33ff33)
-          .setDescription("✅ Successfully transfered **" + bankMoney + "**$ to your wallet")
+          .setDescription(`✅ Successfully transfered **${bankMoney}**$ to your wallet`)
           .setFields({
             name: "Transaction Ended!",
-            value: ["💰 Now you have: **" + (money + bankMoney) + "$** in your wallet", "🏦 Now you have: **0$** in your bank"].join("\n"),
+            value: [`💰 Now you have: **${money + bankMoney}$** in your wallet`, "🏦 Now you have: **0$** in your bank"].join("\n"),
           });
 
         return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
@@ -49,11 +50,13 @@ module.exports = {
       default:
         if (isNaN(moneyToWithdraw) || moneyToWithdraw < 1) {
           embed.setColor(0xff0000).setTitle("❌ Invalid Number").setDescription("Not a valid number, put a number starting from **at least 1**");
+
           return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
         }
 
         if (moneyToWithdraw > bankMoney) {
           embed.setColor(0xff0000).setTitle("❌ Transaction Failed").setDescription("You don't have that money to deposit in bank");
+
           return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
         }
 
@@ -68,12 +71,12 @@ module.exports = {
 
         embed
           .setColor(0x33ff33)
-          .setDescription("✅ Successfully transfered **" + actualMoneyToWith + "**$ to your wallet")
+          .setDescription(`✅ Successfully transfered **${actualMoneyToWith}**$ to your wallet`)
           .setFields({
             name: "Transaction Ended!",
             value: [
-              "💰 Now you have: **" + (money + parseInt(actualMoneyToWith)) + "$** in your wallet",
-              "🏦 Now you have: **" + (bankMoney - parseInt(actualMoneyToWith)) + "$** in your bank",
+              `💰 Now you have: **${money + parseInt(actualMoneyToWith)}$** in your wallet`,
+              `🏦 Now you have: **${bankMoney - parseInt(actualMoneyToWith)}$** in your bank`,
             ].join("\n"),
           });
 

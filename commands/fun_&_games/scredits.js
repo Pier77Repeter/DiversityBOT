@@ -14,7 +14,7 @@ module.exports = {
     if (row.rowCount === 0) {
       embed
         .setColor(0x33cc00)
-        .setTitle(user.username + "'s social credits")
+        .setTitle(`${user.username}'s social credits`)
         .setDescription("Earned social credits: **0**")
         .setThumbnail(user.displayAvatarURL());
 
@@ -25,8 +25,8 @@ module.exports = {
 
     embed
       .setColor(0x33cc00)
-      .setTitle(user.username + "'s social credits")
-      .setDescription("Earned social credits: **" + socialCredits + "**")
+      .setTitle(`${user.username}'s social credits`)
+      .setDescription(`Earned social credits: **${socialCredits}**`)
       .setThumbnail(user.displayAvatarURL());
 
     if (socialCredits < 0) {

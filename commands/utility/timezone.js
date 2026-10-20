@@ -63,7 +63,7 @@ module.exports = {
     }
 
     const converted = dt.setZone(toZone);
-    embed.setDescription("Invalid target timezone: `" + toZone + "`. Please use a valid IANA format like `Europe/Paris` or `UTC`.").setFooter(null);
+    embed.setDescription(`Invalid target timezone: \`${toZone}\`. Please use a valid IANA format like \`Europe/Paris\` or \`UTC\`.`).setFooter(null);
 
     if (!converted.isValid) {
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
@@ -73,7 +73,7 @@ module.exports = {
 
     embed
       .setColor("Blurple")
-      .setTitle(listsGetRandomItem(emojis) + " " + fromZone + " " + timeStr + " ➡️ " + toZone + " " + converted.toFormat("dd-LL HH:mm"))
+      .setTitle(`${listsGetRandomItem(emojis)} ${fromZone} ${timeStr} ➡️ ${toZone} ${converted.toFormat("dd-LL HH:mm")}`)
       .setDescription(null)
       .setFooter(null);
 

@@ -23,6 +23,7 @@ module.exports = {
 
     if (args.length < 1) {
       embed.setColor("DarkRed").setTitle("❌ Missing Name").setDescription("Please provide the name of the song");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -34,6 +35,7 @@ module.exports = {
 
     if (!lyrics.length) {
       embed.setColor("DarkRed").setTitle("❌ Not Found").setDescription("The song's lyrics have not been found");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -46,7 +48,7 @@ module.exports = {
       .setThumbnail(lyrics[0].thumbnail)
 
       .setDescription(trimmedLyrics.length === 1997 ? `${trimmedLyrics}...` : trimmedLyrics)
-      .setFooter({ text: "Artist " + lyrics[0].artistName });
+      .setFooter({ text: `Artist ${lyrics[0].artistName}` });
 
     return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },

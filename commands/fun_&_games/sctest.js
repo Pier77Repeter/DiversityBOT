@@ -15,7 +15,8 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (cooldown) {
-      embed.setColor(0x000000).setDescription("⏰ You you can do this test again: **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription(`⏰ You you can do this test again: **<t:${cooldown[1]}:R>**`);
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -447,7 +448,7 @@ module.exports = {
 
       try {
         await btnInteraction.update({
-          embeds: [scTestRightAnswerMessageEmbed.setFooter({ text: questionProgressCounter + "/10 questions" })],
+          embeds: [scTestRightAnswerMessageEmbed.setFooter({ text: `${questionProgressCounter}/10 questions` })],
           files: [rightAnswerImage],
           components: [btnRowToDisable],
         });

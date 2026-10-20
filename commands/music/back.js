@@ -15,6 +15,7 @@ module.exports = {
 
     if (!isMusicEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 

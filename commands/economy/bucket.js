@@ -15,7 +15,7 @@ module.exports = {
 
     const embed = new EmbedBuilder()
       .setColor(0x33ccff)
-      .setTitle("🪣 " + user.username + "'s Bucket")
+      .setTitle(`🪣 ${user.username}'s Bucket`)
       .setDescription("No fishes to display here, start fishing with **d!fish**");
 
     // have to remove this description if user has something ^

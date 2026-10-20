@@ -26,6 +26,7 @@ module.exports = {
     const enabled = interaction.options.getBoolean("enabled");
 
     let columnName, enabledCmds;
+
     switch (category) {
       case "moderation":
         columnName = "mod_cmd";

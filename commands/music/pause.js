@@ -14,6 +14,7 @@ module.exports = {
 
     if (!isMusicEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
@@ -30,7 +31,7 @@ module.exports = {
 
     queue.node.pause();
 
-    embed.setColor(0xcc0000).setTitle("⏸️ Music paused").setDescription("Resume playing with **d!resume**");
+    embed.setColor(0xcc0000).setTitle("⏸️ Music Paused").setDescription("Resume playing with **d!resume**");
 
     return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },

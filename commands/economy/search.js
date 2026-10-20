@@ -18,11 +18,12 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (cooldown) {
-      embed.setColor(0x000000).setDescription("⏰ Take a break from searching, come back **<t:" + cooldown[1] + ":R>**");
+      embed.setColor(0x000000).setDescription(`⏰ Take a break from searching, come back **<t:${cooldown[1]}:R>**`);
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
-    embed.setColor(0xff6600).setTitle("🔍 Base hunting time").setDescription("Choose the dimention you are going to explore for base hunting");
+    embed.setColor(0xff6600).setTitle("🔍 Base Hunting Time").setDescription("Choose the dimention you are going to explore for base hunting");
 
     const btnOverworld = new ButtonBuilder().setCustomId("btn-search-btnOverworld").setLabel("Overworld").setStyle(ButtonStyle.Primary);
     const btnNether = new ButtonBuilder().setCustomId("btn-search-btnNether").setLabel("Nether").setStyle(ButtonStyle.Primary);
@@ -73,58 +74,62 @@ module.exports = {
           switch (searchProbs) {
             case 1:
               embed.setColor(0xcc6600).setTitle("👀 You found a griefed zone").setDescription("There are some withers, random obsidian structures and ruins");
+
               return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
 
             case 2:
               embed.setColor(0xcc6600).setTitle("👀 You found a random structure").setDescription("Nothing of interesting, sadly no loot");
+
               return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
 
             case 3:
               embed.setColor(0xcc6600).setTitle("👀 You found a griefed stash").setDescription("Sadly all the shulker were gone and you got nothing");
+
               return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
 
             case 4:
               money = mathRandomInt(150, 250);
+
               if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
               embed
                 .setColor(0xcc6600)
                 .setTitle("👀 YOU FOUND A BASE!!! OHH YEAH!!!")
-                .setDescription("BUMP UP THE MUSIC!!! YOU FOUND A BASE!!! WOOOOOOO!!! You got **" + money + "$** 👏 🎵")
+                .setDescription(`BUMP UP THE MUSIC!!! YOU FOUND A BASE!!! WOOOOOOO!!! You got **${money}$** 👏🎵`)
                 .setImage("attachment://fitSmooth.gif");
 
-              return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+              return await sentMessage.edit({ embeds: [embed], files: [imageFile] }).catch(msgErrorHandler);
 
             case 5:
               money = mathRandomInt(70, 120);
+
               if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
               embed
                 .setColor(0xcc6600)
                 .setTitle("👀 You found a griefed base")
-                .setDescription("You found a griefed base with some shulkers, you got **" + money + "$** not lucky enough");
+                .setDescription(`You found a griefed base with some shulkers, you got **${money}$** not lucky enough`);
 
               return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
 
             case 6:
               money = mathRandomInt(100, 150);
+
               if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-              embed
-                .setColor(0xcc6600)
-                .setTitle("👀 You found a dungeon")
-                .setDescription("You found some shulker in it, you got **" + money + "$**, you can do better");
+              embed.setColor(0xcc6600).setTitle("👀 You found a dungeon").setDescription(`You found some shulker in it, you got **${money}$**, you can do better`);
 
               return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
 
             case 7:
               money = mathRandomInt(200, 300);
+
               if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
               embed
                 .setColor(0xcc6600)
                 .setTitle("YOU FOUND A STASH BABYYY!!! 💰 💰 💰")
-                .setDescription("You are really lucky, you got **" + money + "$**")
+                .setDescription(`You are really lucky, you got **${money}$**`)
                 .setImage("attachment://fitSmooth.gif");
 
               return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
@@ -170,46 +175,47 @@ module.exports = {
 
             case 4:
               money = mathRandomInt(150, 250);
+
               if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
               embed
                 .setColor(0xcc6600)
                 .setTitle("👀 YOU FOUND A BASE!!! OHH YEAH!!!")
-                .setDescription("BUMP UP THE MUSIC!!! YOU FOUND A BASE!!! WOOOOOOO!!! You got **" + money + "$** 👏 🎵")
+                .setDescription(`BUMP UP THE MUSIC!!! YOU FOUND A BASE!!! WOOOOOOO!!! You got **${money}$** 👏 🎵`)
                 .setImage("attachment://fitSmooth.gif");
 
               return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
 
             case 5:
               money = mathRandomInt(70, 120);
+
               if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
               embed
                 .setColor(0xcc6600)
                 .setTitle("👀 You found a griefed base")
-                .setDescription("You found a griefed base with some shulkers, you got **" + money + "$** not lucky enough");
+                .setDescription(`You found a griefed base with some shulkers, you got **${money}$** not lucky enough`);
 
               return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
 
             case 6:
               money = mathRandomInt(100, 150);
+
               if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-              embed
-                .setColor(0xcc6600)
-                .setTitle("👀 You found a dungeon")
-                .setDescription("You found some shulker in it, you got **" + money + "$**, you can do better");
+              embed.setColor(0xcc6600).setTitle("👀 You found a dungeon").setDescription(`You found some shulker in it, you got **${money}$**, you can do better`);
 
               return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
 
             case 7:
               money = mathRandomInt(200, 300);
+
               if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
               embed
                 .setColor(0xcc6600)
                 .setTitle("YOU FOUND A STASH BABYYY!!! 💰 💰 💰")
-                .setDescription("You are really lucky, you got **" + money + "$**")
+                .setDescription(`You are really lucky, you got **${money}$**`)
                 .setImage("attachment://fitSmooth.gif");
 
               return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
@@ -255,52 +261,53 @@ module.exports = {
 
             case 4:
               money = mathRandomInt(150, 250);
+
               if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
               embed
                 .setColor(0xcc6600)
                 .setTitle("👀 YOU FOUND A BASE!!! OHH YEAH!!!")
-                .setDescription("BUMP UP THE MUSIC!!! YOU FOUND A BASE!!! WOOOOOOO!!! You got **" + money + "$** 👏 🎵")
+                .setDescription(`BUMP UP THE MUSIC!!! YOU FOUND A BASE!!! WOOOOOOO!!! You got **${money}$** 👏 🎵`)
                 .setImage("attachment://fitSmooth.gif");
 
               return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
 
             case 5:
               money = mathRandomInt(70, 120);
+
               if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
               embed
                 .setColor(0xcc6600)
                 .setTitle("👀 You found a griefed base")
-                .setDescription("You found a griefed base with some shulkers, you got **" + money + "$** not lucky enough");
+                .setDescription(`You found a griefed base with some shulkers, you got **${money}$** not lucky enough`);
 
               return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
 
             case 6:
               money = mathRandomInt(100, 150);
+
               if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-              embed
-                .setColor(0xcc6600)
-                .setTitle("👀 You found a dungeon")
-                .setDescription("You found some shulker in it, you got **" + money + "$**, you can do better");
+              embed.setColor(0xcc6600).setTitle("👀 You found a dungeon").setDescription(`You found some shulker in it, you got **${money}$**, you can do better`);
 
               return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
 
             case 7:
               money = mathRandomInt(200, 300);
+
               if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
               embed
                 .setColor(0xcc6600)
                 .setTitle("YOU FOUND A STASH BABYYY!!! 💰 💰 💰")
-                .setDescription("You are really lucky, you got **" + money + "$**")
+                .setDescription(`You are really lucky, you got **${money}$**`)
                 .setImage("attachment://fitSmooth.gif");
 
               return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
 
             default:
-              embed.setColor(0xff0000).setTitle("❌ You found nothing").setDescription("Sadly you found nothing ;(");
+              embed.setColor(0xff0000).setTitle("❌ You Found Nothing").setDescription("Sadly you found nothing ;(");
 
               return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
           }

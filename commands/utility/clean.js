@@ -16,32 +16,38 @@ module.exports = {
 
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need the permission `Manage messages` to use this command");
+      embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("You need the permission `Manage Messages` to use this command");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.ManageMessages)) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("I don't have the permission to `Manage messages` in this channel");
+      embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("I don't have the permission to `Manage Messages` in this channel");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     let amount = parseInt(args[0]);
 
     if (isNaN(amount)) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You must provide a valid number of messages");
+      embed.setColor(0xff0000).setTitle("❌ Invalid Number").setDescription("You must provide a valid number of messages");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (amount < 1 || amount > 99) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You must provide a number **between 1 and 99**");
+      embed.setColor(0xff0000).setTitle("❌ Out of Range").setDescription("You must provide a number **between 1 and 99**");
+
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
-    amount = amount + 1; // for the command message itself
+    amount++; // +1 for the command message itself
+
     const fetchedMessages = await message.channel.messages.fetch({ limit: amount });
     const messagesToProcess = fetchedMessages.toJSON().slice(0, amount);
 
@@ -54,7 +60,7 @@ module.exports = {
     } catch (error) {
       embed
         .setColor(0xff0000)
-        .setTitle("❌ Error")
+        .setTitle("❌ Whoospy")
         .setDescription("An error occurred while trying to clean messages, messages older than 14 days cannot be deleted, try a smaller amount");
 
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
@@ -74,10 +80,10 @@ module.exports = {
     embed
       .setColor(0x33ff33)
       .setTitle("🧹 Cleaned Messages")
-      .setDescription("Cleaned **" + deletedCount + "** messages from channel <#" + message.channel.id + ">")
-      .setFooter({ text: "Action by " + message.author.tag, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
+      .setDescription(`Cleaned **${deletedCount}** messages from channel <#${message.channel.id}>`)
+      .setFooter({ text: `Action by ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
       .setTimestamp();
 
-    await modActionLogger(client, message, embed);
+    return await modActionLogger(client, message, embed);
   },
 };
