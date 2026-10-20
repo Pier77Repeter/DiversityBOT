@@ -18,15 +18,10 @@ module.exports = {
 
     if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ Don't doop too fast, do it later **<t:" + cooldown[1] + ":R>**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
-    embed.setColor(0xff6600).setTitle("🪄 Available dupes").setDescription("Select one of the following methods to duplicate your money");
+    embed.setColor(0xff6600).setTitle("🪄 Available Dupes").setDescription("Select one of the following methods to duplicate your money");
 
     const btnDupeDonkey = new ButtonBuilder().setCustomId("btn-dupe-btnDupeDonkey").setLabel("Donkey").setStyle(ButtonStyle.Primary);
     const btnDupeChunk = new ButtonBuilder().setCustomId("btn-dupe-btnDupeChunk").setLabel("Chunk").setStyle(ButtonStyle.Primary);
@@ -40,15 +35,10 @@ module.exports = {
       btnRow.addComponents(btnDupePopbob);
     }
 
-    let sentMessage,
-      money,
+    let money,
       hasClickedBtn = false;
 
-    try {
-      sentMessage = await message.reply({ embeds: [embed], components: [btnRow] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    const sentMessage = await message.reply({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
 
     const btnCollector = sentMessage.createMessageComponentCollector({
       componentType: ComponentType.Button,
@@ -57,14 +47,7 @@ module.exports = {
 
     btnCollector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        try {
-          return await btnInteraction.reply({
-            content: "This isn't your dooping button",
-            flags: MessageFlags.Ephemeral,
-          });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await btnInteraction.reply({ content: "This isn't your dooping button", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
       }
 
       hasClickedBtn = true;
@@ -78,11 +61,7 @@ module.exports = {
           btnDupeAlt.setStyle(ButtonStyle.Secondary).setDisabled(true);
           btnDupePopbob.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-          try {
-            await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          await btnInteraction.update({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
 
           await delay(3000);
 
@@ -91,16 +70,9 @@ module.exports = {
             money = mathRandomInt(2000, 3000);
             if ((await manageUserMoney(client, message, "-", money)) === null) return;
 
-            embed
-              .setColor(0xff0000)
-              .setTitle("👮 Hausemaster caught you")
-              .setDescription("Hause saw you duping, and removed **" + money + "$** from your balance");
+            embed.setColor(0xff0000).setTitle("👮 Hausemaster Caught You").setDescription(`Hause saw you duping, and removed **${money}$** from your balance`);
 
-            try {
-              return await sentMessage.edit({ embeds: [embed] });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
           }
 
           money = mathRandomInt(200, 300);
@@ -108,14 +80,10 @@ module.exports = {
 
           embed
             .setColor(0x33ff33)
-            .setTitle("✅ Dupe completed")
+            .setTitle("✅ Dupe Completed")
             .setDescription("You successfully did the dupe and got **" + money + "$**");
 
-          try {
-            return await sentMessage.edit({ embeds: [embed] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
 
         case "btn-dupe-btnDupeChunk":
           embed.setTitle("🖥️ You start doing the chunk dupe...").setDescription(null);
@@ -125,11 +93,7 @@ module.exports = {
           btnDupeAlt.setStyle(ButtonStyle.Secondary).setDisabled(true);
           btnDupePopbob.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-          try {
-            await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          await btnInteraction.update({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
 
           await delay(3000);
 
@@ -137,31 +101,17 @@ module.exports = {
             money = mathRandomInt(2000, 3000);
             if ((await manageUserMoney(client, message, "-", money)) === null) return;
 
-            embed
-              .setColor(0xff0000)
-              .setTitle("👮 Hausemaster caught you")
-              .setDescription("Hause saw you duping, and removed **" + money + "$** from your balance");
+            embed.setColor(0xff0000).setTitle("👮 Hausemaster Caught You").setDescription(`Hause saw you duping, and removed **${money}$** from your balance`);
 
-            try {
-              return await sentMessage.edit({ embeds: [embed] });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
           }
 
           money = mathRandomInt(200, 300);
           if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-          embed
-            .setColor(0x33ff33)
-            .setTitle("✅ Dupe completed")
-            .setDescription("You successfully did the dupe and got **" + money + "$**");
+          embed.setColor(0x33ff33).setTitle("✅ Dupe Completed").setDescription(`You successfully did the dupe and got **${money}$**`);
 
-          try {
-            return await sentMessage.edit({ embeds: [embed] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
 
         case "btn-dupe-btnDupeAlt":
           embed.setTitle("🖥️ You start doing the Alf F4 dupe...").setDescription(null);
@@ -171,11 +121,7 @@ module.exports = {
           btnDupeAlt.setStyle(ButtonStyle.Success).setDisabled(true);
           btnDupePopbob.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-          try {
-            await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          await btnInteraction.update({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
 
           await delay(3000);
 
@@ -183,78 +129,49 @@ module.exports = {
             money = mathRandomInt(2000, 3000);
             if ((await manageUserMoney(client, message, "-", money)) === null) return;
 
-            embed
-              .setColor(0xff0000)
-              .setTitle("👮 Hausemaster caught you")
-              .setDescription("Hause saw you duping, and removed **" + money + "$** from your balance");
+            embed.setColor(0xff0000).setTitle("👮 Hausemaster Caught You").setDescription(`Hause saw you duping, and removed **${money}$** from your balance`);
 
-            try {
-              return await sentMessage.edit({ embeds: [embed] });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
           }
 
           money = mathRandomInt(200, 300);
           if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-          embed
-            .setColor(0x33ff33)
-            .setTitle("✅ Dupe completed")
-            .setDescription("You successfully did the dupe and got **" + money + "$**");
+          embed.setColor(0x33ff33).setTitle("✅ Dupe Completed").setDescription(`You successfully did the dupe and got **${money}$**`);
 
-          try {
-            return await sentMessage.edit({ embeds: [embed] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
 
         case "btn-dupe-btnDupePopbob":
-          embed.setTitle("🖥️ You start doing *the* POPBOB DUPE :O").setDescription(null);
+          embed.setTitle("🖥️ You started doing *the* POPBOB DUPE :O").setDescription(null);
 
           btnDupeDonkey.setStyle(ButtonStyle.Secondary).setDisabled(true);
           btnDupeChunk.setStyle(ButtonStyle.Secondary).setDisabled(true);
           btnDupeAlt.setStyle(ButtonStyle.Secondary).setDisabled(true);
           btnDupePopbob.setStyle(ButtonStyle.Success).setDisabled(true);
 
-          try {
-            await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          await btnInteraction.update({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
 
           await delay(3000);
 
           money = mathRandomInt(300, 500);
           if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-          embed
-            .setColor(0x33ff33)
-            .setTitle("✅ Ultimate dupe completed")
-            .setDescription("You successfully did the dupe and got **" + money + "$**");
+          embed.setColor(0x33ff33).setTitle("✅ Ultimate Dupe Completed").setDescription(`"You successfully did the dupe and got **${money}$**"`);
 
-          try {
-            return await sentMessage.edit({ embeds: [embed] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
       }
     });
 
     btnCollector.on("end", async () => {
       if (!hasClickedBtn) {
-        embed.setColor(0x000000).setTitle("No response").setDescription("Soooo...no dupe? You missed the opportunity to get free money, well, you gotta wait now");
+        embed.setColor(0x000000).setTitle("No Response").setDescription("Soooo...no dupe? You missed the opportunity to get free money, well, you gotta wait now");
 
         btnDupeDonkey.setStyle(ButtonStyle.Secondary).setDisabled(true);
         btnDupeChunk.setStyle(ButtonStyle.Secondary).setDisabled(true);
         btnDupeAlt.setStyle(ButtonStyle.Secondary).setDisabled(true);
         btnDupePopbob.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-        try {
-          return await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
       }
     });
   },

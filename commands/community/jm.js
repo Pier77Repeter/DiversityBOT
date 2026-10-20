@@ -18,73 +18,45 @@ module.exports = {
 
     if (!isCommunityEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Community commands are off! Type **d!setup community** to enable them");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const cooldown = await serverCooldownManager(client, message, "jm_cooldown", this.cooldown);
     if (cooldown === null) return;
 
     if (cooldown) {
-      embed.setColor(0x000000).setDescription("⏰ You can do another Java moment **<t:" + cooldown[1] + ":R>**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      embed.setColor(0x000000).setDescription(`⏰ You can do another Java moment **<t:${cooldown[1]}:R>**`);
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const imageFile = new AttachmentBuilder("./media/javaMascot.png");
 
-    try {
-      await message.reply({ files: [imageFile] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    await message.reply({ files: [imageFile] }).catch(msgErrorHandler);
 
     await delay(2000);
 
     imageFile.setFile("./media/javaLogo.png");
-    try {
-      await message.channel.send({ files: [imageFile] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+
+    await message.channel.send({ files: [imageFile] }).catch(msgErrorHandler);
 
     await delay(2000);
 
     imageFile.setFile("./media/javaLogo2.png");
-    try {
-      await message.channel.send({ files: [imageFile] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+
+    await message.channel.send({ files: [imageFile] }).catch(msgErrorHandler);
 
     await delay(1000);
 
-    try {
-      await message.channel.send("Java moment!");
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    await message.channel.send("Java moment!").catch(msgErrorHandler);
 
     await delay(3000);
 
-    try {
-      await message.channel.send("https://c.tenor.com/PZSmpxGQHfoAAAAd/tenor.gif");
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    await message.channel.send("https://c.tenor.com/PZSmpxGQHfoAAAAd/tenor.gif").catch(msgErrorHandler);
 
     await delay(3000);
 
-    try {
-      await message.channel.send(
+    return await message.channel
+      .send(
         listsGetRandomItem(
           [
             "https://c.tenor.com/LBckms9JUpoAAAAd/tenor.gif",
@@ -98,9 +70,7 @@ module.exports = {
           ],
           false,
         ),
-      );
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+      )
+      .catch(msgErrorHandler);
   },
 };

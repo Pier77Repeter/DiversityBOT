@@ -21,10 +21,6 @@ module.exports = {
       playerOnlyMessage: "Only {player} can use these buttons.",
     });
 
-    try {
-      return await wouldYouRather.startGame();
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await wouldYouRather.startGame().catch(msgErrorHandler);
   },
 };

@@ -15,22 +15,12 @@ module.exports = {
 
     if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ Slowdown man, next claim **<t:" + cooldown[1] + ":R>**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if ((await manageUserMoney(client, message, "+", 500)) === null) return;
 
     embed.setColor(0x33ff33).setTitle("🎁 Congratulation").setDescription("You claimed your daily reward of **500$**");
-
-    try {
-      return await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

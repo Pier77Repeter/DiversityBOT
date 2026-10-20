@@ -11,11 +11,7 @@ module.exports = {
   description: "Starts an epik battle with the mentioned user",
   cooldown: 60,
   async execute(client, message, args) {
-    try {
-      if (!message.mentions.members.first()) return await message.reply("Herr " + message.author.username + ", you need to mention an opponent!");
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    if (!message.mentions.members.first()) return await message.reply("Herr " + message.author.username + ", you need to mention an opponent!").catch(msgErrorHandler);
 
     const embed = new EmbedBuilder();
 
@@ -27,12 +23,7 @@ module.exports = {
 
     if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ Herr user, you can do another battle **<t:" + cooldown[1] + ":R>**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "letBattleBegin.jpg"), { name: "letBattleBegin.jpg" });
@@ -43,13 +34,8 @@ module.exports = {
       .setDescription(messageAuthor.username + " ⚔️ vs ⚔️ " + mentionedUser.username)
       .setImage("attachment://letBattleBegin.jpg");
 
-    let sentMessage;
-
-    try {
-      sentMessage = await message.reply({ embeds: [embed], files: [imageFile] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    const sentMessage = await message.reply({ embeds: [embed], files: [imageFile] }).catch(msgErrorHandler);
+    if (!sentMessage) return;
 
     await delay(3000);
 
@@ -98,11 +84,7 @@ module.exports = {
           .setImage("https://c.tenor.com/joRMjYBLsFsAAAAd/tenor.gif")
           .setFooter({ text: "ezzz" });
 
-        try {
-          return await sentMessage.edit({ embeds: [embed], files: [] });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await sentMessage.edit({ embeds: [embed], files: [] }).catch(msgErrorHandler);
       }
 
       embed
@@ -193,11 +175,7 @@ module.exports = {
           .setImage("https://c.tenor.com/joRMjYBLsFsAAAAd/tenor.gif")
           .setFooter({ text: "ezzz" });
 
-        try {
-          return await sentMessage.edit({ embeds: [embed], files: [] });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await sentMessage.edit({ embeds: [embed], files: [] }).catch(msgErrorHandler);
       }
 
       embed

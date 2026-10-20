@@ -79,10 +79,6 @@ module.exports = {
         },
       ]);
 
-    try {
-      return await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

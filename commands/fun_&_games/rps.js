@@ -5,28 +5,16 @@ module.exports = {
   name: "rps",
   description: "Rock Paper Scissors game",
   async execute(client, message, args) {
-    try {
-      if (!message.mentions.members.first()) return await message.reply("You need to mention an user to play rock paper scissors");
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    if (!message.mentions.members.first()) return await message.reply("You need to mention an user to play rock paper scissors").catch(msgErrorHandler);
 
     const mentionedMember = message.mentions.members.first();
 
     if (mentionedMember.id === message.author.id) {
-      try {
-        return await message.reply("You can't play rock paper scissors with yourself.");
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply("You can't play rock paper scissors with yourself.").catch(msgErrorHandler);
     }
 
     if (mentionedMember.user.bot) {
-      try {
-        return await message.reply("You can't play rock paper scissors with a bot (they wouldn't play with you)");
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply("You can't play rock paper scissors with a bot (they wouldn't play with you)").catch(msgErrorHandler);
     }
 
     const rpsChoices = [
@@ -46,13 +34,8 @@ module.exports = {
       .setDescription(`${mentionedMember.user.username} is choosing..`)
       .setFooter({ text: "Click one of the buttons to choose!" });
 
-    let sentMessage;
-
-    try {
-      sentMessage = await message.reply({ embeds: [embed], components: [btnsRow] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    const sentMessage = await message.reply({ embeds: [embed], components: [btnsRow] }).catch(msgErrorHandler);
+    if (!sentMessage) return;
 
     const collector = sentMessage.createMessageComponentCollector({ componentType: ComponentType.Button, time: 40_000 });
 

@@ -9,30 +9,18 @@ module.exports = {
   async execute(client, message, args) {
     const searchTerm = args.join(" ");
 
-    try {
-      if (!searchTerm) return await message.reply("Please provide a search term");
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    if (!searchTerm) return await message.reply("Please provide a search term").catch(msgErrorHandler);
 
     let response;
 
     try {
       response = await axios.get("https://api.urbandictionary.com/v0/define?term=" + encodeURIComponent(searchTerm));
     } catch (error) {
-      try {
-        return await message.reply("O_o, something went wrong while searching in the dictionary");
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply("O_o, something went wrong while searching in the dictionary").catch(msgErrorHandler);
     }
 
     if (!response.data.list || response.data.list.length === 0) {
-      try {
-        return await message.reply(`No definitions found for "${searchTerm}"`);
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply(`No definitions found for "${searchTerm}"`).catch(msgErrorHandler);
     }
 
     const definitions = response.data.list;
@@ -71,10 +59,6 @@ module.exports = {
       );
     }
 
-    try {
-      return await embedPaginator(this.name, message, embeds);
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await embedPaginator(this.name, message, embeds).catch(msgErrorHandler);
   },
 };

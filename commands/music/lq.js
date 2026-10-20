@@ -15,31 +15,18 @@ module.exports = {
 
     if (!isMusicEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!message.member.voice.channel) {
-      try {
-        return await message.reply("You need to be in a voice channel to use this command!");
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply("You need to be in a voice channel to use this command!").catch(msgErrorHandler);
     }
 
     const player = useMainPlayer();
     const queue = player.nodes.get(message.guild.id);
 
     if (!queue || !queue.isPlaying()) {
-      try {
-        return await message.reply("There is nothing to loop right now, play some songs first");
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply("There is nothing to loop right now, play some songs first").catch(msgErrorHandler);
     }
 
     const loopEnabled = queue.repeatMode === QueueRepeatMode.QUEUE;
@@ -50,10 +37,6 @@ module.exports = {
       .setTitle("✅ Done")
       .setDescription(`Looping the queue is now **${loopEnabled ? "disabled" : "enabled"}**`);
 
-    try {
-      return await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

@@ -37,10 +37,6 @@ module.exports = {
       playerOnlyMessage: "Only {player} and {opponent} can use these buttons.",
     });
 
-    try {
-      ttt.startGame();
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    ttt.startGame().catch(msgErrorHandler);
   },
 };

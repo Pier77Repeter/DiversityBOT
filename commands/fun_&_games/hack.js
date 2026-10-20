@@ -11,11 +11,7 @@ module.exports = {
   description: "Hack the mentioned user",
   cooldown: 70,
   async execute(client, message, args) {
-    try {
-      if (!message.mentions.members.first()) return await message.reply("You need to **mention** an user, else who do i hack?");
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    if (!message.mentions.members.first()) return await message.reply("You need to **mention** an user, else who do i hack?").catch(msgErrorHandler);
 
     const embed = new EmbedBuilder();
 
@@ -27,12 +23,7 @@ module.exports = {
 
     if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ Better do it again **<t:" + cooldown[1] + ":R>**, you might be found by the FBI");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "hackerMan.jpg"), { name: "hackerMan.jpg" });
@@ -42,13 +33,8 @@ module.exports = {
       .setDescription(["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> hack -u ", member.username, "\n", "```"].join(""))
       .setThumbnail("attachment://hackerMan.jpg");
 
-    let sentMessage;
-
-    try {
-      sentMessage = await message.reply({ embeds: [embed], files: [imageFile] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    const sentMessage = await message.reply({ embeds: [embed], files: [imageFile] }).catch(msgErrorHandler);
+    if (!sentMessage) return;
 
     await delay(2000);
     embed.setDescription(["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▖] Injecting Brownware...", "\n", "```"].join(""));
@@ -367,10 +353,6 @@ module.exports = {
     embed.setDescription(
       ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> " + member.username + " has been hacked and reported!", "\n", "```"].join(""),
     );
-    try {
-      return await sentMessage.edit({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

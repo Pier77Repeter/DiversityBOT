@@ -22,10 +22,6 @@ module.exports = {
       embed.setDescription([message.author.username, ", no doubts it's a **10/10** 👍👍👍"].join(""));
     }
 
-    try {
-      return await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

@@ -10,13 +10,8 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (!row.rows[0].has_pet) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have any pet, even if you had one, don't do this");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      embed.setColor(0xff0000).setTitle("❌ Missing Pet").setDescription("You don't have any pet, even if you had one, don't do this");
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     await client.database.query(
@@ -30,10 +25,6 @@ module.exports = {
       .setDescription("You have committed a very bad action >:(")
       .setThumbnail(client.users.cache.get(row.rows[0].pet_id).displayAvatarURL());
 
-    try {
-      return await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

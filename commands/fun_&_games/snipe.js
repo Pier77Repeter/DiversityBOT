@@ -26,20 +26,12 @@ module.exports = {
         embed.setFooter({ text: "Waiting to catch a member..." });
       }
 
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     } catch (error) {
       embed.setColor(0x339999).setTitle("🔍 Sniped message").setDescription("Sniped message wasn't a text message :(");
       embed.setFooter({ text: "Waiting for a good catch..." });
 
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
   },
 };

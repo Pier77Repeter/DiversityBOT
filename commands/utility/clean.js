@@ -16,59 +16,33 @@ module.exports = {
 
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need the permission `Manage messages` to use this command");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.ManageMessages)) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("I don't have the permission to `Manage messages` in this channel");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     let amount = parseInt(args[0]);
 
     if (isNaN(amount)) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You must provide a valid number of messages");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (amount < 1 || amount > 99) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You must provide a number **between 1 and 99**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     amount = amount + 1; // for the command message itself
     const fetchedMessages = await message.channel.messages.fetch({ limit: amount });
-
     const messagesToProcess = fetchedMessages.toJSON().slice(0, amount);
 
     let deletedCount = 0;
@@ -83,23 +57,18 @@ module.exports = {
         .setTitle("❌ Error")
         .setDescription("An error occurred while trying to clean messages, messages older than 14 days cannot be deleted, try a smaller amount");
 
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     embed.setColor(0x33ff33).setTitle("✅ Done").setDescription(`Successfully cleaned **${deletedCount}** messages from the channel`);
 
-    try {
-      await message.channel.send({ embeds: [embed] }).then(async (sentMessage) => {
+    await message.channel
+      .send({ embeds: [embed] })
+      .then(async (sentMessage) => {
         await delay(5000);
         await sentMessage.delete();
-      });
-    } catch (error) {
-      msgErrorHandler(error);
-    }
+      })
+      .catch(msgErrorHandler);
 
     // MOD LOGGING HERE
     embed

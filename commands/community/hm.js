@@ -16,29 +16,19 @@ module.exports = {
 
     if (!isCommunityEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Community commands are off! Type **d!setup community** to enable them");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const cooldown = await serverCooldownManager(client, message, "hm_cooldown", this.cooldown);
     if (cooldown === null) return;
 
     if (cooldown) {
-      embed.setColor(0x000000).setDescription("⏰ You can do another Hausemaster moment **<t:" + cooldown[1] + ":R>**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      embed.setColor(0x000000).setDescription(`⏰ You can do another Hausemaster moment **<t:${cooldown[1]}:R>**`);
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
-    try {
-      return await message.reply(
+    return await message
+      .reply(
         [
           "Hausemaster moment:",
           "",
@@ -58,9 +48,7 @@ module.exports = {
           "",
           ":hause: :hausewithoutglasses: :trollmaster: :PrioQ: :priorityqueue: :hausemasterissue: :feels1tpsman: :coldhause: :hausecool:",
         ].join("\n"),
-      );
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+      )
+      .catch(msgErrorHandler);
   },
 };

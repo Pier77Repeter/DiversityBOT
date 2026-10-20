@@ -11,11 +11,7 @@ module.exports = {
   description: "Nuke the chat or a specific user",
   cooldown: 30,
   async execute(client, message, args) {
-    try {
-      if (!args[0]) return await message.reply("You need to specify a location to nuke");
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    if (!args[0]) return await message.reply("You need to specify a location to nuke").catch(msgErrorHandler);
 
     const embed = new EmbedBuilder();
 
@@ -24,19 +20,14 @@ module.exports = {
 
     if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ No need to nuke this fast, another nuke will be ready **<t:" + cooldown[1] + ":R>**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const target = message.mentions.members.first() ? message.mentions.members.first().user.username : args.join(" ");
 
     embed
       .setColor(0x14141f)
-      .setTitle("🚀 ICBM control panel")
+      .setTitle("🚀 ICBM Control Panel")
       .setDescription("Target location: " + target)
       .setTimestamp()
       .setThumbnail("https://c.tenor.com/8Juj0k-1L4AAAAAC/tenor.gif")
@@ -48,12 +39,8 @@ module.exports = {
     const btnCancelLaunch = new ButtonBuilder().setCustomId("btn-nuke-cancelLaunch").setLabel("❌ Cancel launch").setStyle(ButtonStyle.Success);
     const btnRow = new ActionRowBuilder().addComponents(btnConfirmLaunch, btnCancelLaunch);
 
-    let sentMessage;
-    try {
-      sentMessage = await message.reply({ embeds: [embed], components: [btnRow] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    const sentMessage = await message.reply({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
+    if (!sentMessage) return;
 
     const btnCollector = sentMessage.createMessageComponentCollector({
       componentType: ComponentType.Button,
@@ -64,14 +51,7 @@ module.exports = {
 
     btnCollector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        try {
-          return await btnInteraction.reply({
-            content: "You can't launch this nuke, it's for someone else",
-            flags: MessageFlags.Ephemeral,
-          });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await btnInteraction.reply({ content: "You can't launch this nuke, it's for someone else", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
       }
 
       switch (btnInteraction.customId) {
@@ -209,11 +189,7 @@ module.exports = {
         btnConfirmLaunch.setDisabled(true);
         btnCancelLaunch.setDisabled(true);
 
-        try {
-          return await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await sentMessage.edit({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
       }
 
       return;

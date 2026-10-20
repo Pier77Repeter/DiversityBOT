@@ -16,12 +16,7 @@ module.exports = {
 
     if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ You you can do this test again: **<t:" + cooldown[1] + ":R>**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const scThumbnailFile = new AttachmentBuilder(path.join(process.cwd(), "media", "scTestThumbnail.jpg"), { name: "scTestThumbnail.jpg" });
@@ -33,12 +28,8 @@ module.exports = {
 
     const btnRow = new ActionRowBuilder().addComponents(btnStartTestOne, btnStartTestTwo);
 
-    let sentMessage;
-    try {
-      sentMessage = await message.reply({ embeds: [embed], files: [scThumbnailFile], components: [btnRow] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    const sentMessage = await message.reply({ embeds: [embed], files: [scThumbnailFile], components: [btnRow] }).catch(msgErrorHandler);
+    if (!sentMessage) return;
 
     let questionProgressCounter = 0;
     let testFinished = false;
@@ -148,14 +139,7 @@ module.exports = {
 
     btnCollector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        try {
-          return await message.reply({
-            content: "Someone else is doing this test, try it with **d!sctest**",
-            flags: MessageFlags.Ephemeral,
-          });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await message.reply({ content: "Someone else is doing this test, try it with **d!sctest**", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
       }
 
       btnCollector.resetTimer();
@@ -175,6 +159,7 @@ module.exports = {
             return msgErrorHandler(error);
           }
           break;
+
         case "btn-sctest-testStartTwo":
           embed
             .setColor(0xff0000)
@@ -193,12 +178,15 @@ module.exports = {
         case "btn-sctest-qOne-ansA":
           await wrongAnswerHandler(btnInteraction);
           break;
+
         case "btn-sctest-qOne-ansB":
           await wrongAnswerHandler(btnInteraction);
           break;
+
         case "btn-sctest-qOne-ansC":
           await wrongAnswerHandler(btnInteraction);
           break;
+
         case "btn-sctest-qOne-ansD":
           await correctAnswerHandler(
             btnInteraction,
@@ -213,6 +201,7 @@ module.exports = {
         case "btn-sctest-qTwo-ansA":
           await wrongAnswerHandler(btnInteraction);
           break;
+
         case "btn-sctest-qTwo-ansB":
           await correctAnswerHandler(
             btnInteraction,
@@ -223,9 +212,11 @@ module.exports = {
             btnRowQuestionThree,
           );
           break;
+
         case "btn-sctest-qTwo-ansC":
           await wrongAnswerHandler(btnInteraction);
           break;
+
         case "btn-sctest-qTwo-ansD":
           await wrongAnswerHandler(btnInteraction);
           break;
@@ -240,12 +231,15 @@ module.exports = {
             btnRowQuestionFour,
           );
           break;
+
         case "btn-sctest-qThree-ansB":
           await wrongAnswerHandler(btnInteraction);
           break;
+
         case "btn-sctest-qThree-ansC":
           await wrongAnswerHandler(btnInteraction);
           break;
+
         case "btn-sctest-qThree-ansD":
           await wrongAnswerHandler(btnInteraction);
           break;
@@ -253,9 +247,11 @@ module.exports = {
         case "btn-sctest-qFour-ansA":
           await wrongAnswerHandler(btnInteraction);
           break;
+
         case "btn-sctest-qFour-ansB":
           await wrongAnswerHandler(btnInteraction);
           break;
+
         case "btn-sctest-qFour-ansC":
           await correctAnswerHandler(
             btnInteraction,
@@ -266,6 +262,7 @@ module.exports = {
             btnRowQuestionFive,
           );
           break;
+
         case "btn-sctest-qFour-ansD":
           await wrongAnswerHandler(btnInteraction);
           break;
@@ -281,12 +278,15 @@ module.exports = {
             btnRowQuestionSix,
           );
           break;
+
         case "btn-sctest-qFive-ansB":
           await wrongAnswerHandler(btnInteraction);
           break;
+
         case "btn-sctest-qFive-ansC":
           await wrongAnswerHandler(btnInteraction);
           break;
+
         case "btn-sctest-qFive-ansD":
           await wrongAnswerHandler(btnInteraction);
           break;
@@ -294,12 +294,15 @@ module.exports = {
         case "btn-sctest-qSix-ansA":
           await wrongAnswerHandler(btnInteraction);
           break;
+
         case "btn-sctest-qSix-ansB":
           await wrongAnswerHandler(btnInteraction);
           break;
+
         case "btn-sctest-qSix-ansC":
           await wrongAnswerHandler(btnInteraction);
           break;
+
         case "btn-sctest-qSix-ansD":
           embed.setImage();
           await correctAnswerHandler(
@@ -323,12 +326,15 @@ module.exports = {
         case "btn-sctest-qSeven-ansA":
           await wrongAnswerHandler(btnInteraction);
           break;
+
         case "btn-sctest-qSeven-ansB":
           await wrongAnswerHandler(btnInteraction);
           break;
+
         case "btn-sctest-qSeven-ansC":
           await wrongAnswerHandler(btnInteraction);
           break;
+
         case "btn-sctest-qSeven-ansD":
           await correctAnswerHandler(
             btnInteraction,
@@ -343,9 +349,11 @@ module.exports = {
         case "btn-sctest-qEight-ansA":
           await wrongAnswerHandler(btnInteraction);
           break;
+
         case "btn-sctest-qEight-ansB":
           await wrongAnswerHandler(btnInteraction);
           break;
+
         case "btn-sctest-qEight-ansC":
           await correctAnswerHandler(
             btnInteraction,
@@ -364,6 +372,7 @@ module.exports = {
             btnRowQuestionNine,
           );
           break;
+
         case "btn-sctest-qEight-ansD":
           await wrongAnswerHandler(btnInteraction);
           break;
@@ -378,12 +387,15 @@ module.exports = {
             btnRowQuestionTen,
           );
           break;
+
         case "btn-sctest-qNine-ansB":
           await wrongAnswerHandler(btnInteraction);
           break;
+
         case "btn-sctest-qNine-ansC":
           await wrongAnswerHandler(btnInteraction);
           break;
+
         case "btn-sctest-qNine-ansD":
           await wrongAnswerHandler(btnInteraction);
           break;
@@ -391,13 +403,16 @@ module.exports = {
         case "btn-sctest-qTen-ansA":
           await wrongAnswerHandler(btnInteraction);
           break;
+
         case "btn-sctest-qTen-ansB":
           testFinished = true;
           btnInteraction.update({ embeds: [scTestCompletedMessageEmbed], files: [testCompletedImage], components: [] });
           break;
+
         case "btn-sctest-qTen-ansC":
           await wrongAnswerHandler(btnInteraction);
           break;
+
         case "btn-sctest-qTen-ansD":
           await wrongAnswerHandler(btnInteraction);
           break;
@@ -413,11 +428,7 @@ module.exports = {
         .setDescription("You didn't answer in time, you will now be monitored by the Chinese goverment until you finish the test")
         .setFooter({ text: "Finish the test..." });
 
-      try {
-        return await sentMessage.edit({ embeds: [embed], files: [scThumbnailFile], components: [] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await sentMessage.edit({ embeds: [embed], files: [scThumbnailFile], components: [] }).catch(msgErrorHandler);
     });
 
     async function correctAnswerHandler(btnInteraction, btnRowToDisable, correctBtn, nextQuestionTitle, nextQuestionDescription, nextQuestionBtnRow) {
@@ -450,11 +461,7 @@ module.exports = {
 
       // since question 6 requires the Xi image
       if (correctBtn.data.custom_id === "btn-sctest-qFive-ansA") {
-        try {
-          return await sentMessage.edit({ embeds: [embed], files: [scThumbnailFile, xiPortraitImage], components: [nextQuestionBtnRow] });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await sentMessage.edit({ embeds: [embed], files: [scThumbnailFile, xiPortraitImage], components: [nextQuestionBtnRow] }).catch(msgErrorHandler);
       }
 
       try {
@@ -468,12 +475,8 @@ module.exports = {
       testFinished = true;
       await updateScCredits(-999999);
 
-      try {
-        // last thing we gonna do
-        return await btnInteraction.update({ embeds: [scTestWrongAnswerMessageEmbed], files: [wrongAnswerImage], components: [] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      // last thing we gonna do
+      return await btnInteraction.update({ embeds: [scTestWrongAnswerMessageEmbed], files: [wrongAnswerImage], components: [] }).catch(msgErrorHandler);
     }
 
     async function updateScCredits(num) {

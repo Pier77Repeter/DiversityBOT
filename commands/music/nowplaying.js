@@ -16,11 +16,7 @@ module.exports = {
     if (!isMusicEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
 
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     // you can also do this instead of client.player, wow
@@ -29,11 +25,7 @@ module.exports = {
     const queue = player.nodes.get(message.guild.id);
 
     if (!queue || !queue.isPlaying()) {
-      try {
-        return await message.reply("There is no music currently playing in this server.");
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply("There is no music currently playing in this server.").catch(msgErrorHandler);
     }
 
     const currentTrack = queue.currentTrack;
@@ -55,10 +47,6 @@ module.exports = {
       embed.setThumbnail(currentTrack.thumbnail);
     }
 
-    try {
-      return await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

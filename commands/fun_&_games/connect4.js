@@ -35,10 +35,6 @@ module.exports = {
       playerOnlyMessage: "Only {player} and {opponent} can use these buttons.",
     });
 
-    try {
-      return await connectFour.startGame();
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await connectFour.startGame().catch(msgErrorHandler);
   },
 };

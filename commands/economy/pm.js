@@ -18,12 +18,7 @@ module.exports = {
 
     if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ You can post another meme **<t:" + cooldown[1] + ":R>**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "Reddit.png"), { name: "Reddit.png" });
@@ -42,13 +37,8 @@ module.exports = {
 
     const actionRow = new ActionRowBuilder().addComponents(btnFunny, btnMeIrl, btnClassic, btnCopyPasta, btnOld);
 
-    let sentMessage;
-
-    try {
-      sentMessage = await message.reply({ embeds: [embed], components: [actionRow], files: [imageFile] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    const sentMessage = await message.reply({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
+    if (!sentMessage) return;
 
     const collector = sentMessage.createMessageComponentCollector({
       componentType: ComponentType.Button,
@@ -60,11 +50,7 @@ module.exports = {
 
     collector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        try {
-          return await btnInteraction.reply({ content: "Don't steal his meme", flags: MessageFlags.Ephemeral });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await btnInteraction.reply({ content: "Don't steal his meme", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
       }
 
       hasClickedBtn = true;
@@ -86,11 +72,7 @@ module.exports = {
               .setDescription("That was a very cringe meme, downvoted for sure!")
               .setThumbnail("attachment://Downvote.png");
 
-            try {
-              return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
           }
 
           money = mathRandomInt(50, 100);
@@ -105,11 +87,7 @@ module.exports = {
             .setDescription("Hahaha, nice meme there, you got **" + money + "$** for the content")
             .setThumbnail("attachment://Upvote.png");
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
 
         case "btn-pm-btnMeIrl":
           btnFunny.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -123,11 +101,7 @@ module.exports = {
 
             embed.setColor(0xff0000).setTitle("👎 You posted a me_irl meme").setDescription("Nah! The meme wasn't realistic at all").setThumbnail("attachment://Downvote.png");
 
-            try {
-              return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
           }
 
           money = mathRandomInt(50, 100);
@@ -142,11 +116,7 @@ module.exports = {
             .setDescription("It was a true meme and you got **" + money + "$** for that!")
             .setThumbnail("attachment://Upvote.png");
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
 
         case "btn-pm-btnClassic":
           btnFunny.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -160,11 +130,7 @@ module.exports = {
 
             embed.setColor(0xff0000).setTitle("👎 You posted a classic meme").setDescription("This meme is not funny anymore, stop it").setThumbnail("attachment://Downvote.png");
 
-            try {
-              return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
           }
 
           money = mathRandomInt(50, 100);
@@ -179,11 +145,7 @@ module.exports = {
             .setDescription("Still a funny meme, you got **" + money + "$** for that!")
             .setThumbnail("attachment://Upvote.png");
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
 
         case "btn-pm-btnCopyPasta":
           btnFunny.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -197,11 +159,7 @@ module.exports = {
 
             embed.setColor(0xff0000).setTitle("👎 You posted a copy pasta").setDescription("Stop copying this meme! It's cringe").setThumbnail("attachment://Downvote.png");
 
-            try {
-              return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
           }
 
           money = mathRandomInt(50, 100);
@@ -216,11 +174,7 @@ module.exports = {
             .setDescription("Lucky, nice meme, here **" + money + "$** for the not copied meme!")
             .setThumbnail("attachment://Upvote.png");
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
 
         case "btn-pm-btnOld":
           btnFunny.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -238,11 +192,7 @@ module.exports = {
               .setDescription("Old memes are not funny, new memes are better!")
               .setThumbnail("attachment://Downvote.png");
 
-            try {
-              return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
           }
 
           money = mathRandomInt(50, 100);
@@ -257,11 +207,7 @@ module.exports = {
             .setDescription("Old memes still funny, you got **" + money + "$**!")
             .setThumbnail("attachment://Upvote.png");
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
       }
     });
 
@@ -269,7 +215,7 @@ module.exports = {
       if (!hasClickedBtn) {
         imageFile.setFile(path.join(process.cwd(), "media", "Reddit.png")).setName("Reddit.png");
 
-        embed.setTitle("🤷 Nothing to post").setDescription("I guess the meme you were about to post wasn't that good").setThumbnail("attachment://Reddit.png");
+        embed.setTitle("🤷 Nothing to Post").setDescription("I guess the meme you were about to post wasn't that good").setThumbnail("attachment://Reddit.png");
 
         btnFunny.setStyle(ButtonStyle.Secondary).setDisabled(true);
         btnMeIrl.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -277,11 +223,7 @@ module.exports = {
         btnCopyPasta.setStyle(ButtonStyle.Secondary).setDisabled(true);
         btnOld.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-        try {
-          return await sentMessage.edit({ embeds: [embed], components: [actionRow], files: [imageFile] });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await sentMessage.edit({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
       }
     });
   },

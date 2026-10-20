@@ -15,18 +15,16 @@ module.exports = (client) => {
       .setTitle(track.title)
       .setDescription(
         [
-          "Author: **" + track.author + "**",
-          "Duration: **" + track.duration + "**",
-          "Views: **" + track.views + "**",
-          "Url: **" + track.url + "**",
-          "Requested by: **" + track.requestedBy.username + "**",
+          `"Author: **${track.author}**"`,
+          `Duration: **${track.duration}**`,
+          `Views: **${track.views}**`,
+          `Url: **${track.url}**`,
+          `Requested by: **${track.requestedBy.username}**`,
         ].join("\n"),
       )
       .setFooter({ text: "If this song instantly stops, it's because of COPYRIGHT issues" });
 
-    if (track.thumbnail) {
-      embed.setImage(track.thumbnail);
-    }
+    if (track.thumbnail) embed.setImage(track.thumbnail);
 
     return await queue.metadata.channel.send({ embeds: [embed] }).catch(msgErrorHandler);
   });

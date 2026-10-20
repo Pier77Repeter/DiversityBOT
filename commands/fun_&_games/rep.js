@@ -18,25 +18,17 @@ module.exports = {
         .setDescription("Reputation on the server is: **0**")
         .setThumbnail(user.displayAvatarURL());
 
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const rep = row.rows[0].reputation;
 
     embed
       .setColor(0x33cc00)
-      .setTitle(user.username + "'s reputation")
+      .setTitle(user.username + "'s Reputation")
       .setDescription("Reputation on the server is: **" + rep + "**")
       .setThumbnail(user.displayAvatarURL());
 
-    try {
-      return await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

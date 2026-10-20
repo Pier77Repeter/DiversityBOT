@@ -48,11 +48,7 @@ module.exports = {
         .setDescription("Missing arguments!\nUsage: `d!timezone <from_timezone> <hour> <to_timezone>`\nExample: `d!timezone America/New_York 19:40 Europe/London`")
         .setFooter({ text: "Timezones must use valid IANA names" });
 
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const todayInFromZone = DateTime.now().setZone(fromZone).toISODate();
@@ -63,22 +59,14 @@ module.exports = {
     if (!dt.isValid) {
       embed.setDescription("Invalid hour formatting, use the 24 hour system, examples `13:33`, `9:10`, `22:40`").setFooter(null);
 
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const converted = dt.setZone(toZone);
     embed.setDescription("Invalid target timezone: `" + toZone + "`. Please use a valid IANA format like `Europe/Paris` or `UTC`.").setFooter(null);
 
     if (!converted.isValid) {
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const emojis = ["🕐", "🕙", "🕥", "🕚", "🕦", "🕛", "🕧", "🕜", "🕑", "🕝", "🕒", "🕞", "🕓", "🕟", "🕔", "🕕", "🕡", "🕖", "🕢", "🕗", "🕣", "🕘", "🕤"];
@@ -89,10 +77,6 @@ module.exports = {
       .setDescription(null)
       .setFooter(null);
 
-    try {
-      return await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

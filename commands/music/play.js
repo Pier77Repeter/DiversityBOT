@@ -17,12 +17,7 @@ module.exports = {
 
     if (!isMusicEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const cooldown = await serverCooldownManager(client, message, "play_cooldown", this.cooldown);
@@ -33,20 +28,12 @@ module.exports = {
         .setColor(0x000000)
         .setTitle(null)
         .setDescription("⏰ Listen some music before using **d!play** again in **<t:" + cooldown[1] + ":R>**");
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!args.length > 0) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Correct usage is: **d!play <song name>**").setImage("https://c.tenor.com/W_aA0wh5C4gAAAAd/tenor.gif");
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const query = args.join(" ");
@@ -55,35 +42,19 @@ module.exports = {
     const voiceChannel = message.member.voice.channel;
 
     if (!voiceChannel) {
-      try {
-        return await message.reply("You need to be in a voice channel to play music!");
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply("You need to be in a voice channel to play music!").catch(msgErrorHandler);
     }
 
     if (message.guild.members.me.voice.channel && message.guild.members.me.voice.channel !== voiceChannel) {
-      try {
-        return await message.reply("I am already playing in a different voice channel!");
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply("I am already playing in a different voice channel!").catch(msgErrorHandler);
     }
 
     if (!message.guild.members.me.permissions.has(PermissionsBitField.Flags.Connect)) {
-      try {
-        return await message.reply("I do not have permission to join your voice channel!");
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply("I do not have permission to join your voice channel!").catch(msgErrorHandler);
     }
 
     if (!message.guild.members.me.permissionsIn(voiceChannel).has(PermissionsBitField.Flags.Speak)) {
-      try {
-        return await message.reply("I do not have permission to speak in your voice channel!");
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply("I do not have permission to speak in your voice channel!").catch(msgErrorHandler);
     }
 
     let isFirstSong; // this is needed to make the fancy "Music API is connected" msg
@@ -95,12 +66,8 @@ module.exports = {
         "Hopefully i'm able to find the song on **SoundCloud**, if it's not what you wanted try adding the song author BEFORE the song name, else just go on **https://soundcloud.com/** and see if your song is there",
       );
 
-    let sentMessage;
-    try {
-      sentMessage = await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    let sentMessage = await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    if (!sentMessage) return;
 
     const player = useMainPlayer();
 
@@ -111,11 +78,7 @@ module.exports = {
 
     if (!search.hasTracks()) {
       embed.setColor(0xff0000).setTitle("❌ Not Found").setDescription("No track was found for your query.");
-      try {
-        return await sentMessage.edit({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     // showing the list of found tracks
@@ -129,11 +92,8 @@ module.exports = {
 
     embed.setDescription(tracksListText).setFooter({ text: 'Choose the song (just say the number), say "no" or "exit" to cancel' });
 
-    try {
-      await sentMessage.edit({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    // NEW! i can actually do this in 1 line with an if
+    if (!(await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler))) return;
 
     // must wait for the message author to answer the number
     const filter = (collectedMessage) => collectedMessage.author.id === message.author.id;
@@ -150,11 +110,7 @@ module.exports = {
 
         collector.stop();
 
-        try {
-          return await sentMessage.edit({ embeds: [embed] });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
       }
 
       const songIndex = Number(receivedMessage.content) - 1;
@@ -162,12 +118,7 @@ module.exports = {
       if (isNaN(songIndex) || !search.tracks[songIndex]) {
         // so we do not touch the original embed when the collector stops and we dont show double error
         const errorEmbed = new EmbedBuilder().setColor("DarkRed").setTitle("❌ Error").setDescription("The number you just sent was not present in the track list");
-
-        try {
-          return await receivedMessage.reply({ embeds: [errorEmbed] });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await receivedMessage.reply({ embeds: [errorEmbed] }).catch(msgErrorHandler);
       }
 
       // stop listening to messages so they can't trigger this twice!
@@ -177,11 +128,8 @@ module.exports = {
 
       embed.setColor(0x666666).setTitle("⚙️ Loading track...").setDescription(null).setFooter(null);
 
-      try {
-        sentMessage = await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      sentMessage = await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      if (!sentMessage) return;
 
       const { queue } = await player.play(voiceChannel, track, {
         nodeOptions: {
@@ -201,22 +149,12 @@ module.exports = {
       });
 
       embed.setColor(0x33cc00).setTitle("✅ Added to Queue").setDescription(`**${track.title}** has been added!`).setFooter(null);
-
-      try {
-        return await sentMessage.edit({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
     });
 
     collector.on("end", async () => {
       embed.setColor("LightGrey");
-
-      try {
-        return await sentMessage.edit({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
     });
   },
 };

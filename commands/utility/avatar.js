@@ -11,12 +11,7 @@ module.exports = {
 
     if (!user) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Please mention a valid user");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const userId = user.id;
@@ -32,10 +27,6 @@ module.exports = {
       .setDescription("**[Download](" + downloadUrl + ")**")
       .setImage(avatarUrl);
 
-    try {
-      return await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

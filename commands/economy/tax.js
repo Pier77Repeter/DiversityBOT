@@ -16,14 +16,10 @@ module.exports = {
     if (res.rowCount === 0) {
       embed
         .setColor(0x808080)
-        .setTitle(user.username + "'s taxes")
+        .setTitle(user.username + "'s Taxes")
         .setDescription(["**📊 Total money: ** `0$`", "**🪙 Daily tax: ** `0$`", "**⚖️ Tax rate: ** `0%`"].join("\n"));
 
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const wealth = Number(res.rows[0].money) + Number(res.rows[0].bank_money);
@@ -42,10 +38,6 @@ module.exports = {
       )
       .setFooter({ text: "Taxes are automatically paid every day" });
 
-    try {
-      return await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

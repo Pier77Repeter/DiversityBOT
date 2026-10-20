@@ -12,19 +12,14 @@ module.exports = {
   description: "Hunt the animals",
   cooldown: 3600,
   async execute(client, message, args) {
-    const items = await dbJsonDataGet(client, message.author, message, "items");
+    const items = await dbJsonDataGet(client, message, "items", message.author.id);
     if (items === null) return;
 
     const embed = new EmbedBuilder();
 
-    if (!items.itemId12) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need to buy a **Kar98k Scoped** for hunting");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+    if (items[11].quantity === 0) {
+      embed.setColor(0xff0000).setTitle("❌ Missing Item").setDescription("You need to buy a **Kar98k Scoped** for hunting");
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const cooldown = await cooldownManager(client, message, "hunt_cooldown", this.cooldown);
@@ -32,28 +27,20 @@ module.exports = {
 
     if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ Break time, you can hunt again **<t:" + cooldown[1] + ":R>**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
-
-    let sentMessage;
 
     embed.setColor(0x999999).setTitle("👓 You are waiting a prey...");
 
-    try {
-      sentMessage = await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    const sentMessage = await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+    if (!sentMessage) return;
 
     await delay(2000);
 
     embed.setColor(0x999999).setTitle("👓 Something is approching...");
 
+    // can't use the 1-line version :(
     try {
       await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
@@ -98,14 +85,7 @@ module.exports = {
 
     collector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        try {
-          return await btnInteraction.reply({
-            content: "You can't use his Kar98k scoped!",
-            flags: MessageFlags.Ephemeral,
-          });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await btnInteraction.reply({ content: "You can't use his Kar98k scoped, ues your own!", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
       }
 
       hasClicked = true;
@@ -116,62 +96,39 @@ module.exports = {
 
         if (mathRandomInt(1, 7) === 1) {
           money = mathRandomInt(1200, 1500);
-          items.itemId12 = false;
+          items[11].quantity = 0;
 
-          if ((await dbJsonDataSet(client, message, "items", items)) === null) return;
+          if ((await dbJsonDataSet(client, message, "items", items, message.author.id)) === null) return;
           if ((await manageUserMoney(client, message, "-", money)) === null) return;
 
           btnShoot.setStyle(ButtonStyle.Danger).setDisabled(true);
 
-          embed
-            .setColor(0xff0000)
-            .setTitle("🔫 Oh shoot")
-            .setDescription("You accidentally shoot at a person, you had to pay **" + money + "$** for the damage!");
+          embed.setColor(0xff0000).setTitle("🔫 Oh Shoot").setDescription(`You accidentally shoot at a person, you had to pay **${money}$** for the damage!`);
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
         }
 
         if (mathRandomInt(1, 3) == 1) {
-          embed.setColor(0xff0000).setTitle("💨🔫 You missed").setDescription("The animal heard the shoot and ran away, unlucky");
-
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          embed.setColor(0xff0000).setTitle("💨🔫 You Missed").setDescription("The animal heard the shoot and ran away, unlucky");
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
         }
 
         money = mathRandomInt(70, 150);
         if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-        embed
-          .setColor(0x33cc00)
-          .setTitle("💥🔫 Nice shot")
-          .setDescription("You manage to shoot down the animal, and you sold it for **" + money + "$**");
+        embed.setColor(0x33cc00).setTitle("💥🔫 Nice Shot").setDescription(`"You manage to shoot down the animal, and you sold it for **${money}$**"`);
 
-        try {
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
       }
     });
 
     collector.on("end", async () => {
       if (!hasClicked) {
-        embed.setTitle("💨 The animal left").setDescription("You did nothing and you lost your prey, gotta wait for another one to show up");
+        embed.setTitle("💨 The Animal Left").setDescription("You did not shot in time, you lost your prey, gotta wait for another one to show up");
 
         btnShoot.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-        try {
-          return await sentMessage.edit({ embeds: [embed], components: [actionRow] });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await sentMessage.edit({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
       }
     });
   },

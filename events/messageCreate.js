@@ -120,7 +120,7 @@ module.exports = (client) => {
     if (isBotRestarting) {
       const embed = new EmbedBuilder()
         .setColor(0x990000)
-        .setTitle("⚠️ Bot is restarting")
+        .setTitle("⚠️ Bot is Restarting")
         .setDescription("I'm currently restarting, to preserve the integrity of your data in my database, you won't be able to use me until restart is completed.")
         .setFooter({ text: "Estimated downtime is 5 minute" });
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
@@ -187,7 +187,7 @@ module.exports = (client) => {
     await createDbData(client, message.guildId, message.author.id);
 
     // ready to log for the specific command
-    logger.setFileName("MessageCreate/" + command.name + ".js");
+    logger.setFileName(`"MessageCreate/${command.name}.js"`);
 
     // if command gets an error, log it
     try {

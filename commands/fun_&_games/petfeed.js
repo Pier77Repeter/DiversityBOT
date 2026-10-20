@@ -13,13 +13,8 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (row.rowCount === 0 || !row.rows[0].has_pet) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have a pet, adopt it with **d!adopt <@user>**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      embed.setColor(0xff0000).setTitle("❌ Missing Pet").setDescription("You don't have a pet, adopt it with **d!adopt <@user>**");
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const cooldown = await cooldownManager(client, message, "pet_feed_cooldown", this.cooldown);
@@ -31,11 +26,7 @@ module.exports = {
         .setTitle(null)
         .setDescription("⏰ Feed your pet again **<t:" + cooldown[1] + ":R>**");
 
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const petHunger = row.rows[0].pet_stats_hunger;
@@ -53,12 +44,7 @@ module.exports = {
 
     if (petHunger + petHungerToAdd >= 100) {
       embed.setColor(0xff0000).setTitle("Full").setDescription("Your pet is not hungry");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     embed
@@ -67,10 +53,6 @@ module.exports = {
       .setDescription("You give some snacks to your pet")
       .setFooter({ text: "Your pet gained +" + petHungerToAdd + " hunger" });
 
-    try {
-      return await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

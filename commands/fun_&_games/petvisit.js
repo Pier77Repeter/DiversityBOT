@@ -13,13 +13,8 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (row.rowCount === 0 || !row.rows[0].has_pet) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have a pet, adopt it with **d!adopt <@user>**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      embed.setColor(0xff0000).setTitle("❌ Missing Pet").setDescription("You don't have a pet, adopt it with **d!adopt <@user>**");
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const cooldown = await cooldownManager(client, message, "pet_vet_cooldown", this.cooldown);
@@ -31,11 +26,7 @@ module.exports = {
         .setTitle(null)
         .setDescription("⏰ Slowdown man, vet will be available again **<t:" + cooldown[1] + ":R>**");
 
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const petHealth = row.rows[0].pet_stats_health;
@@ -53,12 +44,7 @@ module.exports = {
 
     if (petHealth + petHealthToAdd >= 100) {
       embed.setColor(0xff0000).setTitle("Your pet is fine").setDescription("Your pet is healty, no need to bring it to the vet");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     embed
@@ -67,10 +53,6 @@ module.exports = {
       .setDescription("The vet visited your pet giving the right treatment")
       .setFooter({ text: "Your pet gained +" + petHealthToAdd + " health" });
 
-    try {
-      return await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

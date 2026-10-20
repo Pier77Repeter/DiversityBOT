@@ -19,12 +19,7 @@ module.exports = {
 
     if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ You can publish another video **<t:" + cooldown[1] + ":R>**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "YouTube.png"), { name: "YouTube.png" });
@@ -42,13 +37,8 @@ module.exports = {
 
     const actionRow = new ActionRowBuilder().addComponents(btnGaming, btnDocumentary, btnFunny, btnTutorial);
 
-    let sentMessage;
-
-    try {
-      sentMessage = await message.reply({ embeds: [embed], components: [actionRow], files: [imageFile] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    const sentMessage = await message.reply({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
+    if (!sentMessage) return;
 
     const collector = sentMessage.createMessageComponentCollector({
       componentType: ComponentType.Button,
@@ -60,11 +50,7 @@ module.exports = {
 
     collector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        try {
-          return await btnInteraction.reply({ content: "Don't steal his YT content!", flags: MessageFlags.Ephemeral });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await btnInteraction.reply({ content: "Don't steal his YT content!", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
       }
 
       hasClickedBtn = true;
@@ -85,11 +71,7 @@ module.exports = {
               .setDescription("The gameplay was soooo boring! You got nothing!")
               .setThumbnail("attachment://not_stonks.jpg");
 
-            try {
-              return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
           }
 
           money = mathRandomInt(50, 100);
@@ -110,11 +92,7 @@ module.exports = {
             )
             .setThumbnail("attachment://stonks.jpg");
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
 
         case "btn-pm-btnDocumentary":
           btnGaming.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -131,11 +109,7 @@ module.exports = {
               .setDescription("The video was really boring, you got nothing!")
               .setThumbnail("attachment://not_stonks.jpg");
 
-            try {
-              return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
           }
 
           money = mathRandomInt(50, 100);
@@ -156,11 +130,7 @@ module.exports = {
             )
             .setThumbnail("attachment://stonks.jpg");
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
 
         case "btn-pm-btnFunny":
           btnGaming.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -179,11 +149,7 @@ module.exports = {
               )
               .setThumbnail("attachment://not_stonks.jpg");
 
-            try {
-              return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
           }
 
           money = mathRandomInt(50, 100);
@@ -204,11 +170,7 @@ module.exports = {
             )
             .setThumbnail("attachment://stonks.jpg");
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
 
         case "btn-pm-btnTutorial":
           btnGaming.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -225,11 +187,7 @@ module.exports = {
               .setDescription("The tutorial was useless and hard to understand, you got nothing!")
               .setThumbnail("attachment://not_stonks.jpg");
 
-            try {
-              return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
           }
 
           money = mathRandomInt(50, 100);
@@ -261,11 +219,7 @@ module.exports = {
             )
             .setThumbnail("attachment://stonks.jpg");
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
       }
     });
 
@@ -280,11 +234,7 @@ module.exports = {
         btnFunny.setStyle(ButtonStyle.Secondary).setDisabled(true);
         btnTutorial.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-        try {
-          return await sentMessage.edit({ embeds: [embed], components: [actionRow], files: [imageFile] });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await sentMessage.edit({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
       }
     });
   },

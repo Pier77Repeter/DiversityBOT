@@ -8,13 +8,8 @@ module.exports = {
 
   async execute(client, message, args) {
     const embed = new EmbedBuilder().setColor(0x990000).setTitle("💻 Gathering all the needed data...");
-    let sentMessage;
-
-    try {
-      sentMessage = await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    const sentMessage = await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    if (!sentMessage) return;
 
     function formatUptime(seconds) {
       const days = Math.floor(seconds / (60 * 60 * 24));
@@ -86,11 +81,7 @@ module.exports = {
           inline: false,
         });
 
-      try {
-        return await sentMessage.edit({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
     }, 2000);
   },
 };

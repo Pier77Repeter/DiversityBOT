@@ -11,17 +11,13 @@ module.exports = {
 
     // null is a string in db
     if (row.rows[0].job_type) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You already have a job, come back when you will eventually get fired");
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      embed.setColor(0xff0000).setTitle("❌ Already Working").setDescription("You already have a job, come back when you will eventually get fired");
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     embed
       .setColor(0x33ccff)
-      .setTitle("🧑‍💼 List of jobs")
+      .setTitle("🧑‍💼 List of Jobs")
       .setDescription("You don't have a job at the moment, you need to choose one to use **d!work**")
       .setFooter({ text: "Click the buttons to choose a job" });
 
@@ -37,13 +33,9 @@ module.exports = {
     // hmmmm, maybe this is better
     const actionRow = new ActionRowBuilder().setComponents(btnNext, btnFireFighter, btnTeacher, btnDiscordMod);
 
-    let sentMessage;
+    const sentMessage = await message.reply({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
 
-    try {
-      sentMessage = await message.reply({ embeds: [embed], components: [actionRow] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    if (!sentMessage) return;
 
     // better name it collector
     const collector = sentMessage.createMessageComponentCollector({
@@ -53,14 +45,7 @@ module.exports = {
 
     collector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        try {
-          return await btnInteraction.reply({
-            content: "Are you trying to steal someone else's job?!",
-            flags: MessageFlags.Ephemeral,
-          });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await btnInteraction.reply({ content: "Are you trying to steal someone else's job?!", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
       }
 
       collector.resetTimer();
@@ -69,19 +54,13 @@ module.exports = {
         case "btn-jobs-btnNext":
           actionRow.setComponents(btnPrevious, btnMechanic, btnChef, btnScientist);
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+
         case "btn-jobs-btnPrevious":
           actionRow.setComponents(btnNext, btnFireFighter, btnTeacher, btnDiscordMod);
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+
         case "btn-jobs-btnFireFighter":
           embed.setColor(0x33cc00).setTitle("🚒 Fire Fighter").setDescription("You are now a Fire Fighter, you can start working with **d!work**");
 
@@ -96,11 +75,7 @@ module.exports = {
 
           await client.database.query("UPDATE users SET job_type = 'fireFighter' WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
 
         case "btn-jobs-btnTeacher":
           embed.setColor(0x33cc00).setTitle("👩‍🏫 Teacher").setDescription("You are now a Teacher, you can start working with **d!work**");
@@ -116,11 +91,8 @@ module.exports = {
 
           await client.database.query("UPDATE users SET job_type = 'teacher' WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+
         case "btn-jobs-btnDiscordMod":
           embed.setColor(0x33cc00).setTitle("💻 Discord Mod").setDescription("You are now a Discord Mod, you can start working with **d!work**");
 
@@ -135,11 +107,8 @@ module.exports = {
 
           await client.database.query("UPDATE users SET job_type = 'discordMod' WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+
         case "btn-jobs-btnMechanic":
           embed.setColor(0x33cc00).setTitle("🔧 Mechanic").setDescription("You are now a Mechanic, you can start working with **d!work**");
 
@@ -154,13 +123,10 @@ module.exports = {
 
           await client.database.query("UPDATE users SET job_type = 'mechanic' WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+
         case "btn-jobs-btnChef":
-          embed.setColor(0x33cc00).setTitle("🧑‍🍳 Chief").setDescription("You are now a Chief, you can start working with **d!work**");
+          embed.setColor(0x33cc00).setTitle("🧑‍🍳 Chef").setDescription("You are now a Chef, you can start working with **d!work**");
 
           btnNext.setStyle(ButtonStyle.Secondary).setDisabled(true);
           btnPrevious.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -173,11 +139,8 @@ module.exports = {
 
           await client.database.query("UPDATE users SET job_type = 'chef' WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+
         case "btn-jobs-btnScientist":
           embed.setColor(0x33cc00).setTitle("🧪 Scientist").setDescription("You are now a Scientist, you can start working with **d!work**");
 
@@ -192,11 +155,7 @@ module.exports = {
 
           await client.database.query("UPDATE users SET job_type = 'scientist' WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
       }
     });
 
@@ -210,11 +169,7 @@ module.exports = {
       btnChef.setDisabled(true);
       btnScientist.setDisabled(true);
 
-      try {
-        return await sentMessage.edit({ embeds: [embed], components: [actionRow] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await sentMessage.edit({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
     });
   },
 };

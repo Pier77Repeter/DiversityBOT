@@ -9,13 +9,8 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (!args[0]) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Insert the amount of money you want to put in bank");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      embed.setColor(0xff0000).setTitle("❌ Missing Amount").setDescription("Insert the amount of money you want to put in bank");
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const moneyToDeposit = args[0];
@@ -24,10 +19,7 @@ module.exports = {
 
     if (row.rowCount === 0) {
       throw new Error(
-        [
-          "The records: 'money', 'bankMoney' were NOT found in the database, CHECK THE QUERY",
-          "Requested from Server: '" + message.guildId + "' - User: '" + message.author.id + "'",
-        ].join("\n"),
+        ["The records: 'money', 'bankMoney' were NOT found in the database", "Requested from Server: '" + message.guildId + "' - User: '" + message.author.id + "'"].join("\n"),
       );
     }
 
@@ -37,50 +29,31 @@ module.exports = {
     switch (moneyToDeposit) {
       case "all":
         if (money === 0) {
-          embed.setColor(0xff0000).setTitle("❌ Transaction failed").setDescription("You don't have money to deposit in bank");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          embed.setColor(0xff0000).setTitle("❌ Transaction Failed").setDescription("You don't have money to deposit in bank");
+          return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
         }
 
         await client.database.query("UPDATE users SET money = 0, bank_money = bank_money + $1 WHERE server_id = $2 AND user_id = $3", [money, message.guildId, message.author.id]);
 
         embed
           .setColor(0x33ff33)
-          .setDescription("✅ Successfully transfered **" + money + "**$ to your bank")
+          .setDescription(`"✅ Successfully transfered **${money}**$ to your bank"`)
           .setFields({
-            name: "Transaction ended!",
-            value: ["💰 Now you have: **0$** in your wallet", "🏦 Now you have: **" + (bankMoney + money) + "$** in your bank"].join("\n"),
+            name: "Transaction Ended!",
+            value: ["💰 Now you have: **0$** in your wallet", `🏦 Now you have: **${bankMoney + money}$** in your bank`].join("\n"),
           });
 
-        try {
-          return await message.reply({ embeds: [embed] });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
       default:
         if (isNaN(moneyToDeposit) || moneyToDeposit < 1) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Not a valid number, put a number starting from **at least 1**");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          embed.setColor(0xff0000).setTitle("❌ Invalid Number").setDescription("Not a valid number, put a number starting from **at least 1**");
+          return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
         }
 
         if (moneyToDeposit > money) {
-          embed.setColor(0xff0000).setTitle("❌ Transaction failed").setDescription("You don't have that money to deposit in bank");
-
-          try {
-            return await message.reply({ embeds: [embed] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          embed.setColor(0xff0000).setTitle("❌ Transaction Failed").setDescription("You don't have that amount of money to deposit in bank");
+          return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
         }
 
         const moneyToDep = Math.trunc(moneyToDeposit);
@@ -94,20 +67,13 @@ module.exports = {
 
         embed
           .setColor(0x33ff33)
-          .setDescription("✅ Successfully transfered **" + moneyToDep + "**$ to your bank")
+          .setDescription(`✅ Successfully transfered **${moneyToDep}**$ to your bank`)
           .setFields({
-            name: "Transaction ended!",
-            value: [
-              "💰 Now you have: **" + (money - parseInt(moneyToDep)) + "$** in your wallet",
-              "🏦 Now you have: **" + (bankMoney + parseInt(moneyToDep)) + "$** in your bank",
-            ].join("\n"),
+            name: "Transaction Ended!",
+            value: [`💰 Now you have: **${money - parseInt(moneyToDep)}$** in your wallet`, `🏦 Now you have: **${bankMoney + parseInt(moneyToDep)}$** in your bank`].join("\n"),
           });
 
-        try {
-          return await message.reply({ embeds: [embed] });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
   },
 };

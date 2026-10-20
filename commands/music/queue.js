@@ -15,23 +15,14 @@ module.exports = {
 
     if (!isMusicEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     // get the current queue, see /music/np.js for different way to get the queue
     const queue = useQueue(message.guild.id);
 
     if (!queue) {
-      try {
-        return await message.reply("There are no songs playing in this server");
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply("There are no songs playing in this server").catch(msgErrorHandler);
     }
 
     const currentTrack = queue.currentTrack;
@@ -48,10 +39,6 @@ module.exports = {
       .setDescription("Now playing: " + currentTrack.title)
       .addFields({ name: "Upcoming tracks:", value: upcomingTracksList });
 
-    try {
-      return await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

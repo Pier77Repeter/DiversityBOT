@@ -7,21 +7,13 @@ module.exports = {
   async execute(client, message, args) {
     const ip = args[0];
 
-    try {
-      if (!ip) return await message.reply("Give the server IP to ping like **diversitycraft.xyz**");
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    if (!ip) return await message.reply("Give the server IP to ping like **diversitycraft.org**").catch(msgErrorHandler);
 
     let getServerData = await fetch("https://mcapi.us/server/status?ip=" + ip);
     let serverData = await getServerData.json();
 
     if (serverData.status == "error") {
-      try {
-        return await message.reply("Server is unreachable, or you just sent an invalid IP");
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply("Server is unreachable, or you just sent an invalid IP").catch(msgErrorHandler);
     }
 
     const embed = new EmbedBuilder()
@@ -35,10 +27,6 @@ module.exports = {
         ].join("\n"),
       );
 
-    try {
-      return await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

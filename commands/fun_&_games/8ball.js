@@ -6,14 +6,10 @@ module.exports = {
   description: "8ball gives random reply to a question",
   async execute(client, message, args) {
     // compact way to check and reply
-    try {
-      if (args.length < 1) return await message.reply(message.author.username + " what is your beautiful question?");
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    if (args.length < 1) return await message.reply(message.author.username + " what is your beautiful question?").catch(msgErrorHandler);
 
-    try {
-      return await message.reply(
+    return await message
+      .reply(
         [
           message.author.username,
           ", ",
@@ -56,9 +52,7 @@ module.exports = {
             false,
           ),
         ].join(""),
-      );
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+      )
+      .catch(msgErrorHandler);
   },
 };

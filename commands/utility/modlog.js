@@ -13,22 +13,12 @@ module.exports = {
 
     if (isModEnabled === 0) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need the permission `Manage channels` to use this command");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const channel = message.mentions.channels.first() || null;
@@ -46,21 +36,12 @@ module.exports = {
             "You can mention a channel to active logging, make sure i have the permission to `Send messages` in that channel",
         );
 
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!message.guild.members.me.permissionsIn(channel).has(PermissionsBitField.Flags.SendMessages)) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("I don't have the permission to `Send messages` in that channel");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     await client.database.query("UPDATE servers SET mod_log_channel = $1 WHERE server_id = $2", [channel.id, message.guildId]);
@@ -70,11 +51,7 @@ module.exports = {
       .setTitle("✅ Done")
       .setDescription("Moderation actions will be logged in <#" + channel.id + ">");
 
-    try {
-      await message.reply({ embeds: [embed] });
-    } catch (error) {
-      msgErrorHandler(error);
-    }
+    await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
     // let them know
     embed
@@ -87,10 +64,6 @@ module.exports = {
       })
       .setTimestamp();
 
-    try {
-      return await channel.send({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await channel.send({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

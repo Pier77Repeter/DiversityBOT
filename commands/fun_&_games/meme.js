@@ -16,12 +16,7 @@ module.exports = {
 
     if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ Memes out of stock, come back **<t:" + cooldown[1] + ":R>**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     let subReddit = "";
@@ -32,20 +27,12 @@ module.exports = {
     let memeData = await getMeme();
 
     if (memeData.code == 404) {
-      try {
-        return await message.reply("Subreddit not found, try again, maybe with an actual subreddit");
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply("Subreddit not found, try again, maybe with an actual subreddit").catch(msgErrorHandler);
     }
 
     // some subs are privated
     if (memeData.code == 403) {
-      try {
-        return await message.reply("Subreddit is set to private, i can't get anything from there");
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply("Subreddit is set to private, i can't get anything from there").catch(msgErrorHandler);
     }
 
     if (memeData.nsfw) {
@@ -57,11 +44,7 @@ module.exports = {
         .setDescription("The post i was about to send is NSFW, luckily i've blocked it for your safety, if you are trying to get posts from NSFW subs, well, you can't!")
         .setImage("attachment://arnoldSchwarzeneggerStopMeme.jpg");
 
-      try {
-        return await message.reply({ embeds: [embed], files: [imageFile] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed], files: [imageFile] }).catch(msgErrorHandler);
     }
 
     embed
@@ -75,13 +58,8 @@ module.exports = {
     const btnStop = new ButtonBuilder().setCustomId("btn-meme-btnStop").setEmoji("🛑").setLabel("Stop").setStyle(ButtonStyle.Danger);
     const btnRow = new ActionRowBuilder().addComponents(btnNextMeme, btnStop);
 
-    let sentMessage;
-
-    try {
-      sentMessage = await message.reply({ embeds: [embed], components: [btnRow] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    const sentMessage = await message.reply({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
+    if (!sentMessage) return;
 
     const btnCollector = sentMessage.createMessageComponentCollector({
       componentType: ComponentType.Button,
@@ -90,11 +68,7 @@ module.exports = {
 
     btnCollector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        try {
-          return await btnInteraction.reply({ content: "You gotta type d!meme for yourself", flags: MessageFlags.Ephemeral });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await btnInteraction.reply({ content: "You gotta type d!meme for yourself", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
       }
 
       switch (btnInteraction.customId) {
@@ -104,11 +78,7 @@ module.exports = {
           if (memeData.code == 404) {
             btnCollector.stop();
 
-            try {
-              return await btnInteraction.update({ content: "Opsy, i couldn't get the meme, try typing the command again", components: [] });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            return await btnInteraction.update({ content: "Opsy, i couldn't get the meme, try typing the command again", components: [] }).catch(msgErrorHandler);
           }
 
           if (memeData.nsfw) {
@@ -123,11 +93,7 @@ module.exports = {
 
             btnCollector.stop();
 
-            try {
-              return await btnInteraction.update({ embeds: [embed], components: [], files: [imageFile] });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            return await btnInteraction.update({ embeds: [embed], components: [], files: [imageFile] }).catch(msgErrorHandler);
           }
 
           embed
@@ -165,11 +131,7 @@ module.exports = {
       btnNextMeme.setDisabled(true);
       btnStop.setDisabled(true);
 
-      try {
-        return await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await sentMessage.edit({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
     });
 
     async function getMeme() {
@@ -179,7 +141,7 @@ module.exports = {
 
         return memeData;
       } catch (error) {
-        return msgErrorHandler(error);
+        return error;
       }
     }
   },

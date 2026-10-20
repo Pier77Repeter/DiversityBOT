@@ -15,20 +15,15 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (row.rowCount === 0 || !row.rows[0].has_pet) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("No pet here, type **d!adopt <@user>** to adopt one");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      embed.setColor(0xff0000).setTitle("❌ Missing Pet").setDescription("No pet here, type **d!adopt <@user>** to adopt one");
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const rowData = row.rows[0];
 
     embed
       .setColor(0x00cccc)
-      .setTitle("🐱 Your fluffy " + client.users.cache.get(rowData.pet_id).username)
+      .setTitle("🐱 Your Fluffy " + client.users.cache.get(rowData.pet_id).username)
       .setDescription(
         [
           "These are all the pet stats, don't make them reach 0%",
@@ -67,10 +62,6 @@ module.exports = {
       )
       .setFooter({ text: "Remember to check them often, stats go down" });
 
-    try {
-      return await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

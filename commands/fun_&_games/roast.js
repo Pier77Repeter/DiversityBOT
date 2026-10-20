@@ -5,14 +5,10 @@ module.exports = {
   name: "roast",
   description: "Roast mentioned user",
   async execute(client, message, args) {
-    try {
-      if (!message.mentions.members.first()) return await message.reply(message.author.username + ", mention the user to roast");
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    if (!message.mentions.members.first()) return await message.reply(message.author.username + ", mention the user to roast").catch(msgErrorHandler);
 
-    try {
-      return await message.channel.send({
+    return await message.channel
+      .send({
         content:
           message.mentions.members.first().user.username +
           " " +
@@ -75,9 +71,7 @@ module.exports = {
             "You should really come with a warning label.",
             "I don't know what your problem is, but I'm guessing it's hard to pronounce.",
           ]),
-      });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+      })
+      .catch(msgErrorHandler);
   },
 };

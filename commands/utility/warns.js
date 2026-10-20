@@ -14,22 +14,12 @@ module.exports = {
 
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need the permission `Moderate members` to use this command");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const user = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
@@ -42,11 +32,7 @@ module.exports = {
         .setTitle("🚨" + user.tag + "'s warns")
         .setDescription("The user **" + user.tag + "** has a total of **0** warns");
 
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     embed
@@ -57,13 +43,8 @@ module.exports = {
     const btnClearWarns = new ButtonBuilder().setCustomId("warns-btn-btnClearWarns").setLabel("Clear warns").setStyle(ButtonStyle.Primary);
     const actionRow = new ActionRowBuilder().addComponents(btnClearWarns);
 
-    let sentMessage;
-
-    try {
-      sentMessage = await message.reply({ embeds: [embed], components: [actionRow] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    const sentMessage = await message.reply({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+    if (!sentMessage) return;
 
     const collector = sentMessage.createMessageComponentCollector({
       componentType: ComponentType.Button,
@@ -72,11 +53,7 @@ module.exports = {
 
     collector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        try {
-          return await btnInteraction.reply({ content: "You can't use this button, it is not for you", flags: [MessageFlags.Ephemeral] });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await btnInteraction.reply({ content: "You can't use this button, it is not for you", flags: [MessageFlags.Ephemeral] }).catch(msgErrorHandler);
       }
 
       if (btnInteraction.customId === "warns-btn-btnClearWarns") {
@@ -89,11 +66,7 @@ module.exports = {
 
         btnClearWarns.setStyle(ButtonStyle.Success).setDisabled(true);
 
-        try {
-          await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-        } catch (error) {
-          msgErrorHandler(error);
-        }
+        await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
 
         // MOD LOGGING HERE
         embed
@@ -110,11 +83,7 @@ module.exports = {
     collector.on("end", async () => {
       btnClearWarns.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-      try {
-        return await sentMessage.edit({ components: [actionRow] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await sentMessage.edit({ components: [actionRow] }).catch(msgErrorHandler);
     });
   },
 };

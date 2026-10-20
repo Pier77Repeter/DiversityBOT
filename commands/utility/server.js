@@ -46,10 +46,6 @@ module.exports = {
       .setImage(message.guild.iconURL({ dynamic: true }))
       .setFooter({ text: "View the server's configs with d!config" });
 
-    try {
-      return await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

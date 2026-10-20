@@ -10,11 +10,7 @@ module.exports = {
 
     const emoji = await getMsgArgs(replyedMessage);
 
-    try {
-      if (!emoji) return await message.reply("Provide an emoji, thanks");
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    if (!emoji) return await message.reply("Provide an emoji, thanks").catch(msgErrorHandler);
 
     const emojiName = emoji[0].split(":")[1];
     let emojiId = null;
@@ -27,11 +23,7 @@ module.exports = {
       try {
         await axios.get(`https://cdn.discordapp.com/emojis/${emojiId}`);
       } catch (error) {
-        try {
-          return await message.reply("Invalid emoji, gib a real one");
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await message.reply("Invalid emoji, gib a real one").catch(msgErrorHandler);
       }
 
       let emojiUrl = `https://cdn.discordapp.com/emojis/${emojiId}`;
@@ -47,17 +39,9 @@ module.exports = {
         .setImage(emojiUrl)
         .setFooter({ text: "Click the image to download" });
 
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     } else {
-      try {
-        return await message.reply("You need to provide a message with ONLY the emoji to steal");
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply("You need to provide a message with ONLY the emoji to steal").catch(msgErrorHandler);
     }
 
     async function getMsgArgs(replyedMessage) {

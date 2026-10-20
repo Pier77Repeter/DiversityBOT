@@ -17,34 +17,22 @@ module.exports = {
 
     if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ You can play this game in **<t:" + cooldown[1] + ":R>**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     let highLowNumber = mathRandomInt(1, 100),
       highLowSelectedNumber = mathRandomInt(1, 100);
 
-    embed
-      .setColor(0x3366ff)
-      .setTitle("🔢 Will the next number be higher or lower?")
-      .setDescription("The number selected is **" + highLowNumber + "**!");
+    embed.setColor(0x3366ff).setTitle("🔢 Will the next number be higher or lower?").setDescription(`The number selected is **${highLowNumber}**!`);
 
     const btnLow = new ButtonBuilder().setCustomId("btn-hl-btnLow").setLabel("Low").setStyle(ButtonStyle.Primary);
     const btnHigh = new ButtonBuilder().setCustomId("btn-hl-btnHigh").setLabel("High").setStyle(ButtonStyle.Primary);
 
     const actionRow = new ActionRowBuilder().addComponents(btnLow, btnHigh);
 
-    let sentMessage;
+    const sentMessage = await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
-    try {
-      sentMessage = await message.reply({ embeds: [embed], components: [actionRow] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    if (!sentMessage) return;
 
     const collector = sentMessage.createMessageComponentCollector({
       componentType: ComponentType.Button,
@@ -56,14 +44,7 @@ module.exports = {
 
     collector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        try {
-          return await btnInteraction.reply({
-            content: "It's not your game",
-            flags: MessageFlags.Ephemeral,
-          });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await btnInteraction.reply({ content: "It's not your game", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
       }
 
       hasClickedBtn = true;
@@ -74,64 +55,34 @@ module.exports = {
           btnHigh.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
           if (highLowSelectedNumber > highLowNumber) {
-            embed
-              .setColor(0xff0000)
-              .setTitle("❌ Wrong")
-              .setDescription("The selected number was **" + highLowSelectedNumber + "**");
-
-            try {
-              return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            embed.setColor(0xff0000).setTitle("❌ Wrong").setDescription(`The selected number was **${highLowSelectedNumber}**`);
+            return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
           }
 
           money = mathRandomInt(30, 80);
 
           if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-          embed
-            .setColor(0x33cc00)
-            .setTitle("✅ That's right")
-            .setDescription("The number selected was **" + highLowSelectedNumber + "** and you won **" + money + "$**!");
+          embed.setColor(0x33cc00).setTitle("✅ That's Right").setDescription(`The number selected was **${highLowSelectedNumber}** and you won **${money}$**!`);
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
 
         case "btn-hl-btnHigh":
           btnLow.setStyle(ButtonStyle.Secondary).setDisabled(true);
           btnHigh.setStyle(ButtonStyle.Success).setDisabled(true);
 
           if (highLowSelectedNumber < highLowNumber) {
-            embed
-              .setColor(0xff0000)
-              .setTitle("❌ Wrong")
-              .setDescription("The selected number was **" + highLowSelectedNumber + "**");
-
-            try {
-              return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-            } catch (error) {
-              return msgErrorHandler(error);
-            }
+            embed.setColor(0xff0000).setTitle("❌ Wrong").setDescription(`The selected number was **${highLowSelectedNumber}**`);
+            return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
           }
 
           money = mathRandomInt(30, 80);
 
           if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-          embed
-            .setColor(0x33cc00)
-            .setTitle("✅ That's right")
-            .setDescription("The number selected was **" + highLowSelectedNumber + "** and you won **" + money + "$**!");
+          embed.setColor(0x33cc00).setTitle("✅ That's Right").setDescription(`The number selected was **${highLowSelectedNumber}** and you won **${money}$**!`);
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
       }
     });
 
@@ -142,11 +93,7 @@ module.exports = {
         btnLow.setStyle(ButtonStyle.Secondary).setDisabled(true);
         btnHigh.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-        try {
-          return await sentMessage.edit({ embeds: [embed], components: [actionRow] });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await sentMessage.edit({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
       }
     });
   },

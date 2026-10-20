@@ -4,25 +4,22 @@ const manageUserMoney = require("../../utils/manageUserMoney");
 const dbJsonDataGet = require("../../utils/dbJsonDataGet");
 const mathRandomInt = require("../../utils/mathRandomInt");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
+const dbJsonDataSet = require("../../utils/dbJsonDataSet");
 
 module.exports = {
   name: "crime",
   description: "Commit a crime to get money",
   cooldown: 14400,
   async execute(client, message, args) {
-    const items = await dbJsonDataGet(client, message.author, message, "items");
+    const items = await dbJsonDataGet(client, message, "items", message.author.id);
     if (items === null) return;
 
     const embed = new EmbedBuilder();
 
-    if (!items.itemId5) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need an **AK-47** to commit a crime");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+    // item with id 7 is at index id - 1, which is 6
+    if (items[6].quantity === 0) {
+      embed.setColor(0xff0000).setTitle("❌ Missing Item").setDescription("You need an **AK-47** to commit a crime");
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const cooldown = await cooldownManager(client, message, "crime_cooldown", this.cooldown);
@@ -30,15 +27,10 @@ module.exports = {
 
     if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ You will able to commit another crime again: **<t:" + cooldown[1] + ":R>**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
-    embed.setColor(0x3366ff).setTitle("🦹 Villain time").setDescription("Choose the crime you want to commit, if you fail you WILL lose a lot of money");
+    embed.setColor(0x3366ff).setTitle("🦹 Villain Time").setDescription("Choose the crime you want to commit, if you fail you WILL lose a lot of money");
 
     const btnMuder = new ButtonBuilder().setCustomId("btn-crime-btnMurder").setLabel("Murder").setStyle(ButtonStyle.Primary);
     const btnArson = new ButtonBuilder().setCustomId("btn-crime-btnArson").setLabel("Arson").setStyle(ButtonStyle.Primary);
@@ -47,13 +39,9 @@ module.exports = {
 
     const actionRow = new ActionRowBuilder().addComponents(btnMuder, btnArson, btnRobbery, btnDrug);
 
-    let sentMessage;
+    const sentMessage = await message.reply({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
 
-    try {
-      sentMessage = await message.reply({ embeds: [embed], components: [actionRow] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    if (!sentMessage) return;
 
     const collector = sentMessage.createMessageComponentCollector({
       componentType: ComponentType.Button,
@@ -65,14 +53,7 @@ module.exports = {
 
     collector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        try {
-          return await btnInteraction.reply({
-            content: "You better not commit a crime",
-            flags: MessageFlags.Ephemeral,
-          });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await btnInteraction.reply({ content: "You better not commit a crime for someone else", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
       }
 
       hasClickedBtn = true;
@@ -84,19 +65,14 @@ module.exports = {
         btnDrug.setStyle(ButtonStyle.Danger).setDisabled(true);
 
         money = mathRandomInt(3000, 4000);
+        items[6].quantity = 0;
 
         if ((await manageUserMoney(client, message, "-", money)) === null) return;
+        if ((await dbJsonDataSet(client, message, "items", items, message.author.id)) === null) return;
 
-        embed
-          .setColor(0x660000)
-          .setTitle("🧑‍⚖️ You got arrested")
-          .setDescription("You paid **" + money + "$** for all the damage you've made");
+        embed.setColor(0x660000).setTitle("🧑‍⚖️ You Got Arrested").setDescription(`You paid **${money}$** for all the damage you've made`);
 
-        try {
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
       }
 
       switch (btnInteraction.customId) {
@@ -110,16 +86,9 @@ module.exports = {
 
           if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-          embed
-            .setColor(0x990000)
-            .setTitle("🕵️‍♂️ Hitman")
-            .setDescription("You killed a rich corrupted guy, for this mission you got **" + money + "$**");
+          embed.setColor(0x990000).setTitle("🕵️‍♂️ Hitman").setDescription(`You killed a rich corrupted guy, for this mission you got **${money}$**`);
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
 
         case "btn-crime-btnArson":
           btnMuder.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -131,16 +100,9 @@ module.exports = {
 
           if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-          embed
-            .setColor(0x990000)
-            .setTitle("🕵️‍♂️ You commited ARSON")
-            .setDescription("You burned down a whole forest, you needed to wood to build the house, you got **" + money + "$**");
+          embed.setColor(0x990000).setTitle("🕵️‍♂️ You Commited ARSON").setDescription(`You burned down a whole forest, you needed to wood to build the house, you got **${money}$**`);
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
 
         case "btn-crime-btnRobbery":
           btnMuder.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -152,16 +114,9 @@ module.exports = {
 
           if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-          embed
-            .setColor(0x990000)
-            .setTitle("🕵️‍♂️ You robbed a bank")
-            .setDescription("You trolled the bank and you took all the money, you got **" + money + "$**");
+          embed.setColor(0x990000).setTitle("🕵️‍♂️ You Robbed a Bank").setDescription(`You trolled the bank and you took all the money, you got **${money}$**`);
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
 
         case "btn-crime-btnDrug":
           btnMuder.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -173,33 +128,22 @@ module.exports = {
 
           if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-          embed
-            .setColor(0x990000)
-            .setTitle("🕵️‍♂️ You sold coke")
-            .setDescription("Your number 1 client, Hausemaster, gave you **" + money + "$**");
+          embed.setColor(0x990000).setTitle("🕵️‍♂️ You Sold Coke").setDescription(`Your number 1 client, Hausemaster, gave you **${money}$**`);
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
       }
     });
 
     collector.on("end", async () => {
       if (!hasClickedBtn) {
-        embed.setTitle("🕵️‍♂️ Changed idea?").setDescription("So you decided to not commit a crime this time?");
+        embed.setTitle("🕵️‍♂️ Changed Idea").setDescription("So you've decided to not commit a crime this time?");
 
         btnMuder.setStyle(ButtonStyle.Secondary).setDisabled(true);
         btnArson.setStyle(ButtonStyle.Secondary).setDisabled(true);
         btnRobbery.setStyle(ButtonStyle.Secondary).setDisabled(true);
         btnDrug.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-        try {
-          return await sentMessage.edit({ embeds: [embed], components: [actionRow] });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await sentMessage.edit({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
       }
     });
   },

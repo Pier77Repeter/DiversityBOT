@@ -17,11 +17,7 @@ module.exports = {
         .setTitle(user.username + " dosen't have any debts")
         .setDescription("At the moment there are no debts to pay");
 
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     // check if the row exist, then assign
@@ -33,7 +29,7 @@ module.exports = {
     const dailyIncrease = Math.trunc((debts + money + Number(data.bank_money)) * 0.03);
 
     embed
-      .setTitle(user.username + "'s debts")
+      .setTitle(user.username + "'s Debts")
       .setDescription(["**🧾 Debts:** `" + debts + "$`", "**📈 Daily increase:** `" + dailyIncrease + "$`"].join("\n"))
       .setFooter({ text: "The longer you wait, the higher the debts get" });
 
@@ -41,17 +37,12 @@ module.exports = {
     const btnRow = new ActionRowBuilder().addComponents(payDebtsBtn);
 
     if (debts === 0) {
-      embed.setColor(0x33ff33).setTitle("Looking good 👍").setDescription("You don't have debts to pay, clean").setFooter(null);
+      embed.setColor(0x33ff33).setTitle("Looking Good 👍").setDescription("You don't have debts to pay, clean").setFooter(null);
 
       payDebtsBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
     }
 
-    let sentMessage;
-    try {
-      sentMessage = await message.reply({ embeds: [embed], components: [btnRow] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    const sentMessage = await message.reply({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
 
     const btnCollector = sentMessage.createMessageComponentCollector({
       componentType: ComponentType.Button,
@@ -60,22 +51,11 @@ module.exports = {
 
     btnCollector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        try {
-          return await btnInteraction.reply({ content: "This button isn't for you", flags: MessageFlags.Ephemeral });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await btnInteraction.reply({ content: "This button isn't for you", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
       }
 
       if (data.user_id !== message.author.id) {
-        try {
-          return await btnInteraction.reply({
-            content: "You want to pay debts for someone else? Nah you won't",
-            flags: MessageFlags.Ephemeral,
-          });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await btnInteraction.reply({ content: "You want to pay debts for someone else? Nah you won't", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
       }
 
       if (btnInteraction.customId === "btn-debts-btnPayDebts") {
@@ -84,14 +64,10 @@ module.exports = {
         data = row.rows[0]; // update the let
 
         if (money === 0) {
-          embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You have **0$ in your wallet**, you need to withdraw them from your bank").setFooter(null);
+          embed.setColor(0xff0000).setTitle("❌ Not Enough Money").setDescription("You have **0$ in your wallet**, you need to withdraw them from your bank").setFooter(null);
           payDebtsBtn.setDisabled(true);
 
-          try {
-            return await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
+          return await btnInteraction.update({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
         }
 
         // determine the amount to pay, either all the money in wallet or the total amount of debts
@@ -101,32 +77,24 @@ module.exports = {
 
         await client.database.query("UPDATE users SET debts = $1, money = $2 WHERE server_id = $3 AND user_id = $4", [newDebts, newMoney, message.guildId, user.id]);
 
-        embed.setColor(0x33ff33).setTitle("✅ Payment successful").setFooter(null);
+        embed.setColor(0x33ff33).setTitle("✅ Payment Successful").setFooter(null);
 
         if (newDebts > 0) {
-          embed.setDescription(["You paid **" + amountToPay + "$** towards your debts", "You still owe **" + newDebts + "$**"].join("\n"));
+          embed.setDescription([`You paid **${amountToPay}$** towards your debts`, `You still owe **${newDebts}$**`].join("\n"));
         } else {
-          embed.setDescription("You paid off your remaining debts for **" + amountToPay + "$**");
+          embed.setDescription(`You paid off your remaining debts for **${amountToPay}$**`);
         }
 
         payDebtsBtn.setStyle(ButtonStyle.Success).setDisabled(true);
 
-        try {
-          return await btnInteraction.update({ embeds: [embed], components: [btnRow] });
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+        return await btnInteraction.update({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
       }
     });
 
     btnCollector.on("end", async () => {
       payDebtsBtn.setDisabled(true);
 
-      try {
-        return await sentMessage.edit({ embeds: [embed], components: [btnRow] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await sentMessage.edit({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
     });
   },
 };

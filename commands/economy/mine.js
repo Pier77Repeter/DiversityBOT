@@ -12,19 +12,14 @@ module.exports = {
   description: "Mine some ores",
   cooldown: 3600,
   async execute(client, message, args) {
-    const items = await dbJsonDataGet(client, message.author, message, "items");
+    const items = await dbJsonDataGet(client, message, "items", message.author.id);
     if (items === null) return;
 
     const embed = new EmbedBuilder();
 
-    if (!items.itemId13) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need to buy a **pickaxe** for mining ores");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+    if (items[12].quantity === 0) {
+      embed.setColor(0xff0000).setTitle("❌ Missing Item").setDescription("You need to buy a **pickaxe** for mining ores");
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const cooldown = await cooldownManager(client, message, "mine_cooldown", this.cooldown);
@@ -32,37 +27,23 @@ module.exports = {
 
     if (cooldown) {
       embed.setColor(0x000000).setDescription("⏰ Mine is closed, will re-open **<t:" + cooldown[1] + ":R>**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (mathRandomInt(1, 8) === 1) {
-      items.itemId13 = false;
+      items[12].quantity = 0;
 
-      if ((await dbJsonDataSet(client, message, "items", items)) === null) return;
+      if ((await dbJsonDataSet(client, message, "items", items, message.author.id)) === null) return;
 
       embed.setColor(0xff0000).setTitle("👷‍♂️💥⬛").setDescription("Your pickaxe exploded! Go buy a new one to mine again");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
-
-    let sentMessage;
 
     embed.setColor(0x666666).setTitle("👷‍♂️⛏️⬛⬛⬛⬛⬛⬛⬛⬛⬛").setDescription("You started mining, let's hope you find some ores").setFooter({ text: "Minecraft bottom text" });
 
-    try {
-      sentMessage = await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    const sentMessage = await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+    if (!sentMessage) return;
 
     await delay(1000);
 
@@ -194,10 +175,6 @@ module.exports = {
 
     embed.setColor(0x33ff33).setTitle(foundOre.title).setDescription(foundOre.desc).setFooter({ text: foundOre.footer });
 
-    try {
-      return await sentMessage.edit({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

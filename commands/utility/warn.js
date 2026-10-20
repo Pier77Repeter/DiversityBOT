@@ -15,42 +15,22 @@ module.exports = {
 
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need the permission `Moderate members` to use this command");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!message.mentions.members.first()) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need to mention the member you want to warn");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (message.mentions.members.first().user.id === message.author.id) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You can't warn yourself lol");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const userToWarn = message.mentions.members.first();
@@ -59,12 +39,7 @@ module.exports = {
     // can warn bots
     if (userToWarn.user.bot) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You can't warn a Discord Bot");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     // if user dosen't exist in database we gotta create it
@@ -82,11 +57,7 @@ module.exports = {
       .setTitle("✅ Done")
       .setDescription("The user **" + userToWarn.user.tag + "** has been warned" + "\n" + "Reason: " + warnReason);
 
-    try {
-      await message.reply({ embeds: [embed] });
-    } catch (error) {
-      msgErrorHandler(error);
-    }
+    await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
     // MOD LOGGING HERE
     embed

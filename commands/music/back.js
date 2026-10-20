@@ -15,20 +15,11 @@ module.exports = {
 
     if (!isMusicEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!message.member.voice.channel) {
-      try {
-        return await message.reply("You need to be in a voice channel to use this command!");
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply("You need to be in a voice channel to use this command!").catch(msgErrorHandler);
     }
 
     // discord-player documentation is scheiße
@@ -37,21 +28,13 @@ module.exports = {
     const history = useHistory(message.guild.id);
 
     if (!queue || !queue.isPlaying()) {
-      try {
-        return await message.reply("There is nothing to loop right now, play some songs first");
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply("There is nothing to loop right now, play some songs first").catch(msgErrorHandler);
     }
 
     await history.previous();
 
     embed.setColor(0x33cc00).setTitle("⏮️ Playing previous music").setDescription("Skip with **d!skip**");
 
-    try {
-      return await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

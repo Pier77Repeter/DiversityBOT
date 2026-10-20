@@ -23,7 +23,7 @@ module.exports = (client) => {
     if (loader.getRestartStatus()) {
       const embed = new EmbedBuilder()
         .setColor(0x990000)
-        .setTitle("⚠️ Bot is restarting")
+        .setTitle("⚠️ Bot is Restarting")
         .setDescription("I'm currently restarting, to preserve the integrity of your data in my database, you won't be able to use me until restart is completed.")
         .setFooter({ text: "Estimated downtime is 5 minute" });
 
@@ -37,7 +37,7 @@ module.exports = (client) => {
     await createDbData(client, interaction.guildId, interaction.user.id);
 
     // ready to log for the specific slash command
-    logger.setFileName("InteractionCreate/" + interaction.commandName + ".js");
+    logger.setFileName(`InteractionCreate/${interaction.commandName}.js`);
 
     // if slash commands get an error log it and tell the user
     try {

@@ -14,39 +14,22 @@ module.exports = {
 
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need the permission `Ban members` to use this command");
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!message.guild.members.me.permissions.has(PermissionsBitField.Flags.BanMembers)) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("I don't have the permission to `Ban members`");
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (args[0] === message.author.id) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You can't unban yourself lol");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     const userId = args[0];
@@ -54,12 +37,7 @@ module.exports = {
 
     if (!userId) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Please provide the **ID of the user** you want to unban");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     let bannedUser;
@@ -68,12 +46,7 @@ module.exports = {
       bannedUser = await message.guild.bans.fetch(userId);
     } catch (error) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("This user hasn't been banned from the server");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!bannedUser) {
@@ -81,11 +54,7 @@ module.exports = {
         .setColor(0xff0000)
         .setTitle("❌ Error")
         .setDescription("The user id **" + bannedUser.user.tag + "** is NOT banned from the server");
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     await message.guild.members.unban(userId, unbanReason);
@@ -94,11 +63,7 @@ module.exports = {
       .setColor(0x33ff33)
       .setTitle("✅ Done")
       .setDescription("Successfully unbanned **" + bannedUser.user.tag + "** from the server");
-    try {
-      await message.reply({ embeds: [embed] });
-    } catch (error) {
-      msgErrorHandler(error);
-    }
+    await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
     // MOD LOGGING HERE
     embed

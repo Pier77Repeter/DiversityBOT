@@ -14,20 +14,11 @@ module.exports = {
 
     if (!isMusicEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
-
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     if (!message.member.voice.channel) {
-      try {
-        return await message.reply("You need to be in a voice channel to use this command!");
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply("You need to be in a voice channel to use this command!").catch(msgErrorHandler);
     }
 
     const player = useMainPlayer();
@@ -37,11 +28,7 @@ module.exports = {
 
     if (isNaN(volumeArg) || volumeArg < 0 || volumeArg > 100) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Please provide a valid volume level between **0 and 100**");
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     queue.node.setVolume(volumeArg);
@@ -51,10 +38,6 @@ module.exports = {
       .setTitle("🎚️ Done")
       .setDescription("🔊 Volume set to **" + volumeArg + "%**");
 
-    try {
-      return await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

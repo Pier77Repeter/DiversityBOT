@@ -5,25 +5,15 @@ module.exports = {
   name: "adopt",
   description: "Adopt a new pet, the mentioned user...",
   async execute(client, message, args) {
-    try {
-      if (!message.mentions.members.first()) return await message.reply(message.author.username + ", mention the user you want to adopt");
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    if (!message.mentions.members.first()) return await message.reply(message.author.username + ", mention the user you want to adopt").catch(msgErrorHandler);
 
     const adoptedMember = message.mentions.members.first().user;
 
     const row = await client.database.query("SELECT has_pet FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
-    const embed = new EmbedBuilder().setColor(0xff0000).setTitle("❌ Error").setDescription("You already have a pet, type **d!pet** to check it!");
+    const embed = new EmbedBuilder().setColor(0xff0000).setTitle("❌ Got a Pet").setDescription("You already have a pet, type **d!pet** to check it!");
 
-    if (row.rows[0].has_pet) {
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
-    }
+    if (row.rows[0].has_pet) return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
     const petStatsCooldown = Date.now() + 10800000; // start imediatly at 3h
     await client.database.query(
@@ -38,10 +28,6 @@ module.exports = {
       .setThumbnail(adoptedMember.displayAvatarURL())
       .setFooter({ text: "It's important to check them often" });
 
-    try {
-      return await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

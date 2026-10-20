@@ -7,11 +7,7 @@ module.exports = {
   name: "troll",
   description: "Troll the mentioned user",
   async execute(client, message, args) {
-    try {
-      if (!message.mentions.members.first()) return await message.reply(message.author.username + ", insert troll target");
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    if (!message.mentions.members.first()) return await message.reply(message.author.username + ", insert troll target").catch(msgErrorHandler);
 
     const trollImageName = listsGetRandomItem(
       [
@@ -53,10 +49,6 @@ module.exports = {
       .setTitle(message.mentions.members.first().user.username + " HAS BEEN TROLLED")
       .setImage("attachment://" + trollImageName);
 
-    try {
-      return await message.reply({ embeds: [embed], files: [imageFile] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await message.reply({ embeds: [embed], files: [imageFile] }).catch(msgErrorHandler);
   },
 };

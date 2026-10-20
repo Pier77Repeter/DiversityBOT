@@ -11,12 +11,8 @@ module.exports = {
 
     const embed = new EmbedBuilder().setColor(0x999999).setTitle("🔍 Cheking user pp...").setImage("https://media1.tenor.com/m/WS6B3HWtGC8AAAAd/cock-inspection.gif");
 
-    let sentMessage;
-    try {
-      sentMessage = await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    const sentMessage = await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    if (!sentMessage) return;
 
     await delay(3000);
 
@@ -38,10 +34,6 @@ module.exports = {
       embed.setDescription("B" + embedDesc + "D");
     }
 
-    try {
-      return await sentMessage.edit({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };
