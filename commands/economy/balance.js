@@ -34,7 +34,7 @@ module.exports = {
       .setDescription(`**📊 Total money: ** \`${totalMoney}$\``)
       .addFields(
         { name: "Names", value: "\n💰 Wallet money\n🏦 Bank money\n⚖️ Debts to pay", inline: true },
-        { name: "Values", value: `\n\`${rowData.money}$\`\n\`${rowData.bank_money}$\`\n\`${rowData.debts}\``, inline: true },
+        { name: "Values", value: `\n\`${rowData.money}$\`\n\`${rowData.bank_money}$\`\n\`${rowData.debts}$\``, inline: true },
       );
 
     return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);

@@ -28,6 +28,8 @@ module.exports = {
       try {
         // that's a lot of colums
         const setupQueries = `
+        BEGIN;
+
         CREATE TABLE IF NOT EXISTS servers (
           server_id VARCHAR(20) NOT NULL PRIMARY KEY,
           mod_cmd BOOLEAN DEFAULT true,
@@ -139,11 +141,11 @@ module.exports = {
         CREATE INDEX IF NOT EXISTS idx_events_user_id ON events(user_id);
         CREATE INDEX IF NOT EXISTS idx_users_user_id ON users(user_id);
         CREATE INDEX IF NOT EXISTS idx_channels_server_id ON channels(server_id);
+
+        COMMIT;
         `;
 
-        await dbClient.query("BEGIN");
         await dbClient.query(setupQueries);
-        await dbClient.query("COMMIT");
       } catch (error) {
         await dbClient.query("ROLLBACK");
         logger.error("Failed to setup the database", error);

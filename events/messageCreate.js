@@ -187,7 +187,7 @@ module.exports = (client) => {
     await createDbData(client, message.guildId, message.author.id);
 
     // ready to log for the specific command
-    logger.setFileName(`"MessageCreate/${command.name}.js"`);
+    logger.setFileName(`MessageCreate/${command.name}.js`);
 
     // if command gets an error, log it
     try {

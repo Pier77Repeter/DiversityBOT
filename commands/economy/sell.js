@@ -24,41 +24,48 @@ module.exports = {
     if (fishes === null) return;
 
     const thingToSell = args.join(" ").toLowerCase();
+    // if the user han't typed any number at the end he's just selling 1 item
+    const quantity = isNaN(parseInt(thingToSell.replace(/^(?:\w+\s+)+(\d+)$/, "$1"))) ? 1 : parseInt(thingToSell.replace(/^(?:\w+\s+)+(\d+)$/, "$1"));
 
     const botItems = jsonDataAssociator("items", items);
     const botFishes = jsonDataAssociator("fishes", fishes);
 
+    const nameOfThing = thingToSell.replace(/\s+\d+$/, ""); // to remove the ' <num>'
+
     let foundSomething = false;
 
     botItems.forEach((item) => {
-      if (item.id === thingToSell || item.name.toLowerCase() === thingToSell) {
+      if (item.id === nameOfThing || item.name.toLowerCase() === nameOfThing) {
         foundSomething = true;
 
-        return sellItem("items", items, item.id, item.displayName, item.price, item.isSingleItem);
+        return sellItem("items", items, item.id, item.displayName, item.price, item.isSingleItem, quantity);
       }
     });
 
+    // turns out the thing was an item, useless to continue executing
+    if (foundSomething) return;
+
     botFishes.forEach((fish) => {
-      if (fish.id === thingToSell || fish.name.toLowerCase() === thingToSell) {
+      if (fish.id === nameOfThing || fish.name.toLowerCase() === nameOfThing) {
         foundSomething = true;
 
-        return sellItem("fishes", fishes, fish.id, fish.displayName, fish.price, fish.isSingleItem);
+        return sellItem("fishes", fishes, fish.id, fish.displayName, fish.price, fish.isSingleItem, quantity);
       }
     });
 
     if (!foundSomething) {
-      embed.setColor(0xff0000).setTitle("❌ Item Not Found").setDescription("Item dosen't exist! You can only sell items or fishes by name like **d!sell fishing rod**");
+      embed.setColor(0xff0000).setTitle("❌ Item Not Found").setDescription("Item dosen't exist! Check the name with **d!inv** or **d!bucket** for fishes");
 
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
 
     // like d!buy, this function saved lots of S P A C E
-    async function sellItem(itemType, jsonData, itemId, itemName, itemPrice, isSingleItem) {
+    async function sellItem(itemType, jsonData, itemId, itemName, itemPrice, isSingleItem, sellQuantity) {
       itemId = parseInt(itemId) - 1; // index starts from 0
 
       // can't be less than 0 for sure
       if (jsonData[itemId].quantity === 0) {
-        embed.setColor(0xff0000).setTitle("❌ Not Owned").setDescription("You don't have this item");
+        embed.setColor(0xff0000).setTitle("❌ Not Owned").setDescription("You don't have this item / fish");
 
         return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
       }
@@ -66,13 +73,20 @@ module.exports = {
       if (isSingleItem) {
         jsonData[itemId].quantity = 0;
       } else {
-        jsonData[itemId].quantity--;
+        if (jsonData[itemId].quantity < sellQuantity) {
+          embed.setColor(0xff0000).setTitle("❌ Can't Sell").setDescription(`You don't have that amount of **${itemName}s**`);
+
+          return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        }
+
+        jsonData[itemId].quantity = jsonData[itemId].quantity - sellQuantity;
+        itemPrice = itemPrice * sellQuantity;
       }
 
       if ((await dbJsonDataSet(client, message, itemType, jsonData, message.author.id)) === null) return;
       if ((await manageUserMoney(client, message, "+", itemPrice)) === null) return;
 
-      embed.setColor(0x00ff00).setTitle("✅ Sold Successful").setDescription(`You sold the ${itemName} for **${itemPrice}$**`);
+      embed.setColor(0x00ff00).setTitle("✅ Sold Successful").setDescription(`You sold ${sellQuantity} ${itemName} for **${itemPrice}$**`);
 
       return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
