@@ -16,7 +16,6 @@ process.on("uncaughtException", (error) => {
 const logger = require("./logger")("Main"); // what is this JS feature? idk but you can pass parameter when you require()
 logger.info("Initializing DiversityBOT...");
 
-// checking config.json
 const fs = require("fs");
 const path = require("path");
 

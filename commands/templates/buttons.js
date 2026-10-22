@@ -17,8 +17,8 @@ module.exports = {
     const embed = new EmbedBuilder().setColor(0x00ff00).setTitle("Choose one of the buttons");
 
     // saving the message the bot sent, as always putting the catch after message.reply(), to send the button row we gotta do '{ components: [actionRow] }'
+    // in this case we MUST wait for the message to be sent, else it's gonna be a pending promise
     const sentMessage = await message.reply({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
-
     if (!sentMessage) return;
 
     // creating the t h i n g that will listen for the button click and we assosiate with the sentMessage
@@ -33,7 +33,8 @@ module.exports = {
       // checking if the button was clicked by the message author by id
       if (btnInteraction.user.id !== message.author.id) {
         // answering the dude who generated the button interaction, to make this visible obly to the dude who clicked, we put the 'flags:' option, and set that this message is ephermeral by 'MessageFlags.Ephemeral'
-        return await btnInteraction.reply({ content: "This button isn't for you!", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        btnInteraction.reply({ content: "This button isn't for you!", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        return;
       }
 
       // the timer (20s) will return back to 20s when the button is clicked
@@ -48,20 +49,25 @@ module.exports = {
           btnOne.setDisabled(true);
 
           // updating the message sent by the bot with the updated embed AND actionRow (so that the changes we made are visible), we can only do that 1 time, after this we need to do: sentMessage.edit()
-          return await btnInteraction.update({ content: "Updated the embed color to **RED**", embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ content: "Updated the embed color to **RED**", embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          break;
 
         case "btn-buttons-btnTwo":
           // doing the same thing as above
           embed.setColor(0x10ff00).setTitle("Green embed");
+
           btnTwo.setDisabled(true);
 
-          return await btnInteraction.update({ content: "Updated the embed color to **GREEN**", embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ content: "Updated the embed color to **GREEN**", embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          break;
 
         case "btn-buttons-btnThree":
           embed.setColor(0x0004ff).setTitle("Blue embed");
+
           btnThree.setDisabled(true);
 
-          return await btnInteraction.update({ content: "Updated the embed color to **BLUE**", embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ content: "Updated the embed color to **BLUE**", embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          break;
       }
     });
 
@@ -73,7 +79,8 @@ module.exports = {
       btnThree.setDisabled(true);
 
       // updating the message sent by the bot with the updated actionRow with all the buttons disabled
-      return await sentMessage.edit({ content: "Buttons has veen disabled! Time out", components: [actionRow] }).catch(msgErrorHandler);
+      // we dont need to await anything here, we dont care even if we fail to update it
+      sentMessage.edit({ content: "Buttons has veen disabled! Time out", components: [actionRow] }).catch(msgErrorHandler);
     });
   },
 };

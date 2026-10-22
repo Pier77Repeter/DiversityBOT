@@ -1,9 +1,9 @@
 const { Events, MessageFlags, EmbedBuilder } = require("discord.js");
-const listsGetRandomItem = require("../utils/listsGetRandomItem");
 const logger = require("../logger")("InteractionCreate");
-const loader = require("../loader");
-const msgErrorHandler = require("../utils/msgErrorHandler");
 const createDbData = require("../utils/createDbData");
+const loader = require("../loader");
+const listsGetRandomItem = require("../utils/listsGetRandomItem");
+const msgErrorHandler = require("../utils/msgErrorHandler");
 
 module.exports = (client) => {
   client.on(Events.InteractionCreate, async (interaction) => {
@@ -27,7 +27,8 @@ module.exports = (client) => {
         .setDescription("I'm currently restarting, to preserve the integrity of your data in my database, you won't be able to use me until restart is completed.")
         .setFooter({ text: "Estimated downtime is 5 minute" });
 
-      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+      interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+      return;
     }
 
     // re-naiming the logger, else it will keep the specific log of the command
@@ -41,11 +42,11 @@ module.exports = (client) => {
 
     // if slash commands get an error log it and tell the user
     try {
-      return await command.execute(client, interaction);
+      await command.execute(client, interaction);
     } catch (error) {
       logger.error("Error while executing a slash command", error);
 
-      return await interaction
+      interaction
         .reply({
           content: listsGetRandomItem(
             [

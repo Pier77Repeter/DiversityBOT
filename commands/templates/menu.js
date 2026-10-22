@@ -33,7 +33,8 @@ module.exports = {
     collector.on("collect", async (menuInteraction) => {
       // always check if the user is the author
       if (menuInteraction.user.id !== message.author.id) {
-        return await menuInteraction.reply({ content: "This menu isn't for you!", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        menuInteraction.reply({ content: "This menu isn't for you!", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        return;
       }
 
       collector.resetTimer();
@@ -44,16 +45,15 @@ module.exports = {
         switch (menuInteraction.values[0]) {
           case "bidenBlast":
             // update the interaction, we can only do that 1 time, after this we need to do: sentMessage.edit()
-            await menuInteraction.update({ content: "Biden blast selected", components: [actionRow] }).catch(msgErrorHandler);
-
+            menuInteraction.update({ content: "Biden blast selected", components: [actionRow] }).catch(msgErrorHandler);
             break;
+
           case "curseOfRA":
-            await menuInteraction.update({ content: "Curse of RA selected", components: [actionRow] }).catch(msgErrorHandler);
-
+            menuInteraction.update({ content: "Curse of RA selected", components: [actionRow] }).catch(msgErrorHandler);
             break;
-          case "bob":
-            await menuInteraction.update({ content: "Bob selected", components: [actionRow] }).catch(msgErrorHandler);
 
+          case "bob":
+            menuInteraction.update({ content: "Bob selected", components: [actionRow] }).catch(msgErrorHandler);
             break;
         }
       }
@@ -63,7 +63,7 @@ module.exports = {
       menu.setDisabled(true); // disabling the menu
 
       // update the menu when disabled
-      return await sentMessage.edit({ content: "Bob selected", components: [actionRow] }).catch(msgErrorHandler);
+      sentMessage.edit({ content: "Bob selected", components: [actionRow] }).catch(msgErrorHandler);
     });
   },
 };

@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
-const msgErrorHandler = require("./msgErrorHandler");
 const logger = require("../logger")("ConfigChecker");
+const msgErrorHandler = require("./msgErrorHandler");
 
 // this is very useful since it's gonna save tons of lines and time when checking configs
 module.exports = async function configChecker(client, message, configName, logError = true) {

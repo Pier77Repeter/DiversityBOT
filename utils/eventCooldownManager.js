@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
-const msgErrorHandler = require("./msgErrorHandler");
 const logger = require("../logger")("EventCooldownManager");
+const msgErrorHandler = require("./msgErrorHandler");
 
 // no need to say everything again, just look at 'cooldownManager().js'
 module.exports = async function cooldownManager(client, message, cooldownName, cooldownInSeconds, logError = true) {

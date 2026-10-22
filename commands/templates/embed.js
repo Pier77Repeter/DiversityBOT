@@ -21,6 +21,6 @@ module.exports = {
       .setImage("attachment://DVC_highquality.jpg"); // to upload local images, always put 'attachment://' before the file name
 
     // sending the embed with the image and return because it's the last thing to do, put embeds and images inside message.reply() you do this '{ embeds: [embed1, embed2], files: [file1, file2] }'
-    return await message.reply({ embeds: [embed], files: [imageFile] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed], files: [imageFile] }).catch(msgErrorHandler);
   },
 };

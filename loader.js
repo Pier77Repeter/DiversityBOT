@@ -1,13 +1,13 @@
-const fs = require("fs");
-const path = require("path");
-const { Collection } = require("discord.js");
+const fs = require("node:fs");
+const path = require("node:path");
 const { REST } = require("@discordjs/rest");
+const { SoundCloudExtractor } = require("@discord-player/extractor");
 const { Routes } = require("discord-api-types/v10");
 const { Player } = require("discord-player");
-const { SoundCloudExtractor } = require("@discord-player/extractor");
+const { Collection } = require("discord.js");
 const { Pool } = require("pg");
-const logger = require("./logger")("Loader");
 const { botToken, botId, dbUrl } = require("./config.json");
+const logger = require("./logger")("Loader");
 const delay = require("./utils/delay");
 
 // needed in index.js, messageCreate.js and maybe somewhere else
@@ -274,7 +274,7 @@ module.exports = {
     }
 
     logger.info("Shutdown completed, terminating process");
-    process.exit(0);
+    process.exit();
   },
   // needed in 'd!restart' and restart checking
   getRestartStatus: () => isBotRestarting,

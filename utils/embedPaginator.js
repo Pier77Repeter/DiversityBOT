@@ -1,6 +1,6 @@
 const { ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, MessageFlags } = require("discord.js");
-const msgErrorHandler = require("./msgErrorHandler");
 const logger = require("../logger")("EmbedPaginator");
+const msgErrorHandler = require("./msgErrorHandler");
 
 // very sophisticated function to make embed impagination, only supports messages, not / commands
 module.exports = async function embedPaginator(commandName, message, pages, time = 60 * 1000) {

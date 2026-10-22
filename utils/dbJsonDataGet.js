@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
-const msgErrorHandler = require("./msgErrorHandler");
 const logger = require("../logger")("DbJsonDataGet");
+const msgErrorHandler = require("./msgErrorHandler");
 
 // this gets any json data from database, since json data can be only be present in either users or servers
 // we can just put the user parameter has optional so by default it gets the server json data

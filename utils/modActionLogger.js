@@ -1,5 +1,5 @@
-const msgErrorHandler = require("./msgErrorHandler");
 const logger = require("../logger")("ModActionLogger");
+const msgErrorHandler = require("./msgErrorHandler");
 
 // the mod logger is used in both / and msg commands, it's gonna save lines of code too like all /utils files
 module.exports = async function modActionLogger(client, actionSource, embed) {

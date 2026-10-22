@@ -1,7 +1,7 @@
 const { useMainPlayer } = require("discord-player");
 const { EmbedBuilder } = require("discord.js");
-const msgErrorHandler = require("../utils/msgErrorHandler");
 const logger = require("../logger")("PlayerError");
+const msgErrorHandler = require("../utils/msgErrorHandler");
 
 // when errors happens so that it dosen't vomit 1000 console errors
 module.exports = (client) => {
@@ -12,6 +12,6 @@ module.exports = (client) => {
 
     const embed = new EmbedBuilder().setColor(0xff0000).setTitle("❌ Error").setDescription("I couldn't play that track. It's likely protected or unavailable in my region");
 
-    return await queue.metadata.channel.send({ embeds: [embed] }).catch(msgErrorHandler);
+    queue.metadata.channel.send({ embeds: [embed] }).catch(msgErrorHandler);
   });
 };

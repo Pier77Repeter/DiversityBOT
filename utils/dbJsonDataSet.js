@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
-const msgErrorHandler = require("./msgErrorHandler");
 const logger = require("../logger")("DbJsonDataSet");
+const msgErrorHandler = require("./msgErrorHandler");
 
 // thing to update json data in DB, same logic as dbJsonDataSet, supports both servers and users tables
 module.exports = async function dbJsonDataSet(client, message, dataName, jsonData, userId = null, logError = true) {

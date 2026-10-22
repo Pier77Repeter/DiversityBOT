@@ -1,5 +1,5 @@
 // the best method for randomness is using the built-in crypto (https://nodejs.org/api/crypto.html)
-const { webcrypto } = require("crypto");
+const { webcrypto } = require("node:crypto");
 
 module.exports = function rng(ceiling = 100) {
   // hold one 64-bit unsigned integer in an array

@@ -1,6 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
-const msgErrorHandler = require("./msgErrorHandler");
 const logger = require("../logger")("ServerCooldownManager");
+const msgErrorHandler = require("./msgErrorHandler");
 
 // only for server cooldowns, unlike "cooldownManager.js" which is for user cooldowns
 module.exports = async function serverCooldownManager(client, message, cooldownName, cooldownInSeconds) {

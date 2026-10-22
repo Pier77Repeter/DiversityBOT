@@ -8,6 +8,8 @@ module.exports = (client) => {
   player.events.on(GuildQueueEvent.PlayerStart, async (queue, track) => {
     const loopEnabled = queue.repeatMode === QueueRepeatMode.TRACK;
     const queueLoopEnabled = queue.repeatMode === QueueRepeatMode.QUEUE;
+
+    // in loop mode i dont want the bot to spam this
     if (loopEnabled || queueLoopEnabled) return;
 
     const embed = new EmbedBuilder()
@@ -26,6 +28,6 @@ module.exports = (client) => {
 
     if (track.thumbnail) embed.setImage(track.thumbnail);
 
-    return await queue.metadata.channel.send({ embeds: [embed] }).catch(msgErrorHandler);
+    queue.metadata.channel.send({ embeds: [embed] }).catch(msgErrorHandler);
   });
 };
