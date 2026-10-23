@@ -18,13 +18,15 @@ module.exports = {
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **/setup** to enable them");
 
-      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+      interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+      return;
     }
 
     if (!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
       embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("I don't have the permission to `Manage Messages` in this server");
 
-      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+      interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+      return;
     }
 
     const amount = interaction.options.getNumber("messages");
@@ -43,15 +45,13 @@ module.exports = {
         .setTitle("❌ Failed to Delete Messages")
         .setDescription("An error occurred while trying to clean messages, messages older than 14 days cannot be deleted, try a smaller amount");
 
-      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+      interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+      return;
     }
 
-    embed
-      .setColor(0x33ff33)
-      .setTitle("✅ Cleaned")
-      .setDescription(`Successfully cleaned **${deletedCount}** messages from the channel`);
+    embed.setColor(0x33ff33).setTitle("✅ Cleaned").setDescription(`Successfully cleaned **${deletedCount}** messages from the channel`);
 
-    await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
     // MOD LOGGING HERE
     embed
@@ -61,6 +61,6 @@ module.exports = {
       .setFooter({ text: `Action by ${interaction.user.tag}`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
       .setTimestamp();
 
-    return await modActionLogger(client, interaction, embed);
+    modActionLogger(client, interaction, embed);
   },
 };

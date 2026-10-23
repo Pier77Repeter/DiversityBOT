@@ -94,7 +94,8 @@ module.exports = {
     });
 
     if (!dt.isValid) {
-      return await interaction.reply("Invalid hour formatting, use the 24 hour system, examples `13:33`, `9:10`, `22:40`").catch(msgErrorHandler);
+      interaction.reply("Invalid hour formatting, use the 24 hour system, examples `13:33`, `9:10`, `22:40`").catch(msgErrorHandler);
+      return;
     }
 
     const converted = dt.setZone(toZone);
@@ -105,6 +106,6 @@ module.exports = {
       .setColor("Blurple")
       .setTitle(`${listsGetRandomItem(emojis)} ${fromZone} ${timeStr} ➡️ ${toZone} ${converted.toFormat("dd-LL HH:mm")}`);
 
-    return await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

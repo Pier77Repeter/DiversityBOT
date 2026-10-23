@@ -49,8 +49,7 @@ module.exports = async function serverCooldownManager(client, message, cooldownN
       .setDescription("Failed to update the server cooldown, please **report this error with the server id**")
       .addFields({ name: "Server ID", value: `\`${message.guildId}\``, inline: true }, { name: "Submit Report Here", value: "https://discord.gg/KxadTdz" });
 
-    await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
-
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     return null; // in case of an error (check is in the command)
   }
 };

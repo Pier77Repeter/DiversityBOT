@@ -85,6 +85,6 @@ module.exports = {
         inline: false,
       });
 
-    return await interaction.editReply({ embeds: [embed] }).catch(msgErrorHandler);
+    interaction.editReply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

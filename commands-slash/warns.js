@@ -18,7 +18,8 @@ module.exports = {
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **/setup** to enable them");
 
-      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+      interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+      return;
     }
 
     const member = interaction.options.getMember("member");
@@ -26,7 +27,8 @@ module.exports = {
     if (!member) {
       embed.setColor(0xff0000).setTitle("❌ No Member").setDescription("Could not find that member in the server, they left...");
 
-      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+      interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+      return;
     }
 
     const checkRow = await client.database.query("SELECT warns FROM users WHERE server_id = $1 AND user_id = $2", [interaction.guildId, member.user.id]);
@@ -34,7 +36,8 @@ module.exports = {
     if (checkRow.rowCount === 0) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Failed to get the user's warns from my database");
 
-      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+      interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+      return;
     }
 
     embed.setColor(0x33ff33).setTitle(`🚨 ${member.user.tag}'s Warns`).setDescription(`The user **${member.user.tag}** has a total of **${checkRow.rows[0].warns}** warns`);
@@ -53,7 +56,8 @@ module.exports = {
 
     collector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== interaction.user.id) {
-        return await btnInteraction.reply({ content: "You can't use this button, it is not for you", flags: [MessageFlags.Ephemeral] }).catch(msgErrorHandler);
+        btnInteraction.reply({ content: "You can't use this button, it is not for you", flags: [MessageFlags.Ephemeral] }).catch(msgErrorHandler);
+        return;
       }
 
       if (btnInteraction.customId === "swarns-btn-btnClearWarns") {
@@ -63,7 +67,7 @@ module.exports = {
 
         btnClearWarns.setStyle(ButtonStyle.Success).setDisabled(true);
 
-        await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+        btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
 
         // MOD LOGGING HERE
         embed
@@ -73,14 +77,14 @@ module.exports = {
           .setFooter({ text: `Action by ${interaction.user.tag}`, iconURL: interaction.user.displayAvatarURL({ dynamic: true }) })
           .setTimestamp();
 
-        return await modActionLogger(client, interaction, embed);
+        modActionLogger(client, interaction, embed);
       }
     });
 
     collector.on("end", async () => {
       btnClearWarns.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-      return await sentMessage.edit({ components: [actionRow] }).catch(msgErrorHandler);
+      sentMessage.edit({ components: [actionRow] }).catch(msgErrorHandler);
     });
   },
 };

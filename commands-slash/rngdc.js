@@ -17,7 +17,8 @@ module.exports = {
     if (!isRngEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("RNG commands are off! Type **d!setup rng** to enable them");
 
-      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+      interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+      return;
     }
 
     const dropChance = interaction.options.getNumber("chance");
@@ -28,7 +29,8 @@ module.exports = {
         .setTitle("❌ Invalid Number")
         .setDescription("Number must be between **1** and **100**\nIt is highly reccomended to set a number between **1** and **10** to reduce unwanted spam");
 
-      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+      interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+      return;
     }
 
     await client.database.query("UPDATE servers SET rng_drop_chance = $1 WHERE server_id = $2", [dropChance, interaction.guildId]);
@@ -38,6 +40,6 @@ module.exports = {
       .setTitle("✅ Done")
       .setDescription(`The Global Drop Chance has been set to **${dropChance}%**\n\n*It is highly reccomended to set the chance between **1%** and **10%** to reduce Bot's spam*`);
 
-    return await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

@@ -46,6 +46,6 @@ module.exports = {
       .setImage(interaction.guild.iconURL({ dynamic: true }))
       .setFooter({ text: "View the server's configs with /config" });
 
-    return await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

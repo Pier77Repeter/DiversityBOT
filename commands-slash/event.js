@@ -23,6 +23,6 @@ module.exports = {
         text: "Christmas Season event will end on the 25th of December",
       });
 
-    return await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

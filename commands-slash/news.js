@@ -15,6 +15,6 @@ module.exports = {
         inline: false,
       });
 
-    return await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

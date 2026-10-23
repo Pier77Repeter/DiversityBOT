@@ -8,13 +8,12 @@ module.exports = {
   async execute(client, interaction) {
     const embed = new EmbedBuilder().setColor(0xff0000).setTitle("📡 Pinging, please wait...");
 
-    let sentMessage;
-
-    await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    const sentMessage = await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
     await delay(3000);
 
     let latency = "Unknown";
+
     if (sentMessage?.createdTimestamp && interaction.createdTimestamp) {
       latency = `${sentMessage.createdTimestamp - interaction.createdTimestamp}ms`;
     }
@@ -28,6 +27,6 @@ module.exports = {
         value: `Roundtrip latency: **${latency}**\nWebsocket heartbeat: **${interaction.client.ws.ping}ms**`,
       });
 
-    return await interaction.editReply({ embeds: [embed] }).catch(msgErrorHandler);
+    interaction.editReply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

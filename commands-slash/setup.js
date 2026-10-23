@@ -32,28 +32,35 @@ module.exports = {
         columnName = "mod_cmd";
         enabledCmds = "🔨 Moderation commands";
         break;
+
       case "music":
         columnName = "music_cmd";
         enabledCmds = "🎵 Music commands";
         break;
+
       case "events":
         columnName = "event_cmd";
         enabledCmds = "🎉 Events commands";
         break;
+
       case "community":
         columnName = "community_cmd";
         enabledCmds = "🌍 Community commands";
         break;
+
       case "leveling":
         columnName = "leveling_cmd";
         enabledCmds = "🏆 Leveling commands";
         break;
+
       case "rng":
         columnName = "rng_cmd";
         enabledCmds = "🎲 RNG commands";
         break;
+
       default:
-        return interaction.reply({ content: "Invalid category.", ephemeral: MessageFlags.Ephemeral }).catch(msgErrorHandler); // should not happen, but good to have
+        interaction.reply({ content: "Invalid category.", ephemeral: MessageFlags.Ephemeral }).catch(msgErrorHandler); // should not happen, but good to have
+        return;
     }
 
     await client.database.query(`UPDATE servers SET ${columnName} = $1 WHERE server_id = $2`, [enabled, interaction.guildId]);
@@ -63,6 +70,6 @@ module.exports = {
       .setTitle("✅ Configuration Updated")
       .setDescription(`${enabledCmds} are now **${enabled ? "ACTIVE" : "NOT ACTIVE"}**`);
 
-    return await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

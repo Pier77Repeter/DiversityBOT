@@ -17,6 +17,6 @@ module.exports = {
       .addFields({ name: "Website link", value: "https://bot.diversitycraft.org/", inline: false })
       .setFooter({ text: "Make sure the give me all the needed permissions" });
 
-    return await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

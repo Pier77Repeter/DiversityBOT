@@ -18,7 +18,8 @@ module.exports = {
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **/setup** to enable them");
 
-      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+      interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+      return;
     }
 
     const channel = interaction.options.getChannel("channel") || null;
@@ -37,20 +38,22 @@ module.exports = {
             "You can mention a channel to active logging, make sure i have the permission to `Send Messages` in that channel",
         );
 
-      return await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (!interaction.guild.members.me.permissionsIn(channel).has(PermissionsBitField.Flags.SendMessages)) {
       embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("I don't have the permission to `Send Messages` in that channel");
 
-      return await interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+      interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+      return;
     }
 
     await client.database.query("UPDATE servers SET mod_log_channel = $1 WHERE server_id = $2", [channel.id, interaction.guild.id]);
 
     embed.setColor(0x33ff33).setTitle("✅ Done").setDescription(`Moderation actions will be logged in <#${channel.id}>`);
 
-    await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
     // MOD LOGGING HERE
     embed
@@ -63,6 +66,6 @@ module.exports = {
       })
       .setTimestamp();
 
-    return await modActionLogger(client, interaction, embed);
+    modActionLogger(client, interaction, embed);
   },
 };

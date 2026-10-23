@@ -49,6 +49,6 @@ module.exports = async function dbJsonDataGet(client, message, dataName, userId 
   }
 
   // we got an error and not the json we wanted :(
-  if (logError) await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+  if (logError) message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   return null;
 };

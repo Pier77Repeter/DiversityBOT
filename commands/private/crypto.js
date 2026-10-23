@@ -16,7 +16,8 @@ module.exports = {
 
       await delay(10000);
 
-      return await sentMessage.delete().catch(msgErrorHandler);
+      sentMessage.delete().catch(msgErrorHandler);
+      return;
     }
 
     if (isNaN(args[1])) {
@@ -24,7 +25,8 @@ module.exports = {
 
       await delay(10000);
 
-      return await sentMessage.delete().catch(msgErrorHandler);
+      sentMessage.delete().catch(msgErrorHandler);
+      return;
     }
 
     const cryptoName = args[0].toLowerCase();
@@ -38,7 +40,7 @@ module.exports = {
 
         await delay(10000);
 
-        await sentMessage.delete().catch(msgErrorHandler);
+        sentMessage.delete().catch(msgErrorHandler);
         break;
 
       case "doge":
@@ -48,7 +50,7 @@ module.exports = {
 
         await delay(10000);
 
-        await sentMessage.delete().catch(msgErrorHandler);
+        sentMessage.delete().catch(msgErrorHandler);
         break;
 
       case "moa":
@@ -58,7 +60,7 @@ module.exports = {
 
         await delay(10000);
 
-        await sentMessage.delete().catch(msgErrorHandler);
+        sentMessage.delete().catch(msgErrorHandler);
         break;
 
       case "div":
@@ -68,7 +70,7 @@ module.exports = {
 
         await delay(10000);
 
-        await sentMessage.delete().catch(msgErrorHandler);
+        sentMessage.delete().catch(msgErrorHandler);
         break;
 
       default:
@@ -76,13 +78,13 @@ module.exports = {
 
         await delay(10000);
 
-        await sentMessage.delete().catch(msgErrorHandler);
+        sentMessage.delete().catch(msgErrorHandler);
         break;
     }
 
-    // this at the end
+    // this at the end to remove the original command
     if (message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.ManageMessages)) {
-      return await message.delete().catch(msgErrorHandler);
+      message.delete().catch(msgErrorHandler);
     }
   },
 };

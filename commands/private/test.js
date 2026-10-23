@@ -5,6 +5,6 @@ module.exports = {
   name: "test",
   description: "Replies with Pong!",
   async execute(client, message, args) {
-    return await message.reply("Test!").catch(msgErrorHandler);
+    message.reply("Test!").catch(msgErrorHandler);
   },
 };

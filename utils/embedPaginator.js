@@ -9,7 +9,8 @@ module.exports = async function embedPaginator(commandName, message, pages, time
 
     // why call this function to only send 1 embed?
     if (pages.length === 1) {
-      return await message.reply({ embeds: pages, components: [] }).catch(msgErrorHandler);
+      message.reply({ embeds: pages, components: [] }).catch(msgErrorHandler);
+      return;
     }
 
     let index = 0;
@@ -27,7 +28,6 @@ module.exports = async function embedPaginator(commandName, message, pages, time
     const actionRow = new ActionRowBuilder().addComponents([btnFirst, btnPrev, btnPageCount, btnNext, btnLast]);
 
     const sentMessage = await message.reply({ embeds: [pages[index]], components: [actionRow] }).catch(msgErrorHandler);
-
     if (!sentMessage) return;
 
     const collector = sentMessage.createMessageComponentCollector({
@@ -37,7 +37,8 @@ module.exports = async function embedPaginator(commandName, message, pages, time
 
     collector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        return await btnInteraction.reply({ content: "This button isn't for you!", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        btnInteraction.reply({ content: "This button isn't for you!", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        return;
       }
 
       switch (btnInteraction.customId) {
@@ -84,13 +85,13 @@ module.exports = async function embedPaginator(commandName, message, pages, time
         btnNext.setDisabled(false);
       }
 
-      await btnInteraction.update({ embeds: [pages[index]], components: [actionRow] }).catch(msgErrorHandler);
+      btnInteraction.update({ embeds: [pages[index]], components: [actionRow] }).catch(msgErrorHandler);
 
       collector.resetTimer();
     });
 
     collector.on("end", async () => {
-      return await sentMessage.edit({ embeds: [pages[index]], components: [] }).catch(msgErrorHandler);
+      sentMessage.edit({ embeds: [pages[index]], components: [] }).catch(msgErrorHandler);
     });
   } catch (error) {
     logger.error(error);

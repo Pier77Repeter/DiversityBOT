@@ -23,8 +23,7 @@ module.exports = async function configChecker(client, message, configName, logEr
       .setDescription("Failed to get server configs, please **report this error with the server id**")
       .addFields({ name: "Server ID", value: `\`${message.guildId}\``, inline: true }, { name: "Submit Report Here", value: "https://discord.gg/KxadTdz" });
 
-    await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
-
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     return null;
   }
 };

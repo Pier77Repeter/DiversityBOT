@@ -38,6 +38,6 @@ module.exports = {
         ].join("\n"),
       );
 
-    return await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

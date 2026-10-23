@@ -32,6 +32,6 @@ module.exports = {
       )
       .setImage(memberPfp);
 
-    return await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };
