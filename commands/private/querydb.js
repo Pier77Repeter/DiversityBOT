@@ -1,8 +1,13 @@
 const { EmbedBuilder } = require("discord.js");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
-/*
-THIS COMMAND IS VIBE CODED, WILL BE RE-WRITTEN BEFORE 2.2 UPDATE
-*/
+
+function trunkStr(str, maxLength) {
+  if (str.length > maxLength) {
+    return str.substring(0, maxLength) + "...";
+  }
+  return str;
+}
+
 module.exports = {
   name: "querydb",
   description: "Execute a SQL query against the database",
@@ -12,75 +17,37 @@ module.exports = {
     const query = args.join(" ");
 
     if (!query) {
-      try {
-        return await message.reply("Please provide a SQL query to execute.");
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      message.reply("Please provide a valid PostgreSQL query, thanks").catch(msgErrorHandler);
+      return;
     }
 
-    // 2. Execute unified PostgreSQL query string
-    const result = await client.database.query(query);
+    if (query.length > 2000) {
+      message.reply("This query is too long (max 2000 chars), shorten it a little").catch(msgErrorHandler);
+      return;
+    }
 
-    // 3. Process SELECT / Returning operations
-    if (query.toLowerCase().trim().startsWith("select") || result.rows.length > 0) {
-      if (result.rows.length === 0) {
-        try {
-          return await message.reply("No results found.");
-        } catch (error) {
-          return msgErrorHandler(error);
-        }
+    const embed = new EmbedBuilder();
+
+    const res = await client.database.query(query).catch((error) => {
+      embed.setColor("DarkRed").setTitle("SQL Query Failed").setDescription(`Error Stacktrace log\n\`\`\`${error}\`\`\``);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
+    });
+
+    if (query.toLowerCase().startsWith("select")) {
+      let embedDescText = "";
+
+      for (let i = 0; i < res.rowCount; i++) {
+        embedDescText += JSON.stringify(res.rows[i], null, 2);
       }
 
-      // Use Embeds for formatting row results
-      const embed = new EmbedBuilder().setColor(0x0099ff).setTitle("SQL Query Results").setDescription(`\`\`\`sql\n${query}\`\`\``);
+      // fit in whitin Discord limit
+      if (embedDescText.length > 2000) embedDescText = trunkStr(embedDescText);
 
-      const maxFieldsPerEmbed = 25; // Discord native embed structure threshold limit
-      let currentEmbed = embed;
-      let fieldCount = 0;
+      embed.setColor("Green").setTitle("SQL Query Executed!").setDescription(`\`\`\`json\n${embedDescText}\`\`\``);
 
-      for (let i = 0; i < result.rows.length; i++) {
-        const row = result.rows[i];
-
-        // Formats data beautifully into JSON output block representations
-        const rowString = JSON.stringify(row, null, 2);
-
-        if (fieldCount < maxFieldsPerEmbed) {
-          currentEmbed.addFields({ name: `Row ${i + 1}`, value: `\`\`\`json\n${rowString}\`\`\`` });
-          fieldCount++;
-        } else {
-          try {
-            await message.reply({ embeds: [currentEmbed] });
-          } catch (error) {
-            return msgErrorHandler(error);
-          }
-
-          currentEmbed = new EmbedBuilder().setColor(0x0099ff).addFields({ name: `Row ${i + 1}`, value: `\`\`\`json\n${rowString}\`\`\`` });
-          fieldCount = 1;
-        }
-      }
-
-      try {
-        return await message.reply({ embeds: [currentEmbed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
-    } else {
-      // 4. Process Mutating commands (CREATE, INSERT, UPDATE, DELETE)
-      // PostgreSQL stores affected count inside 'rowCount' rather than SQLite's 'this.changes'
-      let resultMessage = `Query executed successfully:\n\`\`\`sql\n${query}\`\`\``;
-
-      if (result.rowCount !== null && result.rowCount !== undefined) {
-        resultMessage += `\n**${result.rowCount}** row(s) affected.`;
-      } else if (result.command) {
-        resultMessage += `\nCommand **${result.command}** completed successfully.`;
-      }
-
-      try {
-        return await message.reply(resultMessage);
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
   },
 };

@@ -19,7 +19,8 @@ module.exports = {
     if (!isCommunityEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Community commands are off! Type **d!setup community** to enable them");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const cooldown = await serverCooldownManager(client, message, "jm_cooldown", this.cooldown);
@@ -28,7 +29,8 @@ module.exports = {
     if (cooldown) {
       embed.setColor(0x000000).setDescription(`⏰ You can do another Java moment **<t:${cooldown[1]}:R>**`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const imageFile = new AttachmentBuilder("./media/javaMascot.png");
@@ -77,7 +79,7 @@ module.exports = {
 
     await delay(3000);
 
-    return await message.channel
+    message.channel
       .send(
         listsGetRandomItem(
           [

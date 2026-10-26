@@ -17,7 +17,8 @@ module.exports = {
     if (!isCommunityEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Community commands are off! Type **d!setup community** to enable them");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const cooldown = await serverCooldownManager(client, message, "uncanny_cooldown", this.cooldown);
@@ -26,7 +27,8 @@ module.exports = {
     if (cooldown) {
       embed.setColor(0x000000).setDescription(`⏰ You can play another uncanny game **<t:${cooldown[1]}:R>**`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "uncanny-1.jpg"), { name: "uncanny-1.jpg" });
@@ -36,7 +38,8 @@ module.exports = {
     try {
       await message.reply({ embeds: [embed], files: [imageFile] });
     } catch (error) {
-      return msgErrorHandler(error);
+      msgErrorHandler(error);
+      return;
     }
 
     // the collected message author MUST BE EQUAL to the command message author
@@ -50,11 +53,13 @@ module.exports = {
       counter++;
 
       if (receivedMessage.content.length > 256) {
-        return await receivedMessage.reply({ content: "Message is too long, keep it under 256 characters" }).catch(msgErrorHandler);
+        receivedMessage.reply({ content: "Message is too long, keep it under 256 characters" }).catch(msgErrorHandler);
+        return;
       }
 
       if (counter > 11 || receivedMessage.content.toLowerCase() === "stop") {
-        return collector.stop();
+        collector.stop();
+        return;
       }
 
       imageFile.setFile(path.join(process.cwd(), "media", `uncanny-${counter}.jpg`)).setName(`uncanny-${counter}.jpg`);
@@ -64,12 +69,12 @@ module.exports = {
         .setImage(`attachment://uncanny-${counter}.jpg`)
         .setFooter({ text: `Say something uncanny (Stage ${counter}/10)` });
 
-      return await receivedMessage.reply({ embeds: [embed], files: [imageFile] }).catch(msgErrorHandler);
+      receivedMessage.reply({ embeds: [embed], files: [imageFile] }).catch(msgErrorHandler);
     });
 
     collector.on("end", async () => {
       if (counter === 1) {
-        return await message.reply("You didn't want to continue the game :(").catch(msgErrorHandler);
+        message.reply("You didn't want to continue the game :(").catch(msgErrorHandler);
       }
     });
   },

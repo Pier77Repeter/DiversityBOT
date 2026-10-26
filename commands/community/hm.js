@@ -17,7 +17,8 @@ module.exports = {
     if (!isCommunityEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Community commands are off! Type **d!setup community** to enable them");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const cooldown = await serverCooldownManager(client, message, "hm_cooldown", this.cooldown);
@@ -26,10 +27,11 @@ module.exports = {
     if (cooldown) {
       embed.setColor(0x000000).setDescription(`⏰ You can do another Hausemaster moment **<t:${cooldown[1]}:R>**`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
-    return await message
+    message
       .reply(
         [
           "Hausemaster moment:",

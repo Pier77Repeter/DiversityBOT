@@ -1,5 +1,5 @@
-const { StringSelectMenuBuilder, ActionRowBuilder, StringSelectMenuOptionBuilder, AttachmentBuilder, EmbedBuilder, ComponentType, MessageFlags } = require("discord.js");
 const path = require("path");
+const { StringSelectMenuBuilder, ActionRowBuilder, StringSelectMenuOptionBuilder, AttachmentBuilder, EmbedBuilder, ComponentType, MessageFlags } = require("discord.js");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
@@ -69,7 +69,8 @@ module.exports = {
 
     collector.on("collect", async (menuInteraction) => {
       if (menuInteraction.user.id !== message.author.id) {
-        return await menuInteraction.reply({ content: "This menu isn't for you, just type d!help", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        menuInteraction.reply({ content: "This menu isn't for you, just type d!help", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        return;
       }
 
       collector.resetTimer();
@@ -134,7 +135,7 @@ module.exports = {
               )
               .setFooter({ text: "1/7 sections" });
 
-            await menuInteraction.update({ embeds: [embed, menuOptionEmbed], components: [actionRow] }).catch(msgErrorHandler);
+            menuInteraction.update({ embeds: [embed, menuOptionEmbed], components: [actionRow] }).catch(msgErrorHandler);
             break;
 
           case "menuOption-help-menuHelp-music":
@@ -161,7 +162,7 @@ module.exports = {
               )
               .setFooter({ text: "2/7 sections" });
 
-            await menuInteraction.update({ embeds: [embed, menuOptionEmbed], components: [actionRow] }).catch(msgErrorHandler);
+            menuInteraction.update({ embeds: [embed, menuOptionEmbed], components: [actionRow] }).catch(msgErrorHandler);
             break;
 
           case "menuOption-help-menuHelp-economy":
@@ -204,7 +205,7 @@ module.exports = {
               )
               .setFooter({ text: "3/7 sections" });
 
-            await menuInteraction.update({ embeds: [embed, menuOptionEmbed], components: [actionRow] }).catch(msgErrorHandler);
+            menuInteraction.update({ embeds: [embed, menuOptionEmbed], components: [actionRow] }).catch(msgErrorHandler);
             break;
 
           case "menuOption-help-menuHelp-img":
@@ -259,7 +260,7 @@ module.exports = {
               )
               .setFooter({ text: "4/7 sections" });
 
-            await menuInteraction.update({ embeds: [embed, menuOptionEmbed], components: [actionRow] }).catch(msgErrorHandler);
+            menuInteraction.update({ embeds: [embed, menuOptionEmbed], components: [actionRow] }).catch(msgErrorHandler);
             break;
 
           case "menuOption-help-menuHelp-utility":
@@ -292,7 +293,7 @@ module.exports = {
               )
               .setFooter({ text: "5/7 sections" });
 
-            await menuInteraction.update({ embeds: [embed, menuOptionEmbed], components: [actionRow] }).catch(msgErrorHandler);
+            menuInteraction.update({ embeds: [embed, menuOptionEmbed], components: [actionRow] }).catch(msgErrorHandler);
             break;
 
           case "menuOption-help-menuHelp-rng":
@@ -319,7 +320,7 @@ module.exports = {
               )
               .setFooter({ text: "6/7 sections" });
 
-            await menuInteraction.update({ embeds: [embed, menuOptionEmbed], components: [actionRow] }).catch(msgErrorHandler);
+            menuInteraction.update({ embeds: [embed, menuOptionEmbed], components: [actionRow] }).catch(msgErrorHandler);
             break;
 
           case "menuOption-help-menuHelp-comm":
@@ -338,7 +339,7 @@ module.exports = {
               )
               .setFooter({ text: "7/7 sections" });
 
-            await menuInteraction.update({ embeds: [embed, menuOptionEmbed], components: [actionRow] }).catch(msgErrorHandler);
+            menuInteraction.update({ embeds: [embed, menuOptionEmbed], components: [actionRow] }).catch(msgErrorHandler);
             break;
         }
       }
@@ -348,7 +349,7 @@ module.exports = {
       menuHelp.setPlaceholder("Menu disabled, type again d!help");
       menuHelp.setDisabled(true);
 
-      return await sentMessage.edit({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+      sentMessage.edit({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
     });
   },
 };

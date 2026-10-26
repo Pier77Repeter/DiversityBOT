@@ -41,6 +41,8 @@ module.exports = {
 
   async execute(client, interaction) {
     const embed = new EmbedBuilder().setColor(0x990000).setTitle("💻 Gathering all the needed data...");
+
+    // must wait for the message to be sent to be edited, in this case 'await' makes sense
     await interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
 
     const firstCPU = cpuUsage();
