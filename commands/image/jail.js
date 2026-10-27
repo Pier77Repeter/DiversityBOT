@@ -4,6 +4,6 @@ module.exports = {
   name: "jail",
   description: "Image command with effect jail",
   async execute(client, message, args) {
-    return await discImgGen(client, message, "jail");
+    discImgGen(client, message, "jail");
   },
 };

@@ -21,6 +21,6 @@ module.exports = {
       playerOnlyMessage: "Only {player} can use these buttons.",
     });
 
-    return await flood.startGame().catch(msgErrorHandler);
+    flood.startGame().catch(msgErrorHandler);
   },
 };

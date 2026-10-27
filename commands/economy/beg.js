@@ -17,13 +17,15 @@ module.exports = {
     if (cooldown) {
       embed.setColor(0x000000).setDescription(`⏰ Beg again **<t:${cooldown[1]}:R>**`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (mathRandomInt(1, 4) === 1) {
       embed.setColor(0xff0000).setTitle("💸 Ignored").setDescription("You begged but nobody gave you money, try again later");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const money = mathRandomInt(20, 70);
@@ -124,6 +126,6 @@ module.exports = {
         ),
       );
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

@@ -17,7 +17,8 @@ module.exports = {
     if (cooldown) {
       embed.setColor(0x000000).setDescription(`⏰ You you can do this test again: **<t:${cooldown[1]}:R>**`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const scThumbnailFile = new AttachmentBuilder(path.join(process.cwd(), "media", "scTestThumbnail.jpg"), { name: "scTestThumbnail.jpg" });
@@ -140,7 +141,8 @@ module.exports = {
 
     btnCollector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        return await message.reply({ content: "Someone else is doing this test, try it with **d!sctest**", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        message.reply({ content: "Someone else is doing this test, try it with **d!sctest**", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        return;
       }
 
       btnCollector.resetTimer();
@@ -159,6 +161,7 @@ module.exports = {
           } catch (error) {
             return msgErrorHandler(error);
           }
+
           break;
 
         case "btn-sctest-testStartTwo":
@@ -174,6 +177,7 @@ module.exports = {
           } catch (error) {
             return msgErrorHandler(error);
           }
+
           break;
 
         case "btn-sctest-qOne-ansA":
@@ -212,6 +216,7 @@ module.exports = {
             ["A) China", "\n", "B) USA", "\n", "C) France", "\n", "D) Russia"].join(""),
             btnRowQuestionThree,
           );
+
           break;
 
         case "btn-sctest-qTwo-ansC":
@@ -231,6 +236,7 @@ module.exports = {
             ["A) I don't remember", "\n", "B) Something", "\n", "C) Nothing", "\n", "D) A bad event"].join(""),
             btnRowQuestionFour,
           );
+
           break;
 
         case "btn-sctest-qThree-ansB":
@@ -262,6 +268,7 @@ module.exports = {
             ["A) No", "\n", "B) Well said", "\n", "C) Probably", "\n", "D) Yes"].join(""),
             btnRowQuestionFive,
           );
+
           break;
 
         case "btn-sctest-qFour-ansD":
@@ -278,6 +285,7 @@ module.exports = {
             ["A) Winnie the Pooh", "\n", "B) I don't know", "\n", "C) Some random Chinese polician", "\n", "D) Xi Jinping"].join(""),
             btnRowQuestionSix,
           );
+
           break;
 
         case "btn-sctest-qFive-ansB":
@@ -322,6 +330,7 @@ module.exports = {
             ].join(""),
             btnRowQuestionSeven,
           );
+
           break;
 
         case "btn-sctest-qSeven-ansA":
@@ -345,6 +354,7 @@ module.exports = {
             ["A) West democracy", "\n", "B) Socialism", "\n", "C) Communism", "\n", "D) Monarchy"].join(""),
             btnRowQuestionEight,
           );
+
           break;
 
         case "btn-sctest-qEight-ansA":
@@ -372,6 +382,7 @@ module.exports = {
             ].join(""),
             btnRowQuestionNine,
           );
+
           break;
 
         case "btn-sctest-qEight-ansD":
@@ -387,6 +398,7 @@ module.exports = {
             ["A) Yes", "\n", "B) Not at all", "\n", "C) They are similar", "\n", "D) Totally"].join(""),
             btnRowQuestionTen,
           );
+
           break;
 
         case "btn-sctest-qNine-ansB":
@@ -429,7 +441,8 @@ module.exports = {
         .setDescription("You didn't answer in time, you will now be monitored by the Chinese goverment until you finish the test")
         .setFooter({ text: "Finish the test..." });
 
-      return await sentMessage.edit({ embeds: [embed], files: [scThumbnailFile], components: [] }).catch(msgErrorHandler);
+      sentMessage.edit({ embeds: [embed], files: [scThumbnailFile], components: [] }).catch(msgErrorHandler);
+      return;
     });
 
     async function correctAnswerHandler(btnInteraction, btnRowToDisable, correctBtn, nextQuestionTitle, nextQuestionDescription, nextQuestionBtnRow) {
@@ -477,7 +490,7 @@ module.exports = {
       await updateScCredits(-999999);
 
       // last thing we gonna do
-      return await btnInteraction.update({ embeds: [scTestWrongAnswerMessageEmbed], files: [wrongAnswerImage], components: [] }).catch(msgErrorHandler);
+      btnInteraction.update({ embeds: [scTestWrongAnswerMessageEmbed], files: [wrongAnswerImage], components: [] }).catch(msgErrorHandler);
     }
 
     async function updateScCredits(num) {

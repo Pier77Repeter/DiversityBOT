@@ -5,7 +5,10 @@ module.exports = {
   name: "adopt",
   description: "Adopt a new pet, the mentioned user...",
   async execute(client, message, args) {
-    if (!message.mentions.members.first()) return await message.reply(`${message.author.username}, mention the user you want to adopt`).catch(msgErrorHandler);
+    if (!message.mentions.members.first()) {
+      message.reply(`${message.author.username}, mention the user you want to adopt`).catch(msgErrorHandler);
+      return;
+    }
 
     const adoptedMember = message.mentions.members.first().user;
 
@@ -13,7 +16,10 @@ module.exports = {
 
     const embed = new EmbedBuilder().setColor(0xff0000).setTitle("❌ Got a Pet").setDescription("You already have a pet, type **d!pet** to check it!");
 
-    if (row.rows[0].has_pet) return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    if (row.rows[0].has_pet) {
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
+    }
 
     const petStatsCooldown = Date.now() + 10800000; // start imediatly at 3h
 
@@ -29,6 +35,6 @@ module.exports = {
       .setThumbnail(adoptedMember.displayAvatarURL())
       .setFooter({ text: "It's important to check them often" });
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

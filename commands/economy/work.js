@@ -16,7 +16,8 @@ module.exports = {
     if (row.rowCount === 0 || !row.rows[0].job_type) {
       embed.setColor(0xff0000).setTitle("❌ Need a Job").setDescription("You don't have a job right now, do **d!jobs** to get one");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const cooldown = await cooldownManager(client, message, "work_cooldown", this.cooldown);
@@ -25,7 +26,8 @@ module.exports = {
     if (cooldown) {
       embed.setColor(0x000000).setDescription(`⏰ You've already worked, next turn **<t:${cooldown[1]}:R>**`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     // AI is back again
@@ -124,7 +126,8 @@ module.exports = {
 
     collector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        return await btnInteraction.reply({ content: "You can't work for someone else", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        btnInteraction.reply({ content: "You can't work for someone else", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        return;
       }
 
       hasClickedBtn = true;
@@ -159,7 +162,8 @@ module.exports = {
 
         embed.setColor(0xff0000).setTitle("☹️ Oh no").setDescription("You got fired and you lost your job :(");
 
-        return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+        btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+        return;
       }
 
       let money;
@@ -176,7 +180,8 @@ module.exports = {
 
           embed.setColor(0x33cc00).setTitle("You saved an animal").setDescription(`You saved the classic cat on the tree, you got **${money}$**`);
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          return;
 
         case "btn-work-fireFighter-two":
           fireFighterOneBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -189,7 +194,8 @@ module.exports = {
 
           embed.setColor(0x33cc00).setTitle("That was epik").setDescription(`You killed the fire that was burning the whole house, you got **${money}$**`);
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          return;
 
         case "btn-work-fireFighter-three":
           fireFighterOneBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -202,7 +208,8 @@ module.exports = {
 
           embed.setColor(0x33cc00).setTitle("What an hero").setDescription(`You saved some people from fire and you got **${money}$**`);
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          return;
 
         case "btn-work-teacher-one":
           teacherOneBtn.setStyle(ButtonStyle.Success).setDisabled(true);
@@ -215,7 +222,8 @@ module.exports = {
 
           embed.setColor(0x33cc00).setTitle("Interesting lesson").setDescription(`Maths is a very important subject, you got **${money}$**`);
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          return;
 
         case "btn-work-teacher-two":
           teacherOneBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -228,7 +236,8 @@ module.exports = {
 
           embed.setColor(0x33cc00).setTitle("Kinda boring lesson").setDescription(`Don't feel like literature is interesting as history, you got **${money}$**`);
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          return;
 
         case "btn-work-teacher-three":
           teacherOneBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -241,7 +250,8 @@ module.exports = {
 
           embed.setColor(0x33cc00).setTitle("Now we talking").setDescription(`History is always interesting, you got **${money}$**`);
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          return;
 
         case "btn-work-discordMod-one":
           discordModOneBtn.setStyle(ButtonStyle.Success).setDisabled(true);
@@ -254,7 +264,8 @@ module.exports = {
 
           embed.setColor(0x33cc00).setTitle("Nice ban").setDescription(`You banned a free Nitro Scammer, you got **${money}$**`);
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          return;
 
         case "btn-work-discordMod-two":
           discordModOneBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -267,7 +278,8 @@ module.exports = {
 
           embed.setColor(0x33cc00).setTitle("/mute").setDescription(`You muted a rude dude in a voice channel, you got **${money}$**`);
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          return;
 
         case "btn-work-discordMod-three":
           discordModOneBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -280,7 +292,8 @@ module.exports = {
 
           embed.setColor(0x33cc00).setTitle("No thanks").setDescription(`You answered fake Egirl in DMS, saying you ain't interested, you got **${money}$**`);
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          return;
 
         case "btn-work-mechanic-one":
           mechanicOneBtn.setStyle(ButtonStyle.Success).setDisabled(true);
@@ -293,7 +306,8 @@ module.exports = {
 
           embed.setColor(0x33cc00).setTitle("You repaired a vehicle").setDescription(`The client was really happy about that and you got **${money}$**`);
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          return;
 
         case "btn-work-mechanic-two":
           mechanicOneBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -306,7 +320,8 @@ module.exports = {
 
           embed.setColor(0x33cc00).setTitle("You controlled a vehicle").setDescription(`You checked your client's vehicle and it seems fine, you got **${money}$**`);
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          return;
 
         case "btn-work-mechanic-three":
           mechanicOneBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -319,7 +334,8 @@ module.exports = {
 
           embed.setColor(0x33cc00).setTitle("You took your truck").setDescription(`You brought a broken vehicle into your garage and fixed it, you got **${money}$**`);
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          return;
 
         case "btn-work-chef-one":
           chefOneBtn.setStyle(ButtonStyle.Success).setDisabled(true);
@@ -332,7 +348,8 @@ module.exports = {
 
           embed.setColor(0x33cc00).setTitle("You cooked a nice first dish").setDescription(`Delicious food, you got **${money}$**`);
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          return;
 
         case "btn-work-chef-two":
           chefOneBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -345,7 +362,8 @@ module.exports = {
 
           embed.setColor(0x33cc00).setTitle("You cooked a nice second dish").setDescription(`Delicious food again, you got **${money}$**`);
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          return;
 
         case "btn-work-chef-three":
           chefOneBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -358,7 +376,8 @@ module.exports = {
 
           embed.setColor(0x33cc00).setTitle("You cooked a delicious dessert").setDescription(`Hmmmm it tastes so good, you got **${money}$**`);
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          return;
 
         case "btn-work-scientist-one":
           scientistOneBtn.setStyle(ButtonStyle.Success).setDisabled(true);
@@ -371,7 +390,8 @@ module.exports = {
 
           embed.setColor(0x33cc00).setTitle("You kept researching").setDescription(`You kept researching in your experiments and you got **${money}$**`);
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          return;
 
         case "btn-work-scientist-two":
           scientistOneBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -384,7 +404,8 @@ module.exports = {
 
           embed.setColor(0x33cc00).setTitle("You published your findings").setDescription(`What an amaizing discovery you made, for that you got **${money}$**`);
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          return;
 
         case "btn-work-scientist-three":
           scientistOneBtn.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -397,7 +418,8 @@ module.exports = {
 
           embed.setColor(0x33cc00).setTitle("You kept experimenting").setDescription(`You kept trying if the studys were correct, you got **${money}$**`);
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          return;
       }
     });
 
@@ -429,7 +451,7 @@ module.exports = {
 
         embed.setColor(0xff0000).setTitle("🕛 Timeout").setDescription("You didn't choose any task, you lost your turn");
 
-        return await sentMessage.edit({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+        sentMessage.edit({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
       }
     });
   },

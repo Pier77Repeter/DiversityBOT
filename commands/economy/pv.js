@@ -20,7 +20,8 @@ module.exports = {
     if (cooldown) {
       embed.setColor(0x000000).setDescription(`⏰ You can publish another video **<t:${cooldown[1]}:R>**`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "YouTube.png"), { name: "YouTube.png" });
@@ -51,7 +52,8 @@ module.exports = {
 
     collector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        return await btnInteraction.reply({ content: "Don't steal his YT content!", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        btnInteraction.reply({ content: "Don't steal his YT content!", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        return;
       }
 
       hasClickedBtn = true;
@@ -72,7 +74,8 @@ module.exports = {
               .setDescription("The gameplay was soooo boring! You got nothing!")
               .setThumbnail("attachment://not_stonks.jpg");
 
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
+            btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
+            return;
           }
 
           money = mathRandomInt(50, 100);
@@ -89,7 +92,8 @@ module.exports = {
             )
             .setThumbnail("attachment://stonks.jpg");
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
+          return;
 
         case "btn-pm-btnDocumentary":
           btnGaming.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -106,7 +110,8 @@ module.exports = {
               .setDescription("The video was really boring, you got nothing!")
               .setThumbnail("attachment://not_stonks.jpg");
 
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
+            btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
+            return;
           }
 
           money = mathRandomInt(50, 100);
@@ -123,7 +128,8 @@ module.exports = {
             )
             .setThumbnail("attachment://stonks.jpg");
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
+          return;
 
         case "btn-pm-btnFunny":
           btnGaming.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -142,7 +148,8 @@ module.exports = {
               )
               .setThumbnail("attachment://not_stonks.jpg");
 
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
+            btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
+            return;
           }
 
           money = mathRandomInt(50, 100);
@@ -159,7 +166,8 @@ module.exports = {
             )
             .setThumbnail("attachment://stonks.jpg");
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
+          return;
 
         case "btn-pm-btnTutorial":
           btnGaming.setStyle(ButtonStyle.Secondary).setDisabled(true);
@@ -176,7 +184,8 @@ module.exports = {
               .setDescription("The tutorial was useless and hard to understand, you got nothing!")
               .setThumbnail("attachment://not_stonks.jpg");
 
-            return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
+            btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
+            return;
           }
 
           money = mathRandomInt(50, 100);
@@ -204,7 +213,8 @@ module.exports = {
             )
             .setThumbnail("attachment://stonks.jpg");
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
+          return;
       }
     });
 
@@ -219,7 +229,7 @@ module.exports = {
         btnFunny.setStyle(ButtonStyle.Secondary).setDisabled(true);
         btnTutorial.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-        return await sentMessage.edit({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
+        sentMessage.edit({ embeds: [embed], components: [actionRow], files: [imageFile] }).catch(msgErrorHandler);
       }
     });
   },

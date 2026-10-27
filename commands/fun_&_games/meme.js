@@ -3,6 +3,17 @@ const path = require("path");
 const cooldownManager = require("../../utils/cooldownManager");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
 
+async function getMeme() {
+  try {
+    const response = await fetch("https://meme-api.com/gimme/" + subReddit);
+    const memeData = await response.json();
+
+    return memeData;
+  } catch (error) {
+    return error;
+  }
+}
+
 module.exports = {
   name: "meme",
   description: "Take a random meme from r/memes",
@@ -16,7 +27,9 @@ module.exports = {
 
     if (cooldown) {
       embed.setColor(0x000000).setDescription(`⏰ Memes out of stock, come back **<t:${cooldown[1]}:R>**`);
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     let subReddit = "";
@@ -27,12 +40,14 @@ module.exports = {
     let memeData = await getMeme();
 
     if (memeData.code == 404) {
-      return await message.reply("Subreddit not found, try again, maybe with an actual subreddit").catch(msgErrorHandler);
+      message.reply("Subreddit not found, try again, maybe with an actual subreddit").catch(msgErrorHandler);
+      return;
     }
 
     // some subs are privated
     if (memeData.code == 403) {
-      return await message.reply("Subreddit is set to private, i can't get anything from there").catch(msgErrorHandler);
+      message.reply("Subreddit is set to private, i can't get anything from there").catch(msgErrorHandler);
+      return;
     }
 
     if (memeData.nsfw) {
@@ -44,7 +59,8 @@ module.exports = {
         .setDescription("The post i was about to send is NSFW, luckily i've blocked it for your safety, if you are trying to get posts from NSFW subs, well, you can't!")
         .setImage("attachment://arnoldSchwarzeneggerStopMeme.jpg");
 
-      return await message.reply({ embeds: [embed], files: [imageFile] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed], files: [imageFile] }).catch(msgErrorHandler);
+      return;
     }
 
     embed
@@ -68,7 +84,8 @@ module.exports = {
 
     btnCollector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        return await btnInteraction.reply({ content: "You gotta type d!meme for yourself", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        btnInteraction.reply({ content: "You gotta type d!meme for yourself", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        return;
       }
 
       switch (btnInteraction.customId) {
@@ -78,7 +95,8 @@ module.exports = {
           if (memeData.code == 404) {
             btnCollector.stop();
 
-            return await btnInteraction.update({ content: "Opsy, i couldn't get the meme, try typing the command again", components: [] }).catch(msgErrorHandler);
+            btnInteraction.update({ content: "Opsy, i couldn't get the meme, try typing the command again", components: [] }).catch(msgErrorHandler);
+            return;
           }
 
           if (memeData.nsfw) {
@@ -93,7 +111,8 @@ module.exports = {
 
             btnCollector.stop();
 
-            return await btnInteraction.update({ embeds: [embed], components: [], files: [imageFile] }).catch(msgErrorHandler);
+            btnInteraction.update({ embeds: [embed], components: [], files: [imageFile] }).catch(msgErrorHandler);
+            return;
           }
 
           embed
@@ -131,18 +150,7 @@ module.exports = {
       btnNextMeme.setDisabled(true);
       btnStop.setDisabled(true);
 
-      return await sentMessage.edit({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
+      sentMessage.edit({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
     });
-
-    async function getMeme() {
-      try {
-        const response = await fetch("https://meme-api.com/gimme/" + subReddit);
-        const memeData = await response.json();
-
-        return memeData;
-      } catch (error) {
-        return error;
-      }
-    }
   },
 };

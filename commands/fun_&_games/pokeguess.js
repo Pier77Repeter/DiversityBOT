@@ -19,6 +19,6 @@ module.exports = {
       playerOnlyMessage: "Only {player} can use these buttons.",
     });
 
-    return await pokeGuess.startGame().catch(msgErrorHandler);
+    pokeGuess.startGame().catch(msgErrorHandler);
   },
 };

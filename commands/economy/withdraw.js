@@ -11,7 +11,8 @@ module.exports = {
     if (!args[0]) {
       embed.setColor(0xff0000).setTitle("❌ Missing Amount").setDescription("Insert the amount of money you want to put in your wallet");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const moneyToWithdraw = args[0];
@@ -32,7 +33,8 @@ module.exports = {
         if (bankMoney === 0) {
           embed.setColor(0xff0000).setTitle("❌ Transaction Failed").setDescription("Looks like you have no money in the bank");
 
-          return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+          message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+          return;
         }
 
         await client.database.query("UPDATE users SET bank_money = 0, money = money + $1 WHERE server_id = $2 AND user_id = $3", [bankMoney, message.guildId, message.author.id]);
@@ -45,19 +47,22 @@ module.exports = {
             value: [`💰 Now you have: **${money + bankMoney}$** in your wallet`, "🏦 Now you have: **0$** in your bank"].join("\n"),
           });
 
-        return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        return;
 
       default:
         if (isNaN(moneyToWithdraw) || moneyToWithdraw < 1) {
           embed.setColor(0xff0000).setTitle("❌ Invalid Number").setDescription("Not a valid number, put a number starting from **at least 1**");
 
-          return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+          message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+          return;
         }
 
         if (moneyToWithdraw > bankMoney) {
           embed.setColor(0xff0000).setTitle("❌ Transaction Failed").setDescription("You don't have that money to deposit in bank");
 
-          return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+          message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+          return;
         }
 
         const actualMoneyToWith = Math.trunc(moneyToWithdraw);
@@ -80,7 +85,8 @@ module.exports = {
             ].join("\n"),
           });
 
-        return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        return;
     }
   },
 };

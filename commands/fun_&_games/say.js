@@ -10,7 +10,8 @@ module.exports = {
     const content = `<${message.author.username}> ${args.join(" ")}`;
 
     if (content.length > maxLength) {
-      return await message.reply(`Message too long! Maximum length is ${maxLength} characters.`).catch(msgErrorHandler);
+      message.reply(`Message too long! Maximum length is ${maxLength} characters.`).catch(msgErrorHandler);
+      return;
     }
 
     const embed = new EmbedBuilder().setColor(randomColor()).setDescription(`<${message.author.username}> ${args.join(" ")}`);
@@ -24,6 +25,6 @@ module.exports = {
     // put this here so that even if we cant delete the message at least it still works
     if (!message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.ManageMessages)) return;
 
-    return await message.delete().catch(msgErrorHandler);
+    message.delete().catch(msgErrorHandler);
   },
 };

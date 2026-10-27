@@ -19,7 +19,8 @@ module.exports = {
     if (cooldown) {
       embed.setColor(0x000000).setDescription(`⏰ Don't doop too fast, do it later **<t:${cooldown[1]}:R>**`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     embed.setColor(0xff6600).setTitle("🪄 Available Dupes").setDescription("Select one of the following methods to duplicate your money");
@@ -48,7 +49,8 @@ module.exports = {
 
     btnCollector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        return await btnInteraction.reply({ content: "This isn't your dooping button", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        btnInteraction.reply({ content: "This isn't your dooping button", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        return;
       }
 
       hasClickedBtn = true;
@@ -74,7 +76,8 @@ module.exports = {
 
             embed.setColor(0xff0000).setTitle("👮 Hausemaster Caught You").setDescription(`Hause saw you duping, and removed **${money}$** from your balance`);
 
-            return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+            sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+            return;
           }
 
           money = mathRandomInt(200, 300);
@@ -83,7 +86,8 @@ module.exports = {
 
           embed.setColor(0x33ff33).setTitle("✅ Dupe Completed").setDescription(`You successfully did the dupe and got **${money}$**`);
 
-          return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+          sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+          return;
 
         case "btn-dupe-btnDupeChunk":
           embed.setTitle("🖥️ You start doing the chunk dupe...").setDescription(null);
@@ -104,7 +108,8 @@ module.exports = {
 
             embed.setColor(0xff0000).setTitle("👮 Hausemaster Caught You").setDescription(`Hause saw you duping, and removed **${money}$** from your balance`);
 
-            return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+            sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+            return;
           }
 
           money = mathRandomInt(200, 300);
@@ -113,7 +118,8 @@ module.exports = {
 
           embed.setColor(0x33ff33).setTitle("✅ Dupe Completed").setDescription(`You successfully did the dupe and got **${money}$**`);
 
-          return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+          sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+          return;
 
         case "btn-dupe-btnDupeAlt":
           embed.setTitle("🖥️ You start doing the Alf F4 dupe...").setDescription(null);
@@ -134,7 +140,8 @@ module.exports = {
 
             embed.setColor(0xff0000).setTitle("👮 Hausemaster Caught You").setDescription(`Hause saw you duping, and removed **${money}$** from your balance`);
 
-            return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+            sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+            return;
           }
 
           money = mathRandomInt(200, 300);
@@ -143,7 +150,8 @@ module.exports = {
 
           embed.setColor(0x33ff33).setTitle("✅ Dupe Completed").setDescription(`You successfully did the dupe and got **${money}$**`);
 
-          return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+          sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+          return;
 
         case "btn-dupe-btnDupePopbob":
           embed.setTitle("🖥️ You started doing *the* POPBOB DUPE :O").setDescription(null);
@@ -163,7 +171,8 @@ module.exports = {
 
           embed.setColor(0x33ff33).setTitle("✅ Ultimate Dupe Completed").setDescription(`"You successfully did the dupe and got **${money}$**"`);
 
-          return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+          sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+          return;
       }
     });
 
@@ -176,7 +185,7 @@ module.exports = {
         btnDupeAlt.setStyle(ButtonStyle.Secondary).setDisabled(true);
         btnDupePopbob.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-        return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+        sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
       }
     });
   },

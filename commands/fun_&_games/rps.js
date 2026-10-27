@@ -5,16 +5,21 @@ module.exports = {
   name: "rps",
   description: "Rock Paper Scissors game",
   async execute(client, message, args) {
-    if (!message.mentions.members.first()) return await message.reply("You need to mention an user to play rock paper scissors").catch(msgErrorHandler);
+    if (!message.mentions.members.first()) {
+      message.reply("You need to mention an user to play rock paper scissors").catch(msgErrorHandler);
+      return;
+    }
 
     const mentionedMember = message.mentions.members.first();
 
     if (mentionedMember.id === message.author.id) {
-      return await message.reply("You can't play rock paper scissors with yourself.").catch(msgErrorHandler);
+      message.reply("You can't play rock paper scissors with yourself.").catch(msgErrorHandler);
+      return;
     }
 
     if (mentionedMember.user.bot) {
-      return await message.reply("You can't play rock paper scissors with a bot (they wouldn't play with you)").catch(msgErrorHandler);
+      message.reply("You can't play rock paper scissors with a bot (they wouldn't play with you)").catch(msgErrorHandler);
+      return;
     }
 
     const rpsChoices = [

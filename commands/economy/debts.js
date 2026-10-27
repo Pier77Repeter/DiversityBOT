@@ -14,7 +14,8 @@ module.exports = {
     if (row.rowCount === 0) {
       embed.setColor(0x808080).setTitle(`${user.username} dosen't have any debts`).setDescription("At the moment there are no debts to pay");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     // check if the row exist, then assign
@@ -49,11 +50,13 @@ module.exports = {
 
     btnCollector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        return await btnInteraction.reply({ content: "This button isn't for you", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        btnInteraction.reply({ content: "This button isn't for you", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        return;
       }
 
       if (data.user_id !== message.author.id) {
-        return await btnInteraction.reply({ content: "You want to pay debts for someone else? Nah you won't", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        btnInteraction.reply({ content: "You want to pay debts for someone else? Nah you won't", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        return;
       }
 
       if (btnInteraction.customId === "btn-debts-btnPayDebts") {
@@ -66,7 +69,8 @@ module.exports = {
 
           payDebtsBtn.setDisabled(true);
 
-          return await btnInteraction.update({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
+          return;
         }
 
         // determine the amount to pay, either all the money in wallet or the total amount of debts
@@ -86,14 +90,14 @@ module.exports = {
 
         payDebtsBtn.setStyle(ButtonStyle.Success).setDisabled(true);
 
-        return await btnInteraction.update({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
+        btnInteraction.update({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
       }
     });
 
     btnCollector.on("end", async () => {
       payDebtsBtn.setDisabled(true);
 
-      return await sentMessage.edit({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
+      sentMessage.edit({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
     });
   },
 };

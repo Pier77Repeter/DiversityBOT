@@ -13,25 +13,29 @@ module.exports = {
     if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
       embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("You need the `Administrator` permission to add money");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (!args[1]) {
       embed.setColor(0xff0000).setTitle("❌ Missing Money").setDescription(`How much money are you adding to ${user.username}?`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (isNaN(args[1])) {
       embed.setColor(0xff0000).setTitle("❌ Invalid Number").setDescription("You must provide a valid integer number");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (args[1] < 1 || args[1] > 1000000) {
       embed.setColor(0xff0000).setTitle("❌ Not in Range").setDescription("Number must be between **1 and 1000000**");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const row = await client.database.query("SELECT money FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, user.id]);
@@ -39,7 +43,8 @@ module.exports = {
     if (row.rowCount === 0) {
       embed.setColor(0xff0000).setTitle("❌ Denied").setDescription(`You can't give money to ${user.username} because he never tried EVEN 1 of my commands! >:(`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     // prevent users from adding decimals
@@ -49,6 +54,6 @@ module.exports = {
 
     embed.setColor(0x33ff33).setTitle("✅ Operation Completed").setDescription(`Successfully added **${money}$** to ${user.username}`);
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

@@ -15,7 +15,8 @@ module.exports = {
     if (!isLevelingEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Leveling commands are off! Type **d!setup leveling** to enable them");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const user = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
@@ -25,7 +26,8 @@ module.exports = {
     if (row.rowCount === 0) {
       embed.setColor(0x00cccc).setTitle(`${user.username} current XP`).setDescription("Bro has literally **0 XP** 🤦‍♂️").setThumbnail(user.displayAvatarURL());
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const xp = row.rows[0].xp;
@@ -37,6 +39,6 @@ module.exports = {
       .setDescription([`🪩 XP: **${xp}**`, "", `⏭️ XP for the next level: **${nextXp - xp}**`].join("\n"))
       .setThumbnail("attachment://xp.png");
 
-    return await message.reply({ embeds: [embed], files: [imageFile] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed], files: [imageFile] }).catch(msgErrorHandler);
   },
 };

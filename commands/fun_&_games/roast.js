@@ -5,9 +5,12 @@ module.exports = {
   name: "roast",
   description: "Roast mentioned user",
   async execute(client, message, args) {
-    if (!message.mentions.members.first()) return await message.reply(`${message.author.username}, mention the user to roast`).catch(msgErrorHandler);
+    if (!message.mentions.members.first()) {
+      message.reply(`${message.author.username}, mention the user to roast`).catch(msgErrorHandler);
+      return;
+    }
 
-    return await message.channel
+    message.channel
       .send({
         content: `${message.mentions.members.first().user.username} ${listsGetRandomItem([
             "no",

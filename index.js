@@ -110,8 +110,8 @@ try {
 }
 
 // AFTER the bot fully loaded THEN we can log in
-loader.initLoader(client).then(async () => {
-  await client.login(botToken).catch((error) => {
+loader.initLoader(client).then(() => {
+  client.login(botToken).catch((error) => {
     logger.error("Failed to log into Discord", error);
     process.exit(1);
   });

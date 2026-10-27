@@ -597,6 +597,6 @@ module.exports = {
       playerOnlyMessage: "Only {player} can use these buttons.",
     });
 
-    return await hangman.startGame().catch(msgErrorHandler);
+    hangman.startGame().catch(msgErrorHandler);
   },
 };

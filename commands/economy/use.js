@@ -14,7 +14,8 @@ module.exports = {
     if (!itemToUse) {
       embed.setColor(0xff6600).setTitle("Here is the list of usable items").setDescription(["d!use banana", "d!use beans", "d!use poo <@user>"].join("\n"));
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const items = await dbJsonDataGet(client, message, "items", message.author.id);
@@ -25,7 +26,8 @@ module.exports = {
         if (items[6].quantity === 0) {
           embed.setColor(0xff0000).setTitle("❌ Missing Item").setDescription("You don't have a banana, buy it!");
 
-          return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+          message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+          return;
         }
 
         items[6].quantity = 0;
@@ -34,13 +36,15 @@ module.exports = {
 
         embed.setColor(0xffcc00).setTitle("Delicious").setDescription("You ate the banana! 🍌🍌🍌");
 
-        return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        return;
 
       case "beans":
         if (items[7].quantity === 0) {
           embed.setColor(0xff0000).setTitle("❌ Missing Item").setDescription("You don't have beans, buy them!");
 
-          return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+          message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+          return;
         }
 
         items[7].quantity = 0;
@@ -66,17 +70,20 @@ module.exports = {
 
         embed.setColor(0x33ff33).setTitle("💨💨💨 You Farted!");
 
-        return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+        sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+        return;
 
       case "poo":
         if (items[8].quantity === 0) {
           embed.setColor(0xff0000).setTitle("❌ Missing Item").setDescription("You don't have poo, b-..buy it?");
 
-          return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+          message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+          return;
         }
 
         if (!message.mentions.members.first()) {
-          return await message.reply("Mention your victim before using the poo").catch(msgErrorHandler);
+          message.reply("Mention your victim before using the poo").catch(msgErrorHandler);
+          return;
         }
 
         items[8].quantity = 0;
@@ -85,12 +92,14 @@ module.exports = {
 
         embed.setColor(0x0ffcc00).setTitle("You trow the poo 💩").setDescription(`${message.mentions.members.first().user.username} is ded! HA! HA! HA!`);
 
-        return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        return;
 
       default:
         embed.setColor(0xff0000).setTitle("❌ Not Found").setDescription("That items dosen't exist, type **d!use** to see the list");
 
-        return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        return;
     }
   },
 };

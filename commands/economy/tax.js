@@ -19,7 +19,8 @@ module.exports = {
         .setTitle(`${user.username}'s Taxes`)
         .setDescription(["**📊 Total money: ** `0$`", "**🪙 Daily tax: ** `0$`", "**⚖️ Tax rate: ** `0%`"].join("\n"));
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const wealth = Number(res.rows[0].money) + Number(res.rows[0].bank_money);
@@ -38,6 +39,6 @@ module.exports = {
       )
       .setFooter({ text: "Taxes are automatically paid every day" });
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

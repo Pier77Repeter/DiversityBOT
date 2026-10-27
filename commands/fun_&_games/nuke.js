@@ -11,7 +11,10 @@ module.exports = {
   description: "Nuke the chat or a specific user",
   cooldown: 30,
   async execute(client, message, args) {
-    if (!args[0]) return await message.reply("You need to specify a location to nuke").catch(msgErrorHandler);
+    if (!args[0]) {
+      message.reply("You need to specify a location to nuke").catch(msgErrorHandler);
+      return;
+    }
 
     const embed = new EmbedBuilder();
 
@@ -21,7 +24,8 @@ module.exports = {
     if (cooldown) {
       embed.setColor(0x000000).setDescription(`⏰ No need to nuke this fast, another nuke will be ready **<t:${cooldown[1]}:R>**`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const target = message.mentions.members.first() ? message.mentions.members.first().user.username : args.join(" ");
@@ -52,7 +56,8 @@ module.exports = {
 
     btnCollector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        return await btnInteraction.reply({ content: "You can't launch this nuke, it's for someone else", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        btnInteraction.reply({ content: "You can't launch this nuke, it's for someone else", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        return;
       }
 
       switch (btnInteraction.customId) {
@@ -186,10 +191,8 @@ module.exports = {
         btnConfirmLaunch.setDisabled(true);
         btnCancelLaunch.setDisabled(true);
 
-        return await sentMessage.edit({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
+        sentMessage.edit({ embeds: [embed], components: [btnRow] }).catch(msgErrorHandler);
       }
-
-      return;
     });
   },
 };

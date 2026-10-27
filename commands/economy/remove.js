@@ -12,25 +12,29 @@ module.exports = {
     if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
       embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("You don't have the `Administrator` permission to add money");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (!args[1]) {
       embed.setColor(0xff0000).setTitle("❌ Missing Amount").setDescription(`How much money are you removing from ${user.username}?`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (isNaN(args[1])) {
       embed.setColor(0xff0000).setTitle("❌ Invalid Number").setDescription("You must provide a valid integer number");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (args[1] < 1 || args[1] > 1000000) {
       embed.setColor(0xff0000).setTitle("❌ Out of Range").setDescription("Number must be between **1 and 1000000**");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const row = await client.database.query("SELECT money FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, user.id]);
@@ -38,7 +42,8 @@ module.exports = {
     if (row.rowCount === 0) {
       embed.setColor(0xff0000).setTitle("❌ Nope").setDescription(`You can't remove money from ${user.username} because he never tried EVEN 1 of my commands! >:(`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const money = Math.trunc(args[1]);
@@ -55,6 +60,6 @@ module.exports = {
 
     embed.setColor(0x33ff33).setTitle("✅ Operation Completed").setDescription(`Successfully removed **${money}$** to ${user.username}`);
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

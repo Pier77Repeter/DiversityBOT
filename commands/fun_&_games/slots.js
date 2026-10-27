@@ -15,6 +15,6 @@ module.exports = {
       slots: ["🍇", "🍊", "🍋", "🍌"],
     });
 
-    return await slots.startGame().catch(msgErrorHandler);
+    slots.startGame().catch(msgErrorHandler);
   },
 };

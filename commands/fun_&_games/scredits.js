@@ -18,7 +18,8 @@ module.exports = {
         .setDescription("Earned social credits: **0**")
         .setThumbnail(user.displayAvatarURL());
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const socialCredits = row.rows[0].social_credits;
@@ -33,6 +34,6 @@ module.exports = {
       embed.setColor(0xff0000).setFooter({ text: "You are not a good Chinese citizen" });
     }
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

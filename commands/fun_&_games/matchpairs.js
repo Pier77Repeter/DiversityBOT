@@ -20,6 +20,6 @@ module.exports = {
       playerOnlyMessage: "Only {player} can use these buttons.",
     });
 
-    return await matchPairs.startGame().catch(msgErrorHandler);
+    matchPairs.startGame().catch(msgErrorHandler);
   },
 };

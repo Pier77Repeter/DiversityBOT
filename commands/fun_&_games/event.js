@@ -22,6 +22,6 @@ module.exports = {
         text: "Christmas Season event will end on the 25th of December",
       });
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

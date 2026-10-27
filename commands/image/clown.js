@@ -4,6 +4,6 @@ module.exports = {
   name: "clown",
   description: "Image command with effect clown",
   async execute(client, message, args) {
-    return await discImgGen(client, message, "clown");
+    discImgGen(client, message, "clown");
   },
 };

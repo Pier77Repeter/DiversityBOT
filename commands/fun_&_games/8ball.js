@@ -6,9 +6,12 @@ module.exports = {
   description: "8ball gives random reply to a question",
   async execute(client, message, args) {
     // compact way to check and reply
-    if (args.length < 1) return await message.reply(`${message.author.username} what is your beautiful question?`).catch(msgErrorHandler);
+    if (args.length < 1) {
+      message.reply(`${message.author.username} what is your beautiful question?`).catch(msgErrorHandler);
+      return;
+    }
 
-    return await message
+    message
       .reply(
         [
           message.author.username,

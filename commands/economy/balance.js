@@ -19,7 +19,8 @@ module.exports = {
         .setDescription("Exactly **0$**, because he didn't use even **1** of my commands >:(")
         .setFooter({ text: "you ain't getting money for free" });
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const rowData = row.rows[0];
@@ -37,6 +38,6 @@ module.exports = {
         { name: "Values", value: `\n\`${rowData.money}$\`\n\`${rowData.bank_money}$\`\n\`${rowData.debts}$\``, inline: true },
       );
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

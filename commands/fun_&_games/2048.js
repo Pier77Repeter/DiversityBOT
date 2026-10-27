@@ -23,6 +23,6 @@ module.exports = {
       playerOnlyMessage: "Only {player} can use these buttons.",
     });
 
-    return await twoZeroFourEight.startGame().catch(msgErrorHandler);
+    twoZeroFourEight.startGame().catch(msgErrorHandler);
   },
 };

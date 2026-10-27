@@ -18,7 +18,8 @@ module.exports = {
     if (cooldown) {
       embed.setColor(0x000000).setDescription(`⏰ You play the roulette again **<t:${cooldown[1]}:R>**`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const row = await client.database.query("SELECT money FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
@@ -30,13 +31,15 @@ module.exports = {
         .setDescription("Failed to get your money, **report this issue with your ID**")
         .addFields({ name: "Submit here", value: "https://discord.gg/KxadTdz" });
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (isNaN(args[0]) || args[0] > row.money) {
       embed.setColor(0xff0000).setTitle("❌ Missing Money").setDescription("You don't have enough money in your wallet to play the roulette, at least **1000$**");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if ((await manageUserMoney(client, message, "-", args[0])) === null) return;
@@ -58,11 +61,12 @@ module.exports = {
 
       embed.setColor(0x33cc00).setTitle("🤑🤑🤑 YOU WON!").setDescription(`You literally won **${money}$**! Congrats!`);
 
-      return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+      sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     embed.setColor(0xff0000).setTitle("☹️ NNNNNNNNNNNOOOOOOOOOO").setDescription(`You lost **${args[0]}$**! :(((((((((`);
 
-    return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+    sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

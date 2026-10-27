@@ -2,15 +2,28 @@ const axios = require("axios");
 const { EmbedBuilder } = require("discord.js");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
 
+// easy peasy, check if we are stealing the emoji from a msg reply or the message command itself
+async function getMsgArgs(replyedMessage, message, args) {
+  if (replyedMessage) {
+    const emojiMessage = await message.channel.messages.fetch(message.reference.messageId);
+    return emojiMessage.content;
+  } else {
+    return args[0];
+  }
+}
+
 module.exports = {
   name: "stealemoji",
   description: "Returns the emoji has PNG or GIF",
   async execute(client, message, args) {
     const replyedMessage = message.reference || null;
 
-    const emoji = await getMsgArgs(replyedMessage);
+    const emoji = await getMsgArgs(replyedMessage, message, args);
 
-    if (!emoji) return await message.reply("Provide an emoji, thanks").catch(msgErrorHandler);
+    if (!emoji) {
+      message.reply("Provide an emoji, thanks").catch(msgErrorHandler);
+      return;
+    }
 
     const emojiName = emoji[0].split(":")[1];
     let emojiId = null;
@@ -23,7 +36,8 @@ module.exports = {
       try {
         await axios.get(`https://cdn.discordapp.com/emojis/${emojiId}`);
       } catch (error) {
-        return await message.reply("Invalid emoji, gib a real one").catch(msgErrorHandler);
+        message.reply("Invalid emoji, gib a real one").catch(msgErrorHandler);
+        return;
       }
 
       let emojiUrl = `https://cdn.discordapp.com/emojis/${emojiId}`;
@@ -33,24 +47,11 @@ module.exports = {
         emojiUrl += ".png?quality=lossless";
       }
 
-      const embed = new EmbedBuilder()
-        .setColor(0x33ccff)
-        .setTitle(`🤠 Stolen emoji ${emojiName}`)
-        .setImage(emojiUrl)
-        .setFooter({ text: "Click the image to download" });
+      const embed = new EmbedBuilder().setColor(0x33ccff).setTitle(`🤠 Stolen emoji ${emojiName}`).setImage(emojiUrl).setFooter({ text: "Click the image to download" });
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     } else {
-      return await message.reply("You need to provide a message with ONLY the emoji to steal").catch(msgErrorHandler);
-    }
-
-    async function getMsgArgs(replyedMessage) {
-      if (replyedMessage) {
-        const emojiMessage = await message.channel.messages.fetch(message.reference.messageId);
-        return emojiMessage.content;
-      } else {
-        return args[0];
-      }
+      message.reply("You need to provide a message with ONLY the emoji to steal").catch(msgErrorHandler);
     }
   },
 };

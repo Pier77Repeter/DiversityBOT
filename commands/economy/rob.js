@@ -11,7 +11,10 @@ module.exports = {
   description: "Rob the mentioned user",
   cooldown: 7200,
   async execute(client, message, args) {
-    if (!message.mentions.members.first()) return await message.reply("Mention the user who you would like to rob").catch(msgErrorHandler);
+    if (!message.mentions.members.first()) {
+      message.reply("Mention the user who you would like to rob").catch(msgErrorHandler);
+      return;
+    }
 
     const mentionedUser = message.mentions.members.first().user;
     const embed = new EmbedBuilder();
@@ -22,7 +25,8 @@ module.exports = {
     if (row.rowCount === 0) {
       embed.setColor(0xff0000).setTitle("❌ Nope").setDescription(`You can't rob ${user.username} because he never tried EVEN 1 of my commands! >:(`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (Number(row.rows[0].money) < 1000) {
@@ -31,7 +35,8 @@ module.exports = {
         .setTitle(`${mentionedUser.username} dosen't have enough money`)
         .setDescription("This user dosen't have the minimum of **1000$** in his wallet, can't be robbed");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const cooldown = await cooldownManager(client, message, "rob_cooldown", this.cooldown);
@@ -40,7 +45,8 @@ module.exports = {
     if (cooldown) {
       embed.setColor(0x000000).setDescription(`⏰ You can rob again **<t:${cooldown[1]}:R>**`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const items = await dbJsonDataGet(client, message, "items", message.author.id);
@@ -63,7 +69,8 @@ module.exports = {
 
       embed.setColor(0x33ccff).setTitle("👮 The Police Saw You").setDescription(`The police caught you, and made you return **${money}$** 🚓 🚓 🚓 🚓 🚓`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     // updating mentioned user's money
@@ -73,6 +80,6 @@ module.exports = {
 
     embed.setColor(0x33ccff).setTitle("🕵️‍♂️ Don't Tell Anyone!").setDescription(`You stole **${money}$** from ${mentionedUser.username}`);
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

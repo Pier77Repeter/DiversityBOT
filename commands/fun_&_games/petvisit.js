@@ -15,7 +15,8 @@ module.exports = {
     if (row.rowCount === 0 || !row.rows[0].has_pet) {
       embed.setColor(0xff0000).setTitle("❌ Missing Pet").setDescription("You don't have a pet, adopt it with **d!adopt <@user>**");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const cooldown = await cooldownManager(client, message, "pet_vet_cooldown", this.cooldown);
@@ -24,7 +25,8 @@ module.exports = {
     if (cooldown) {
       embed.setColor(0x000000).setTitle(null).setDescription(`⏰ Slowdown man, vet will be available again **<t:${cooldown[1]}:R>**`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const petHealth = row.rows[0].pet_stats_health;
@@ -43,7 +45,9 @@ module.exports = {
 
     if (petHealth + petHealthToAdd >= 100) {
       embed.setColor(0xff0000).setTitle("Your pet is fine").setDescription("Your pet is healty, no need to bring it to the vet");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     embed
@@ -52,6 +56,6 @@ module.exports = {
       .setDescription("The vet visited your pet giving the right treatment")
       .setFooter({ text: `Your pet gained +${petHealthToAdd} health` });
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

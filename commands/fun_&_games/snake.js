@@ -28,6 +28,6 @@ module.exports = {
       playerOnlyMessage: "Only {player} can use these buttons.",
     });
 
-    return await snake.startGame().catch(msgErrorHandler);
+    snake.startGame().catch(msgErrorHandler);
   },
 };

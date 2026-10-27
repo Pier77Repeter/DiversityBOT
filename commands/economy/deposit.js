@@ -10,7 +10,9 @@ module.exports = {
 
     if (!args[0]) {
       embed.setColor(0xff0000).setTitle("❌ Missing Amount").setDescription("Insert the amount of money you want to put in bank");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const moneyToDeposit = args[0];
@@ -31,7 +33,8 @@ module.exports = {
         if (money === 0) {
           embed.setColor(0xff0000).setTitle("❌ Transaction Failed").setDescription("You don't have money to deposit in bank");
 
-          return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+          message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+          return;
         }
 
         await client.database.query("UPDATE users SET money = 0, bank_money = bank_money + $1 WHERE server_id = $2 AND user_id = $3", [money, message.guildId, message.author.id]);
@@ -44,19 +47,22 @@ module.exports = {
             value: ["💰 Now you have: **0$** in your wallet", `🏦 Now you have: **${bankMoney + money}$** in your bank`].join("\n"),
           });
 
-        return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        return;
 
       default:
         if (isNaN(moneyToDeposit) || moneyToDeposit < 1) {
           embed.setColor(0xff0000).setTitle("❌ Invalid Number").setDescription("Not a valid number, put a number starting from **at least 1**");
 
-          return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+          message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+          return;
         }
 
         if (moneyToDeposit > money) {
           embed.setColor(0xff0000).setTitle("❌ Transaction Failed").setDescription("You don't have that amount of money to deposit in bank");
 
-          return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+          message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+          return;
         }
 
         const moneyToDep = Math.trunc(moneyToDeposit);
@@ -76,7 +82,8 @@ module.exports = {
             value: [`💰 Now you have: **${money - parseInt(moneyToDep)}$** in your wallet`, `🏦 Now you have: **${bankMoney + parseInt(moneyToDep)}$** in your bank`].join("\n"),
           });
 
-        return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        return;
     }
   },
 };

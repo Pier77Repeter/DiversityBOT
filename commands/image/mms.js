@@ -4,6 +4,6 @@ module.exports = {
   name: "mms",
   description: "Image command with effect mms",
   async execute(client, message, args) {
-    return await discImgGen(client, message, "mms");
+    discImgGen(client, message, "mms");
   },
 };

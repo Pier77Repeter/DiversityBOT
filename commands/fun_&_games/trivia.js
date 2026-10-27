@@ -25,6 +25,6 @@ module.exports = {
       playerOnlyMessage: "Only {player} can use these buttons.",
     });
 
-    return await trivia.startGame().catch(msgErrorHandler);
+    trivia.startGame().catch(msgErrorHandler);
   },
 };

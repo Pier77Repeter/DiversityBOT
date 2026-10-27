@@ -24,6 +24,6 @@ module.exports = {
       playerOnlyMessage: "Only {player} can use these buttons.",
     });
 
-    return await findEmoji.startGame().catch(msgErrorHandler);
+    findEmoji.startGame().catch(msgErrorHandler);
   },
 };

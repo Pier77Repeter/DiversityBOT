@@ -34,6 +34,6 @@ module.exports = {
       embed.setDescription(`B${embedDesc}D`);
     }
 
-    return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+    sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

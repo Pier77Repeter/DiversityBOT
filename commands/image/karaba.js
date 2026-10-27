@@ -4,6 +4,6 @@ module.exports = {
   name: "karaba",
   description: "Image command with effect karaba",
   async execute(client, message, args) {
-    return await discImgGen(client, message, "karaba");
+    discImgGen(client, message, "karaba");
   },
 };

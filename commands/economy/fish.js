@@ -18,7 +18,9 @@ module.exports = {
     // json array starts from 0, so item 6 is index 5
     if (items[5].quantity === 0) {
       embed.setColor(0xff0000).setTitle("❌ Missing Item").setDescription("You need to buy a **fishing rod** for fishing");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const cooldown = await cooldownManager(client, message, "fish_cooldown", this.cooldown);
@@ -27,7 +29,8 @@ module.exports = {
     if (cooldown) {
       embed.setColor(0x000000).setDescription(`⏰ Next fishing session **<t:${cooldown[1]}:R>**`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (mathRandomInt(1, 10) === 1) {
@@ -37,13 +40,15 @@ module.exports = {
 
       embed.setColor(0xff0000).setTitle("😢 Oh No!").setDescription("Your fishing just broke, go buy a new one to fish again");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (mathRandomInt(1, 3) === 1) {
       embed.setColor(0xff0000).setTitle("🌊 Nothing, just water").setDescription("You haven't caught any fish, try again later");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const embedTexts = [
@@ -70,6 +75,6 @@ module.exports = {
 
     embed.setColor(0x33ff33).setTitle(caughtFish.title).setDescription(caughtFish.desc);
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

@@ -14,7 +14,9 @@ module.exports = {
 
     if (row.rowCount === 0) {
       embed.setColor(0x00cccc).setTitle("📉 Nobody has Money").setDescription("Bruh, you all should get some work done here");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     let lbUsersList = "";
@@ -62,6 +64,6 @@ module.exports = {
       .addFields({ name: "Users", value: lbUsersList, inline: true }, { name: "Money", value: lbMoneyList, inline: true })
       .setFooter({ text: message.guild.name, iconURL: message.guild.iconURL() });
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

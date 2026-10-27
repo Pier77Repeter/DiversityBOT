@@ -4,6 +4,6 @@ module.exports = {
   name: "denoise",
   description: "Image command with effect denoise",
   async execute(client, message, args) {
-    return await discImgGen(client, message, "denoise");
+    discImgGen(client, message, "denoise");
   },
 };

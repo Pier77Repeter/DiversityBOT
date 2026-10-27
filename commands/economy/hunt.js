@@ -20,7 +20,8 @@ module.exports = {
     if (items[11].quantity === 0) {
       embed.setColor(0xff0000).setTitle("❌ Missing Item").setDescription("You need to buy a **Kar98k Scoped** for hunting");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const cooldown = await cooldownManager(client, message, "hunt_cooldown", this.cooldown);
@@ -29,7 +30,8 @@ module.exports = {
     if (cooldown) {
       embed.setColor(0x000000).setDescription(`⏰ Break time, you can hunt again **<t:${cooldown[1]}:R>**`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     embed.setColor(0x999999).setTitle("👓 You are waiting a prey...");
@@ -87,14 +89,16 @@ module.exports = {
 
     collector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        return await btnInteraction.reply({ content: "You can't use his Kar98k scoped, ues your own!", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        btnInteraction.reply({ content: "You can't use his Kar98k scoped, ues your own!", flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
+        return;
       }
 
       hasClicked = true;
 
       if (btnInteraction.customId == "btn-hunt-btnShoot") {
-        let money;
         btnShoot.setStyle(ButtonStyle.Success).setDisabled(true);
+
+        let money;
 
         if (mathRandomInt(1, 7) === 1) {
           money = mathRandomInt(1200, 1500);
@@ -107,13 +111,15 @@ module.exports = {
 
           embed.setColor(0xff0000).setTitle("🔫 Oh Shoot").setDescription(`You accidentally shoot at a person, you had to pay **${money}$** for the damage!`);
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          return;
         }
 
         if (mathRandomInt(1, 3) == 1) {
           embed.setColor(0xff0000).setTitle("💨🔫 You Missed").setDescription("The animal heard the shoot and ran away, unlucky");
 
-          return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+          return;
         }
 
         money = mathRandomInt(70, 150);
@@ -121,7 +127,8 @@ module.exports = {
 
         embed.setColor(0x33cc00).setTitle("💥🔫 Nice Shot").setDescription(`"You manage to shoot down the animal, and you sold it for **${money}$**"`);
 
-        return await btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+        btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+        return;
       }
     });
 
@@ -131,7 +138,7 @@ module.exports = {
 
         btnShoot.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-        return await sentMessage.edit({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
+        sentMessage.edit({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
       }
     });
   },

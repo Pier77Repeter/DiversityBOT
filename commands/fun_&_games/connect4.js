@@ -6,7 +6,10 @@ module.exports = {
   description: "Play connect4 with mentioned user",
   async execute(client, message, args) {
     try {
-      if (!message.mentions.members.first()) return await message.reply(`${message.author.username}, you need someone to play with!`);
+      if (!message.mentions.members.first()) {
+        message.reply(`${message.author.username}, you need someone to play with!`);
+        return;
+      }
     } catch (error) {
       return msgErrorHandler(error);
     }
@@ -35,6 +38,6 @@ module.exports = {
       playerOnlyMessage: "Only {player} and {opponent} can use these buttons.",
     });
 
-    return await connectFour.startGame().catch(msgErrorHandler);
+    connectFour.startGame().catch(msgErrorHandler);
   },
 };

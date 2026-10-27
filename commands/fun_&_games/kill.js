@@ -7,7 +7,10 @@ module.exports = {
   name: "kill",
   description: "Kill an user with funny image and msg",
   async execute(client, message, args) {
-    if (!message.mentions.members.first()) return await message.reply(`${message.author.username}, can you mention an user?`).catch(msgErrorHandler);
+    if (!message.mentions.members.first()) {
+      message.reply(`${message.author.username}, can you mention an user?`).catch(msgErrorHandler);
+      return;
+    }
 
     const mentionedMember = message.mentions.members.first().user.username;
     const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "funnyKillImage.jpg"), { name: "funnyKillImage.jpg" });
@@ -57,6 +60,6 @@ module.exports = {
       )
       .setImage("attachment://funnyKillImage.jpg");
 
-    return await message.reply({ embeds: [embed], files: [imageFile] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed], files: [imageFile] }).catch(msgErrorHandler);
   },
 };

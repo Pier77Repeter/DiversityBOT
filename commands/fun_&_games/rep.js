@@ -18,7 +18,8 @@ module.exports = {
         .setDescription("Reputation on the server is: **0**")
         .setThumbnail(user.displayAvatarURL());
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const rep = row.rows[0].reputation;
@@ -29,6 +30,6 @@ module.exports = {
       .setDescription(`Reputation on the server is: **${rep}**`)
       .setThumbnail(user.displayAvatarURL());
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

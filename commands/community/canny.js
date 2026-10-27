@@ -40,8 +40,7 @@ module.exports = {
     try {
       await message.reply({ embeds: [embed], files: [imageFile] });
     } catch (error) {
-      msgErrorHandler(error);
-      return;
+      return msgErrorHandler(error);
     }
 
     // the collected message author MUST BE EQUAL to the command message author

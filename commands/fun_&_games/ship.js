@@ -6,7 +6,10 @@ module.exports = {
   name: "ship",
   description: "See the love power with mentioned user",
   async execute(client, message, args) {
-    if (!message.mentions.members.first()) return await message.reply(`${message.author.username}, mention your crush <3`).catch(msgErrorHandler);
+    if (!message.mentions.members.first()) {
+      message.reply(`${message.author.username}, mention your crush <3`).catch(msgErrorHandler);
+      return;
+    }
 
     const embed = new EmbedBuilder();
 
@@ -120,6 +123,6 @@ module.exports = {
         .setImage(message.mentions.members.first().displayAvatarURL());
     }
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

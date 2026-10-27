@@ -5,7 +5,7 @@ const msgErrorHandler = require("./msgErrorHandler");
 const serverCooldownManager = require("../utils/serverCooldownManager");
 
 // some commands require 2 avatars, better check for the 2nd mention
-function checkMentionedUser(mentionedUser) {
+function checkMentionedUser(sentMessage, message, mentionedUser) {
   if (mentionedUser) return true;
 
   sentMessage.edit({ content: `${message.author.username}, please mention an user, thanks`, embeds: [] }).catch(msgErrorHandler);
@@ -65,7 +65,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
 
     case "batslap":
       // mentionedUser MUST be valid
-      if (!checkMentionedUser(mentionedUser)) return;
+      if (!checkMentionedUser(sentMessage, message, mentionedUser)) return;
 
       editedImage = await new DIG.Batslap().getImage(msgAuthAvatar, avatar2);
 
@@ -83,7 +83,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
       break;
 
     case "bed":
-      if (!checkMentionedUser(mentionedUser)) return;
+      if (!checkMentionedUser(sentMessage, message, mentionedUser)) return;
 
       editedImage = await new DIG.Bed().getImage(msgAuthAvatar, avatar2);
 
@@ -93,7 +93,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
       break;
 
     case "blink":
-      if (!checkMentionedUser(mentionedUser)) return;
+      if (!checkMentionedUser(sentMessage, message, mentionedUser)) return;
 
       editedImage = await new DIG.Blink().getImage(10, ...avatars);
 
@@ -183,7 +183,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
       break;
 
     case "doublestonk":
-      if (!checkMentionedUser(mentionedUser)) return;
+      if (!checkMentionedUser(sentMessage, message, mentionedUser)) return;
 
       editedImage = await new DIG.DoubleStonk().getImage(msgAuthAvatar, avatar2);
 
@@ -257,7 +257,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
       break;
 
     case "kiss":
-      if (!checkMentionedUser(mentionedUser)) return;
+      if (!checkMentionedUser(sentMessage, message, mentionedUser)) return;
 
       editedImage = await new DIG.Kiss().getImage(msgAuthAvatar, avatar2);
 
@@ -339,7 +339,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
       break;
 
     case "spank":
-      if (!checkMentionedUser(mentionedUser)) return;
+      if (!checkMentionedUser(sentMessage, message, mentionedUser)) return;
 
       editedImage = await new DIG.Spank().getImage(msgAuthAvatar, avatar2);
 

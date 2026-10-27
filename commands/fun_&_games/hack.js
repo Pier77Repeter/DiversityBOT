@@ -11,7 +11,10 @@ module.exports = {
   description: "Hack the mentioned user",
   cooldown: 70,
   async execute(client, message, args) {
-    if (!message.mentions.members.first()) return await message.reply("You need to **mention** an user, else who do i hack?").catch(msgErrorHandler);
+    if (!message.mentions.members.first()) {
+      message.reply("You need to **mention** an user, else who do i hack?").catch(msgErrorHandler);
+      return;
+    }
 
     const embed = new EmbedBuilder();
 
@@ -23,7 +26,9 @@ module.exports = {
 
     if (cooldown) {
       embed.setColor(0x000000).setDescription(`⏰ Better do it again **<t:${cooldown[1]}:R>**, you might be found by the FBI`);
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "hackerMan.jpg"), { name: "hackerMan.jpg" });
@@ -122,25 +127,25 @@ module.exports = {
         "\n",
         "\n",
         `> [▗] Stolen data: ${listsGetRandomItem([
-            "his project source code",
-            "maths book",
-            "Stole his meme",
-            "I stole his 1 BTC",
-            "Browser history",
-            "His photos :eyes:",
-            "wtf is this",
-            "A way to use Black Holes?",
-            "I found the plan the invade Russia?",
-            "I found super secret NASA files",
-            "A secret project for Mars?",
-            "wtf did i found!?",
-            "I found +18 images :eyes:",
-            "This guys has over 500GB of anime girls",
-            'I found a game called "Sex with Stalin"',
-            "I found the secret about Area 51",
-            "This guys has cringe memes",
-            ":eyes:",
-          ])}`,
+          "his project source code",
+          "maths book",
+          "Stole his meme",
+          "I stole his 1 BTC",
+          "Browser history",
+          "His photos :eyes:",
+          "wtf is this",
+          "A way to use Black Holes?",
+          "I found the plan the invade Russia?",
+          "I found super secret NASA files",
+          "A secret project for Mars?",
+          "wtf did i found!?",
+          "I found +18 images :eyes:",
+          "This guys has over 500GB of anime girls",
+          'I found a game called "Sex with Stalin"',
+          "I found the secret about Area 51",
+          "This guys has cringe memes",
+          ":eyes:",
+        ])}`,
         "\n",
         "```",
       ].join(""),
@@ -163,19 +168,9 @@ module.exports = {
     const hackcmdCoordsX = mathRandomInt(-30000000, 30000000);
     const hackcmdCoordsZ = mathRandomInt(-30000000, 30000000);
     embed.setDescription(
-      [
-        "```diff",
-        "\n",
-        "DiversityBOT's magic command prompt!",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        "\n",
-        `> [▘] House coords: X: ${hackcmdCoordsX}, Z: ${hackcmdCoordsZ}`,
-        "\n",
-        "```",
-      ].join(""),
+      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", `> [▘] House coords: X: ${hackcmdCoordsX}, Z: ${hackcmdCoordsZ}`, "\n", "```"].join(
+        "",
+      ),
     );
     try {
       await sentMessage.edit({ embeds: [embed] });
@@ -243,17 +238,17 @@ module.exports = {
         "\n",
         "\n",
         `> [▝] Changing his Desktop background to: ${listsGetRandomItem([
-            "a famous art",
-            "a big ass",
-            "something of secret",
-            "his mum",
-            "his dog",
-            "+18 imgs :eyes:",
-            "his other girlfriend",
-            "a secret project",
-            "a random girl on insta",
-            "Obama",
-          ])}`,
+          "a famous art",
+          "a big ass",
+          "something of secret",
+          "his mum",
+          "his dog",
+          "+18 imgs :eyes:",
+          "his other girlfriend",
+          "a secret project",
+          "a random girl on insta",
+          "Obama",
+        ])}`,
         "\n",
         "```",
       ].join(""),
@@ -294,17 +289,17 @@ module.exports = {
         "\n",
         "\n",
         `> [▘] I found: ${listsGetRandomItem([
-            "a damn...no comment...",
-            "a lot of Hentai :eyes:",
-            "nothing!",
-            "the popbob sex dupe :eyes:",
-            "something!",
-            "his secret girlfriend :eyes:",
-            "+18 images :eyes:",
-            "Minecraft porn? wtf",
-            "Sexy girls! :eyes:",
-            "A LOT OF HOT ANIME GIRLS! :eyes:",
-          ])}`,
+          "a damn...no comment...",
+          "a lot of Hentai :eyes:",
+          "nothing!",
+          "the popbob sex dupe :eyes:",
+          "something!",
+          "his secret girlfriend :eyes:",
+          "+18 images :eyes:",
+          "Minecraft porn? wtf",
+          "Sexy girls! :eyes:",
+          "A LOT OF HOT ANIME GIRLS! :eyes:",
+        ])}`,
         "\n",
         "```",
       ].join(""),
@@ -350,6 +345,6 @@ module.exports = {
     embed.setDescription(
       ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", `> ${member.username} has been hacked and reported!`, "\n", "```"].join(""),
     );
-    return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+    sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

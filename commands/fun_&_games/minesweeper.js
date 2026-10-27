@@ -21,6 +21,6 @@ module.exports = {
       playerOnlyMessage: "Only {player} can use these buttons.",
     });
 
-    return await minesweeper.startGame().catch(msgErrorHandler);
+    minesweeper.startGame().catch(msgErrorHandler);
   },
 };

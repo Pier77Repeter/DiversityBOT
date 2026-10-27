@@ -20,7 +20,8 @@ module.exports = {
     if (items[12].quantity === 0) {
       embed.setColor(0xff0000).setTitle("❌ Missing Item").setDescription("You need to buy a **pickaxe** for mining ores");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const cooldown = await cooldownManager(client, message, "mine_cooldown", this.cooldown);
@@ -29,7 +30,8 @@ module.exports = {
     if (cooldown) {
       embed.setColor(0x000000).setDescription(`⏰ Mine is closed, will re-open **<t:${cooldown[1]}:R>**`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (mathRandomInt(1, 8) === 1) {
@@ -39,7 +41,8 @@ module.exports = {
 
       embed.setColor(0xff0000).setTitle("👷‍♂️💥⬛").setDescription("Your pickaxe exploded! Go buy a new one to mine again");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     embed.setColor(0x666666).setTitle("👷‍♂️⛏️⬛⬛⬛⬛⬛⬛⬛⬛⬛").setDescription("You started mining, let's hope you find some ores").setFooter({ text: "Minecraft bottom text" });
@@ -122,7 +125,8 @@ module.exports = {
     if (mathRandomInt(1, 4) === 1) {
       embed.setColor(0xff0000).setTitle("👷‍♂️⛏️⬛").setDescription("You found nothing").setFooter({ text: "Just rocks" });
 
-      return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+      sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     // this was needed for the description
@@ -173,6 +177,6 @@ module.exports = {
 
     embed.setColor(0x33ff33).setTitle(foundOre.title).setDescription(foundOre.desc).setFooter({ text: foundOre.footer });
 
-    return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+    sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

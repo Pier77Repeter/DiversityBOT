@@ -13,7 +13,9 @@ module.exports = {
 
     if (!isLevelingEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Leveling commands are off! Type **d!setup leveling** to enable them");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const row = await client.database.query("SELECT user_id, level FROM users WHERE server_id = $1 ORDER BY level DESC LIMIT 10", [message.guildId]);
@@ -22,7 +24,9 @@ module.exports = {
 
     if (row.rowCount === 0) {
       embed.setTitle("📉 Nobody has XP").setDescription("Make your members chat AND -> use my commands at least once");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const rows = row.rows;
@@ -70,6 +74,6 @@ module.exports = {
       .addFields({ name: "Users", value: lbUsersList, inline: true }, { name: "Levels", value: lbLvlList, inline: true })
       .setFooter({ text: message.guild.name, iconURL: message.guild.iconURL() });
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

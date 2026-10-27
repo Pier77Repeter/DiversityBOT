@@ -11,7 +11,10 @@ module.exports = {
   description: "Starts an epik battle with the mentioned user",
   cooldown: 60,
   async execute(client, message, args) {
-    if (!message.mentions.members.first()) return await message.reply(`Herr ${message.author.username}, you need to mention an opponent!`).catch(msgErrorHandler);
+    if (!message.mentions.members.first()) {
+      message.reply(`Herr ${message.author.username}, you need to mention an opponent!`).catch(msgErrorHandler);
+      return;
+    }
 
     const embed = new EmbedBuilder();
 
@@ -24,7 +27,8 @@ module.exports = {
     if (cooldown) {
       embed.setColor(0x000000).setDescription(`⏰ Herr user, you can do another battle **<t:${cooldown[1]}:R>**`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "letBattleBegin.jpg"), { name: "letBattleBegin.jpg" });
@@ -85,7 +89,8 @@ module.exports = {
           .setImage("https://c.tenor.com/joRMjYBLsFsAAAAd/tenor.gif")
           .setFooter({ text: "ezzz" });
 
-        return await sentMessage.edit({ embeds: [embed], files: [] }).catch(msgErrorHandler);
+        sentMessage.edit({ embeds: [embed], files: [] }).catch(msgErrorHandler);
+        return;
       }
 
       embed
@@ -170,7 +175,8 @@ module.exports = {
           .setImage("https://c.tenor.com/joRMjYBLsFsAAAAd/tenor.gif")
           .setFooter({ text: "ezzz" });
 
-        return await sentMessage.edit({ embeds: [embed], files: [] }).catch(msgErrorHandler);
+        sentMessage.edit({ embeds: [embed], files: [] }).catch(msgErrorHandler);
+        return;
       }
 
       embed

@@ -17,7 +17,8 @@ module.exports = {
     if (row.rowCount === 0 || !row.rows[0].has_pet) {
       embed.setColor(0xff0000).setTitle("❌ Missing Pet").setDescription("No pet here, type **d!adopt <@user>** to adopt one");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const rowData = row.rows[0];
@@ -63,6 +64,6 @@ module.exports = {
       )
       .setFooter({ text: "Remember to check them often, stats go down" });
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

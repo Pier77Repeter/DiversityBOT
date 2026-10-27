@@ -4,6 +4,6 @@ module.exports = {
   name: "triggered",
   description: "Image command with effect triggered",
   async execute(client, message, args) {
-    return await discImgGen(client, message, "triggered");
+    discImgGen(client, message, "triggered");
   },
 };
