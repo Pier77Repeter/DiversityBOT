@@ -86,7 +86,7 @@ module.exports = {
           inline: false,
         });
 
-      return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+      sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
     }, 2000);
   },
 };

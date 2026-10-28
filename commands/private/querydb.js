@@ -1,11 +1,10 @@
 const { EmbedBuilder } = require("discord.js");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
 
-function trunkStr(str, maxLength) {
-  if (str.length > maxLength) {
-    return str.substring(0, maxLength) + "...";
-  }
-  return str;
+function truncateString(str, maxLength) {
+  if (str.length <= maxLength) return str;
+
+  return `${str.slice(0, maxLength - 3)}...`;
 }
 
 module.exports = {
@@ -21,33 +20,34 @@ module.exports = {
       return;
     }
 
-    if (query.length > 2000) {
-      message.reply("This query is too long (max 2000 chars), shorten it a little").catch(msgErrorHandler);
-      return;
-    }
-
     const embed = new EmbedBuilder();
 
-    const res = await client.database.query(query).catch((error) => {
-      embed.setColor("DarkRed").setTitle("SQL Query Failed").setDescription(`Error Stacktrace log\n\`\`\`${error}\`\`\``);
+    let res;
+
+    try {
+      res = await client.database.query(query);
+    } catch (error) {
+      embed.setColor("Red").setTitle("SQL Query Failed").setDescription(`\`\`\`${error}\`\`\``);
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);
       return;
-    });
-
-    if (query.toLowerCase().startsWith("select")) {
-      let embedDescText = "";
-
-      for (let i = 0; i < res.rowCount; i++) {
-        embedDescText += JSON.stringify(res.rows[i], null, 2);
-      }
-
-      // fit in whitin Discord limit
-      if (embedDescText.length > 2000) embedDescText = trunkStr(embedDescText);
-
-      embed.setColor("Green").setTitle("SQL Query Executed!").setDescription(`\`\`\`json\n${embedDescText}\`\`\``);
-
-      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }
+
+    const hasRows = res.rows.length > 0;
+    const isSelect = res.command === "SELECT";
+
+    let output = isSelect ? JSON.stringify(res.rows, null, 2) : `${res.command}: ${res.rowCount ?? 0} row(s) affected${hasRows ? `\n${JSON.stringify(res.rows, null, 2)}` : ""}`;
+
+    if (output.length > 4000) {
+      output = truncateString(output, 4000);
+
+      embed.setFooter({ text: "Output truncated to fit Discord's limits" });
+    }
+
+    const outputFormat = isSelect || hasRows ? "json" : "txt";
+
+    embed.setColor("Green").setTitle("SQL Query Executed!").setDescription(`\`\`\`${outputFormat}\n${output}\`\`\``);
+
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

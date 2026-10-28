@@ -19,31 +19,36 @@ module.exports = {
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.BanMembers)) {
       embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("You need the permission `Ban Members` to use this command");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (!message.guild.members.me.permissionsIn(message.channel).has(PermissionsBitField.Flags.BanMembers)) {
       embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("I don't have the permission to `Ban Members`");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (!message.mentions.members.first()) {
       embed.setColor(0xff0000).setTitle("❌ Missing User").setDescription("You need to mention the member you want to ban");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (message.mentions.members.first().user.id === message.author.id) {
       embed.setColor(0xff0000).setTitle("❌ What?").setDescription("You can't ban yourself lol");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const userToBan = message.mentions.members.first();
@@ -52,7 +57,8 @@ module.exports = {
     if (!userToBan.bannable) {
       embed.setColor(0xff0000).setTitle("❌ Can't Ban").setDescription("I can't ban this user, maybe they have a higher role than me?");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     // if we fail to ban the user, the error will be logged and catched in 'messageCreate.js'
@@ -73,6 +79,6 @@ module.exports = {
       .setFooter({ text: `Action by ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
       .setTimestamp();
 
-    return await modActionLogger(client, message, embed);
+    modActionLogger(client, message, embed);
   },
 };

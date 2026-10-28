@@ -9,7 +9,9 @@ module.exports = {
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
       embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("You need the permission `Administrator` to use this command");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (!args[0]) {
@@ -17,7 +19,9 @@ module.exports = {
         .setColor(0xff0000)
         .setTitle("❌ Missing Category")
         .setDescription("Specify one of the following names: **mod**, **music**, **event**, **community**, **leveling**, **rng**");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     let row;
@@ -31,7 +35,8 @@ module.exports = {
           embed.setDescription("🔨 Moderation commands are now **NOT ACTIVE**");
         }
 
-        return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        return;
 
       case "music":
         if (await updateConfig("music_cmd")) {
@@ -40,7 +45,8 @@ module.exports = {
           embed.setDescription("🎵 Music commands are now **NOT ACTIVE**");
         }
 
-        return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        return;
 
       case "event":
         if (await updateConfig("event_cmd")) {
@@ -49,7 +55,8 @@ module.exports = {
           embed.setDescription("🎉 Events commands are now **NOT ACTIVE**");
         }
 
-        return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        return;
 
       case "community":
         if (await updateConfig("community_cmd")) {
@@ -58,7 +65,8 @@ module.exports = {
           embed.setDescription("🌍 Community commands are now **NOT ACTIVE**");
         }
 
-        return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        return;
 
       case "leveling":
         if (await updateConfig("leveling_cmd")) {
@@ -67,7 +75,8 @@ module.exports = {
           embed.setDescription("🏆 Leveling commands are now **NOT ACTIVE**");
         }
 
-        return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        return;
 
       case "rng":
         if (await updateConfig("rng_cmd")) {
@@ -76,7 +85,8 @@ module.exports = {
           embed.setDescription("🎲 RNG commands are now **NOT ACTIVE**");
         }
 
-        return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        return;
 
       default:
         embed
@@ -84,7 +94,8 @@ module.exports = {
           .setTitle("❌ Invalid Category")
           .setDescription("That config dosen't exist, choose between: **mod**, **music**, **event**, **community**, **leveling**, **rng**");
 
-        return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        return;
     }
 
     // bro, honestly it was time we write a function for this crap
@@ -101,7 +112,8 @@ module.exports = {
           .setDescription("Failed to update server configs, please **report this error with the server ID**")
           .addFields({ name: "Server ID", value: `\`${message.guildId}\``, inline: true }, { name: "Submit Report Here", value: "https://discord.gg/KxadTdz" });
 
-        return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        return;
       }
 
       embed.setColor(0x33ff33).setTitle("✅ Configuration Updated");

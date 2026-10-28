@@ -46,7 +46,9 @@ module.exports = {
 
     if (!isRngEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("RNG commands are off! Type **d!setup rng** to enable them");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const user = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
@@ -58,7 +60,9 @@ module.exports = {
 
     if (row.rowCount === 0) {
       embed.setColor(0xff0000).setTitle("❌ Nothing To See").setDescription("This user's RNG Meter is empty because he did not use even 1 of my commands");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const userMeterSelected = row.rows[0].rng_meter_selection;
@@ -68,14 +72,18 @@ module.exports = {
 
     if (!userMeterSelected) {
       embed.setColor(0xff0000).setTitle("❌ Empty RNG Meter").setDescription("You have no item selected on your RNG Meter! Select with **d!rngselect <itemId>**");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const targetItem = serverDrops.find((drop) => drop.id === userMeterSelected);
 
     if (!targetItem) {
       embed.setColor(0xff0000).setTitle("❌ Not found").setDescription("The selected item was not found in the server drops");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     // formula for the item score is "1 / (itemChance / 100)"
@@ -106,6 +114,6 @@ module.exports = {
       .setDescription(description)
       .setFooter({ text: user.username, iconURL: user.avatarURL({ dynamic: true }) });
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

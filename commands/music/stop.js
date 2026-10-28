@@ -15,7 +15,8 @@ module.exports = {
     if (!isMusicEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     // get the voice channel of the user
@@ -23,24 +24,27 @@ module.exports = {
 
     // check if the user is in a voice channel
     if (!voiceChannel) {
-      return await message.reply("You need to be in a voice channel to stop the music!").catch(msgErrorHandler);
+      message.reply("You need to be in a voice channel to stop the music!").catch(msgErrorHandler);
+      return;
     }
 
     // check if the bot is already playing in a different voice channel
     if (message.guild.members.me.voice.channel && message.guild.members.me.voice.channel !== voiceChannel) {
-      return await message.reply("I am already playing in a different voice channel!").catch(msgErrorHandler);
+      message.reply("I am already playing in a different voice channel!").catch(msgErrorHandler);
+      return;
     }
 
     const queue = useQueue(message.guild.id);
 
     if (!queue) {
-      return await message.reply("There's no music queue to stop here!").catch(msgErrorHandler);
+      message.reply("There's no music queue to stop here!").catch(msgErrorHandler);
+      return;
     }
 
     queue.delete();
 
     embed.setColor(0x33cc00).setTitle("✅ Ok stopped, thanks for listening!").setDescription(null);
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

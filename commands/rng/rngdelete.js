@@ -16,24 +16,32 @@ module.exports = {
 
     if (!isRngEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("RNG commands are off! Type **d!setup rng** to enable them");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
       embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("You need the permission `Administrator` to use this command");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (!args[0]) {
       embed.setColor(0xff0000).setTitle("❌ Missing ID").setDescription("Please provide the ID of the drop to remove, usage **d!rngdelete <id>**`");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const itemId = parseInt(args[0]);
 
     if (isNaN(itemId)) {
       embed.setColor(0xff0000).setTitle("❌ Invalid ID").setDescription("The ID must be a valid number, check the item ids with **d!drops**");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     // for deleting the item, first it gets deleted from the server list and then from everybody's inventory/found drops list
@@ -41,7 +49,9 @@ module.exports = {
 
     if (!Array.isArray(serverDrops)) {
       embed.setColor(0xff0000).setTitle("❌ Nothing").setDescription("No items have been configured in this server");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     // check if the item actually exists in the server pool
@@ -49,7 +59,9 @@ module.exports = {
 
     if (serverItemId === -1) {
       embed.setColor(0xff0000).setTitle("❌ Item Not Found").setDescription(`Item with id **${itemId}** wasn't found in the server drops list`);
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     serverDrops.splice(serverItemId, 1);
@@ -80,6 +92,6 @@ module.exports = {
         `Successfully deleted **${serverDrops[serverItemId - 1].name}** (ID: ${itemId}) from the server's drop list.\nThe drop has been wiped from the members's inventories too`,
       );
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

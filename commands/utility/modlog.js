@@ -14,13 +14,15 @@ module.exports = {
     if (isModEnabled === 0) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
       embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("You need the permission `Manage Channels` to use this command");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const channel = message.mentions.channels.first() || null;
@@ -38,13 +40,15 @@ module.exports = {
             "You can mention a channel to active logging, make sure i have the permission to `Send messages` in that channel",
         );
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (!message.guild.members.me.permissionsIn(channel).has(PermissionsBitField.Flags.SendMessages)) {
       embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("I don't have the permission to `Send Messages` in that channel");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     await client.database.query("UPDATE servers SET mod_log_channel = $1 WHERE server_id = $2", [channel.id, message.guildId]);
@@ -64,6 +68,6 @@ module.exports = {
       })
       .setTimestamp();
 
-    return await channel.send({ embeds: [embed] }).catch(msgErrorHandler);
+    channel.send({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

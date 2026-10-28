@@ -16,12 +16,16 @@ module.exports = {
 
     if (!isRngEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("RNG commands are off! Type **d!setup rng** to enable them");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You need the permission `Administrator` to use this command");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("You need the permission `Administrator` to use this command");
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     // for mental health issues, the user can simply put "-" to skip existing parameters
@@ -35,7 +39,9 @@ module.exports = {
         .setDescription(
           "Nothing has changed, valid parameters **d!rngedit dropId | newDropName | newOptionalDesc | newDropChance | newType | newTypeArgs**\n*Tip: Use `-` to skip a parameter you want to keep the same!*",
         );
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (parts.length > 6) {
@@ -43,7 +49,9 @@ module.exports = {
         .setColor(0xff0000)
         .setTitle("❌ Invalid Format")
         .setDescription("Too many parameters, correct usage **d!rngedit dropId | newDropName | newOptionalDesc | newDropChance | newType | newTypeArgs**");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     let [id, name, desc, chanceStr, type, typeArg] = parts;
@@ -55,7 +63,9 @@ module.exports = {
 
     if (dropIndex === -1) {
       embed.setColor(0xff0000).setTitle("❌ Not found").setDescription(`Item with id **${id}** dosen't exist, check the list with **d!drops**`);
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const existingDrop = serverDrops[dropIndex];
@@ -68,9 +78,21 @@ module.exports = {
 
     const chance = parseFloat(finalChanceStr);
 
+    if (name.length > 64 || desc.length > 256) {
+      embed
+        .setColor(0xff0000)
+        .setTitle("❌ Name Or Desc too Long")
+        .setDescription("An item name has a maximum length of **64** characters, while an item description can have maximum **256** characters");
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
+    }
+
     if (isNaN(chance) || chance < 0.000001 || chance > 100) {
       embed.setColor(0xff0000).setTitle("❌ Invalid Chance").setDescription("The drop chance must be a valid number between **100** and **0.000001**");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     // subtract the OLD chance of this specific item before adding the NEW chance to prevent double-counting
@@ -87,7 +109,9 @@ module.exports = {
         .setDescription(
           `The combined drop chance of all server drops is **${Number(calcTotalChance.toFixed(8))}%** (Maximum is 100%).\nYou only have **${Number(availableSpace.toFixed(8))}%** available space left, remove or adjust existing items by **${Number(overflow.toFixed(8))}%** to fit this item`,
         );
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     let newDrop;
@@ -112,7 +136,9 @@ module.exports = {
 
         if (isNaN(amount) || amount <= 0 || amount > 1000000000) {
           embed.setColor(0xff0000).setTitle("❌ Invalid Amount").setDescription("The amount of money must be a valid number between **1** and **1000000000**");
-          return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+          message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+          return;
         }
 
         newDrop = {
@@ -136,7 +162,9 @@ module.exports = {
 
         if (!role) {
           embed.setColor(0xff0000).setTitle("❌ Invalid Role").setDescription("Mention a valid server role or provide a valid role ID.");
-          return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+          message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+          return;
         }
 
         newDrop = {
@@ -152,7 +180,9 @@ module.exports = {
 
       default:
         embed.setColor(0xff0000).setTitle("❌ Invalid Type").setDescription(`The type **${finalType}** does not exist, choose between **item**, **money** and **role**`);
-        return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+        message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        return;
     }
 
     serverDrops[dropIndex] = newDrop;
@@ -169,6 +199,6 @@ module.exports = {
         { name: "Pool Capacity", value: `${Number(calcTotalChance.toFixed(8))}% / 100%`, inline: false },
       );
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

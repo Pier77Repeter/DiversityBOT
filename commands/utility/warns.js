@@ -15,13 +15,15 @@ module.exports = {
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
       embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("You need the permission `Moderate Members` to use this command");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const user = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
@@ -31,7 +33,8 @@ module.exports = {
     if (row.rowCount === 0 || row.rows[0].warns === 0) {
       embed.setColor(0x33ff33).setTitle(`🚨${user.tag}'s Warns`).setDescription(`The user **${user.tag}** has a total of **0** warns`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     embed.setColor(0x33ff33).setTitle(`🚨${user.tag}'s Warns`).setDescription(`The user **${user.tag}** has a total of **${row.rows[0].warns}** warns`);
@@ -49,7 +52,8 @@ module.exports = {
 
     collector.on("collect", async (btnInteraction) => {
       if (btnInteraction.user.id !== message.author.id) {
-        return await btnInteraction.reply({ content: "You can't use this button, it is not for you", flags: [MessageFlags.Ephemeral] }).catch(msgErrorHandler);
+        btnInteraction.reply({ content: "You can't use this button, it is not for you", flags: [MessageFlags.Ephemeral] }).catch(msgErrorHandler);
+        return;
       }
 
       if (btnInteraction.customId === "warns-btn-btnClearWarns") {
@@ -69,14 +73,14 @@ module.exports = {
           .setFooter({ text: `Action by ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
           .setTimestamp();
 
-        return await modActionLogger(client, message, embed);
+        modActionLogger(client, message, embed);
       }
     });
 
     collector.on("end", async () => {
       btnClearWarns.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
-      return await sentMessage.edit({ components: [actionRow] }).catch(msgErrorHandler);
+      sentMessage.edit({ components: [actionRow] }).catch(msgErrorHandler);
     });
   },
 };

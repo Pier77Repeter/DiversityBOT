@@ -16,25 +16,29 @@ module.exports = {
     if (!isModEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Moderation commands are off! Type **d!setup mod** to enable them");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.ModerateMembers)) {
       embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("You need the permission `Moderate Members` to use this command");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (!message.mentions.members.first()) {
       embed.setColor(0xff0000).setTitle("❌ Missing User").setDescription("You need to mention the member you want to warn");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (message.mentions.members.first().user.id === message.author.id) {
       embed.setColor(0xff0000).setTitle("❌ What?").setDescription("You can't warn yourself lol");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const userToWarn = message.mentions.members.first();
@@ -43,7 +47,9 @@ module.exports = {
     // can warn bots
     if (userToWarn.user.bot) {
       embed.setColor(0xff0000).setTitle("❌ Can't Warn").setDescription("You can't warn a Discord Bot");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     // if user dosen't exist in database we gotta create it
@@ -68,6 +74,6 @@ module.exports = {
       .setFooter({ text: `Action by ${message.author.tag}`, iconURL: message.author.displayAvatarURL({ dynamic: true }) })
       .setTimestamp();
 
-    return await modActionLogger(client, message, embed);
+    modActionLogger(client, message, embed);
   },
 };

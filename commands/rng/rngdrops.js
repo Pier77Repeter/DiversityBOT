@@ -16,14 +16,18 @@ module.exports = {
 
     if (!isRngEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("RNG commands are off! Type **d!setup rng** to enable them");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const row = await client.database.query("SELECT server_drops, rng_drop_chance FROM servers WHERE server_id = $1", [message.guildId]);
 
     if (row.rowCount === 0) {
       embed.setColor(0xff0000).setTitle("❌ Nothing To See").setDescription("This server does not have any drops, add one with **d!dropadd**");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const serverDrops = row.rows[0].server_drops;
@@ -32,7 +36,9 @@ module.exports = {
 
     if (serverDrops.length === 0) {
       embed.setDescription("No drops to display here, add one with **d!dropadd**");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     let counter = 0;
@@ -52,8 +58,8 @@ module.exports = {
 
       counter++;
 
-      // we only store 4 fields per embed to prevent reaching 1024 char limit
-      if (counter === 4) {
+      // we only store 5 fields per embed to prevent reaching Discord's character limit
+      if (counter === 5) {
         embeds.push(
           new EmbedBuilder()
             .setColor(color)
@@ -79,6 +85,6 @@ module.exports = {
       );
     }
 
-    return await embedPaginator(this.name, message, embeds).catch(msgErrorHandler);
+    embedPaginator(this.name, message, embeds).catch(msgErrorHandler);
   },
 };

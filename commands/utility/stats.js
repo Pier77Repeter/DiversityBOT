@@ -30,6 +30,6 @@ module.exports = {
       )
       .setImage(memberPfp);
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

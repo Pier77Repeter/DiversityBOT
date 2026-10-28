@@ -11,25 +11,33 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("You don't have the permission to add money");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("You need the `Administrator` permission to remove RNG EXP");
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (!args[1]) {
       embed.setColor(0xff0000).setTitle("❌ Missing Exp").setDescription(`Correct usage is **d!rngxpremove <@user> <amount>**`);
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (isNaN(args[1]) || args[1] < 1 || args[1] > 100000000) {
       embed.setColor(0xff0000).setTitle("❌ Invalid Number").setDescription("Insert a valid number between **1 and 100000000**");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const row = await client.database.query("SELECT rng_meter_progress FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, user.id]);
 
     if (row.rowCount === 0) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription(`You can't remove rng exp from ${user.username} because he never tried EVEN 1 of my commands! >:(`);
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const rngExp = Math.trunc(args[1]);
@@ -44,6 +52,7 @@ module.exports = {
     );
 
     embed.setColor(0x33ff33).setTitle("✅ EXP Removed").setDescription(`Successfully removed **${rngExp} RNG Exp** from ${user.username}`);
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

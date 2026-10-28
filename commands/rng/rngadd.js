@@ -18,12 +18,15 @@ module.exports = {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("RNG commands are off! Type **d!setup rng** to enable them");
 
       // hmmmm, this looks much better than an huge try-catch block, will use this from one
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) {
       embed.setColor(0xff0000).setTitle("❌ Missing Permission").setDescription("You need the permission `Administrator` to use this command");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     // the commands works "d!rngadd dropName | optionalDesc | dropChance | type | extraArgs"
@@ -32,7 +35,9 @@ module.exports = {
 
     if (parts.length < 3 || parts.length > 5) {
       embed.setColor(0xff0000).setTitle("❌ Invalid Format").setDescription("Correct usage **d!rngadd dropName | optionalDesc | chance | type | typeArgs**");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     let name, desc, chanceStr, typeArg;
@@ -58,20 +63,23 @@ module.exports = {
       desc = "This mystical item has no description :(";
     }
 
-    if (name.length > 32 || desc.length > 128) {
+    if (name.length > 64 || desc.length > 256) {
       embed
         .setColor(0xff0000)
         .setTitle("❌ Name Or Desc too Long")
-        .setDescription("An item name has a maximum length of **32** characters, while an item description can have maximum **128** characters");
+        .setDescription("An item name has a maximum length of **64** characters, while an item description can have maximum **256** characters");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const chance = parseFloat(chanceStr);
 
     if (isNaN(chance) || chance < 0.00001 || chance > 100) {
       embed.setColor(0xff0000).setTitle("❌ Invalid Chance").setDescription("The drop chance must be a valid number between **100** and **0.000001**");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     // these are needed for validating any duplicate names and for the global drop pool
@@ -83,7 +91,9 @@ module.exports = {
 
     if (nameExists) {
       embed.setColor(0xff0000).setTitle("❌ Duplicate Item").setDescription(`Item named **${name}** already exists in this server, use a different name`);
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     // we can NOT have the totalDropChance above 100%
@@ -101,7 +111,8 @@ module.exports = {
           `The combined drop chance of all server drops is **${Number(calcTotalChance.toFixed(8))}%** (Maximum is 100%).\n\nYou only have **${Number(availableSpace.toFixed(8))}%** available space left, remove or adjust existing items by **${Number(overflow.toFixed(8))}%** to fit this item`,
         );
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     // max 100 server drops
@@ -111,7 +122,8 @@ module.exports = {
         .setTitle("❌ Drops List is Full")
         .setDescription("This server the the maximum amount of possible drops configured, remove an existing drop with **d!rngdelete <itemId>** to add a new one");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     // i do not want a simple id increase system for items, so i re-use the available ones
@@ -143,7 +155,9 @@ module.exports = {
 
         if (isNaN(amount) || amount <= 0 || amount > 1000000000) {
           embed.setColor(0xff0000).setTitle("❌ Invalid Amount").setDescription("The amount of money must be a valid number between **1** and **1000000000**");
-          return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+          message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+          return;
         }
 
         newDrop = {
@@ -163,7 +177,9 @@ module.exports = {
 
         if (!role) {
           embed.setColor(0xff0000).setTitle("❌ Invalid Role").setDescription("Mention a valid server role with @");
-          return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+          message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+          return;
         }
 
         newDrop = {
@@ -179,7 +195,9 @@ module.exports = {
 
       default:
         embed.setColor(0xff0000).setTitle("❌ Invalid Type").setDescription(`The type **${type}** does not exist, choose between **item**, **money** and **role**`);
-        return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+        message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+        return;
     }
 
     serverDrops.push(newDrop);
@@ -200,6 +218,6 @@ module.exports = {
         { name: "Pool Capacity", value: `${Number(calcTotalChance.toFixed(8))}% / 100%`, inline: false },
       );
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

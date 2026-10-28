@@ -16,11 +16,13 @@ module.exports = {
     if (!isMusicEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (!message.member.voice.channel) {
-      return await message.reply("You need to be in a voice channel to use this command!").catch(msgErrorHandler);
+      message.reply("You need to be in a voice channel to use this command!").catch(msgErrorHandler);
+      return;
     }
 
     // discord-player documentation is scheiße
@@ -29,13 +31,14 @@ module.exports = {
     const history = useHistory(message.guild.id);
 
     if (!queue || !queue.isPlaying()) {
-      return await message.reply("There is nothing to loop right now, play some songs first").catch(msgErrorHandler);
+      message.reply("There is nothing to loop right now, play some songs first").catch(msgErrorHandler);
+      return;
     }
 
     await history.previous();
 
     embed.setColor(0x33cc00).setTitle("⏮️ Playing previous music").setDescription("Skip with **d!skip**");
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

@@ -23,12 +23,15 @@ module.exports = {
 
     if (!isRngEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("RNG commands are off! Type **d!setup rng** to enable them");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const dropIdOrName = String(args.join(" ")).toLowerCase();
     if (!dropIdOrName) {
-      return await message.reply("Can you specify which drop you want me to show you?").catch(msgErrorHandler);
+      message.reply("Can you specify which drop you want me to show you?").catch(msgErrorHandler);
+      return;
     }
 
     const row = await client.database.query("SELECT s.rng_drop_chance, s.server_drops, u.rng_meter_selection FROM servers s, users u WHERE s.server_id = $1 AND u.user_id = $2", [
@@ -38,7 +41,9 @@ module.exports = {
 
     if (row.rowCount === 0) {
       embed.setColor(0xff0000).setTitle("❌ Nothing").setDescription("No drops have been created, setup one with **d!dropadd**");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const selRngMeter = row.rows[0].rng_meter_selection;
@@ -73,6 +78,6 @@ module.exports = {
       }
     }
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

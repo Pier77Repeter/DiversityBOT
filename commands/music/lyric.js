@@ -18,13 +18,15 @@ module.exports = {
         .setTitle("❌ Error")
         .setDescription("Music commands are off, type: **d!musicmd on**");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (args.length < 1) {
       embed.setColor("DarkRed").setTitle("❌ Missing Name").setDescription("Please provide the name of the song");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const player = useMainPlayer();
@@ -36,7 +38,8 @@ module.exports = {
     if (!lyrics.length) {
       embed.setColor("DarkRed").setTitle("❌ Not Found").setDescription("The song's lyrics have not been found");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const trimmedLyrics = lyrics[0].plainLyrics.substring(0, 1997);
@@ -50,6 +53,6 @@ module.exports = {
       .setDescription(trimmedLyrics.length === 1997 ? `${trimmedLyrics}...` : trimmedLyrics)
       .setFooter({ text: `Artist ${lyrics[0].artistName}` });
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

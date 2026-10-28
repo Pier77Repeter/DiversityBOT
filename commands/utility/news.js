@@ -15,6 +15,6 @@ module.exports = {
         inline: false,
       });
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

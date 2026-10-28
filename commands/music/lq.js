@@ -16,21 +16,25 @@ module.exports = {
     if (!isMusicEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (!message.member.voice.channel) {
-      return await message.reply("You need to be in a voice channel to use this command!").catch(msgErrorHandler);
+      message.reply("You need to be in a voice channel to use this command!").catch(msgErrorHandler);
+      return;
     }
 
     const player = useMainPlayer();
     const queue = player.nodes.get(message.guild.id);
 
     if (!queue || !queue.isPlaying()) {
-      return await message.reply("There is nothing to loop right now, play some songs first").catch(msgErrorHandler);
+      message.reply("There is nothing to loop right now, play some songs first").catch(msgErrorHandler);
+      return;
     }
 
     const loopEnabled = queue.repeatMode === QueueRepeatMode.QUEUE;
+
     queue.setRepeatMode(loopEnabled ? QueueRepeatMode.OFF : QueueRepeatMode.QUEUE);
 
     embed
@@ -38,6 +42,6 @@ module.exports = {
       .setTitle("✅ Done")
       .setDescription(`Looping the queue is now **${loopEnabled ? "disabled" : "enabled"}**`);
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

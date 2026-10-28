@@ -12,7 +12,8 @@ module.exports = {
     if (!user) {
       embed.setColor(0xff0000).setTitle("❌ Missing User").setDescription("Please mention a valid user");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const userId = user.id;
@@ -26,6 +27,6 @@ module.exports = {
 
     embed.setTitle(`${user.username}'s Avatar`).setDescription(`**[Download](${downloadUrl})**`).setImage(avatarUrl);
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

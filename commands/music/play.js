@@ -18,7 +18,8 @@ module.exports = {
     if (!isMusicEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const cooldown = await serverCooldownManager(client, message, "play_cooldown", this.cooldown);
@@ -27,32 +28,38 @@ module.exports = {
     if (cooldown) {
       embed.setColor(0x000000).setTitle(null).setDescription(`⏰ Listen some music before using **d!play** again in **<t:${cooldown[1]}:R>**`);
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (!args.length > 0) {
       embed.setColor(0xff0000).setTitle("❌ Incorrect Usage").setDescription("Correct usage is: **d!play <song name>**").setImage("https://c.tenor.com/W_aA0wh5C4gAAAAd/tenor.gif");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const query = args.join(" ");
     const voiceChannel = message.member.voice.channel;
 
     if (!voiceChannel) {
-      return await message.reply("You need to be in a voice channel to play music!").catch(msgErrorHandler);
+      message.reply("You need to be in a voice channel to play music!").catch(msgErrorHandler);
+      return;
     }
 
     if (message.guild.members.me.voice.channel && message.guild.members.me.voice.channel !== voiceChannel) {
-      return await message.reply("I am already playing in a different voice channel!").catch(msgErrorHandler);
+      message.reply("I am already playing in a different voice channel!").catch(msgErrorHandler);
+      return;
     }
 
     if (!message.guild.members.me.permissions.has(PermissionsBitField.Flags.Connect)) {
-      return await message.reply("I do not have permission to join your voice channel!").catch(msgErrorHandler);
+      message.reply("I do not have permission to join your voice channel!").catch(msgErrorHandler);
+      return;
     }
 
     if (!message.guild.members.me.permissionsIn(voiceChannel).has(PermissionsBitField.Flags.Speak)) {
-      return await message.reply("I do not have permission to speak in your voice channel!").catch(msgErrorHandler);
+      message.reply("I do not have permission to speak in your voice channel!").catch(msgErrorHandler);
+      return;
     }
 
     embed
@@ -74,7 +81,9 @@ module.exports = {
 
     if (!search.hasTracks()) {
       embed.setColor(0xff0000).setTitle("❌ Not Found").setDescription("No track was found for your query.");
-      return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+
+      sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     // showing the list of found tracks
@@ -110,7 +119,8 @@ module.exports = {
 
         collector.stop();
 
-        return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+        sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+        return;
       }
 
       const songIndex = Number(receivedMessage.content) - 1;
@@ -119,7 +129,8 @@ module.exports = {
         // so we do not touch the original embed when the collector stops and we dont show double error
         const errorEmbed = new EmbedBuilder().setColor("DarkRed").setTitle("❌ Invalid Choice").setDescription("The number you just sent was not present in the track list");
 
-        return await receivedMessage.reply({ embeds: [errorEmbed] }).catch(msgErrorHandler);
+        receivedMessage.reply({ embeds: [errorEmbed] }).catch(msgErrorHandler);
+        return;
       }
 
       // stop listening to messages so they can't trigger this twice!
@@ -151,13 +162,13 @@ module.exports = {
 
       embed.setColor(0x33cc00).setTitle("✅ Added to Queue").setDescription(`**${track.title}** has been added!`).setFooter(null);
 
-      return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+      sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
     });
 
     collector.on("end", async () => {
       embed.setColor("LightGrey");
 
-      return await sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
+      sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
     });
   },
 };

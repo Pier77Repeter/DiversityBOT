@@ -15,7 +15,9 @@ module.exports = {
 
     if (!isRngEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("RNG commands are off! Type **d!setup rng** to enable them");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const row = await client.database.query("SELECT rng_meter_selection, rng_meter_progress FROM users WHERE server_id = $1 AND user_id = $2", [
@@ -31,7 +33,9 @@ module.exports = {
       await client.database.query("UPDATE users SET rng_meter_selection = NULL WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
       embed.setColor(0x00ff00).setTitle("✅ RNG Meter Unselected").setDescription("You are no longer tracking any specific drop");
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const dropNameOrId = args[0];
@@ -42,7 +46,9 @@ module.exports = {
 
     if (!selectedItem) {
       embed.setColor(0xff0000).setTitle("❌ Item Not Found").setDescription(`Item with id or name **${dropNameOrId}** wasn't found in the server's drops list`);
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     // check for any switch
@@ -51,6 +57,7 @@ module.exports = {
     }
 
     embed.setColor(0x00ff00).setTitle("🎯 RNG Meter Selected").setDescription(`Meter set to **${selectedItem.name}**, may the RNG be with you :pray:`);
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

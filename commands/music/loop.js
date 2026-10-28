@@ -15,14 +15,16 @@ module.exports = {
     if (!isMusicEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Music commands are off, type: **d!musicmd on**");
 
-      return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     const player = useMainPlayer();
     const queue = player.nodes.get(message.guild.id);
 
     if (!queue || !queue.isPlaying()) {
-      return await message.reply("There is no music currently playing in this server.").catch(msgErrorHandler);
+      message.reply("There is no music currently playing in this server.").catch(msgErrorHandler);
+      return;
     }
 
     const loopEnabled = queue.repeatMode === QueueRepeatMode.TRACK;
@@ -34,6 +36,6 @@ module.exports = {
       .setTitle("✅ Done")
       .setDescription(`Looping the current song is now **${loopEnabled ? "disabled" : "enabled"}**`);
 
-    return await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };
