@@ -125,7 +125,7 @@ module.exports = {
         money = mathRandomInt(70, 150);
         if ((await manageUserMoney(client, message, "+", money)) === null) return;
 
-        embed.setColor(0x33cc00).setTitle("💥🔫 Nice Shot").setDescription(`"You manage to shoot down the animal, and you sold it for **${money}$**"`);
+        embed.setColor(0x33cc00).setTitle("💥🔫 Nice Shot").setDescription(`You manage to shoot down the animal, and you sold it for **${money}$**`);
 
         btnInteraction.update({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
         return;

@@ -148,6 +148,7 @@ module.exports = {
         await dbClient.query(setupQueries);
       } catch (error) {
         await dbClient.query("ROLLBACK");
+
         logger.error("Failed to setup the database", error);
         process.exit(1); // brute force exiting no DB, no bot.
       } finally {
@@ -155,6 +156,7 @@ module.exports = {
       }
 
       client.database = dbPool;
+
       logger.info("Database connected and ready :D");
     } catch (error) {
       logger.error("Failed to connect to the database, check 'config.json'", error);
@@ -164,7 +166,9 @@ module.exports = {
     // creating discord player (needs a bit of rework)
     try {
       client.player = new Player(client);
+
       await client.player.extractors.register(SoundCloudExtractor); // <-- this is actually shit, moving away from this
+
       logger.info("Music player operational :P");
     } catch (error) {
       logger.error("Error registring music player extractor", error);
@@ -172,12 +176,14 @@ module.exports = {
 
     // loading events
     logger.info("Loading events...");
+
     const eventsPath = path.join(__dirname, "events");
     const eventFiles = fs.readdirSync(eventsPath).filter((file) => file.endsWith(".js"));
 
     for (const file of eventFiles) {
       try {
         const event = require(path.join(eventsPath, file));
+
         if (typeof event === "function") {
           // passing the Discord client to the event function
           event(client);
@@ -191,15 +197,19 @@ module.exports = {
 
     // loading commands
     logger.info("Loading message commands...");
+
     client.commands = new Collection();
+
     const commandsPath = path.join(__dirname, "commands");
     const commandFolders = fs.readdirSync(commandsPath);
 
     for (const folder of commandFolders) {
       const commandFiles = fs.readdirSync(path.join(commandsPath, folder)).filter((file) => file.endsWith(".js"));
+
       for (const file of commandFiles) {
         try {
           const command = require(path.join(commandsPath, folder, file));
+
           if (typeof command.name === "string" && typeof command.execute === "function") {
             // adding the commands to the collection
             client.commands.set(command.name, command);
@@ -225,7 +235,9 @@ module.exports = {
 
     // loading slash commands
     logger.info("Loading slash commands...");
+
     client.slashCommands = new Collection();
+
     const slashCommands = [];
     const slashCommandsPath = path.join(__dirname, "commands-slash");
     const commandFiles = fs.readdirSync(slashCommandsPath).filter((file) => file.endsWith(".js"));
@@ -234,6 +246,7 @@ module.exports = {
       try {
         const filePath = path.join(slashCommandsPath, file);
         const command = require(filePath);
+
         if ("data" in command && "execute" in command) {
           client.slashCommands.set(command.data.name, command);
           // push the JSON representation of the slash command to the array
@@ -260,14 +273,18 @@ module.exports = {
   },
   shutdownLoader: async (client) => {
     isBotRestarting = true;
+
     logger.info("Initiating Bot shutdown...");
+
     await delay(10000); // a bit of delay for completing unfinished tasks
 
     await client.destroy();
+
     logger.info("1/2 - Client now offline");
 
     try {
       await client.database.end();
+
       logger.info("2/2 - Ended database connection");
     } catch (error) {
       logger.error("Error closing the database connection nicely", error);

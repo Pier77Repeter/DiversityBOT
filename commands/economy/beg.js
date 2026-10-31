@@ -3,6 +3,7 @@ const cooldownManager = require("../../utils/cooldownManager");
 const manageUserMoney = require("../../utils/manageUserMoney");
 const mathRandomInt = require("../../utils/mathRandomInt");
 const listsGetRandomItem = require("../../utils/listsGetRandomItem");
+const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
   name: "beg",

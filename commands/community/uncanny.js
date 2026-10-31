@@ -33,7 +33,7 @@ module.exports = {
 
     const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "uncanny-1.jpg"), { name: "uncanny-1.jpg" });
 
-    embed.setColor(0xffcc66).setTitle("Say something uncanny (Stage 1/10)").setImage("attachment://uncanny-1.jpg");
+    embed.setColor(0xffcc66).setTitle("Say something uncanny (Stage 1/10) or say 'stop' to stop").setImage("attachment://uncanny-1.jpg");
 
     try {
       await message.reply({ embeds: [embed], files: [imageFile] });

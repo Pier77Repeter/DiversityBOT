@@ -20,13 +20,12 @@ module.exports = async function serverCooldownManager(client, message, cooldownN
     `;
 
     const res = await client.database.query(query, [cooldownAmount, unixNow, message.guildId]);
+    const row = res.rows[0];
 
     // if server isn't found go to catch block
-    if (res.rowCount === 0) {
-      throw new Error(`Failed to find in database: Server '${message.guildId}'`);
-    }
+    if (!row) throw new Error(`Failed to find cooldown '${cooldownName}' in database: Server '${message.guildId}'`);
 
-    const dbTimestamp = Number(res.rows[0][cooldownName]); // do not forget 'Number()'
+    const dbTimestamp = Number(row[cooldownName]); // do not forget 'Number()'
 
     // if the unix time in db is bigger than the current unix time this means user is still in cooldown
     if (dbTimestamp !== unixNow) {

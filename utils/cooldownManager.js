@@ -20,13 +20,12 @@ module.exports = async function cooldownManager(client, message, cooldownName, c
     `;
 
     const res = await client.database.query(query, [cooldownAmount, unixNow, message.guildId, message.author.id]);
+    const row = res.rows[0];
 
-    // row.rows[0].exists IS ONLY FOR SELECT EXISTS(), if user of server isn't found go to catch block
-    if (res.rowCount === 0) {
-      throw new Error(`Failed to find user in database: Server '${message.guildId}' - User '${message.author.id}'`);
-    }
+    // If the user isn't found, the query returns no row.
+    if (!row) throw new Error(`Failed to find user in database: Server '${message.guildId}' - User '${message.author.id}'`);
 
-    const dbTimestamp = Number(res.rows[0][cooldownName]);
+    const dbTimestamp = Number(row[cooldownName]);
 
     // if the unix time in db is bigger than the current unix time this means user is still in cooldown
     if (dbTimestamp !== unixNow) {
@@ -41,8 +40,6 @@ module.exports = async function cooldownManager(client, message, cooldownName, c
   } catch (error) {
     logger.error(`Error handling cooldown '${cooldownName}': Server '${message.guildId}' - User '${message.author.id}'`, error);
 
-    if (!logError) return null;
-
     const embed = new EmbedBuilder()
       .setColor(0xff0000)
       .setTitle("⚠️ Critical Error")
@@ -53,7 +50,7 @@ module.exports = async function cooldownManager(client, message, cooldownName, c
         { name: "Submit Report Here", value: "https://discord.gg/KxadTdz" },
       );
 
-    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    if (logError) message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     return null; // in case of an error (check is in the command)
   }
 };

@@ -35,7 +35,7 @@ module.exports = {
       return;
     }
 
-    if (isNaN(args[0]) || args[0] > row.money) {
+    if (isNaN(args[0]) || Number(args[0]) > Number(row.money)) {
       embed.setColor(0xff0000).setTitle("❌ Missing Money").setDescription("You don't have enough money in your wallet to play the roulette, at least **1000$**");
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);

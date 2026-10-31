@@ -41,7 +41,7 @@ module.exports = function jsonDataAssociator(dataType, jsonData) {
 
         return botItems;
       } catch (error) {
-        throw new Error("Error while associating the array, CHECK THE DB DATA", error);
+        throw new Error("Error while associating the 'items', CHECK THE DB DATA", error);
       }
 
     case "fishes":
@@ -53,10 +53,10 @@ module.exports = function jsonDataAssociator(dataType, jsonData) {
 
         return botFishes;
       } catch (error) {
-        throw new Error("Error while associating the array, CHECK THE DB DATA", error);
+        throw new Error("Error while associating the 'fishes', CHECK THE DB DATA", error);
       }
 
     default:
-      throw new Error("Invalid provided json data to associate");
+      throw new Error(`Invalid provided json data name, '${dataType}' to associate`);
   }
 };

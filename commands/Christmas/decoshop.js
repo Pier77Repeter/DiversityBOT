@@ -8,17 +8,14 @@ module.exports = {
   async execute(client, message, args) {
     const embed = new EmbedBuilder();
 
-    const isEventEnabled = await configChecker(client, message, "eventCmd");
-    if (isEventEnabled == null) return;
+    const isEventEnabled = await configChecker(client, message, "event_cmd");
+    if (isEventEnabled === null) return;
 
     if (!isEventEnabled) {
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Event commands are off! Type **d!setup event** to enable them");
 
-      try {
-        return await message.reply({ embeds: [embed] });
-      } catch (error) {
-        return msgErrorHandler(error);
-      }
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     embed
@@ -27,7 +24,7 @@ module.exports = {
       .setDescription("Customize your Christmas tree with these wonderful decorations!")
       .addFields([
         {
-          name: "🌟 Christmas star",
+          name: "🌟 Christmas Star",
           value: "Item cost: **300 🪙**",
           inline: false,
         },
@@ -37,22 +34,18 @@ module.exports = {
           inline: false,
         },
         {
-          name: "🔴 Christmas balls (multi-color)",
+          name: "🔴 Christmas Balls (multi-color)",
           value: "Item cost: **50 🪙**",
           inline: false,
         },
         {
-          name: "🟥 Tree decorations (multi-color)",
+          name: "🟥 Tree Decorations (multi-color)",
           value: "Item cost: **50 🪙**",
           inline: false,
         },
       ])
-      .setFooter({ text: "Your tree needs to be maxed to buy them" });
+      .setFooter({ text: "Decorations can only be applied to maxed trees!" });
 
-    try {
-      return await message.reply({ embeds: [embed] });
-    } catch (error) {
-      return msgErrorHandler(error);
-    }
+    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
   },
 };

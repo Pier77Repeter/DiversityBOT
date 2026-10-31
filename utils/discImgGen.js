@@ -22,7 +22,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
   const embed = new EmbedBuilder();
 
   if (cooldown) {
-    embed.setColor(0x000000).setDescription("⏰ You can create another image **<t:" + cooldown[1] + ":R>**");
+    embed.setColor(0x000000).setDescription(`⏰ You can create another image **<t:${cooldown[1]}:R>**`);
 
     message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     return;

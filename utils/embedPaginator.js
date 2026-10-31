@@ -5,7 +5,7 @@ const msgErrorHandler = require("./msgErrorHandler");
 // very sophisticated function to make embed impagination, only supports messages, not / commands
 module.exports = async function embedPaginator(commandName, message, pages, time = 60 * 1000) {
   try {
-    if (!commandName || !message || !pages || !pages > 0) throw new Error("Invalid or missing given arguments");
+    if (!commandName || !message || !pages || !pages > 0) throw new Error(`Invalid or missing given arguments, Name: ${commandName} - Pages: ${pages} - Message: ${message}`);
 
     // why call this function to only send 1 embed?
     if (pages.length === 1) {

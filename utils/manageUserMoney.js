@@ -5,14 +5,15 @@ const msgErrorHandler = require("./msgErrorHandler");
 // easy thing to manage money, add, subtract ONLY for message author!!!
 module.exports = async function manageUserMoney(client, message, operation, amount) {
   // we gotta get money and debts in case '-' gets negative
-  const row = await client.database.query("SELECT money, bank_money, debts FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
+  const res = await client.database.query("SELECT money, bank_money, debts FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
+  const row = res.rows[0];
 
   // this shouldn't happen SINCE data is created in 'messageCreate' event
-  if (row.rowCount === 0) throw new Error(`Failed to find in database: Server '${message.guildId}' - User '${message.author.id}'`);
+  if (!row) throw new Error(`Failed to find in database: Server '${message.guildId}' - User '${message.author.id}'`);
 
   // INTSSSSSSSSSSSSSSSSS
-  const money = Number(row.rows[0].money);
-  const bank_money = Number(row.rows[0].bank_money);
+  const money = Number(row.money);
+  const bank_money = Number(row.bank_money);
 
   try {
     switch (operation) {

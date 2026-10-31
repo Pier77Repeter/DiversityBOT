@@ -32,7 +32,7 @@ module.exports = {
 
     const actionRow = new ActionRowBuilder().addComponents(btnLow, btnHigh);
 
-    const sentMessage = await message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    const sentMessage = await message.reply({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
     if (!sentMessage) return;
 
     const collector = sentMessage.createMessageComponentCollector({

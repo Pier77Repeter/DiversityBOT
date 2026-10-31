@@ -88,29 +88,44 @@ module.exports = async function createDbData(client, serverId, userId) {
     },
   ];
 
-  // try to insert this row, if the primary key already exists, just ignore it and move on, only inserting users who actually use the bot
   // LOOK AT https://www.geeksforgeeks.org/sql/cte-in-sql/
   const query = `
-      WITH server_insert AS (
-        INSERT INTO servers(server_id, server_drops) 
-        VALUES($1, $3) 
+      WITH inserted_server AS (
+        INSERT INTO servers(server_id, server_drops)
+        VALUES($1, $3)
         ON CONFLICT (server_id) DO NOTHING
+        RETURNING server_id
+      ),
+      server_for_user_and_event AS (
+        SELECT server_id FROM inserted_server
+        UNION ALL
+        SELECT server_id
+        FROM servers
+        WHERE server_id = $1
+          AND NOT EXISTS (SELECT 1 FROM inserted_server)
+      ),
+      inserted_user AS (
+        INSERT INTO users(server_id, user_id, items, fishes)
+        SELECT server_id, $2, $4, $5
+        FROM server_for_user_and_event
+        ON CONFLICT (server_id, user_id) DO NOTHING
+        RETURNING user_id
+      ),
+      inserted_user_event AS (
+        INSERT INTO events(server_id, user_id)
+        SELECT server_id, $2
+        FROM server_for_user_and_event
+        ON CONFLICT (server_id, user_id) DO NOTHING
+        RETURNING user_id
       )
-      INSERT INTO users(server_id, user_id, items, fishes) 
-      VALUES($1, $2, $4, $5) 
-      ON CONFLICT (server_id, user_id) DO NOTHING;
+      SELECT
+        (SELECT COUNT(*) FROM inserted_user) AS users_created,
+        (SELECT COUNT(*) FROM inserted_user_event) AS event_rows_created;
     `;
-
-  // REMEBER TO ADD THIS TEXT FOR EVENTS!!!!
-  /*
-    INSERT INTO events(server_id, user_id) 
-    VALUES($1, $2) ON CONFLICT (server_id, user_id) DO NOTHING;
-  */
 
   const values = [serverId, userId, JSON.stringify(serverDrops), JSON.stringify(items), JSON.stringify(fishes)];
 
-  // we insert new data!
   await client.database.query(query, values).catch((error) => {
-    logger.error("Failed to create new server/user in db", error);
+    logger.error("Failed to create new server/user/event data in db", error);
   });
 };

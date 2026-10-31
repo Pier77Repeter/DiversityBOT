@@ -17,7 +17,7 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     // item with id 7 is at index id - 1, which is 6
-    if (items[6].quantity === 0) {
+    if (items[4].quantity === 0) {
       embed.setColor(0xff0000).setTitle("❌ Missing Item").setDescription("You need an **AK-47** to commit a crime");
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);
@@ -69,7 +69,7 @@ module.exports = {
         btnDrug.setStyle(ButtonStyle.Danger).setDisabled(true);
 
         money = mathRandomInt(3000, 4000);
-        items[6].quantity = 0;
+        items[4].quantity = 0;
 
         if ((await manageUserMoney(client, message, "-", money)) === null) return;
         if ((await dbJsonDataSet(client, message, "items", items, message.author.id)) === null) return;
@@ -153,7 +153,6 @@ module.exports = {
         btnDrug.setStyle(ButtonStyle.Secondary).setDisabled(true);
 
         sentMessage.edit({ embeds: [embed], components: [actionRow] }).catch(msgErrorHandler);
-        return;
       }
     });
   },

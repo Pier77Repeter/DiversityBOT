@@ -9,7 +9,7 @@ module.exports = {
   name: "jm",
   aliases: ["javamoment", "jm"],
   description: "Java moment",
-  cooldown: 30,
+  cooldown: 60,
   async execute(client, message, args) {
     const embed = new EmbedBuilder();
 

@@ -19,12 +19,11 @@ module.exports = async function cooldownManager(client, message, cooldownName, c
     `;
 
     const res = await client.database.query(query, [cooldownAmount, unixNow, message.guildId, message.author.id]);
+    const row = res.rows[0];
 
-    if (res.rowCount === 0) {
-      throw new Error(`Failed to find user in database: Server '${message.guildId}' - User '${message.author.id}'`);
-    }
+    if (!row) throw new Error(`Failed to find user in database: Server '${message.guildId}' - User '${message.author.id}'`);
 
-    const dbTimestamp = Number(res.rows[0][cooldownName]);
+    const dbTimestamp = Number(row[cooldownName]);
 
     if (dbTimestamp !== unixNow) {
       const expirationTime = dbTimestamp + cooldownAmount;
@@ -38,8 +37,6 @@ module.exports = async function cooldownManager(client, message, cooldownName, c
   } catch (error) {
     logger.error(`Error handling cooldown '${cooldownName}': Server '${message.guildId}' - User '${message.author.id}'`, error);
 
-    if (!logError) return null;
-
     const embed = new EmbedBuilder()
       .setColor(0xff0000)
       .setTitle("⚠️ Critical Error")
@@ -50,7 +47,7 @@ module.exports = async function cooldownManager(client, message, cooldownName, c
         { name: "Submit Report Here", value: "https://discord.gg/KxadTdz" },
       );
 
-    message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    if (logError) message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     return null;
   }
 };

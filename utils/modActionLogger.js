@@ -5,18 +5,19 @@ const msgErrorHandler = require("./msgErrorHandler");
 module.exports = async function modActionLogger(client, actionSource, embed) {
   try {
     // 'actionSource.guild.id' is equal to 'actionSource.guildId', personally prefer 'guildId' more
-    const row = await client.database.query("SELECT mod_log_channel FROM servers WHERE server_id = $1", [actionSource.guildId]);
+    const res = await client.database.query("SELECT mod_log_channel FROM servers WHERE server_id = $1", [actionSource.guildId]);
+    const row = res.rows[0];
 
     // this handles channel not found in db (critical error)
-    if (row.rowCount === 0) {
+    if (!row) {
       throw new Error(`Failed to find mod log channel: Server '${actionSource.guildId}' - Channel '${actionSource.channelId}'`);
     }
 
     // if mod log channel is null just do nothin
-    if (row.rows[0].mod_log_channel === null) return;
+    if (row.mod_log_channel === null) return;
 
     // we are 100% sure channel is in database, let's try and find it
-    const channel = actionSource.guild.channels.cache.get(row.rows[0].mod_log_channel);
+    const channel = actionSource.guild.channels.cache.get(row.mod_log_channel);
 
     // maybe it got deleted
     if (!channel) return;

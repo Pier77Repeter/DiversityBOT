@@ -10,11 +10,12 @@ module.exports = async function dbJsonDataGet(client, message, dataName, userId 
   // working on users table
   if (userId) {
     try {
-      const row = await client.database.query(`SELECT ${dataName} FROM users WHERE server_id = $1 AND user_id = $2`, [message.guildId, userId]);
+      const res = await client.database.query(`SELECT ${dataName} FROM users WHERE server_id = $1 AND user_id = $2`, [message.guildId, userId]);
+      const row = res.rows[0];
 
-      if (row.rowCount === 0) throw new Error(`Failed to find user in database: Server '${message.guildId}' - User '${userId}'`);
+      if (!row) throw new Error(`Failed to find user in database: Server '${message.guildId}' - User '${userId}'`);
 
-      return row.rows[0][dataName]; // it's a json object!
+      return row[dataName]; // it's a json object!
     } catch (error) {
       logger.error(`Error getting json data '${dataName}': Server '${message.guildId}' - User '${userId}'`, error);
 
@@ -32,11 +33,12 @@ module.exports = async function dbJsonDataGet(client, message, dataName, userId 
     // working on servers table
   } else {
     try {
-      const row = await client.database.query(`SELECT ${dataName} FROM servers WHERE server_id = $1`, [message.guildId]);
+      const res = await client.database.query(`SELECT ${dataName} FROM servers WHERE server_id = $1`, [message.guildId]);
+      const row = res.rows[0];
 
-      if (row.rowCount === 0) throw new Error(`Failed to find server in database: Server '${message.guildId}'`);
+      if (!row) throw new Error(`Failed to find server in database: Server '${message.guildId}'`);
 
-      return row.rows[0][dataName]; // it's a json object! x2
+      return row[dataName]; // it's a json object! x2
     } catch (error) {
       logger.error(`Error getting json data '${dataName}': Server '${message.guildId}'`, error);
 
