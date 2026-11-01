@@ -8,7 +8,7 @@ module.exports = (client) => {
   const player = useMainPlayer();
 
   player.on(GuildQueueEvent.Debug, async (message) => {
-    logger.info(message);
+    logger.debug(message);
   });
 };
 */

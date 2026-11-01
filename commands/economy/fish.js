@@ -52,16 +52,17 @@ module.exports = {
     }
 
     const embedTexts = [
-      { id: "1", title: "🐟 You caught a fish", desc: "Classic fish" },
-      { id: "2", title: "🐠 You caught a tropical fish", desc: "Nice fish you got!" },
-      { id: "3", title: "🐡 You caught a puffer fish", desc: "You just got a fat fish XD" },
-      { id: "4", title: "🦐 You caught a shrimp", desc: "Not a fish but stil nice and tasty" },
-      { id: "5", title: "🦞 You caught a lobster", desc: "Nice" },
-      { id: "6", title: "🦀 You caught a crab", desc: "Let him dance in peace!" },
-      { id: "7", title: "🦑 You caught a squid", desc: "A...squid..." },
-      { id: "8", title: "🐙 You caught an octopus", desc: "Impressive" },
-      { id: "9", title: "🦈 You caught a shark", desc: "JO BRO WTF" },
-      { id: "10", title: "🐋 You caught a whale", desc: "Physics has left the game" },
+      // NOT FISH IDS, BUT JSON ARRAY INDEX
+      { id: "0", title: "🐟 You caught a fish", desc: "Classic fish" },
+      { id: "1", title: "🐠 You caught a tropical fish", desc: "Nice fish you got!" },
+      { id: "2", title: "🐡 You caught a puffer fish", desc: "You just got a fat fish XD" },
+      { id: "3", title: "🦐 You caught a shrimp", desc: "Not a fish but stil nice and tasty" },
+      { id: "4", title: "🦞 You caught a lobster", desc: "Nice" },
+      { id: "5", title: "🦀 You caught a crab", desc: "Let him dance in peace!" },
+      { id: "6", title: "🦑 You caught a squid", desc: "A...squid..." },
+      { id: "7", title: "🐙 You caught an octopus", desc: "Impressive" },
+      { id: "8", title: "🦈 You caught a shark", desc: "JO BRO WTF" },
+      { id: "9", title: "🐋 You caught a whale", desc: "Physics has left the game" },
     ];
 
     const caughtFish = embedTexts[mathRandomInt(0, embedTexts.length - 1)];

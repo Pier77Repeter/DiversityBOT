@@ -9,6 +9,10 @@ function createLogger(initialFileName) {
     currentFileName = "UNKNOWN_FILE";
   }
 
+  function debug(message) {
+    console.debug(`[${currentFileName}/DEBUG]: ${message}`);
+  }
+
   function info(message) {
     console.log(`[${currentFileName}/INFO]: ${message}`);
   }
@@ -34,6 +38,7 @@ function createLogger(initialFileName) {
   }
 
   return {
+    debug,
     info,
     warn,
     error,
