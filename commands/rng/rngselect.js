@@ -2,6 +2,7 @@ const { EmbedBuilder } = require("discord.js");
 const msgErrorHandler = require("../../utils/msgErrorHandler.js");
 const configChecker = require("../../utils/configChecker.js");
 const dbJsonDataGet = require("../../utils/dbJsonDataGet.js");
+const missingDataHandler = require("../../utils/missingDataHandler.js");
 
 module.exports = {
   name: "rngselect",
@@ -25,7 +26,12 @@ module.exports = {
       message.author.id,
     ]);
 
-    let userMeter = row.rows[0] || { rng_meter_selection: null, rng_meter_progress: 0 };
+    if (row.rowCount === 0) {
+      missingDataHandler(message, message.author.id);
+      return;
+    }
+
+    const userMeter = row.rows[0];
 
     if (!args[0] || args[0].toLowerCase() === "none") {
       userMeter.rng_meter_selection = null;

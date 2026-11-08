@@ -106,24 +106,40 @@ async function checkPet(client, message, row, unixNow) {
   message.reply({ embeds: [embed] }).catch(msgErrorHandler);
 }
 
-// RNG SECTION: rollRngDrop(), announceRngDrop() and checkRngDrop()
-function rollRngDrop(serverDrops, globalDropChance, rngMeterSelection, rngMeterProgress) {
+async function checkRngDrop(client, message, row, unixNow) {
+  // either rng is disabled or is still in cooldown
+  if (!row.rng_cmd || Number(row.rng_cooldown) !== unixNow) return;
+
+  const foundDrops = row.found_drops;
+  if (foundDrops === null) return; // shouldn't happen but good to have
+
+  if (row.rng_meter_selection) {
+    await client.database.query("UPDATE users SET rng_meter_progress = rng_meter_progress + $1 WHERE server_id = $2 AND user_id = $3", [
+      message.content.startsWith("d!") ? 1.2 : 1,
+      message.guildId,
+      message.author.id,
+    ]);
+  }
+
+  // user DID not trigger an item drop
+  if (rng() > row.rng_drop_chance) return;
+
   let totalPoolChance = 0;
   let guaranteedDrop = null;
 
-  const drops = serverDrops.map((drop) => {
+  const drops = row.server_drops.map((drop) => {
     let currentChance = drop.chance;
 
     // the rng meter may cause the rng ceiling to overflow 100% (ex 101%) due to the exp increase
-    if (rngMeterSelection === drop.id) {
-      const effectiveChance = (globalDropChance / 100) * (drop.chance / 100);
+    if (row.rng_meter_selection === drop.id) {
+      const effectiveChance = (row.rng_drop_chance / 100) * (drop.chance / 100);
       const maxScore = effectiveChance < 1 ? Math.ceil(1 / effectiveChance) : 1;
 
-      if (rngMeterProgress >= maxScore) {
+      if (row.rng_meter_progress >= maxScore) {
         currentChance = 100;
         guaranteedDrop = { ...drop, activeChance: 100 };
       } else {
-        currentChance = drop.chance * (1 + 2 * (rngMeterProgress / maxScore));
+        currentChance = drop.chance * (1 + 2 * (row.rng_meter_progress / maxScore));
       }
     }
 
@@ -131,22 +147,39 @@ function rollRngDrop(serverDrops, globalDropChance, rngMeterSelection, rngMeterP
     return { ...drop, activeChance: currentChance };
   });
 
-  if (guaranteedDrop) return guaranteedDrop;
+  let wonReward = guaranteedDrop;
 
-  const itemRoll = rng(Math.max(100, totalPoolChance));
+  if (!wonReward) {
+    const itemRoll = rng(Math.max(100, totalPoolChance));
+    let cumulativeChance = 0;
 
-  let cumulativeChance = 0;
+    for (const drop of drops) {
+      cumulativeChance += drop.activeChance;
 
-  for (const drop of drops) {
-    cumulativeChance += drop.activeChance;
-
-    if (itemRoll <= cumulativeChance) return drop;
+      if (itemRoll <= cumulativeChance) {
+        wonReward = drop;
+        break;
+      }
+    }
   }
 
-  return null;
-}
+  if (!wonReward) return; // double unlucky :(
 
-async function announceRngDrop(client, message, wonReward, isMeterDrop) {
+  const isMeterDrop = row.rng_meter_selection === wonReward.id;
+  if (isMeterDrop) await client.database.query("UPDATE users SET rng_meter_progress = 0 WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
+
+  const currentDate = new Date().toLocaleString();
+  const existingItem = foundDrops.findIndex((item) => item.id === wonReward.id);
+
+  if (existingItem !== -1) {
+    foundDrops[existingItem].quantity = (foundDrops[existingItem].quantity || 1) + 1;
+    foundDrops[existingItem].last_found_date = currentDate;
+  } else {
+    foundDrops.push({ id: wonReward.id, quantity: 1, first_found_date: currentDate, last_found_date: currentDate });
+  }
+
+  if ((await dbJsonDataSet(client, message, "found_drops", foundDrops, message.author.id, false)) === null) return;
+
   const odds = wonReward.chance;
   const embed = new EmbedBuilder();
   const meterText = isMeterDrop ? `\n\n**🎯 RNG Meter!** Reselected the **${wonReward.name}**` : "";
@@ -209,45 +242,6 @@ async function announceRngDrop(client, message, wonReward, isMeterDrop) {
   embed.setFooter({ text: message.author.username, iconURL: message.author.avatarURL({ dynamic: true }) }).setTimestamp();
 
   message.reply({ embeds: [embed] }).catch(msgErrorHandler);
-}
-
-async function checkRngDrop(client, message, row, unixNow) {
-  // either rng is disabled or is still in cooldown
-  if (!row.rng_cmd || Number(row.rng_cooldown) !== unixNow) return;
-
-  const foundDrops = row.found_drops;
-  if (foundDrops === null) return; // shouldn't happen but good to have
-
-  if (row.rng_meter_selection) {
-    await client.database.query("UPDATE users SET rng_meter_progress = rng_meter_progress + $1 WHERE server_id = $2 AND user_id = $3", [
-      message.content.startsWith("d!") ? 1.2 : 1,
-      message.guildId,
-      message.author.id,
-    ]);
-  }
-
-  // user DID not trigger an item drop
-  if (rng() > row.rng_drop_chance) return;
-
-  const wonReward = rollRngDrop(row.server_drops, row.rng_drop_chance, row.rng_meter_selection, row.rng_meter_progress);
-  if (!wonReward) return; // double unlucky :(
-
-  const isMeterDrop = row.rng_meter_selection === wonReward.id;
-  if (isMeterDrop) await client.database.query("UPDATE users SET rng_meter_progress = 0 WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
-
-  const currentDate = new Date().toLocaleString();
-  const existingItem = foundDrops.findIndex((item) => item.id === wonReward.id);
-
-  if (existingItem !== -1) {
-    foundDrops[existingItem].quantity = (foundDrops[existingItem].quantity || 1) + 1;
-    foundDrops[existingItem].last_found_date = currentDate;
-  } else {
-    foundDrops.push({ id: wonReward.id, quantity: 1, first_found_date: currentDate, last_found_date: currentDate });
-  }
-
-  if ((await dbJsonDataSet(client, message, "found_drops", foundDrops, message.author.id, false)) === null) return;
-
-  await announceRngDrop(client, message, wonReward, isMeterDrop);
 }
 
 // this functions contains all the shit for updating user data in db
@@ -388,8 +382,8 @@ module.exports = (client) => {
     // re-naiming the logger, else it will keep the specific log of the command, below
     logger.setFileName("MessageCreate");
 
-    // helper function to update user stuff
     if (!isBotRestarting) {
+      // helper function to update user stuff, only update when not restarting
       await userDataUpdater(client, message).catch((error) => {
         // no biggie if data can't be updated, just print it out
         logger.error("UserDataUpdater threw an error, look here", error);

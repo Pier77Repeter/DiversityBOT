@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require("@discordjs/builders");
 const { economySettings } = require("../../config.json");
+const missingDataHandler = require("../../utils/missingDataHandler");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
@@ -14,6 +15,11 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (res.rowCount === 0) {
+      if (user.id === message.author.id) {
+        missingDataHandler(message, message.author.id);
+        return;
+      }
+
       embed
         .setColor(0x808080)
         .setTitle(`${user.username}'s Taxes`)

@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require("discord.js");
+const missingDataHandler = require("../../utils/missingDataHandler");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
@@ -12,6 +13,11 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (row.rowCount === 0) {
+      if (user.id === message.author.id) {
+        missingDataHandler(message, message.author.id);
+        return;
+      }
+
       embed
         .setColor(0x33cc00)
         .setTitle(`${user.username}'s social credits`)

@@ -1,6 +1,7 @@
 const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
 const path = require("path");
 const configChecker = require("../../utils/configChecker");
+const missingDataHandler = require("../../utils/missingDataHandler");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
@@ -26,6 +27,11 @@ module.exports = {
     embed.setColor(0x00cccc);
 
     if (row.rowCount === 0) {
+      if (user.id === message.author.id) {
+        missingDataHandler(message, message.author.id);
+        return;
+      }
+
       embed.setTitle(`${user.username} Current Level`).setDescription("Bro is at level **0** 🤦‍♂️🤦‍♂️🤦‍♂️").setThumbnail(user.displayAvatarURL());
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);

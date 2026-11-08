@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
 const logger = require("../logger")("ManageUserMoney");
+const missingDataHandler = require("./missingDataHandler");
 const msgErrorHandler = require("./msgErrorHandler");
 
 // easy thing to manage money, add, subtract ONLY for message author!!!
@@ -9,7 +10,10 @@ module.exports = async function manageUserMoney(client, message, operation, amou
   const row = res.rows[0];
 
   // this shouldn't happen SINCE data is created in 'messageCreate' event
-  if (!row) throw new Error(`Failed to find in database: Server '${message.guildId}' - User '${message.author.id}'`);
+  if (!row) {
+    missingDataHandler(message, message.author.id);
+    return null;
+  }
 
   // INTSSSSSSSSSSSSSSSSS
   const money = Number(row.money);

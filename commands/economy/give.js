@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require("@discordjs/builders");
+const missingDataHandler = require("../../utils/missingDataHandler");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
@@ -30,8 +31,9 @@ module.exports = {
     // first check message author's money
     const row = await client.database.query("SELECT money FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
-    if (!row) {
-      throw `The record 'money' was NOT found in the database, requested from Server: '${message.guildId}' - User: '${message.author.id}'`;
+    if (row.rowCount === 0) {
+      missingDataHandler(message, message.author.id);
+      return;
     }
 
     // second check mentioned member's money

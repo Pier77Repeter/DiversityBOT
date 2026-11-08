@@ -1,4 +1,5 @@
 const { EmbedBuilder, PermissionsBitField } = require("discord.js");
+const missingDataHandler = require("../../utils/missingDataHandler");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
@@ -34,6 +35,11 @@ module.exports = {
     const row = await client.database.query("SELECT rng_meter_progress FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, user.id]);
 
     if (row.rowCount === 0) {
+      if (user.id === message.author.id) {
+        missingDataHandler(message, message.author.id);
+        return;
+      }
+
       embed.setColor(0xff0000).setTitle("❌ Error").setDescription(`You can't add rng exp to ${user.username} because he never tried EVEN 1 of my commands! >:(`);
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);

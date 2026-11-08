@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, MessageFlags, ButtonStyle, ComponentType, ButtonBuilder, ActionRowBuilder } = require("discord.js");
 const configChecker = require("../utils/configChecker");
 const modActionLogger = require("../utils/modActionLogger");
+const missingDataHandler = require("../utils/missingDataHandler");
 const msgErrorHandler = require("../utils/msgErrorHandler");
 
 module.exports = {
@@ -34,7 +35,12 @@ module.exports = {
     const checkRow = await client.database.query("SELECT warns FROM users WHERE server_id = $1 AND user_id = $2", [interaction.guildId, member.user.id]);
 
     if (checkRow.rowCount === 0) {
-      embed.setColor(0xff0000).setTitle("❌ Error").setDescription("Failed to get the user's warns from my database");
+      if (member.user.id === interaction.user.id) {
+        missingDataHandler(interaction, interaction.user.id);
+        return;
+      }
+
+      embed.setColor(0x33ff33).setTitle(`🚨 ${member.user.tag}'s Warns`).setDescription(`The user **${member.user.tag}** has a total of **0** warns`);
 
       interaction.reply({ embeds: [embed], flags: MessageFlags.Ephemeral }).catch(msgErrorHandler);
       return;

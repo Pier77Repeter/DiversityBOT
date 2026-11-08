@@ -1,6 +1,7 @@
 const { EmbedBuilder, AttachmentBuilder } = require("discord.js");
 const path = require("path");
 const configChecker = require("../../utils/configChecker");
+const missingDataHandler = require("../../utils/missingDataHandler");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
@@ -24,6 +25,11 @@ module.exports = {
     const row = await client.database.query("SELECT xp, next_xp FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, user.id]);
 
     if (row.rowCount === 0) {
+      if (user.id === message.author.id) {
+        missingDataHandler(message, message.author.id);
+        return;
+      }
+
       embed.setColor(0x00cccc).setTitle(`${user.username} current XP`).setDescription("Bro has literally **0 XP** 🤦‍♂️").setThumbnail(user.displayAvatarURL());
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);

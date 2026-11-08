@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
 const dbJsonDataGet = require("../../utils/dbJsonDataGet");
+const missingDataHandler = require("../../utils/missingDataHandler");
 const manageUserMoney = require("../../utils/manageUserMoney");
 const dbJsonDataSet = require("../../utils/dbJsonDataSet");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
@@ -53,9 +54,8 @@ module.exports = {
 
     // this shouldn't happen since data is created before command gets executed, still wise to have this
     if (row.rowCount === 0) {
-      throw new Error(
-        ["The record 'money' was NOT found in the database, CHECK THE QUERY", `Requested from Server: '${message.guildId}' - User: '${message.author.id}'`].join("\n"),
-      );
+      missingDataHandler(message, message.author.id);
+      return;
     }
 
     const itemToBuy = args.join(" ").toLowerCase();

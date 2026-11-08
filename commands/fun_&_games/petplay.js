@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require("discord.js");
 const mathRandomInt = require("../../utils/mathRandomInt");
 const cooldownManager = require("../../utils/cooldownManager");
+const missingDataHandler = require("../../utils/missingDataHandler");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
@@ -12,7 +13,12 @@ module.exports = {
 
     const embed = new EmbedBuilder();
 
-    if (row.rowCount === 0 || !row.rows[0].has_pet) {
+    if (row.rowCount === 0) {
+      missingDataHandler(message, message.author.id);
+      return;
+    }
+
+    if (!row.rows[0].has_pet) {
       embed.setColor(0xff0000).setTitle("❌ Missing Pet").setDescription("You don't have a pet, adopt it with **d!adopt <@user>**");
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);

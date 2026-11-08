@@ -1,4 +1,5 @@
 const { EmbedBuilder, ButtonStyle, ActionRowBuilder, ComponentType, MessageFlags, ButtonBuilder } = require("discord.js");
+const missingDataHandler = require("../../utils/missingDataHandler");
 const cooldownManager = require("../../utils/cooldownManager");
 const mathRandomInt = require("../../utils/mathRandomInt");
 const manageUserMoney = require("../../utils/manageUserMoney");
@@ -13,7 +14,12 @@ module.exports = {
 
     const embed = new EmbedBuilder();
 
-    if (row.rowCount === 0 || !row.rows[0].job_type) {
+    if (row.rowCount === 0) {
+      missingDataHandler(message, message.author.id);
+      return;
+    }
+
+    if (!row.rows[0].job_type) {
       embed.setColor(0xff0000).setTitle("❌ Need a Job").setDescription("You don't have a job right now, do **d!jobs** to get one");
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);

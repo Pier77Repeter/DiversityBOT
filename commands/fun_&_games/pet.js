@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require("discord.js");
+const missingDataHandler = require("../../utils/missingDataHandler");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
@@ -13,6 +14,11 @@ module.exports = {
     );
 
     const embed = new EmbedBuilder();
+
+    if (row.rowCount === 0 && user.id === message.author.id) {
+      missingDataHandler(message, message.author.id);
+      return;
+    }
 
     if (row.rowCount === 0 || !row.rows[0].has_pet) {
       embed.setColor(0xff0000).setTitle("❌ Missing Pet").setDescription("No pet here, type **d!adopt <@user>** to adopt one");

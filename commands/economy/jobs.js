@@ -1,4 +1,5 @@
 const { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, MessageFlags } = require("discord.js");
+const missingDataHandler = require("../../utils/missingDataHandler");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
@@ -8,6 +9,11 @@ module.exports = {
     const row = await client.database.query("SELECT job_type FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
     const embed = new EmbedBuilder();
+
+    if (row.rowCount === 0) {
+      missingDataHandler(message, message.author.id);
+      return;
+    }
 
     // null is a string in db
     if (row.rows[0].job_type) {

@@ -2,6 +2,7 @@ const { EmbedBuilder } = require("discord.js");
 const msgErrorHandler = require("../../utils/msgErrorHandler.js");
 const configChecker = require("../../utils/configChecker.js");
 const embedPaginator = require("../../utils/embedPaginator.js");
+const missingDataHandler = require("../../utils/missingDataHandler.js");
 const rngRarityLabel = require("../../utils/rngRarityLabel.js");
 
 module.exports = {
@@ -26,6 +27,11 @@ module.exports = {
     const row = await client.database.query("SELECT u.found_drops, s.server_drops FROM users u, servers s WHERE u.server_id = $1 AND u.user_id = $2", [message.guildId, user.id]);
 
     if (row.rowCount === 0) {
+      if (user.id === message.author.id) {
+        missingDataHandler(message, message.author.id);
+        return;
+      }
+
       embed.setColor(0xff0000).setTitle("❌ Nothing To See").setDescription("This user never used even one of my commands >:(");
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);

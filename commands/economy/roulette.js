@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require("discord.js");
+const missingDataHandler = require("../../utils/missingDataHandler");
 const manageUserMoney = require("../../utils/manageUserMoney");
 const cooldownManager = require("../../utils/cooldownManager");
 const mathRandomInt = require("../../utils/mathRandomInt");
@@ -25,13 +26,7 @@ module.exports = {
     const row = await client.database.query("SELECT money FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 
     if (row.rowCount === 0) {
-      embed
-        .setColor(0xff0000)
-        .setTitle("❌ Error")
-        .setDescription("Failed to get your money, **report this issue with your ID**")
-        .addFields({ name: "Submit here", value: "https://discord.gg/KxadTdz" });
-
-      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      missingDataHandler(message, message.author.id);
       return;
     }
 

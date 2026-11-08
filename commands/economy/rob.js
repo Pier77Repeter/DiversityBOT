@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require("discord.js");
 const dbJsonDataGet = require("../../utils/dbJsonDataGet");
 const dbJsonDataSet = require("../../utils/dbJsonDataSet");
+const missingDataHandler = require("../../utils/missingDataHandler");
 const manageUserMoney = require("../../utils/manageUserMoney");
 const cooldownManager = require("../../utils/cooldownManager");
 const mathRandomInt = require("../../utils/mathRandomInt");
@@ -23,7 +24,12 @@ module.exports = {
     const row = await client.database.query("SELECT money FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, mentionedUser.id]);
 
     if (row.rowCount === 0) {
-      embed.setColor(0xff0000).setTitle("❌ Nope").setDescription(`You can't rob ${user.username} because he never tried EVEN 1 of my commands! >:(`);
+      if (mentionedUser.id === message.author.id) {
+        missingDataHandler(message, message.author.id);
+        return;
+      }
+
+      embed.setColor(0xff0000).setTitle("❌ Nope").setDescription(`You can't rob ${mentionedUser.username} because he never tried EVEN 1 of my commands! >:(`);
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);
       return;

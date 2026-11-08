@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
 const configChecker = require("../../utils/configChecker");
+const missingDataHandler = require("../../utils/missingDataHandler");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
@@ -28,6 +29,11 @@ module.exports = {
 
     // hmmmmmmmmmmmmmmmmm, better than row.rowCount?
     if (!row) {
+      if (user.id === message.author.id) {
+        missingDataHandler(message, message.author.id);
+        return;
+      }
+
       embed.setColor(0xff0000).setTitle("😥 Very Sad").setDescription("It seems like the user dosen't know i exist and won't get the materials for his tree");
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);

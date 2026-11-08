@@ -1,6 +1,7 @@
 const { EmbedBuilder, PermissionsBitField, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, MessageFlags } = require("discord.js");
 const configChecker = require("../../utils/configChecker");
 const modActionLogger = require("../../utils/modActionLogger");
+const missingDataHandler = require("../../utils/missingDataHandler");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
@@ -30,14 +31,19 @@ module.exports = {
 
     const row = await client.database.query("SELECT warns FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, user.id]);
 
+    if (row.rowCount === 0 && user.id === message.author.id) {
+      missingDataHandler(message, message.author.id);
+      return;
+    }
+
     if (row.rowCount === 0 || row.rows[0].warns === 0) {
-      embed.setColor(0x33ff33).setTitle(`🚨${user.tag}'s Warns`).setDescription(`The user **${user.tag}** has a total of **0** warns`);
+      embed.setColor(0x33ff33).setTitle(`🚨 ${user.tag}'s Warns`).setDescription(`The user **${user.tag}** has a total of **0** warns`);
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);
       return;
     }
 
-    embed.setColor(0x33ff33).setTitle(`🚨${user.tag}'s Warns`).setDescription(`The user **${user.tag}** has a total of **${row.rows[0].warns}** warns`);
+    embed.setColor(0x33ff33).setTitle(`🚨 ${user.tag}'s Warns`).setDescription(`The user **${user.tag}** has a total of **${row.rows[0].warns}** warns`);
 
     const btnClearWarns = new ButtonBuilder().setCustomId("warns-btn-btnClearWarns").setLabel("Clear warns").setStyle(ButtonStyle.Primary);
     const actionRow = new ActionRowBuilder().addComponents(btnClearWarns);

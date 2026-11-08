@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require("discord.js");
 const msgErrorHandler = require("../../utils/msgErrorHandler.js");
 const configChecker = require("../../utils/configChecker.js");
+const missingDataHandler = require("../../utils/missingDataHandler.js");
 const rngRarityLabel = require("../../utils/rngRarityLabel.js");
 const rngRarityColor = require("../../utils/rngRarityColor.js");
 
@@ -59,6 +60,11 @@ module.exports = {
     );
 
     if (row.rowCount === 0) {
+      if (user.id === message.author.id) {
+        missingDataHandler(message, message.author.id);
+        return;
+      }
+
       embed.setColor(0xff0000).setTitle("❌ Nothing To See").setDescription("This user's RNG Meter is empty because he did not use even 1 of my commands");
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);

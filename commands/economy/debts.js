@@ -1,4 +1,5 @@
 const { EmbedBuilder, ButtonBuilder, ButtonStyle, MessageFlags, ActionRowBuilder, ComponentType } = require("discord.js");
+const missingDataHandler = require("../../utils/missingDataHandler");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
@@ -12,6 +13,11 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     if (row.rowCount === 0) {
+      if (user.id === message.author.id) {
+        missingDataHandler(message, message.author.id);
+        return;
+      }
+
       embed.setColor(0x808080).setTitle(`${user.username} dosen't have any debts`).setDescription("At the moment there are no debts to pay");
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);
@@ -62,6 +68,12 @@ module.exports = {
       if (btnInteraction.customId === "btn-debts-btnPayDebts") {
         // re-cheking the money, since you could send the command 2 times and fuck up everything
         row = await client.database.query("SELECT user_id, money, bank_money, debts FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, user.id]);
+
+        if (row.rowCount === 0) {
+          missingDataHandler(message, message.author.id);
+          return;
+        }
+
         data = row.rows[0]; // update the let
 
         if (money === 0) {

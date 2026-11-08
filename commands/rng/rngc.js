@@ -1,6 +1,7 @@
 const { EmbedBuilder } = require("discord.js");
 const msgErrorHandler = require("../../utils/msgErrorHandler.js");
 const configChecker = require("../../utils/configChecker.js");
+const missingDataHandler = require("../../utils/missingDataHandler.js");
 const rngRarityColor = require("../../utils/rngRarityColor.js");
 const rngRarityLabel = require("../../utils/rngRarityLabel.js");
 
@@ -40,9 +41,7 @@ module.exports = {
     ]);
 
     if (row.rowCount === 0) {
-      embed.setColor(0xff0000).setTitle("❌ Nothing").setDescription("No drops have been created, setup one with **d!dropadd**");
-
-      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      missingDataHandler(message, message.author.id);
       return;
     }
 

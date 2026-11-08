@@ -1,5 +1,6 @@
 const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ComponentType, MessageFlags, ButtonStyle } = require("discord.js");
 const configChecker = require("../../utils/configChecker");
+const missingDataHandler = require("../../utils/missingDataHandler");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
@@ -32,6 +33,11 @@ module.exports = {
     const isChristmasSeason = date.getMonth() === 11 && date.getDate() <= 25 ? true : false;
 
     if (!row) {
+      if (user.id === message.author.id) {
+        missingDataHandler(message, message.author.id);
+        return;
+      }
+
       embed.setColor(0xff0000).setTitle("😥 Very Very Sad");
 
       if (isChristmasSeason) {

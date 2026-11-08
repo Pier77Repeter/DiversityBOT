@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require("discord.js");
+const missingDataHandler = require("../../utils/missingDataHandler");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
@@ -13,6 +14,11 @@ module.exports = {
     const adoptedMember = message.mentions.members.first().user;
 
     const row = await client.database.query("SELECT has_pet FROM users WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
+
+    if (row.rowCount === 0) {
+      missingDataHandler(message, message.author.id);
+      return;
+    }
 
     const embed = new EmbedBuilder().setColor(0xff0000).setTitle("❌ Got a Pet").setDescription("You already have a pet, type **d!pet** to check it!");
 

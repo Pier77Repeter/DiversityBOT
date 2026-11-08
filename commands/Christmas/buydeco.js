@@ -1,5 +1,6 @@
 const { EmbedBuilder } = require("discord.js");
 const configChecker = require("../../utils/configChecker");
+const missingDataHandler = require("../../utils/missingDataHandler");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
 
 module.exports = {
@@ -18,23 +19,13 @@ module.exports = {
       return;
     }
 
-    const res = await client.database.query("SELECT tree_level, golde_coins FROM events WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
+    const res = await client.database.query("SELECT tree_level, golden_coins FROM events WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
     // hmmmmm, looks cleaner
     const row = res.rows[0];
 
     // as you can see, instead of 'row.rowCount === 0'
     if (!row) {
-      embed
-        .setColor(0xff0000)
-        .setTitle("⚠️ Critical Error")
-        .setDescription("Failed to get your database data, please **report this error with the server id and your user id**")
-        .addFields(
-          { name: "Server ID", value: `\`${message.guildId}\``, inline: true },
-          { name: "User ID", value: `\`${message.author.id}\``, inline: true },
-          { name: "Submit Report Here", value: "https://discord.gg/KxadTdz" },
-        );
-
-      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      missingDataHandler(message, message.author.id);
       return;
     }
 
@@ -49,7 +40,7 @@ module.exports = {
 
     switch (deco) {
       case "christmas star":
-        if (row.goldenCoins < 300) {
+        if (row.golden_coins < 300) {
           embed.setColor(0xff0000).setTitle("❌ Not Enough Money").setDescription("You need at least **300 🪙** golden coins to buy the Christmas Star!");
 
           message.reply({ embeds: [embed] }).catch(msgErrorHandler);
@@ -67,7 +58,7 @@ module.exports = {
         return;
 
       case "candles":
-        if (row.goldenCoins < 100) {
+        if (row.golden_coins < 100) {
           embed.setColor(0xff0000).setTitle("❌ Not Enough Money").setDescription("You need at least **100 🪙** golden coins to buy the Candles!");
 
           message.reply({ embeds: [embed] }).catch(msgErrorHandler);
@@ -85,7 +76,7 @@ module.exports = {
         return;
 
       case "christmas balls":
-        if (row.goldenCoins < 50) {
+        if (row.golden_coins < 50) {
           embed.setColor(0xff0000).setTitle("❌ Not Enough Money").setDescription("You need at least **50 🪙** golden coins to buy the Christmas Balls!");
 
           message.reply({ embeds: [embed] }).catch(msgErrorHandler);
@@ -100,7 +91,7 @@ module.exports = {
         return;
 
       case "tree decorations":
-        if (row.goldenCoins < 50) {
+        if (row.golden_coins < 50) {
           embed.setColor(0xff0000).setTitle("❌ Not Enough Money").setDescription("You need at least **50 🪙** golden coins to buy the Tree Decorations!");
 
           message.reply({ embeds: [embed] }).catch(msgErrorHandler);
