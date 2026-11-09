@@ -17,7 +17,7 @@ module.exports = (client) => {
       .setTitle(track.title)
       .setDescription(
         [
-          `"Author: **${track.author}**"`,
+          `Author: **${track.author}**`,
           `Duration: **${track.duration}**`,
           `Views: **${track.views}**`,
           `Url: **${track.url}**`,

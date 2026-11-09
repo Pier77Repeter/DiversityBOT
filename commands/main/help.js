@@ -50,9 +50,9 @@ module.exports = {
           inline: false,
         },
         {
-          name: "🎉 Ongoing Event: None",
-          value: "More info in the Discord server!",
-          //value: "Type d!event or /event to see more details!",
+          name: "🎉 Ongoing Event: Christmas Season 🎄🎅",
+          //value: "More info in the Discord server!",
+          value: "Type d!event or /event to see more details!",
           inline: false,
         },
       )
@@ -283,6 +283,7 @@ module.exports = {
                   "**d!modlog <#channel>** - Set the channel for logging mod actions (Only admin)",
                   "**d!clean <amount>** - Remove an amount of messages from a channel (Only admin)",
                   "**d!kick <@user> <reason>** - Kick mentioned user (Only admin)",
+                  "**d!info <commandName>** - Shows the description and aliases of a command",
                   "**d!ban <@user> <reason>** - Ban mentioned user (Only admin)",
                   "**d!unban <userId> <reason>** - Unban the user from the server (Only admin)",
                   "**d!mute <@user> <minutes> <reason>** - Mute a member (Only admin)",

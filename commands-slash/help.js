@@ -29,6 +29,7 @@ module.exports = {
           "**/warns** - Check or clear user warns *(Only admin)*",
           "**/event** - Display the ongoing event",
           "**/news** - Check Bot's news",
+          "**/info** - Check description and aliases of a command",
           "**/server** - Check server stats",
           "**/member** - Check a member stats",
           "**/status** - Check my stats",
