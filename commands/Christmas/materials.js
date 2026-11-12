@@ -19,6 +19,15 @@ module.exports = {
       return;
     }
 
+    const isChristmasSeason = date.getMonth() === 11 && date.getDate() <= 25 ? true : false;
+
+    if (!isChristmasSeason) {
+      embed.setColor(0xff0000).setTitle("🌨️ Season Is Over").setDescription("The Christmas Season is over, this command will be unavailable until next December");
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
+    }
+
     const user = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
 
     const res = await client.database.query("SELECT twigs, leaves, golden_coins, deco_id1, deco_id2, deco_id3, deco_id4 FROM events WHERE server_id = $1 AND user_id = $2", [

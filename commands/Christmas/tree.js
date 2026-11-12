@@ -19,6 +19,17 @@ module.exports = {
       return;
     }
 
+    // getMonth() starts from 0 and goes to 11, month 0 is January and the month 11 is December
+    // from my view, the Christmas Season contiues until Epiphany, 6 Januray
+    const isChristmasSeason = date.getMonth() === 11 || (date.getMonth() === 0 && date.getDay() <= 6) ? true : false;
+
+    if (!isChristmasSeason) {
+      embed.setColor(0xff0000).setTitle("🌨️ Season Is Over").setDescription("The Christmas Season is over, this command will be unavailable until next December");
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
+    }
+
     const user = message.mentions.members.first() ? message.mentions.members.first().user : message.author;
 
     const res = await client.database.query("SELECT tree_level, twigs, leaves, deco_id1, deco_id2, deco_id3, deco_id4 FROM events WHERE server_id = $1 AND user_id = $2", [
@@ -29,8 +40,9 @@ module.exports = {
     const row = res.rows[0];
 
     const date = new Date();
-    // getMonth() starts from 0 and goes to 11, so the month 11 is December
-    const isChristmasSeason = date.getMonth() === 11 && date.getDate() <= 25 ? true : false;
+
+    // we can't build the tree past the 25th
+    const canBuildTreePeriod = date.getMonth() === 11 && date.getDate() <= 25 ? true : false;
 
     if (!row) {
       if (user.id === message.author.id) {
@@ -40,7 +52,7 @@ module.exports = {
 
       embed.setColor(0xff0000).setTitle("😥 Very Very Sad");
 
-      if (isChristmasSeason) {
+      if (canBuildTreePeriod) {
         embed.setDescription("It seems like the user dosen't know i exist and won't build his tree");
       } else {
         embed.setDescription("It seems like the user dosen't know i exist and didn't build his tree!");
@@ -50,7 +62,7 @@ module.exports = {
       return;
     }
 
-    if (isChristmasSeason) {
+    if (canBuildTreePeriod) {
       switch (row.tree_level) {
         case 0:
           embed

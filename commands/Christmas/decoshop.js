@@ -18,6 +18,15 @@ module.exports = {
       return;
     }
 
+    const isChristmasSeason = date.getMonth() === 11 && date.getDate() <= 25 ? true : false;
+
+    if (!isChristmasSeason) {
+      embed.setColor(0xff0000).setTitle("🌨️ Season Is Over").setDescription("The Christmas Season is over, this command will be unavailable until next December");
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
+    }
+
     embed
       .setColor(0x66cccc)
       .setTitle("🏪 The Decoration Shop")

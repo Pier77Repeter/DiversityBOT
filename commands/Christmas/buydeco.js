@@ -19,6 +19,17 @@ module.exports = {
       return;
     }
 
+    // we gotta check if we are still in Christmas Season before the 26th of December
+    // technically Christmas Season ends on the 6th of January but you have time until the 25th of December to complete the tree
+    const isChristmasSeason = date.getMonth() === 11 && date.getDate() <= 25 ? true : false;
+
+    if (!isChristmasSeason) {
+      embed.setColor(0xff0000).setTitle("🌨️ Season Is Over").setDescription("The Christmas Season is over, this command will be unavailable until next December");
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
+    }
+
     const res = await client.database.query("SELECT tree_level, golden_coins FROM events WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
     // hmmmmm, looks cleaner
     const row = res.rows[0];
