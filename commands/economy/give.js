@@ -10,7 +10,7 @@ module.exports = {
 
     const embed = new EmbedBuilder();
 
-    // giving money to yourself? whats the point
+    // giving money to yourself? what's the point
     if (user.id === message.author.id) {
       embed.setColor(0xff0000).setTitle("❌ Nope").setDescription("You can't give money to yourself");
 

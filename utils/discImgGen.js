@@ -402,7 +402,7 @@ module.exports = async function discImgGen(client, message, imageName, mentioned
       embed
         .setColor(0xff0000)
         .setTitle("⚠️ Critical Error")
-        .setDescription("Apparently the image i'm trying to generate dosen't exist, this is a bug, this is not supposed to happen, i am sorry.")
+        .setDescription("Apparently the image i'm trying to generate doesn't exist, this is a bug, this is not supposed to happen, i am sorry.")
         .addFields({ name: "Submit Report Here", value: "https://discord.gg/KxadTdz" });
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);

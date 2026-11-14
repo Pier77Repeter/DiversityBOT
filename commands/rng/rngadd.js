@@ -120,7 +120,7 @@ module.exports = {
       embed
         .setColor(0xff0000)
         .setTitle("❌ Drops List is Full")
-        .setDescription("This server the the maximum amount of possible drops configured, remove an existing drop with **d!rngdelete <itemId>** to add a new one");
+        .setDescription("This server has reached the maximum amount of possible drops configured, remove an existing drop with **d!rngdelete <itemId>** to add a new one");
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);
       return;

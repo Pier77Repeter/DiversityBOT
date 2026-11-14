@@ -58,7 +58,7 @@ module.exports = {
 
     let deletedCount = 0;
 
-    // in this chunk many things could go wrong while deleting the messages, dont wanna vomit the useless error, i trust this thing to delete the needed messages
+    // in this chunk many things could go wrong while deleting the messages, don't wanna vomit the useless error, i trust this thing to delete the needed messages
     try {
       const deleted = await message.channel.bulkDelete(messagesToProcess, true);
       deletedCount = deleted.size;

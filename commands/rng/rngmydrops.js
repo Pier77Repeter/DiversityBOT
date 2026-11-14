@@ -84,7 +84,7 @@ module.exports = {
       }
     }
 
-    // dont want duplicates
+    // don't want duplicates
     if (counter !== 0) {
       embeds.push(
         new EmbedBuilder()

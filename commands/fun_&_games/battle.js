@@ -47,7 +47,7 @@ module.exports = {
     let authorHp = 100;
     let opponentHp = 100;
     let battleDamage = 0;
-    let preventInfiniteLoop = 0; // i dont trust my own code O_O
+    let preventInfiniteLoop = 0; // i don't trust my own code O_O
 
     imageFile.setFile(path.join(process.cwd(), "media", "battleBegins.jpg")).setName("battleBegins.jpg");
     embed.setImage("attachment://battleBegins.jpg");

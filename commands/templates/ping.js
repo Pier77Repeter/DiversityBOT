@@ -16,7 +16,7 @@ module.exports = {
   // the last requiered field in the module.exports for normal commands, the execute() function, command logic goes here
   async execute(client, message, args) {
     // sending the reply, since it's the last thing it's gonna do, in some case we use 'await' to save the sent message
-    // in this case we dont use await because we dont need to wait for the message to be sent
+    // in this case we don't use await because we don't need to wait for the message to be sent
     // in case of error we are gonna check if the error is related to Discord API (not logged) or our code (logged)
     message.reply("🏓 Pong!").catch(msgErrorHandler);
   },

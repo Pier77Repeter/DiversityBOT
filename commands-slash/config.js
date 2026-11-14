@@ -1,31 +1,25 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const msgErrorHandler = require("../utils/msgErrorHandler");
+const missingDataHandler = require("../utils/missingDataHandler");
 
 module.exports = {
   data: new SlashCommandBuilder().setName("config").setDescription("Displays Bot configuration in the server"),
 
   async execute(client, interaction) {
-    const row = await client.database.query(
+    const res = await client.database.query(
       "SELECT mod_cmd, music_cmd, event_cmd, community_cmd, leveling_cmd, rng_cmd, rng_drop_chance, mod_log_channel FROM servers WHERE server_id = $1",
       [interaction.guildId],
     );
+    const row = res.rows[0];
 
-    const embed = new EmbedBuilder();
-
-    if (row.rowCount === 0) {
-      embed
-        .setColor(0xff0000)
-        .setTitle("⚠️ Critical Error")
-        .setDescription("Failed to get server configs, please **report this error with the server ID**")
-        .addFields({ name: "Server ID", value: `\`${interaction.guildId}\``, inline: true }, { name: "Submit Report Here", value: "https://discord.gg/KxadTdz" });
-
-      interaction.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    if (!row) {
+      missingDataHandler(interaction);
       return;
     }
 
-    const configs = row.rows[0];
+    const configs = row;
 
-    embed
+    const embed = new EmbedBuilder()
       .setColor(0x000099)
       .setTitle(`⚙️ ${interaction.guild.name}'s Bot Settings`)
       .setDescription("You can use **/setup** to turn on and off these configs, only admins can use that command")

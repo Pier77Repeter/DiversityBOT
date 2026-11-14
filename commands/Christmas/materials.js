@@ -43,7 +43,7 @@ module.exports = {
         return;
       }
 
-      embed.setColor(0xff0000).setTitle("😥 Very Sad").setDescription("It seems like the user dosen't know i exist and won't get the materials for his tree");
+      embed.setColor(0xff0000).setTitle("😥 Very Sad").setDescription("It seems like the user doesn't know i exist and won't get the materials for his tree");
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);
       return;

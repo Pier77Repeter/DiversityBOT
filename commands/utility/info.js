@@ -21,7 +21,7 @@ module.exports = {
     const command = isSlashCommand ? client.slashCommands.get(commandName) : client.commands.get(commandName);
 
     if (!command) {
-      embed.setColor("Red").setTitle("❌ Not Found").setDescription("The provided command dosen't exist, either type **d!help** or **/help**");
+      embed.setColor("Red").setTitle("❌ Not Found").setDescription("The provided command doesn't exist, either type **d!help** or **/help**");
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);
       return;

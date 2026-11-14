@@ -38,8 +38,8 @@ module.exports = {
     if (Number(row.rows[0].money) < 1000) {
       embed
         .setColor(0x808080)
-        .setTitle(`${mentionedUser.username} dosen't have enough money`)
-        .setDescription("This user dosen't have the minimum of **1000$** in his wallet, can't be robbed");
+        .setTitle(`${mentionedUser.username} doesn't have enough money`)
+        .setDescription("This user doesn't have the minimum of **1000$** in his wallet, can't be robbed");
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);
       return;

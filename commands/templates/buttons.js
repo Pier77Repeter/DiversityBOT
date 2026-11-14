@@ -79,7 +79,7 @@ module.exports = {
       btnThree.setDisabled(true);
 
       // updating the message sent by the bot with the updated actionRow with all the buttons disabled
-      // we dont need to await anything here, we dont care even if we fail to update it
+      // we don't need to await anything here, we don't care even if we fail to update it
       sentMessage.edit({ content: "Buttons has veen disabled! Time out", components: [actionRow] }).catch(msgErrorHandler);
     });
   },

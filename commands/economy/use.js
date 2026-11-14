@@ -96,7 +96,7 @@ module.exports = {
         return;
 
       default:
-        embed.setColor(0xff0000).setTitle("❌ Not Found").setDescription("That items dosen't exist, type **d!use** to see the list");
+        embed.setColor(0xff0000).setTitle("❌ Not Found").setDescription("That item doesn't exist, type **d!use** to see the list");
 
         message.reply({ embeds: [embed] }).catch(msgErrorHandler);
         return;

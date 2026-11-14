@@ -92,7 +92,7 @@ module.exports = {
         embed
           .setColor(0xff0000)
           .setTitle("❌ Invalid Category")
-          .setDescription("That config dosen't exist, choose between: **mod**, **music**, **event**, **community**, **leveling**, **rng**");
+          .setDescription("That config doesn't exist, choose between: **mod**, **music**, **event**, **community**, **leveling**, **rng**");
 
         message.reply({ embeds: [embed] }).catch(msgErrorHandler);
         return;

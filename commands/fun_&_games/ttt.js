@@ -33,7 +33,7 @@ module.exports = {
       timeoutTime: 60_000,
       xButtonStyle: "DANGER",
       oButtonStyle: "PRIMARY",
-      turnMessage: "{emoji} | Its turn of player **{player}**.",
+      turnMessage: "{emoji} | It's turn of player **{player}**.",
       winMessage: "{emoji} | **{player}** won the TicTacToe Game.",
       tieMessage: "The Game tied! No one won the Game!",
       timeoutMessage: "The Game went unfinished! No one won the Game!",

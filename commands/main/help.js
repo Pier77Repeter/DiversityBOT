@@ -50,13 +50,14 @@ module.exports = {
           inline: false,
         },
         {
-          name: "🎉 Ongoing Event: Christmas Season 🎄🎅",
+          //name: "🎉 Ongoing Event: None",
           //value: "More info in the Discord server!",
+          name: "🎉 Ongoing Event: Christmas Season 🎄🎅",
           value: "Type d!event or /event to see more details!",
           inline: false,
         },
       )
-      .setFooter({ text: "DiversityBOT© 2021-2026", iconURL: "attachment://DVC_highquality.jpg" });
+      .setFooter({ text: "DiversityBOT© 2021-2027", iconURL: "attachment://DVC_highquality.jpg" });
 
     const sentMessage = await message.reply({ embeds: [embed], files: [imageFile], components: [actionRow] }).catch(msgErrorHandler);
     // no message sent? well stop everything
@@ -113,7 +114,7 @@ module.exports = {
                   "**d!hangman** - Classic guess the word or dead game",
                   "**d!matchpairs** - Find the emoji pairs",
                   "**d!minesweeper** - Play the game nobody understands",
-                  "**d!pokeguess** - Guess the pokemon the the picture",
+                  "**d!pokeguess** - Guess the pokemon in the picture",
                   "**d!slots** - Simple slot machine",
                   "**d!snake** - Play the snake game on Discord",
                   "**d!trivia** - Guess the correct answers",

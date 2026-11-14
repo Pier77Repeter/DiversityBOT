@@ -62,7 +62,7 @@ module.exports = {
     const dropIndex = serverDrops.findIndex((drop) => drop.id === parseInt(id));
 
     if (dropIndex === -1) {
-      embed.setColor(0xff0000).setTitle("❌ Not found").setDescription(`Item with id **${id}** dosen't exist, check the list with **d!drops**`);
+      embed.setColor(0xff0000).setTitle("❌ Not found").setDescription(`Item with id **${id}** doesn't exist, check the list with **d!drops**`);
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);
       return;

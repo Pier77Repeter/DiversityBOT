@@ -138,7 +138,7 @@ module.exports = {
 
       hasClickedBtn = true;
 
-      // probability to get fired, put this here so i dont copy and paste it every time
+      // probability to get fired, put this here so i don't copy and paste it every time
       if (mathRandomInt(1, 7) === 1) {
         await client.database.query("UPDATE users SET job_type = NULL WHERE server_id = $1 AND user_id = $2", [message.guildId, message.author.id]);
 

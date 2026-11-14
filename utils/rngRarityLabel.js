@@ -1,4 +1,4 @@
-// basic but dont want to rewrite it 4 times
+// basic but don't want to rewrite it 4 times
 module.exports = function getRarityLabel(chance) {
   if (chance < 0.1) return "Pray RNGesus";
   if (chance <= 1 && chance >= 0.1) return "Ask John RNG";

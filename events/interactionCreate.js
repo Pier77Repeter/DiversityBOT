@@ -16,7 +16,7 @@ module.exports = (client) => {
     // get the command
     const command = client.slashCommands.get(interaction.commandName);
 
-    // check if command dosen't exist
+    // check if command doesn't exist
     if (!command) return;
 
     // check if bot is restarting, you aren't supposed to use the bot while it restarts
@@ -70,7 +70,7 @@ module.exports = (client) => {
               "An unknown error prevented that command from running",
               "Consider that command... *aborted* due to an error",
               "The command fucking died",
-              "The perfect code dosen't exist, this is an example (your command got an error)",
+              "The perfect code doesn't exist, this is an example (your command got an error)",
               "your command got rekt by shitty code",
               "It's joever...",
               "Command execution got nuked, sorry",

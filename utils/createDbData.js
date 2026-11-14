@@ -2,7 +2,7 @@ const logger = require("../logger")("CreateDbData");
 
 // used in messageCreate.js, interactionCreate.js, warn.js and /warn
 module.exports = async function createDbData(client, serverId, userId) {
-  // the json data has been redesigned, if quantity = 0 its same as false
+  // the json data has been redesigned, if quantity = 0 it's same as false
   const items = [
     { id: "1", quantity: 0 },
     { id: "2", quantity: 0 },

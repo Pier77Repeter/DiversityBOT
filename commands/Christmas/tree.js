@@ -53,9 +53,9 @@ module.exports = {
       embed.setColor(0xff0000).setTitle("😥 Very Very Sad");
 
       if (canBuildTreePeriod) {
-        embed.setDescription("It seems like the user dosen't know i exist and won't build his tree");
+        embed.setDescription("It seems like the user doesn't know i exist and won't build his tree");
       } else {
-        embed.setDescription("It seems like the user dosen't know i exist and didn't build his tree!");
+        embed.setDescription("It seems like the user doesn't know i exist and didn't build his tree!");
       }
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);

@@ -126,7 +126,7 @@ module.exports = {
       const songIndex = Number(receivedMessage.content) - 1;
 
       if (isNaN(songIndex) || !search.tracks[songIndex]) {
-        // so we do not touch the original embed when the collector stops and we dont show double error
+        // so we do not touch the original embed when the collector stops and we don't show double error
         const errorEmbed = new EmbedBuilder().setColor("DarkRed").setTitle("❌ Invalid Choice").setDescription("The number you just sent was not present in the track list");
 
         receivedMessage.reply({ embeds: [errorEmbed] }).catch(msgErrorHandler);

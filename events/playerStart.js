@@ -9,7 +9,7 @@ module.exports = (client) => {
     const loopEnabled = queue.repeatMode === QueueRepeatMode.TRACK;
     const queueLoopEnabled = queue.repeatMode === QueueRepeatMode.QUEUE;
 
-    // in loop mode i dont want the bot to spam this
+    // in loop mode i don't want the bot to spam this
     if (loopEnabled || queueLoopEnabled) return;
 
     const embed = new EmbedBuilder()

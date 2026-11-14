@@ -12,6 +12,7 @@ const msgErrorHandler = require("../utils/msgErrorHandler");
 const rng = require("../utils/rng");
 const rngRarityColor = require("../utils/rngRarityColor");
 
+// THESE ARE HELPER FUNCTIONS FOR userDataUpdater()
 async function checkLevelUp(client, message, row) {
   // he did not level up
   if (!(row.leveling_cmd && row.xp >= row.next_xp)) return;
@@ -198,7 +199,7 @@ async function checkRngDrop(client, message, row, unixNow) {
     case "role": {
       const role = message.guild.roles.cache.get(wonReward.role_id);
       if (!role) {
-        embed.setDescription(`**${message.author.username}** just found a role that dosen't exist!\n\n*${wonReward.desc}*${meterText}`).addFields({
+        embed.setDescription(`**${message.author.username}** just found a role that doesn't exist!\n\n*${wonReward.desc}*${meterText}`).addFields({
           name: "IMPORTANT",
           value: `Tell the server owner that the drop with id **${wonReward.id}** does NOT have a valid role anymore and needs to be updated with a valid role`,
         });
@@ -424,9 +425,9 @@ module.exports = (client) => {
               "Try again, maybe with an actual command",
               "Oh hell nah i'm not gonna execute that",
               "What",
-              "Okay but that dosen't look like a command i know",
+              "Okay but that doesn't look like a command i know",
               "Unknown command, type d!help for more",
-              "Error: Command isn't registred",
+              "Error: Command isn't registered",
               "YOU TYPE D!HELP NOW!!!",
               `"I'm sorry, i don't recognize: ${commandName}`,
               `Hmm, i've never seen ${commandName} before. Did you mean something else?`,
@@ -498,7 +499,7 @@ module.exports = (client) => {
               "An unknown error prevented that command from running",
               "Consider that command... *aborted* due to an error",
               "The command fucking died",
-              "The perfect code dosen't exist, this is an example (your command got an error)",
+              "The perfect code doesn't exist, this is an example (your command got an error)",
               "your command got rekt by shitty code",
               "It's joever...",
               "Command execution got nuked, sorry",

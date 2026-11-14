@@ -91,7 +91,7 @@ module.exports = {
     });
 
     if (!foundSomething) {
-      embed.setColor(0xff0000).setTitle("❌ Item Not Found").setDescription("Item dosen't exist! Check the name with **d!inv** or **d!bucket** for fishes");
+      embed.setColor(0xff0000).setTitle("❌ Item Not Found").setDescription("Item doesn't exist! Check the name with **d!inv** or **d!bucket** for fishes");
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     }

@@ -26,7 +26,7 @@ module.exports = {
       const dbClient = await dbPool.connect();
 
       try {
-        // that's a lot of colums
+        // that's a lot of columns
         const setupQueries = `
         BEGIN;
 
@@ -171,7 +171,7 @@ module.exports = {
 
       logger.info("Music player operational :P");
     } catch (error) {
-      logger.error("Error registring music player extractor", error);
+      logger.error("Error registering music player extractor", error);
     }
 
     // loading events

@@ -52,7 +52,7 @@ module.exports = {
       return;
     }
 
-    // if user dosen't exist in database we gotta create it
+    // if user doesn't exist in database we gotta create it
     const checkRow = await client.database.query("SELECT EXISTS (SELECT 1 FROM users WHERE server_id = $1 AND user_id = $2)", [message.guildId, userToWarn.user.id]);
 
     if (!checkRow.rows[0].exists) {

@@ -3,7 +3,7 @@ const { EmbedBuilder } = require("discord.js");
 const logger = require("../logger")("PlayerError");
 const msgErrorHandler = require("../utils/msgErrorHandler");
 
-// when errors happens so that it dosen't vomit 1000 console errors
+// when errors happen so that it doesn't vomit 1000 console errors
 module.exports = (client) => {
   const player = useMainPlayer();
 

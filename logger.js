@@ -1,4 +1,4 @@
-// LOG EVERYTHING WITH THIS LOGS  LOGS  LOGS  LOGS  LOGS  LOGS  LOGS  LOGS
+// LOG EVERYTHING WITH THESE LOGS  LOGS  LOGS  LOGS  LOGS  LOGS  LOGS  LOGS
 function createLogger(initialFileName) {
   // we use 'let' so it can be reassigned by setFileName
   let currentFileName = initialFileName;

@@ -18,7 +18,7 @@ module.exports = {
         return;
       }
 
-      embed.setColor(0x808080).setTitle(`${user.username} dosen't have any debts`).setDescription("At the moment there are no debts to pay");
+      embed.setColor(0x808080).setTitle(`${user.username} doesn't have any debts`).setDescription("At the moment there are no debts to pay");
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);
       return;

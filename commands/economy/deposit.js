@@ -41,7 +41,7 @@ module.exports = {
 
         embed
           .setColor(0x33ff33)
-          .setDescription(`✅ Successfully transfered **${money}**$ to your bank`)
+          .setDescription(`✅ Successfully transferred **${money}**$ to your bank`)
           .setFields({
             name: "Transaction Ended!",
             value: ["💰 Now you have: **0$** in your wallet", `🏦 Now you have: **${bankMoney + money}$** in your bank`].join("\n"),
@@ -76,7 +76,7 @@ module.exports = {
 
         embed
           .setColor(0x33ff33)
-          .setDescription(`✅ Successfully transfered **${moneyToDep}**$ to your bank`)
+          .setDescription(`✅ Successfully transferred **${moneyToDep}**$ to your bank`)
           .setFields({
             name: "Transaction Ended!",
             value: [`💰 Now you have: **${money - parseInt(moneyToDep)}$** in your wallet`, `🏦 Now you have: **${bankMoney + parseInt(moneyToDep)}$** in your bank`].join("\n"),

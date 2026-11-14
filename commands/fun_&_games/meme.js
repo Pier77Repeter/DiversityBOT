@@ -107,7 +107,7 @@ module.exports = {
               .setTitle("STOP RIGHT THERE!")
               .setDescription("The post i was about to send is NSFW, luckily i've blocked it for your safety, if you are trying to get posts from NSFW subs, well, you can't!")
               .setImage("attachment://arnoldSchwarzeneggerStopMeme.jpg")
-              .setFooter(null); // so that it dosen't keep the 'Upvotes' footer
+              .setFooter(null); // so that it doesn't keep the 'Upvotes' footer
 
             btnCollector.stop();
 

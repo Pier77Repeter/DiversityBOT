@@ -1,31 +1,25 @@
 const { EmbedBuilder } = require("discord.js");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
+const missingDataHandler = require("../../utils/missingDataHandler");
 
 module.exports = {
   name: "config",
   description: "Shows bot configurations",
   async execute(client, message, args) {
-    const row = await client.database.query(
+    const res = await client.database.query(
       "SELECT mod_cmd, music_cmd, event_cmd, community_cmd, leveling_cmd, rng_cmd, rng_drop_chance, mod_log_channel FROM servers WHERE server_id = $1",
       [message.guildId],
     );
+    const row = res.rows[0];
 
-    const embed = new EmbedBuilder();
-
-    if (row.rowCount === 0) {
-      embed
-        .setColor(0xff0000)
-        .setTitle("⚠️ Critical Error")
-        .setDescription("Failed to get server configs, please **report this error with the server ID**")
-        .addFields({ name: "Server ID", value: `\`${message.guildId}\``, inline: true }, { name: "Submit Report Here", value: "https://discord.gg/KxadTdz" });
-
-      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+    if (!row) {
+      missingDataHandler(message);
       return;
     }
 
-    const configs = row.rows[0];
+    const configs = row;
 
-    embed
+    const embed = new EmbedBuilder()
       .setColor(0x000099)
       .setTitle(`⚙️ ${message.guild.name}'s Bot Settings`)
       .setDescription("You are seeing this with **d!config** command, i suggest you to use **/config** instead, it's much easier to configure")

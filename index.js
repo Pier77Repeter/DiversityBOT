@@ -1,11 +1,11 @@
 /*
 Author: Pier77Repeter
 Project started on: 21 August 2021
-Copyright: DiversityBOT© 2021-2026
+Copyright: DiversityBOT© 2021-2027
 Notes: DiversityBOT is the biggest project i've ever made!
 */
 
-// error handler to prevent crashes, top priority even tho position dosen't metter
+// error handler to prevent crashes, top priority even though position doesn't matter
 process.on("uncaughtException", (error) => {
   console.warn("\n[Error Handler]: CRASH PREVENTED, PLEASE LOOK AT THE ERROR!!!\n=============================================================");
   console.error(error);
@@ -102,7 +102,7 @@ const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildVoiceStates],
 });
 
-// updating Top.gg stats, at least for my bot, dont want to log it
+// updating Top.gg stats, at least for my bot, don't want to log it
 try {
   AutoPoster(null, client); // set temp to null, replace with 'topggToken' will change later when done with 2.2
 } catch {
@@ -143,7 +143,7 @@ client.once(Events.ClientReady, (readyClient) => {
           "Now with daily crashes!",
           "Still debugging!",
           "Is JavaScript real?",
-          "The perfect code dosen't exist",
+          "The perfect code doesn't exist",
           "It's a string! No...it's a json object!",
           "I am free and open-source!",
           "V2.0 took ages bruh",
