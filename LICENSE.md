@@ -21,13 +21,11 @@ This license is designed to be easy to understand. It explains what you **can** 
 ## What you **ARE NOT** allowed to do:
 
 - **Public distribution of modified versions:** You **cannot** publicly share or distribute your own modified or derived versions of this project. This includes:
-
   - Making a public project based on this one (like a public Discord bot).
   - Sharing the modified code on public platforms (like GitHub, public websites, etc.) if it's presented as a new or separate project.
   - Allowing the public to access or use your modified version as if it were your own public offering.
 
 - **Commercial use:** You **cannot** use this project for any commercial purposes. This means you **cannot**:
-
   - Sell the project itself.
   - Use it to offer services for which you charge money.
   - Use it in any way that generates revenue, directly or indirectly.
@@ -47,4 +45,4 @@ This license is designed to be easy to understand. It explains what you **can** 
 
 ---
 
-**DiversityBOT© 2021-2025 Copyright**
+**DiversityBOT© 2021-2027 Copyright**
