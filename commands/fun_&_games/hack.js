@@ -35,14 +35,14 @@ module.exports = {
 
     embed
       .setColor(0x990000)
-      .setDescription(["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> hack -u ", member.username, "\n", "```"].join(""))
+      .setDescription(["```diff", "\n", "DiversityBOT's Magic Terminal!", "\n", "\n", "\n", "\n", "\n", "> hack -u ", member.username, "\n", "```"].join(""))
       .setThumbnail("attachment://hackerMan.jpg");
 
     const sentMessage = await message.reply({ embeds: [embed], files: [imageFile] }).catch(msgErrorHandler);
     if (!sentMessage) return;
 
     await delay(2000);
-    embed.setDescription(["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▖] Injecting Brownware...", "\n", "```"].join(""));
+    embed.setDescription(["```diff", "\n", "DiversityBOT's Magic Terminal!", "\n", "\n", "\n", "\n", "\n", "> [▖] Injecting Brownware...", "\n", "```"].join(""));
     try {
       await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
@@ -50,7 +50,7 @@ module.exports = {
     }
 
     await delay(2000);
-    embed.setDescription(["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▘] Brownware injected, time to hack!", "\n", "```"].join(""));
+    embed.setDescription(["```diff", "\n", "DiversityBOT's Magic Terminal!", "\n", "\n", "\n", "\n", "\n", "> [▘] Brownware injected, time to hack!", "\n", "```"].join(""));
     try {
       await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
@@ -58,7 +58,7 @@ module.exports = {
     }
 
     await delay(2000);
-    embed.setDescription(["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▝] Getting Discord account token...", "\n", "```"].join(""));
+    embed.setDescription(["```diff", "\n", "DiversityBOT's Magic Terminal!", "\n", "\n", "\n", "\n", "\n", "> [▝] Getting Discord account token...", "\n", "```"].join(""));
     try {
       await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
@@ -68,7 +68,7 @@ module.exports = {
     await delay(2000);
     const hackcmdTokenRandom = mathRandomInt(1000000000000000, 9007199254740991);
     embed.setDescription(
-      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", `> [▗] Discord login token: ${hackcmdTokenRandom}`, "\n", "```"].join(""),
+      ["```diff", "\n", "DiversityBOT's Magic Terminal!", "\n", "\n", "\n", "\n", "\n", `> [▗] Discord login token: ${hackcmdTokenRandom}`, "\n", "```"].join(""),
     );
     try {
       await sentMessage.edit({ embeds: [embed] });
@@ -77,7 +77,7 @@ module.exports = {
     }
 
     await delay(2000);
-    embed.setDescription(["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▖] Getting IP address...", "\n", "```"].join(""));
+    embed.setDescription(["```diff", "\n", "DiversityBOT's Magic Terminal!", "\n", "\n", "\n", "\n", "\n", "> [▖] Getting IP address...", "\n", "```"].join(""));
     try {
       await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
@@ -90,7 +90,7 @@ module.exports = {
       [
         "```diff",
         "\n",
-        "DiversityBOT's magic command prompt!",
+        "DiversityBOT's Magic Terminal!",
         "\n",
         "\n",
         "\n",
@@ -108,7 +108,7 @@ module.exports = {
     }
 
     await delay(2000);
-    embed.setDescription(["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▝] Stealing all the important data...", "\n", "```"].join(""));
+    embed.setDescription(["```diff", "\n", "DiversityBOT's Magic Terminal!", "\n", "\n", "\n", "\n", "\n", "> [▝] Stealing all the important data...", "\n", "```"].join(""));
     try {
       await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
@@ -120,7 +120,7 @@ module.exports = {
       [
         "```diff",
         "\n",
-        "DiversityBOT's magic command prompt!",
+        "DiversityBOT's Magic Terminal!",
         "\n",
         "\n",
         "\n",
@@ -157,7 +157,7 @@ module.exports = {
     }
 
     await delay(2000);
-    embed.setDescription(["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▖] Exploiting coords using Nocom...", "\n", "```"].join(""));
+    embed.setDescription(["```diff", "\n", "DiversityBOT's Magic Terminal!", "\n", "\n", "\n", "\n", "\n", "> [▖] Exploiting coords using Nocom...", "\n", "```"].join(""));
     try {
       await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
@@ -168,9 +168,7 @@ module.exports = {
     const hackcmdCoordsX = mathRandomInt(-30000000, 30000000);
     const hackcmdCoordsZ = mathRandomInt(-30000000, 30000000);
     embed.setDescription(
-      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", `> [▘] House coords: X: ${hackcmdCoordsX}, Z: ${hackcmdCoordsZ}`, "\n", "```"].join(
-        "",
-      ),
+      ["```diff", "\n", "DiversityBOT's Magic Terminal!", "\n", "\n", "\n", "\n", "\n", `> [▘] House coords: X: ${hackcmdCoordsX}, Z: ${hackcmdCoordsZ}`, "\n", "```"].join(""),
     );
     try {
       await sentMessage.edit({ embeds: [embed] });
@@ -179,7 +177,7 @@ module.exports = {
     }
 
     await delay(2000);
-    embed.setDescription(["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▝] Hacking all important accounts...", "\n", "```"].join(""));
+    embed.setDescription(["```diff", "\n", "DiversityBOT's Magic Terminal!", "\n", "\n", "\n", "\n", "\n", "> [▝] Hacking all important accounts...", "\n", "```"].join(""));
     try {
       await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
@@ -191,7 +189,7 @@ module.exports = {
       [
         "```diff",
         "\n",
-        "DiversityBOT's magic command prompt!",
+        "DiversityBOT's Magic Terminal!",
         "\n",
         "\n",
         "\n",
@@ -210,7 +208,7 @@ module.exports = {
 
     await delay(2000);
     embed.setDescription(
-      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▖] Executing remote code using Log4j exploit...", "\n", "```"].join(""),
+      ["```diff", "\n", "DiversityBOT's Magic Terminal!", "\n", "\n", "\n", "\n", "\n", "> [▖] Executing remote code using Log4j exploit...", "\n", "```"].join(""),
     );
     try {
       await sentMessage.edit({ embeds: [embed] });
@@ -219,7 +217,7 @@ module.exports = {
     }
 
     await delay(2000);
-    embed.setDescription(["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▘] The remote code has been executed", "\n", "```"].join(""));
+    embed.setDescription(["```diff", "\n", "DiversityBOT's Magic Terminal!", "\n", "\n", "\n", "\n", "\n", "> [▘] The remote code has been executed", "\n", "```"].join(""));
     try {
       await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
@@ -231,7 +229,7 @@ module.exports = {
       [
         "```diff",
         "\n",
-        "DiversityBOT's magic command prompt!",
+        "DiversityBOT's Magic Terminal!",
         "\n",
         "\n",
         "\n",
@@ -260,9 +258,7 @@ module.exports = {
     }
 
     await delay(2000);
-    embed.setDescription(
-      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▗] Changed desktop background :trollolol:", "\n", "```"].join(""),
-    );
+    embed.setDescription(["```diff", "\n", "DiversityBOT's Magic Terminal!", "\n", "\n", "\n", "\n", "\n", "> [▗] Changed desktop background :trollolol:", "\n", "```"].join(""));
     try {
       await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
@@ -270,7 +266,7 @@ module.exports = {
     }
 
     await delay(2000);
-    embed.setDescription(["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▖] Opening the '+18' folder...", "\n", "```"].join(""));
+    embed.setDescription(["```diff", "\n", "DiversityBOT's Magic Terminal!", "\n", "\n", "\n", "\n", "\n", "> [▖] Opening the '+18' folder...", "\n", "```"].join(""));
     try {
       await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
@@ -282,7 +278,7 @@ module.exports = {
       [
         "```diff",
         "\n",
-        "DiversityBOT's magic command prompt!",
+        "DiversityBOT's Magic Terminal!",
         "\n",
         "\n",
         "\n",
@@ -312,7 +308,7 @@ module.exports = {
 
     await delay(2000);
     embed.setDescription(
-      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", `> [▝] Sending all the data to: ${messageAuthor}`, "\n", "```"].join(""),
+      ["```diff", "\n", "DiversityBOT's Magic Terminal!", "\n", "\n", "\n", "\n", "\n", `> [▝] Sending all the data to: ${messageAuthor}`, "\n", "```"].join(""),
     );
     try {
       await sentMessage.edit({ embeds: [embed] });
@@ -322,7 +318,7 @@ module.exports = {
 
     await delay(2000);
     embed.setDescription(
-      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▗] Reporting this user to Discord immediately...", "\n", "```"].join(""),
+      ["```diff", "\n", "DiversityBOT's Magic Terminal!", "\n", "\n", "\n", "\n", "\n", "> [▗] Reporting this user to Discord immediately...", "\n", "```"].join(""),
     );
     try {
       await sentMessage.edit({ embeds: [embed] });
@@ -331,9 +327,7 @@ module.exports = {
     }
 
     await delay(2000);
-    embed.setDescription(
-      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", "> [▖] Sending found +18 files to the FBI...", "\n", "```"].join(""),
-    );
+    embed.setDescription(["```diff", "\n", "DiversityBOT's Magic Terminal!", "\n", "\n", "\n", "\n", "\n", "> [▖] Sending found +18 files to the FBI...", "\n", "```"].join(""));
     try {
       await sentMessage.edit({ embeds: [embed] });
     } catch (error) {
@@ -343,7 +337,7 @@ module.exports = {
     await delay(2000);
     embed.setColor(0x33cc00);
     embed.setDescription(
-      ["```diff", "\n", "DiversityBOT's magic command prompt!", "\n", "\n", "\n", "\n", "\n", `> ${member.username} has been hacked and reported!`, "\n", "```"].join(""),
+      ["```diff", "\n", "DiversityBOT's Magic Terminal!", "\n", "\n", "\n", "\n", "\n", `> ${member.username} has been hacked and reported!`, "\n", "```"].join(""),
     );
     sentMessage.edit({ embeds: [embed] }).catch(msgErrorHandler);
   },

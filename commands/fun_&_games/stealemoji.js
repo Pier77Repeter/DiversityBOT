@@ -25,7 +25,8 @@ module.exports = {
       return;
     }
 
-    const emojiName = emoji[0].split(":")[1];
+    const emojiName = emoji.split(":")[1];
+
     let emojiId = null;
     let animated = false;
 
@@ -47,7 +48,7 @@ module.exports = {
         emojiUrl += ".png?quality=lossless";
       }
 
-      const embed = new EmbedBuilder().setColor(0x33ccff).setTitle(`🤠 Stolen emoji ${emojiName}`).setImage(emojiUrl).setFooter({ text: "Click the image to download" });
+      const embed = new EmbedBuilder().setColor(0x33ccff).setTitle(`🤠 Stolen Emoji ${emojiName}`).setImage(emojiUrl).setFooter({ text: "Click the image to download" });
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     } else {
