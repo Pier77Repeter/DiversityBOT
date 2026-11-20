@@ -4,6 +4,7 @@ const configChecker = require("../../utils/configChecker.js");
 const missingDataHandler = require("../../utils/missingDataHandler.js");
 const rngRarityColor = require("../../utils/rngRarityColor.js");
 const rngRarityLabel = require("../../utils/rngRarityLabel.js");
+const { normalizeDropName } = require("../../utils/rngDropNameFixer.js");
 
 function formatMsgNum(num) {
   if (num >= 1_000_000_000) return (num / 1_000_000_000).toFixed(1) + "B";
@@ -29,7 +30,8 @@ module.exports = {
       return;
     }
 
-    const dropIdOrName = String(args.join(" ")).toLowerCase();
+    const dropIdOrName = args.join(" ");
+    const normalizedDropName = normalizeDropName(dropIdOrName);
     if (!dropIdOrName) {
       message.reply("Can you specify which drop you want me to show you?").catch(msgErrorHandler);
       return;
@@ -50,12 +52,12 @@ module.exports = {
     const globalDropChance = row.rows[0].rng_drop_chance;
 
     // if we find something this embed will be modified else will remain the same
-    embed.setColor(0xff0000).setTitle("❌ Not found").setDescription(`No drop with id or name **${dropIdOrName}** has been found, check server drops with **d!rngdrops**`);
+    embed.setColor(0xff0000).setTitle("❌ Not Found").setDescription(`No drop with id or name **${dropIdOrName}** has been found, check server drops with **d!rngdrops**`);
 
     let odds;
 
     for (const drop of serverDrops) {
-      if (drop.name.toLowerCase() === dropIdOrName || drop.id === dropIdOrName) {
+      if (normalizeDropName(drop.name) === normalizedDropName || drop.id === dropIdOrName) {
         embed.setTitle(`🧮 Item Overview (ID ${drop.id})`).setDescription(`**${drop.name}**\n> *${drop.desc}*\n`);
 
         // REMEMBER TO PARSE TO NUMBER

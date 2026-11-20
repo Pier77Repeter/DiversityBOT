@@ -3,6 +3,7 @@ const msgErrorHandler = require("../../utils/msgErrorHandler.js");
 const configChecker = require("../../utils/configChecker.js");
 const dbJsonDataGet = require("../../utils/dbJsonDataGet.js");
 const dbJsonDataSet = require("../../utils/dbJsonDataSet.js");
+const { normalizeDropName, isValidDropName } = require("../../utils/rngDropNameFixer.js");
 
 module.exports = {
   name: "rngadd",
@@ -34,33 +35,52 @@ module.exports = {
     const parts = givenArgs.split("|").map((part) => part.trim());
 
     if (parts.length < 3 || parts.length > 5) {
-      embed.setColor(0xff0000).setTitle("❌ Invalid Format").setDescription("Correct usage **d!rngadd dropName | optionalDesc | chance | type | typeArgs**");
+      embed.setColor(0xff0000).setTitle("❌ Invalid Format").setDescription("Correct usage **d!rngadd name | optionalDesc | chance | type | typeArgs**");
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);
       return;
     }
 
-    let name, desc, chanceStr, typeArg;
-    let type = parts[1] ? parts[3].toLowerCase() : parts[2].toLowerCase(); // desc can be optional parameter, so we adapt for it
+    /*
+    So in order these are the parts (If user wants a custom description):
+    parts[0] = name
+    parts[1] = desc
+    parts[2] = chance
+    parts[3] = type
+    parts[4] = typeArgs
 
-    // d!rngadd name | desc | chance | item
-    if (parts.length === 4 && type === "item") {
-      [name, desc, chanceStr, type] = parts;
+    IF the user does NOT put any description:
+    parts[0] = name
+    parts[1] = chance
+    parts[2] = type
+    parts[3] = typeArgs
+    */
 
-      // d!rngadd name | chance | item
-    } else if (parts.length < 4 && type === "item") {
-      [name, chanceStr, type] = parts;
+    let name, desc, chanceStr, type, typeArg;
+
+    name = normalizeDropName(parts[0]);
+
+    // A numeric second field means the description was omitted.
+    if (parts[1] !== undefined && !isNaN(parseFloat(parts[1]))) {
       desc = "This mystical item has no description :(";
+      chanceStr = parts[1];
+      type = parts[2];
+      typeArg = parts[3] || null;
+    } else {
+      desc = parts[1] || "This mystical item has no description :(";
+      chanceStr = parts[2];
+      type = parts[3];
+      typeArg = parts[4] || null;
     }
 
-    // d!rngadd name | desc | chance | not item | args
-    if (parts.length === 5) {
-      [name, desc, chanceStr, type, typeArg] = parts;
+    if (!isValidDropName(name)) {
+      embed
+        .setColor(0xff0000)
+        .setTitle("❌ Invalid Name")
+        .setDescription('A drop name must include text; it can contain only one emoji, and it must be the first character, example "🪙 Golden Coin"');
 
-      // d!rngadd name | chance | not item | args
-    } else if (type !== "item") {
-      [name, chanceStr, type, typeArg] = parts;
-      desc = "This mystical item has no description :(";
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
     }
 
     if (name.length > 64 || desc.length > 256) {
@@ -76,7 +96,7 @@ module.exports = {
     const chance = parseFloat(chanceStr);
 
     if (isNaN(chance) || chance < 0.00001 || chance > 100) {
-      embed.setColor(0xff0000).setTitle("❌ Invalid Chance").setDescription("The drop chance must be a valid number between **100** and **0.000001**");
+      embed.setColor(0xff0000).setTitle("❌ Invalid Chance").setDescription("The drop chance must be a valid number between **100** and **0.00001**");
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);
       return;
@@ -87,7 +107,7 @@ module.exports = {
     if (!Array.isArray(serverDrops)) serverDrops = [];
 
     // i do not want items with the same name
-    const nameExists = serverDrops.some((drop) => drop.name.toLowerCase() === name.toLowerCase());
+    const nameExists = serverDrops.some((drop) => normalizeDropName(drop.name) === normalizeDropName(name));
 
     if (nameExists) {
       embed.setColor(0xff0000).setTitle("❌ Duplicate Item").setDescription(`Item named **${name}** already exists in this server, use a different name`);

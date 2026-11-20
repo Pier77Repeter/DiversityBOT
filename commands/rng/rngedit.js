@@ -3,6 +3,7 @@ const msgErrorHandler = require("../../utils/msgErrorHandler.js");
 const configChecker = require("../../utils/configChecker.js");
 const dbJsonDataGet = require("../../utils/dbJsonDataGet.js");
 const dbJsonDataSet = require("../../utils/dbJsonDataSet.js");
+const { normalizeDropName, isValidDropName } = require("../../utils/rngDropNameFixer.js");
 
 module.exports = {
   name: "rngedit",
@@ -35,9 +36,9 @@ module.exports = {
     if (parts.length < 2) {
       embed
         .setColor(0xff0000)
-        .setTitle("❌ Nothing to change")
+        .setTitle("❌ Nothing to Change")
         .setDescription(
-          "Nothing has changed, valid parameters **d!rngedit dropId | newDropName | newOptionalDesc | newDropChance | newType | newTypeArgs**\n*Tip: Use `-` to skip a parameter you want to keep the same!*",
+          "Nothing has changed, valid parameters **d!rngedit id | newName | newOptionalDesc | newChance | newType | newTypeArgs**\n\n*Tip: Use `-` to skip a parameter you want to keep the same!*",
         );
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);
@@ -48,7 +49,7 @@ module.exports = {
       embed
         .setColor(0xff0000)
         .setTitle("❌ Invalid Format")
-        .setDescription("Too many parameters, correct usage **d!rngedit dropId | newDropName | newOptionalDesc | newDropChance | newType | newTypeArgs**");
+        .setDescription("Too many parameters, correct usage **d!rngedit id | newName | newOptionalDesc | newChance | newType | newTypeArgs**");
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);
       return;
@@ -59,10 +60,10 @@ module.exports = {
     let serverDrops = await dbJsonDataGet(client, message, "server_drops");
     if (!Array.isArray(serverDrops)) serverDrops = [];
 
-    const dropIndex = serverDrops.findIndex((drop) => drop.id === parseInt(id));
+    const dropIndex = serverDrops.findIndex((drop) => drop.id === id);
 
     if (dropIndex === -1) {
-      embed.setColor(0xff0000).setTitle("❌ Not found").setDescription(`Item with id **${id}** doesn't exist, check the list with **d!drops**`);
+      embed.setColor(0xff0000).setTitle("❌ Not Found").setDescription(`Item with id **${id}** doesn't exist, check the list with **d!drops**`);
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);
       return;
@@ -78,7 +79,17 @@ module.exports = {
 
     const chance = parseFloat(finalChanceStr);
 
-    if (name.length > 64 || desc.length > 256) {
+    if (name && name !== "-" && !isValidDropName(name)) {
+      embed
+        .setColor(0xff0000)
+        .setTitle("❌ Invalid Name")
+        .setDescription('A drop name must include text; it can contain only one emoji, and it must be the first character, example "🪙 Golden Coin"');
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
+    }
+
+    if (finalName.length > 64 || finalDesc.length > 256) {
       embed
         .setColor(0xff0000)
         .setTitle("❌ Name Or Desc too Long")
@@ -88,8 +99,15 @@ module.exports = {
       return;
     }
 
-    if (isNaN(chance) || chance < 0.000001 || chance > 100) {
-      embed.setColor(0xff0000).setTitle("❌ Invalid Chance").setDescription("The drop chance must be a valid number between **100** and **0.000001**");
+    if (name && name !== "-" && serverDrops.some((drop, index) => index !== dropIndex && normalizeDropName(drop.name) === normalizeDropName(finalName))) {
+      embed.setColor(0xff0000).setTitle("❌ Duplicate Item").setDescription(`Item named **${finalName}** already exists in this server, use a different name`);
+
+      message.reply({ embeds: [embed] }).catch(msgErrorHandler);
+      return;
+    }
+
+    if (isNaN(chance) || chance < 0.00001 || chance > 100) {
+      embed.setColor(0xff0000).setTitle("❌ Invalid Chance").setDescription("The drop chance must be a valid number between **100** and **0.00001**");
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);
       return;
@@ -154,6 +172,7 @@ module.exports = {
 
       case "role":
         let roleIdToUse = existingDrop.role_id; // same thing goes here
+
         if (typeArg && typeArg !== "-") {
           roleIdToUse = typeArg.startsWith("<@&") && typeArg.endsWith(">") ? typeArg.slice(3, -1) : typeArg;
         }
@@ -192,9 +211,9 @@ module.exports = {
     embed
       .setColor(0x00ff00)
       .setTitle("✅ Drop Updated")
-      .setDescription(`Successfully updated **${finalName} (${existingDrop.id})**!`)
+      .setDescription(`Successfully updated **${finalName}** (ID ${existingDrop.id})!\n\n> *${finalDesc}*`)
       .addFields(
-        { name: "New Chance", value: `${chance}%`, inline: true },
+        { name: "Chance", value: `${finalChanceStr}%`, inline: true },
         { name: "Type", value: finalType, inline: true },
         { name: "Pool Capacity", value: `${Number(calcTotalChance.toFixed(8))}% / 100%`, inline: false },
       );

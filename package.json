@@ -13,7 +13,7 @@
     "@discord-player/extractor": "^7.2.0",
     "@discordjs/opus": "^0.10.0",
     "@snazzah/davey": "^0.1.12",
-    "axios": "^1.21.0",
+    "axios": "^1.21.1",
     "discord-gamecord": "file:local_modules/discord-gamecord",
     "discord-image-generation": "^1.4.25",
     "discord-player": "^7.2.0",
@@ -23,7 +23,7 @@
     "libsodium-wrappers": "^0.8.4",
     "luxon": "^3.7.2",
     "pg": "^8.23.1",
-    "sodium-native": "^5.2.0",
+    "sodium-native": "^5.2.2",
     "topgg-autoposter": "^2.0.2"
   }
 }

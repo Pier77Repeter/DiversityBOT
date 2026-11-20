@@ -69,12 +69,12 @@ module.exports = {
         .setTitle("⚙️ Server Status")
         .setDescription(["Here you can see all of my hardware and Discord's stats"].join(""))
         .addFields({
-          name: "**Discord stats:**",
+          name: "**Discord Stats:**",
           value: [`Total servers: \`${client.guilds.cache.size}\``, `Total users: \`${totalMembers}\``, `Latency to Discord: \`${client.ws.ping}ms\``].join("\n"),
           inline: false,
         })
         .addFields({
-          name: "**Hardware stats:**",
+          name: "**Hardware Stats:**",
           value: [
             `OS: \`${os.type()}\``,
             `OS Architecture: \`${os.arch()}\``,

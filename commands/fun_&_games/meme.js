@@ -3,7 +3,7 @@ const path = require("path");
 const cooldownManager = require("../../utils/cooldownManager");
 const msgErrorHandler = require("../../utils/msgErrorHandler");
 
-async function getMeme() {
+async function getMeme(subReddit) {
   try {
     const response = await fetch("https://meme-api.com/gimme/" + subReddit);
     const memeData = await response.json();
@@ -32,12 +32,12 @@ module.exports = {
       return;
     }
 
-    let subReddit = "";
+    let subReddit = ""; // by default
     if (args.length > 0) {
       subReddit = args[0];
     }
 
-    let memeData = await getMeme();
+    let memeData = await getMeme(subReddit);
 
     if (memeData.code == 404) {
       message.reply("Subreddit not found, try again, maybe with an actual subreddit").catch(msgErrorHandler);
@@ -90,7 +90,7 @@ module.exports = {
 
       switch (btnInteraction.customId) {
         case "btn-meme-btnNextMeme":
-          memeData = await getMeme();
+          memeData = await getMeme(subReddit);
 
           if (memeData.code == 404) {
             btnCollector.stop();

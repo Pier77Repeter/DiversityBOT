@@ -35,9 +35,9 @@ module.exports = {
       return;
     }
 
-    const itemId = parseInt(args[0]);
+    const itemId = args[0];
 
-    if (isNaN(itemId)) {
+    if (isNaN(parseInt(itemId))) {
       embed.setColor(0xff0000).setTitle("❌ Invalid ID").setDescription("The ID must be a valid number, check the item ids with **d!drops**");
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);
@@ -64,6 +64,9 @@ module.exports = {
       return;
     }
 
+    // wanna save this for telling the user
+    const deletedItem = serverDrops[serverItemId];
+
     serverDrops.splice(serverItemId, 1);
 
     if ((await dbJsonDataSet(client, message, "server_drops", serverDrops)) === null) return;
@@ -89,7 +92,7 @@ module.exports = {
       .setColor(0x00ff00)
       .setTitle("🗑️ Drop Removed")
       .setDescription(
-        `Successfully deleted **${serverDrops[serverItemId - 1].name}** (ID: ${itemId}) from the server's drop list.\nThe drop has been wiped from the members's inventories too`,
+        `Successfully deleted **${deletedItem.name}** (ID: ${deletedItem.id}) from the server's drop list.\nThe drop has been wiped from the members's inventories too`,
       );
 
     message.reply({ embeds: [embed] }).catch(msgErrorHandler);

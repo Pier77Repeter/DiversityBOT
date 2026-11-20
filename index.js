@@ -18,7 +18,6 @@ logger.info("Initializing DiversityBOT...");
 
 const fs = require("fs");
 const path = require("path");
-
 const configFilePath = path.join(__dirname, "config.json");
 
 // you can make your own custom configurations
@@ -102,13 +101,6 @@ const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildVoiceStates],
 });
 
-// updating Top.gg stats, at least for my bot, don't want to log it
-try {
-  AutoPoster(null, client); // set temp to null, replace with 'topggToken' will change later when done with 2.2
-} catch {
-  logger.warn("Failed to update top.gg stats (nothing important unless token isn't configured)");
-}
-
 // AFTER the bot fully loaded THEN we can log in
 loader.initLoader(client).then(() => {
   client.login(botToken).catch((error) => {
@@ -120,6 +112,15 @@ loader.initLoader(client).then(() => {
 // when the client is ready
 client.once(Events.ClientReady, (readyClient) => {
   logger.info(`DiversityBOT is ready, logged in as ${readyClient.user.tag}`);
+
+  // updating Top.gg stats when ready, at least for my bot
+  if (!readyClient.user.tag === "DiversityDEV#9235") {
+    try {
+      AutoPoster(topggToken, client);
+    } catch {
+      logger.warn("Failed to update top.gg stats (nothing important unless token isn't configured)");
+    }
+  }
 
   // bot status setup, client.guilds.cache.size returns the correct number AFTER the 'ready' event fires
   const botStatus = [

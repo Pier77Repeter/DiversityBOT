@@ -142,7 +142,7 @@ module.exports = {
           case "menuOption-help-menuHelp-music":
             menuOptionEmbed
               .setColor(0x00cccc)
-              .setTitle("🎵 Music Section:")
+              .setTitle("🎵 Music Section")
               .setDescription(
                 [
                   "**You must be in a voice channel!**",
@@ -308,16 +308,16 @@ module.exports = {
                   "",
                   "**d!rnginfo** - Shows how this system works",
                   "**d!rngdc <number>** - Set the global item drop chance in the server (Only admin)",
-                  "**d!rngadd <dropName> <dropDesc> <dropChance> <dropType> <typeArg>** - Add a new drop (Only admin)",
-                  "**d!rngedit <dropId> <newDropName> <newDesc> <newDropChance> <newType> <newTypeArg>** - Edit an existing drop (Only admin)",
-                  "**d!rngdelete <dropId>** - Remove a drop the from server (Only admin)",
+                  "**d!rngadd <name> <desc> <chance> <type> <args>** - Add a new drop (Only admin)",
+                  "**d!rngedit <id> <newName> <newDesc> <newChance> <newType> <newArgs>** - Edit an existing drop (Only admin)",
+                  "**d!rngdelete <id>** - Remove a drop the from server (Only admin)",
                   "**d!rngxpadd <@user> <amount>** - Add experience to an user's RNG Meter (Only admin)",
                   "**d!rngxpremove <@user> <amount>** - Remove experience from an user's RNG Meter (Only admin)",
-                  "**d!rngdrops** - Shows the configured server drops",
-                  "**d!rngmydrops** - Shows all the found drops",
-                  "**d!rngc <dropId>/<dropName>** - Shows all the nerd stats for a drop",
-                  "**d!rngmeter** - Shows the RNG Meter (if selected)",
-                  "**d!rngselect <dropId>/<dropName>** - Select an item for the RNG Meter",
+                  "**d!rngdrops** - Shows the existing and possible server drops",
+                  "**d!rngfd** or **d!rngfd <@user>** - Shows all the found drops",
+                  "**d!rngc <id>/<name>** - Shows all the nerd stats for a drop by id or name",
+                  "**d!rngm** or **d!rngm <@user>** - Shows the user's RNG Meter (if selected)",
+                  "**d!rngselect <id>/<name>** - Select an item by id or name for the RNG Meter",
                 ].join("\n"),
               )
               .setFooter({ text: "6/7 sections" });

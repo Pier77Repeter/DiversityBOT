@@ -21,6 +21,7 @@ module.exports = {
       return;
     }
 
+    const date = new Date();
     const isChristmasSeason = date.getMonth() === 11 && date.getDate() <= 25 ? true : false;
 
     if (!isChristmasSeason) {

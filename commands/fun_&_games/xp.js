@@ -30,7 +30,7 @@ module.exports = {
         return;
       }
 
-      embed.setColor(0x00cccc).setTitle(`${user.username} current XP`).setDescription("Bro has literally **0 XP** 🤦‍♂️").setThumbnail(user.displayAvatarURL());
+      embed.setColor(0x00cccc).setTitle(`${user.username} Current XP`).setDescription("Bro has literally **0 XP** 🤦‍♂️").setThumbnail(user.displayAvatarURL());
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);
       return;
@@ -41,7 +41,7 @@ module.exports = {
     const imageFile = new AttachmentBuilder(path.join(process.cwd(), "media", "xp.png"), { name: "xp.png" });
 
     embed
-      .setTitle(`${user.username} current xp`)
+      .setTitle(`${user.username} Current XP`)
       .setDescription([`🪩 XP: **${xp}**`, "", `⏭️ XP for the next level: **${nextXp - xp}**`].join("\n"))
       .setThumbnail("attachment://xp.png");
 

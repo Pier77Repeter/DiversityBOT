@@ -21,6 +21,7 @@ module.exports = {
 
     // we gotta check if we are still in Christmas Season before the 26th of December
     // technically Christmas Season ends on the 6th of January but you have time until the 25th of December to complete the tree
+    const date = new Date();
     const isChristmasSeason = date.getMonth() === 11 && date.getDate() <= 25 ? true : false;
 
     if (!isChristmasSeason) {

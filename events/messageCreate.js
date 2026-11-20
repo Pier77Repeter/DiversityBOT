@@ -116,7 +116,7 @@ async function checkRngDrop(client, message, row, unixNow) {
 
   if (row.rng_meter_selection) {
     await client.database.query("UPDATE users SET rng_meter_progress = rng_meter_progress + $1 WHERE server_id = $2 AND user_id = $3", [
-      message.content.startsWith("d!") ? 1.2 : 1,
+      message.content.startsWith("d!") ? 1.2 : 1, // using bot commands will give an extra 20% rng exp
       message.guildId,
       message.author.id,
     ]);

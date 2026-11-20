@@ -86,7 +86,7 @@ module.exports = {
     const targetItem = serverDrops.find((drop) => drop.id === userMeterSelected);
 
     if (!targetItem) {
-      embed.setColor(0xff0000).setTitle("❌ Not found").setDescription("The selected item was not found in the server drops");
+      embed.setColor(0xff0000).setTitle("❌ Not Found").setDescription("The selected item was not found in the server drops");
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);
       return;

@@ -18,7 +18,7 @@ module.exports = {
     const embed = new EmbedBuilder();
 
     try {
-      embed.setColor(0x339999).setTitle("🔍 Sniped message").setDescription(snipedMessage);
+      embed.setColor(0x339999).setTitle("🔍 Sniped Message").setDescription(snipedMessage);
 
       if (member) {
         embed.setFooter({ text: `Sent by ${member.username}`, iconURL: member.displayAvatarURL() });
@@ -28,7 +28,7 @@ module.exports = {
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);
     } catch (error) {
-      embed.setColor(0x339999).setTitle("🔍 Sniped message").setDescription("Sniped message wasn't a text message :(");
+      embed.setColor(0x339999).setTitle("🔍 Sniped Message").setDescription("Sniped message wasn't a text message :(");
       embed.setFooter({ text: "Waiting for a good catch..." });
 
       message.reply({ embeds: [embed] }).catch(msgErrorHandler);

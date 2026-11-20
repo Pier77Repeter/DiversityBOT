@@ -21,6 +21,7 @@ module.exports = {
 
     // getMonth() starts from 0 and goes to 11, month 0 is January and the month 11 is December
     // from my view, the Christmas Season contiues until Epiphany, 6 Januray
+    const date = new Date();
     const isChristmasSeason = date.getMonth() === 11 || (date.getMonth() === 0 && date.getDay() <= 6) ? true : false;
 
     if (!isChristmasSeason) {
@@ -38,8 +39,6 @@ module.exports = {
     ]);
 
     const row = res.rows[0];
-
-    const date = new Date();
 
     // we can't build the tree past the 25th
     const canBuildTreePeriod = date.getMonth() === 11 && date.getDate() <= 25 ? true : false;
